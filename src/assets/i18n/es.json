@@ -1,0 +1,9 @@
+{
+    "HOME": {
+        "TITLE": "SGA",
+        "SELECT": "Cambiar idioma",
+        "LOGIN": "Iniciar sesión",
+        "LOGOUT": "Cerra sesión",
+        "THEME": "Tema"
+    }
+}

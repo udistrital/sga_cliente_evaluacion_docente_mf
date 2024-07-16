@@ -1,0 +1,10 @@
+{
+    "HOME": {
+        "TITLE": "SGA",
+        "SELECT": "Change language",
+        "LOGIN": "Login",
+        "LOGOUT": "Logout",
+        "THEME": "Theme"
+    }
+    
+}
