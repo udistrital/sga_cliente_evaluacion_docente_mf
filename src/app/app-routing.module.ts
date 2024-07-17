@@ -1,40 +1,36 @@
-/*import { APP_BASE_HREF } from '@angular/common';
+import { APP_BASE_HREF } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes, provideRouter } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 import { getSingleSpaExtraProviders } from 'single-spa-angular';
 import { provideHttpClient, withFetch } from '@angular/common/http';
-import { EmptyRouteComponent } from './empty-route/empty-route.component';
-import { PreasignacionComponent } from './plan-trabajo-docente/preasignacion/preasignacion.component';
-import { AsignarPtdComponent } from './plan-trabajo-docente/asignar-ptd/asignar-ptd.component';
-import { VerificarPtdComponent } from './plan-trabajo-docente/verificar-ptd/verificar-ptd.component';
-import { ConsolidadoComponent } from './plan-trabajo-docente/consolidado/consolidado.component';
-import { RevisionConsolidadoComponent } from './plan-trabajo-docente/revision-consolidado/revision-consolidado.component';
+// Importar el componente EmptyRouteComponent
 
 const routes: Routes = [
   {
-    path: '',
-    component: EmptyRouteComponent,
+    path: ''
+    
   },
-  {
-    path: 'preasignacion',
-    component: PreasignacionComponent,
-  },
-  {
-    path: 'asignar',
-    component: AsignarPtdComponent,
-  },
-  {
-    path: 'verificar',
-    component: VerificarPtdComponent,
-  },
-  {
-    path: 'consolidado',
-    component: ConsolidadoComponent,
-  },
-  {
-    path: 'consolidado/revision',
-    component: RevisionConsolidadoComponent,
-  },
+  // Otros componentes comentados porque no existen
+  // {
+  //   path: 'preasignacion',
+  //   component: PreasignacionComponent,
+  // },
+  // {
+  //   path: 'asignar',
+  //   component: AsignarPtdComponent,
+  // },
+  // {
+  //   path: 'verificar',
+  //   component: VerificarPtdComponent,
+  // },
+  // {
+  //   path: 'consolidado',
+  //   component: ConsolidadoComponent,
+  // },
+  // {
+  //   path: 'consolidado/revision',
+  //   component: RevisionConsolidadoComponent,
+  // },
   {
     path: '**',
     redirectTo: ''
@@ -45,10 +41,9 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
   providers: [
-    provideRouter(routes),
-    { provide: APP_BASE_HREF, useValue: '/plan-trabajo-docente/' },
-    getSingleSpaExtraProviders(),
+    { provide: APP_BASE_HREF, useValue: '/sga_cliente_evaluacion_docente_mf/' },
+    ...getSingleSpaExtraProviders(),
     provideHttpClient(withFetch())
   ]
 })
-export class AppRoutingModule { }*/
+export class AppRoutingModule { }

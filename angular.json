@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "sga-cliente-plan-docente-mf": {
+    "sga_cliente_evaluacion_docente_mf": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -36,13 +36,13 @@
             "scripts": [],
             "customWebpackConfig": {
               "path": "extra-webpack.config.js",
-              "libraryName": "sga-cliente-plan-docente-mf",
+              "libraryName": "sga_cliente_evaluacion_docente_mf",
               "libraryTarget": "umd"
             }
           },
           "configurations": {
             "production": {
-              "optimization":true,
+              "optimization": true,
               "outputHashing": "none",
               "sourceMap": false,
               "namedChunks": false,
@@ -90,13 +90,13 @@
           "builder": "@angular-builders/custom-webpack:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "sga-cliente-plan-docente-mf:build:production"
+              "browserTarget": "sga_cliente_evaluacion_docente_mf:build:production"
             },
             "development": {
-              "browserTarget": "sga-cliente-plan-docente-mf:build:development"
+              "browserTarget": "sga_cliente_evaluacion_docente_mf:build:development"
             },
             "local": {
-              "browserTarget": "sga-cliente-plan-docente-mf:build:local"
+              "browserTarget": "sga_cliente_evaluacion_docente_mf:build:local"
             }
           },
           "defaultConfiguration": "local"
@@ -104,7 +104,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "buildTarget": "sga-cliente-plan-docente-mf:build"
+            "buildTarget": "sga_cliente_evaluacion_docente_mf:build"
           }
         },
         "test": {
