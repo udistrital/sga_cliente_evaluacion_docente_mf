@@ -1,10 +1,10 @@
-/*import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { fromEvent } from 'rxjs';
 import { getCookie } from 'src/app/utils/cookie';
 
 @Component({
-  selector: 'sga-plan-docente-mf',
+  selector: 'sga-evaluacion-docente-mf',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
@@ -27,4 +27,4 @@ export class AppComponent implements OnInit {
     })
     this.translate.setDefaultLang(getCookie('lang') || 'es');
   }
-}*/
+}

@@ -6,10 +6,11 @@ import { HttpClientModule, HTTP_INTERCEPTORS, HttpClient } from '@angular/common
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { MATERIAL_MODULES } from './imports/material';
-import { SpinnerUtilModule } from 'spinner-util';
+import { SpinnerUtilInterceptor, SpinnerUtilModule } from 'spinner-util';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { environment } from '../environments/environment';
+import {AppComponent} from './app.component';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, environment.apiUrl + 'assets/i18n/', '.json');
@@ -17,6 +18,7 @@ export function createTranslateLoader(http: HttpClient) {
 
 @NgModule({
   declarations: [
+    AppComponent
   ],
   imports: [
     BrowserModule,
@@ -25,7 +27,7 @@ export function createTranslateLoader(http: HttpClient) {
     BrowserAnimationsModule,
     MATERIAL_MODULES,
     HttpClientModule,
-    SpinnerUtilModule,
+    SpinnerUtilModule,  
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -37,7 +39,7 @@ export function createTranslateLoader(http: HttpClient) {
     ReactiveFormsModule,
   ],
   providers: [
-    { provide: HTTP_INTERCEPTORS, multi: true }
+    { provide: HTTP_INTERCEPTORS,useClass: SpinnerUtilInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
 })
