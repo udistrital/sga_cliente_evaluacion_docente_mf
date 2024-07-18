@@ -3,12 +3,12 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { getSingleSpaExtraProviders } from 'single-spa-angular';
 import { provideHttpClient, withFetch } from '@angular/common/http';
-// Importar el componente EmptyRouteComponent
+import { DefinicionFormulariosComponent } from './componentes/definicion-formularios/definicion-formularios.component';
 
 const routes: Routes = [
   {
-    path: ''
-    
+    path: '',
+    component: DefinicionFormulariosComponent 
   },
   // Otros componentes comentados porque no existen
   // {

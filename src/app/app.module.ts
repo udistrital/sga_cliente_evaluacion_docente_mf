@@ -10,7 +10,8 @@ import { SpinnerUtilInterceptor, SpinnerUtilModule } from 'spinner-util';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { environment } from '../environments/environment';
-import {AppComponent} from './app.component';
+import { AppComponent } from './app.component';
+import { DefinicionFormulariosComponent } from './componentes/definicion-formularios/definicion-formularios.component';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, environment.apiUrl + 'assets/i18n/', '.json');
@@ -27,7 +28,7 @@ export function createTranslateLoader(http: HttpClient) {
     BrowserAnimationsModule,
     MATERIAL_MODULES,
     HttpClientModule,
-    SpinnerUtilModule,  
+    SpinnerUtilModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -37,9 +38,10 @@ export function createTranslateLoader(http: HttpClient) {
     }),
     FormsModule,
     ReactiveFormsModule,
+    DefinicionFormulariosComponent 
   ],
   providers: [
-    { provide: HTTP_INTERCEPTORS,useClass: SpinnerUtilInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: SpinnerUtilInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
 })

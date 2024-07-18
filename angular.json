@@ -55,7 +55,7 @@
                   "with": "src/environments/environment.production.ts"
                 }
               ],
-              "deployUrl": "https://sgaplandocente.portaloas.udistrital.edu.co/"
+              "deployUrl": "https://sgaevaluaciondocente.portaloas.udistrital.edu.co/"
             },
             "development": {
               "optimization": true,
@@ -71,7 +71,7 @@
                   "with": "src/environments/environment.development.ts"
                 }
               ],
-              "deployUrl": "https://pruebassgaplandocente.portaloas.udistrital.edu.co/"
+              "deployUrl": "https://pruebassgaevaluaciondocente.portaloas.udistrital.edu.co/"
             },
             "local": {
               "buildOptimizer": false,
@@ -81,7 +81,7 @@
               "sourceMap": true,
               "namedChunks": true,
               "outputHashing": "none",
-              "deployUrl": "http://localhost:4216/"
+              "deployUrl": "http://localhost:4218/"
             }
           },
           "defaultConfiguration": "local"
