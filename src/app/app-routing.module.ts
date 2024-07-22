@@ -4,36 +4,16 @@ import { RouterModule, Routes } from '@angular/router';
 import { getSingleSpaExtraProviders } from 'single-spa-angular';
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { DefinicionFormulariosComponent } from './componentes/definicion-formularios/definicion-formularios.component';
+import { AsignacionFechasComponent } from './componentes/asignacion-fechas/asignacion-fechas.component';
 
 const routes: Routes = [
   {
     path: '',
     component: DefinicionFormulariosComponent 
   },
-  // Otros componentes comentados porque no existen
-  // {
-  //   path: 'preasignacion',
-  //   component: PreasignacionComponent,
-  // },
-  // {
-  //   path: 'asignar',
-  //   component: AsignarPtdComponent,
-  // },
-  // {
-  //   path: 'verificar',
-  //   component: VerificarPtdComponent,
-  // },
-  // {
-  //   path: 'consolidado',
-  //   component: ConsolidadoComponent,
-  // },
-  // {
-  //   path: 'consolidado/revision',
-  //   component: RevisionConsolidadoComponent,
-  // },
   {
-    path: '**',
-    redirectTo: ''
+    path: 'asignacion-fechas',
+    component: AsignacionFechasComponent
   }
 ];
 

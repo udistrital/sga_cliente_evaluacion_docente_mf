@@ -1,0 +1,37 @@
+<div class="asignacion-fechas">
+    <h2>Asignación de fechas para los procesos</h2>
+    <div class="nivel-formacion">
+        <label for="nivelFormacion">Seleccionar el nivel de formación a asignar</label>
+        <select id="nivelFormacion" [(ngModel)]="nivelFormacion">
+            <option value="" disabled selected>Seleccionar</option>
+            <option value="pregrado">Pregrado</option>
+            <option value="postgrado">Postgrado</option>
+        </select>
+    </div>
+    
+    <div class="procesos-grid">
+        <div class="proceso" *ngFor="let proceso of procesos">
+            <h3>{{ proceso.nombre }}</h3>
+            <div class="fechas">
+                <button mat-button (click)="pickerInicio.open()">
+                    {{ proceso.fechaInicio ? (proceso.fechaInicio | date: 'dd/MM/yyyy') : 'Seleccionar fecha inicio' }}
+                </button>
+                <mat-datepicker-toggle matSuffix [for]="pickerInicio"></mat-datepicker-toggle>
+                <mat-datepicker #pickerInicio [(ngModel)]="proceso.fechaInicio" (closed)="validarFechas(proceso)"></mat-datepicker>
+            </div>
+            <div class="fechas">
+                <button mat-button (click)="pickerFin.open()">
+                    {{ proceso.fechaFin ? (proceso.fechaFin | date: 'dd/MM/yyyy') : 'Seleccionar fecha fin' }}
+                </button>
+                <mat-datepicker-toggle matSuffix [for]="pickerFin"></mat-datepicker-toggle>
+                <mat-datepicker #pickerFin [(ngModel)]="proceso.fechaFin" (closed)="validarFechas(proceso)"></mat-datepicker>
+            </div>
+            <div class="selected-dates">
+                <p *ngIf="proceso.fechaInicio">Fecha inicio seleccionada: {{ proceso.fechaInicio | date: 'dd/MM/yyyy' }}</p>
+                <p *ngIf="proceso.fechaFin">Fecha fin seleccionada: {{ proceso.fechaFin | date: 'dd/MM/yyyy' }}</p>
+            </div>
+        </div>
+    </div>
+    
+    <button class="guardar-btn" (click)="guardar()">Guardar</button>
+</div>

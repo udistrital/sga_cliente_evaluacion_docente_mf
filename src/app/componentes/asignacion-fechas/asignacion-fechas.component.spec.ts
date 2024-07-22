@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AsginacionFechasComponent } from './asginacion-fechas.component';
+import { AsignacionFechasComponent } from './asignacion-fechas.component';
 
 describe('AsginacionFechasComponent', () => {
-  let component: AsginacionFechasComponent;
-  let fixture: ComponentFixture<AsginacionFechasComponent>;
+  let component: AsignacionFechasComponent;
+  let fixture: ComponentFixture<AsignacionFechasComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AsginacionFechasComponent]
+      imports: [AsignacionFechasComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(AsginacionFechasComponent);
+    fixture = TestBed.createComponent(AsignacionFechasComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

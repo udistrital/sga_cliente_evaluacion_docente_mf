@@ -12,6 +12,14 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { environment } from '../environments/environment';
 import { AppComponent } from './app.component';
 import { DefinicionFormulariosComponent } from './componentes/definicion-formularios/definicion-formularios.component';
+import { AsignacionFechasComponent } from './componentes/asignacion-fechas/asignacion-fechas.component'; 
+
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatInputModule } from '@angular/material/input';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, environment.apiUrl + 'assets/i18n/', '.json');
@@ -19,7 +27,8 @@ export function createTranslateLoader(http: HttpClient) {
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    AsignacionFechasComponent 
   ],
   imports: [
     BrowserModule,
@@ -38,7 +47,13 @@ export function createTranslateLoader(http: HttpClient) {
     }),
     FormsModule,
     ReactiveFormsModule,
-    DefinicionFormulariosComponent 
+    MatDatepickerModule,
+    MatInputModule,
+    MatNativeDateModule,
+    MatButtonModule,
+    MatIconModule,
+    MatFormFieldModule,
+    DefinicionFormulariosComponent
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: SpinnerUtilInterceptor, multi: true }
