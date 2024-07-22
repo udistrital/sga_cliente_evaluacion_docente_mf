@@ -28,6 +28,7 @@ export function createTranslateLoader(http: HttpClient) {
 @NgModule({
   declarations: [
     AppComponent,
+    DefinicionFormulariosComponent,
     AsignacionFechasComponent 
   ],
   imports: [
@@ -52,8 +53,7 @@ export function createTranslateLoader(http: HttpClient) {
     MatNativeDateModule,
     MatButtonModule,
     MatIconModule,
-    MatFormFieldModule,
-    DefinicionFormulariosComponent
+    MatFormFieldModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: SpinnerUtilInterceptor, multi: true }

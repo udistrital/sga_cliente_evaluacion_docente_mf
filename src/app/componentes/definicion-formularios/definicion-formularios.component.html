@@ -1,21 +1,30 @@
 <div class="form-container">
     <h2>Definir formularios</h2>
     <div class="form-group">
-        <label for="process">Seleccionar proceso</label>
-        <select id="process" class="form-control">
-            <option value="" disabled selected>Seleccione</option>
-        <!-- Opciones del proceso -->
-        </select>
-    </div>
-    <div class="form-group">
         <label for="roles">Seleccionar roles que intervienen</label>
         <select id="roles" class="form-control">
             <option value="" disabled selected>Seleccione</option>
-        <!-- Opciones de los roles -->
+            <option value="administradores">Administradores</option>
+            <option value="docentes">Docentes</option>
+            <option value="estudiantes">Estudiantes</option>
+            <option value="concejos_curriculares">Concejos Curriculares</option>
         </select>
     </div>
+    
     <div class="form-viewer">
-    Visualizador del formulario
+        Visualizador del formulario
     </div>
-    <button class="btn btn-primary">Guardar</button>
+    
+    <div class="form-group">
+        <label for="process">Procesos a seleccionar</label>
+        <div class="processes-grid">
+            <div class="process-card" *ngFor="let proceso of procesos" [ngClass]="{ 'selected': selectedProcess === proceso.nombre }" (click)="selectProcess(proceso.nombre)">
+            <mat-icon>{{ proceso.icon }}</mat-icon>
+            <span>{{ proceso.nombre }}</span>
+            <mat-icon *ngIf="selectedProcess === proceso.nombre" class="check-icon">check_circle</mat-icon>
+            </div>
+        </div>
+    </div>
+
+    <button class="btn btn-primary" (click)="guardar()">Guardar</button>
 </div>
