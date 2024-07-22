@@ -3,9 +3,10 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { getSingleSpaExtraProviders } from 'single-spa-angular';
 import { provideHttpClient, withFetch } from '@angular/common/http';
-import { DefinicionFormulariosComponent } from './componentes/definicion-formularios/definicion-formularios.component';
-import { AsignacionFechasComponent } from './componentes/asignacion-fechas/asignacion-fechas.component';
-import { DefinirEscalasComponent } from './componentes/definir-escalas/definir-escalas.component';
+import { DefinicionFormulariosComponent } from './components/definicion-formularios/definicion-formularios.component';
+import { AsignacionFechasComponent } from './components/asignacion-fechas/asignacion-fechas.component';
+import { DefinirEscalasComponent } from './components/definir-escalas/definir-escalas.component';
+import { EvaluacionesComponent } from './components/evaluaciones/evaluaciones.component';
 
 const routes: Routes = [
   {
@@ -19,6 +20,10 @@ const routes: Routes = [
   {
     path: 'definir-escalas',
     component: DefinirEscalasComponent
+  },
+  {
+    path: 'evaluaciones',
+    component: EvaluacionesComponent
   }
 ];
 
