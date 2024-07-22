@@ -5,6 +5,45 @@
         "LOGIN": "Login",
         "LOGOUT": "Logout",
         "THEME": "Theme"
+    },
+    
+    "asignacion_fechas": {
+        "titulo": "Date Assignment for Processes",
+        "seleccionar_nivel_formacion": "Select the level of training to assign",
+        "seleccionar": "Select",
+        "pregrado": "Undergraduate",
+        "postgrado": "Postgraduate",
+        "seleccionar_fecha_inicio": "Select start date",
+        "seleccionar_fecha_fin": "Select end date",
+        "fecha_inicio_seleccionada": "Start date selected",
+        "fecha_fin_seleccionada": "End date selected",
+        "guardar": "Save"
+        },
+
+    "definicion_formularios": {
+        "titulo": "Define Forms",
+        "seleccionar_roles": "Select roles involved",
+        "seleccione": "Select",
+        "administradores": "Administrators",
+        "docentes": "Teachers",
+        "estudiantes": "Students",
+        "concejos_curriculares": "Curricular Councils",
+        "visualizador_formulario": "Form Viewer",
+        "procesos_seleccionar": "Processes to select",
+        "guardar": "Save"
+    },
+
+    "definir_escalas": {
+        "titulo": "Define Scale",
+        "seleccionar_tipo_escala": "Select scale type",
+        "seleccione": "Select",
+        "cualitativa": "Qualitative",
+        "cuantitativa": "Quantitative",
+        "escala": "Scale",
+        "del_seud": "of SEUD",
+        "descripcion": "Scale description",
+        "agregar_elemento_escala": "Add scale element"
     }
     
+
 }

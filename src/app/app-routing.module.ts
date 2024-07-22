@@ -26,7 +26,7 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
   providers: [
-    { provide: APP_BASE_HREF, useValue: '/sga_cliente_evaluacion_docente_mf/' },
+    { provide: APP_BASE_HREF, useValue: '/evaluacion-docente/' },
     ...getSingleSpaExtraProviders(),
     provideHttpClient(withFetch())
   ]

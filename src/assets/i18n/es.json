@@ -5,5 +5,44 @@
         "LOGIN": "Iniciar sesión",
         "LOGOUT": "Cerra sesión",
         "THEME": "Tema"
+    },
+
+    "asignacion_fechas": {
+        "titulo": "Asignación de fechas para los procesos",
+        "seleccionar_nivel_formacion": "Seleccionar el nivel de formación a asignar",
+        "seleccionar": "Seleccionar",
+        "pregrado": "Pregrado",
+        "postgrado": "Postgrado",
+        "seleccionar_fecha_inicio": "Seleccionar fecha inicio",
+        "seleccionar_fecha_fin": "Seleccionar fecha fin",
+        "fecha_inicio_seleccionada": "Fecha inicio seleccionada",
+        "fecha_fin_seleccionada": "Fecha fin seleccionada",
+        "guardar": "Guardar"
+        },
+
+    "definicion_formularios": {
+        "titulo": "Definir formularios",
+        "seleccionar_roles": "Seleccionar roles que intervienen",
+        "seleccione": "Seleccione",
+        "administradores": "Administradores",
+        "docentes": "Docentes",
+        "estudiantes": "Estudiantes",
+        "concejos_curriculares": "Concejos Curriculares",
+        "visualizador_formulario": "Visualizador del formulario",
+        "procesos_seleccionar": "Procesos a seleccionar",
+        "guardar": "Guardar"
+    },
+
+    "definir_escalas": {
+        "titulo": "Definir Escala",
+        "seleccionar_tipo_escala": "Seleccionar tipo de escala",
+        "seleccione": "Seleccione",
+        "cualitativa": "Cualitativa",
+        "cuantitativa": "Cuantitativa",
+        "escala": "Escala",
+        "del_seud": "del SEUD",
+        "descripcion": "Descripción de la escala",
+        "agregar_elemento_escala": "Agregar elemento de escala"
     }
+
 }
