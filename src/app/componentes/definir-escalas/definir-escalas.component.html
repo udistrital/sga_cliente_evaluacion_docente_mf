@@ -1,1 +1,25 @@
-<p>definir-escalas works!</p>
+<div class="form-container">
+    <h2>Definir Escala</h2>
+    <div class="form-group">
+        <label for="tipoEscala">Seleccionar tipo de escala</label>
+        <select id="tipoEscala" class="form-control" [(ngModel)]="tipoEscala" (change)="onChangeTipoEscala()">
+            <option value="" disabled selected>Seleccione</option>
+            <option value="cualitativa">Cualitativa</option>
+            <option value="cuantitativa">Cuantitativa</option>
+        </select>
+    </div>
+    
+    <div *ngIf="tipoEscala" class="escala-container">
+        <h3>Escala {{ tipoEscala }} del SEUD</h3>
+        <textarea class="form-control" [(ngModel)]="descripcion" placeholder="Descripción de la escala"></textarea>
+    
+        <div class="escala-list">
+            <div class="escala-item" *ngFor="let escala of escalas">
+            <span>{{ escala.label }}</span>
+            <span>{{ escala.descripcion }}</span>
+            </div>
+        </div>
+    
+        <button class="btn btn-secondary" (click)="agregarEscala()">Agregar elemento de escala</button>
+    </div>
+</div>

@@ -12,7 +12,8 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { environment } from '../environments/environment';
 import { AppComponent } from './app.component';
 import { DefinicionFormulariosComponent } from './componentes/definicion-formularios/definicion-formularios.component';
-import { AsignacionFechasComponent } from './componentes/asignacion-fechas/asignacion-fechas.component'; 
+import { AsignacionFechasComponent } from './componentes/asignacion-fechas/asignacion-fechas.component';
+import { DefinirEscalasComponent } from './componentes/definir-escalas/definir-escalas.component';
 
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatInputModule } from '@angular/material/input';
@@ -29,7 +30,8 @@ export function createTranslateLoader(http: HttpClient) {
   declarations: [
     AppComponent,
     DefinicionFormulariosComponent,
-    AsignacionFechasComponent 
+    AsignacionFechasComponent,
+    DefinirEscalasComponent
   ],
   imports: [
     BrowserModule,
