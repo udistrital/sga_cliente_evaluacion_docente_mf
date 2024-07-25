@@ -19,7 +19,7 @@ const lifecycles = singleSpaAngular({
     singleSpaPropsSubject.next(singleSpaProps);
     return platformBrowserDynamic(getSingleSpaExtraProviders()).bootstrapModule(AppModule);
   },
-  template: '<sga-plan-docente-mf />',
+  template: '<sga-evaluacion-docente-mf />',
   Router,
   NavigationStart,
   NgZone,
