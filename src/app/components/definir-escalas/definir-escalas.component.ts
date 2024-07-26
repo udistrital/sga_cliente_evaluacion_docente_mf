@@ -8,7 +8,11 @@ import { Component } from '@angular/core';
 export class DefinirEscalasComponent {
   tipoEscala: string = '';
   descripcion: string = '';
+  tipoEscalaTitulo: string = '';
   escalas: any[] = [];
+  visualizaciones: any[] = [];
+  visualizacionesCualitativas: any[] = [];
+  visualizacionesCuantitativas: any[] = [];
 
   cualitativaEscalas = [
     { label: 'INSUFICIENTE', descripcion: 'No sucede y no se demuestra el criterio' },
@@ -29,14 +33,46 @@ export class DefinirEscalasComponent {
   onChangeTipoEscala() {
     if (this.tipoEscala === 'cualitativa') {
       this.descripcion = 'Escala cualitativa del SEUD';
+      this.tipoEscalaTitulo = 'Escala cualitativa del SEUD';
       this.escalas = [...this.cualitativaEscalas];
     } else if (this.tipoEscala === 'cuantitativa') {
       this.descripcion = 'Escala cuantitativa del SEUD';
+      this.tipoEscalaTitulo = 'Escala cuantitativa del SEUD';
       this.escalas = [...this.cuantitativaEscalas];
     }
   }
 
   agregarEscala() {
-    this.escalas.push({ label: 'Nuevo', descripcion: 'Un dato más' });
+    if (this.tipoEscala === 'cualitativa') {
+      this.escalas.push({ label: '', descripcion: 'Escribe una descripcion aqui' });
+    } else if (this.tipoEscala === 'cuantitativa') {
+      this.escalas.push({ label: '', descripcion: '' });
+    }
+  }
+
+  visualizarEscalas() {
+    const visualizacion = {
+      tipoEscala: this.tipoEscalaTitulo,
+      descripcion: this.descripcion,
+      escalas: [...this.escalas]
+    };
+    this.visualizaciones.push(visualizacion);
+
+    if (this.tipoEscala === 'cualitativa') {
+      this.visualizacionesCualitativas.push(visualizacion);
+    } else if (this.tipoEscala === 'cuantitativa') {
+      this.visualizacionesCuantitativas.push(visualizacion);
+    }
+  }
+
+  restrictNumeric(event: KeyboardEvent) {
+    const input = event.target as HTMLInputElement;
+    if (event.key < '0' || event.key > '9') {
+      event.preventDefault();
+    }
+
+    if (input.value.length >= 3) {
+      event.preventDefault();
+    }
   }
 }

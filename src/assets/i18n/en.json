@@ -18,7 +18,7 @@
         "fecha_inicio_seleccionada": "Start date selected",
         "fecha_fin_seleccionada": "End date selected",
         "guardar": "Save"
-        },
+    },
 
     "definicion_formularios": {
         "titulo": "Define Forms",
@@ -41,9 +41,10 @@
         "cuantitativa": "Quantitative",
         "escala": "Scale",
         "del_seud": "of SEUD",
-        "descripcion": "Scale description",
-        "agregar_elemento_escala": "Add scale element"
+        "descripcion": "Define description or objectives",
+        "agregar_elemento_escala": "Add scale element",
+        "estado": "State",
+        "descripcion_columna": "Description",
+        "visualizar": "visualize"
     }
-    
-
 }

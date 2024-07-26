@@ -3,7 +3,7 @@
         "TITLE": "SGA",
         "SELECT": "Cambiar idioma",
         "LOGIN": "Iniciar sesión",
-        "LOGOUT": "Cerra sesión",
+        "LOGOUT": "Cerrar sesión",
         "THEME": "Tema"
     },
 
@@ -18,7 +18,7 @@
         "fecha_inicio_seleccionada": "Fecha inicio seleccionada",
         "fecha_fin_seleccionada": "Fecha fin seleccionada",
         "guardar": "Guardar"
-        },
+    },
 
     "definicion_formularios": {
         "titulo": "Definir formularios",
@@ -41,8 +41,10 @@
         "cuantitativa": "Cuantitativa",
         "escala": "Escala",
         "del_seud": "del SEUD",
-        "descripcion": "Descripción de la escala",
-        "agregar_elemento_escala": "Agregar elemento de escala"
+        "descripcion": "Define descripción u objetivos del mismo",
+        "agregar_elemento_escala": "Agregar elemento de escala",
+        "estado": "Estado",
+        "descripcion_columna": "Descripción",
+        "visualizar": "visualizar"
     }
-
 }
