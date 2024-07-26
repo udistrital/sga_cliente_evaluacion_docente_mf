@@ -54,15 +54,41 @@ export class DefinirEscalasComponent {
     const visualizacion = {
       tipoEscala: this.tipoEscalaTitulo,
       descripcion: this.descripcion,
-      escalas: [...this.escalas]
+      escalas: [...this.escalas],
+      selected: false
     };
-    this.visualizaciones.push(visualizacion);
 
     if (this.tipoEscala === 'cualitativa') {
       this.visualizacionesCualitativas.push(visualizacion);
     } else if (this.tipoEscala === 'cuantitativa') {
       this.visualizacionesCuantitativas.push(visualizacion);
     }
+  }
+
+  seleccionarTabla(visualizacion: any) {
+    visualizacion.selected = !visualizacion.selected;
+  }
+
+  eliminarVisualizacion(visualizacion: any, tipo: string) {
+    if (tipo === 'cualitativa') {
+      const index = this.visualizacionesCualitativas.indexOf(visualizacion);
+      if (index > -1) {
+        this.visualizacionesCualitativas.splice(index, 1);
+      }
+    } else if (tipo === 'cuantitativa') {
+      const index = this.visualizacionesCuantitativas.indexOf(visualizacion);
+      if (index > -1) {
+        this.visualizacionesCuantitativas.splice(index, 1);
+      }
+    }
+  }
+
+  tablasElegidas() {
+    const elegidas = [
+      ...this.visualizacionesCualitativas.filter(v => v.selected),
+      ...this.visualizacionesCuantitativas.filter(v => v.selected)
+    ];
+    console.log('Tablas elegidas:', elegidas);
   }
 
   restrictNumeric(event: KeyboardEvent) {
