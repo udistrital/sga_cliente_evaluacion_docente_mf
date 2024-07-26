@@ -1,101 +1,109 @@
+@import 'src/assets/styles/palette-angular-material.css';
+
 .asignacion-fechas {
-    width: 80%;
-    margin: 0 auto;
-    padding: 20px;
+  width: 80%;
+  margin: 0 auto;
+  padding: 20px;
+  border-radius: 10px;
+  background-color: var(--md-primary-50);
+
+  h2 {
+    text-align: center;
+    color: var(--md-primary-contrast-400);
+    background-color: var(--md-primary-400);
+    padding: 10px;
     border-radius: 10px;
-    background-color: #f9f9f9;
-  
-    h2 {
-      text-align: center;
-      color: white;
-      background-color: #51d1f6;
-      padding: 10px;
-      border-radius: 10px;
-      margin-bottom: 20px;
-    }
-  
-    .nivel-formacion {
-      margin-bottom: 20px;
-  
-      label {
-        display: block;
-        margin-bottom: 5px;
-      }
-  
-      select {
-        width: 100%;
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-      }
-    }
-  
-    .procesos-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 20px;
-  
-      .proceso {
-        background-color: #fff;
-        border: 1px solid #ccc;
-        border-radius: 10px;
-        padding: 15px;
-        text-align: center;
-  
-        h3 {
-          margin-top: 0;
-          background-color: #51d1f6;
-          color: white;
-          padding: 10px;
-          border-radius: 4px;
-        }
-  
-        .fechas {
-          margin: 10px 0;
-  
-          label {
-            display: block;
-            margin-bottom: 5px;
-          }
-  
-          button {
-            width: 100%;
-            padding: 10px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-  
-            &:hover {
-              background-color: #0056b3;
-            }
-          }
-        }
-  
-        .selected-dates {
-          margin-top: 10px;
-  
-          p {
-            margin: 0;
-          }
-        }
-      }
-    }
-  
-    .guardar-btn {
+    margin-bottom: 20px;
+  }
+
+  .nivel-formacion {
+    margin-bottom: 20px;
+
+    label {
       display: block;
+      margin-bottom: 5px;
+    }
+
+    select {
       width: 100%;
       padding: 10px;
-      background-color: #007bff;
-      color: white;
-      border: none;
+      border: 1px solid var(--md-primary-200);
       border-radius: 4px;
-      cursor: pointer;
-  
-      &:hover {
-        background-color: #0056b3;
+      background-color: var(--md-primary-50);
+    }
+  }
+
+  .procesos-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    .fila-procesos {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .proceso {
+      background-color: #fff;
+      border: 1px solid var(--md-primary-200);
+      border-radius: 10px;
+      padding: 15px;
+      text-align: center;
+      flex: 1;
+
+      h3 {
+        margin-top: 0;
+        background-color: var(--md-primary-400);
+        color: var(--md-primary-contrast-400);
+        padding: 10px;
+        border-radius: 4px;
+      }
+
+      .fechas {
+        margin: 10px 0;
+
+        mat-form-field {
+          width: 100%;
+        }
+
+        mat-datepicker-toggle {
+          margin-left: -32px; /* Ajuste para colocar el icono al lado derecho del botón */
+          position: relative;
+          right: -8px;
+        }
+      }
+
+      .selected-dates {
+        margin-top: 10px;
+
+        p {
+          margin: 0;
+        }
       }
     }
   }
-  
+
+  .guardar-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 10px;
+    background-color: var(--md-primary-500);
+    color: var(--md-primary-contrast-500);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 30px;
+
+    &:hover {
+      background-color: var(--md-primary-700);
+    }
+
+    mat-icon {
+      font-size: 24px;
+    }
+  }
+}
