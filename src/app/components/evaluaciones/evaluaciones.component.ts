@@ -2,11 +2,19 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-evaluaciones',
-  standalone: true,
-  imports: [],
   templateUrl: './evaluaciones.component.html',
-  styleUrl: './evaluaciones.component.scss'
+  styleUrls: ['./evaluaciones.component.scss']
 })
 export class EvaluacionesComponent {
+  showTerms = false;
+  selectedEvaluation = '';
 
+  toggleTerms() {
+    this.showTerms = !this.showTerms;
+  }
+
+  onSelectChange(event: Event) {
+    const selectElement = event.target as HTMLSelectElement;
+    this.selectedEvaluation = selectElement.value;
+  }
 }

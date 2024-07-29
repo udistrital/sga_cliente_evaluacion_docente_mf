@@ -1,1 +1,25 @@
-<p>evaluaciones works!</p>
+<div class="container">
+    <h1>Evaluación a Editar</h1>
+    <p>Descripción breve sobre los diferentes tipos de evaluación.</p>
+    
+    <button (click)="toggleTerms()">Términos y Condiciones</button>
+    <div *ngIf="showTerms">
+        <p>Ejemplo de un texto sobre políticas de seguridad. Toda la información suministrada es confidencial.</p>
+    </div>
+    
+    <label for="tipo-evaluacion">Seleccionar tipo de evaluación:</label>
+    <select id="tipo-evaluacion" (change)="onSelectChange($event)">
+        <option value="">Seleccione una opción</option>
+        <option value="heteroevaluacion">Heteroevaluación</option>
+        <option value="autoevaluacion-i">Autoevaluación I</option>
+        <option value="coevaluacion-i">Coevaluación I</option>
+        <option value="autoevaluacion-ii">Autoevaluación II</option>
+        <option value="coevaluacion-ii">Coevaluación II</option>
+    </select>
+    
+    <app-heteroevaluacion *ngIf="selectedEvaluation === 'heteroevaluacion'"></app-heteroevaluacion>
+    <app-autoevaluacion-i *ngIf="selectedEvaluation === 'autoevaluacion-i'"></app-autoevaluacion-i>
+    <app-coevaluacion-i *ngIf="selectedEvaluation === 'coevaluacion-i'"></app-coevaluacion-i>
+    <app-autoevaluacion-ii *ngIf="selectedEvaluation === 'autoevaluacion-ii'"></app-autoevaluacion-ii>
+    <app-coevaluacion-ii *ngIf="selectedEvaluation === 'coevaluacion-ii'"></app-coevaluacion-ii>
+</div>

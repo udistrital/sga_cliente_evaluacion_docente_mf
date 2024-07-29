@@ -1,0 +1,49 @@
+<div class="form-container">
+  <h2>Coevaluación II</h2>
+
+  <div class="form-group">
+    <label for="fechas">Fechas</label>
+    <div class="form-inline">
+      <input type="date" id="inicio" placeholder="Inicio">
+      <input type="date" id="fin" placeholder="Fin">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="proyecto">Proyecto Curricular</label>
+    <input type="text" id="proyecto" placeholder="Proyecto curricular">
+  </div>
+
+  <div class="form-group">
+    <label for="docente">Docente</label>
+    <input type="text" id="docente" placeholder="Docente">
+  </div>
+
+  <div class="form-group">
+    <label for="espacio">Espacio Académico</label>
+    <input type="text" id="espacio" placeholder="Espacio académico">
+  </div>
+
+  <div class="form-group">
+    <label for="descripcion">Descripción del proceso y orientación al usuario</label>
+    <textarea id="descripcion" placeholder="Descripción del proceso y orientación al usuario"></textarea>
+  </div>
+
+  <div class="form-group">
+    <label for="formulario">Formulario correspondiente</label>
+    <textarea id="formulario" placeholder="Formulario correspondiente"></textarea>
+  </div>
+
+  <button class="btn-generar-soporte" (click)="onGenerarSoporte()">Generar soporte de realización del proceso</button>
+  <button class="btn-guardar" (click)="onGuardar()">Guardar</button>
+</div>
+
+<!-- Modal de confirmación -->
+<div class="modal" *ngIf="showModal">
+  <div class="modal-content">
+    <span class="close" (click)="closeModal()">&times;</span>
+    <p>Usted va a proceder con la coevaluación</p>
+    <button class="btn" (click)="confirm()">Aceptar</button>
+    <button class="btn" (click)="closeModal()">Cancelar</button>
+  </div>
+</div>
