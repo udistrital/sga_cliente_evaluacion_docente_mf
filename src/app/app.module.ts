@@ -14,7 +14,6 @@ import { AppComponent } from './app.component';
 import { DefinicionFormulariosComponent } from './components/definicion-formularios/definicion-formularios.component';
 import { AsignacionFechasComponent } from './components/asignacion-fechas/asignacion-fechas.component';
 import { DefinirEscalasComponent } from './components/definir-escalas/definir-escalas.component';
-
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatInputModule } from '@angular/material/input';
 import { MatNativeDateModule } from '@angular/material/core';
@@ -27,6 +26,17 @@ import { AutoevaluacionIComponent } from './components/evaluaciones/autoevaluaci
 import { CoevaluacionIComponent } from './components/evaluaciones/coevaluacion-i/coevaluacion-i.component';
 import { AutoevaluacionIIComponent } from './components/evaluaciones/autoevaluacion-ii/autoevaluacion-ii.component';
 import { CoevaluacionIIComponent } from './components/evaluaciones/coevaluacion-ii/coevaluacion-ii.component';
+import { MetricasComponent } from './components/metricas/metricas.component';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSortModule } from '@angular/material/sort';
+import { MatTableModule } from '@angular/material/table';
+import { MatStepperModule } from '@angular/material/stepper';
+import { MatTabsModule } from '@angular/material/tabs';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, environment.apiUrl + 'assets/i18n/', '.json');
@@ -43,7 +53,8 @@ export function createTranslateLoader(http: HttpClient) {
     AutoevaluacionIComponent,
     CoevaluacionIComponent,
     AutoevaluacionIIComponent,
-    CoevaluacionIIComponent
+    CoevaluacionIIComponent,
+    MetricasComponent
   ],
   imports: [
     BrowserModule,
@@ -53,6 +64,27 @@ export function createTranslateLoader(http: HttpClient) {
     MATERIAL_MODULES,
     HttpClientModule,
     SpinnerUtilModule,
+    FormsModule,
+    CommonModule,
+    BrowserModule,
+    MatTabsModule,
+    MatIconModule,
+    MatStepperModule,
+    MatCardModule,
+    MatInputModule,
+    MatTableModule,
+    MatDialogModule,
+    MatSelectModule,
+    AppRoutingModule,
+    MatCheckboxModule,
+    MatFormFieldModule,
+    MatPaginatorModule,
+    MatNativeDateModule,
+    ReactiveFormsModule,
+    MatDatepickerModule,
+    MatSortModule,
+    MatAutocompleteModule,
+    BrowserAnimationsModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,

@@ -7,6 +7,17 @@
         "THEME": "Tema"
     },
 
+    "GLOBAL":{
+        "GUARDAR": "Guardar",
+        "CANCELAR": "Cancelar",
+        "ELIMINAR": "Eliminar",
+        "EDITAR": "Editar",
+        "AGREGAR": "Agregar",
+        "proyecto_academico": "Proyecto Académico",
+        "seleccionar": "Seleccionar",
+        "periodo": "Periodo"
+    },
+
     "asignacion_fechas": {
         "titulo": "Asignación de fechas para los procesos",
         "seleccionar_nivel_formacion": "Seleccionar el nivel de formación a asignar",
@@ -142,5 +153,9 @@
         "formulario": "Formulario correspondiente",
         "formulario_placeholder": "Formulario correspondiente",
         "guardar": "Guardar"
+    },
+
+    "metricas":{
+        "Metricas": "Métricas"
     }
 }

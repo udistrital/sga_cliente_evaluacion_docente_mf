@@ -6,6 +6,17 @@
         "LOGOUT": "Logout",
         "THEME": "Theme"
     },
+
+    "GLOBAL":{
+        "GUARDAR": "Save",
+        "CANCELAR": "Cancel",
+        "ELIMINAR": "Delete",
+        "EDITAR": "Edit",
+        "AGREGAR": "Add",
+        "proyecto_academico": "Academic Project",
+        "seleccionar": "Select",
+        "periodo": "Period"
+    },
     
     "asignacion_fechas": {
         "titulo": "Date Assignment for Processes",
@@ -142,5 +153,8 @@
         "formulario": "Corresponding form",
         "formulario_placeholder": "Corresponding form",
         "guardar": "Save"
+    },
+    "metricas":{
+        "Metricas": "Metrics"
     }
 }
