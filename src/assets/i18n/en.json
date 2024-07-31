@@ -15,7 +15,9 @@
         "AGREGAR": "Add",
         "proyecto_academico": "Academic Project",
         "seleccionar": "Select",
-        "periodo": "Period"
+        "periodo": "Period",
+        "continuar": "Continue",
+        "atras": "Back"
     },
     
     "asignacion_fechas": {
@@ -155,6 +157,6 @@
         "guardar": "Save"
     },
     "metricas":{
-        "Metricas": "Metrics"
+        "metricas": "Metrics"
     }
 }

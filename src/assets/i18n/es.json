@@ -15,7 +15,9 @@
         "AGREGAR": "Agregar",
         "proyecto_academico": "Proyecto Académico",
         "seleccionar": "Seleccionar",
-        "periodo": "Periodo"
+        "periodo": "Periodo",
+        "continuar": "Continuar",
+        "atras": "Atrás"
     },
 
     "asignacion_fechas": {
@@ -156,6 +158,6 @@
     },
 
     "metricas":{
-        "Metricas": "Métricas"
+        "metricas": "Métricas"
     }
 }
