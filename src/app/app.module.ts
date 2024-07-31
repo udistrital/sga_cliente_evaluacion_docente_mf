@@ -22,11 +22,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { EvaluacionesComponent } from './components/evaluaciones/evaluaciones.component';
-import { HeteroevaluacionComponent } from './components/evaluaciones/heteroevaluacion/heteroevaluacion.component';
-import { AutoevaluacionIComponent } from './components/evaluaciones/autoevaluacion-i/autoevaluacion-i.component';
-import { CoevaluacionIComponent } from './components/evaluaciones/coevaluacion-i/coevaluacion-i.component';
-import { AutoevaluacionIIComponent } from './components/evaluaciones/autoevaluacion-ii/autoevaluacion-ii.component';
-import { CoevaluacionIIComponent } from './components/evaluaciones/coevaluacion-ii/coevaluacion-ii.component';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, environment.apiUrl + 'assets/i18n/', '.json');
@@ -38,12 +33,7 @@ export function createTranslateLoader(http: HttpClient) {
     DefinicionFormulariosComponent,
     AsignacionFechasComponent,
     DefinirEscalasComponent,
-    EvaluacionesComponent,
-    HeteroevaluacionComponent,
-    AutoevaluacionIComponent,
-    CoevaluacionIComponent,
-    AutoevaluacionIIComponent,
-    CoevaluacionIIComponent
+    EvaluacionesComponent
   ],
   imports: [
     BrowserModule,

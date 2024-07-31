@@ -1,0 +1,144 @@
+@import 'src/assets/styles/palette-angular-material.css';
+
+.container {
+  margin: 20px;
+}
+
+.form-container {
+  margin-top: 20px;
+  border: 1px solid var(--md-primary-200);
+  border-radius: 10px;
+  padding: 20px;
+  background-color: var(--md-primary-50);
+}
+
+.evaluation-form {
+  display: flex;
+  flex-direction: column;
+}
+
+h2 {
+  font-size: 1.5em;
+  margin-bottom: 20px;
+  color: var(--md-primary-700);
+}
+
+.form-group {
+  margin-bottom: 15px;
+  text-align: left;
+
+  label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: var(--md-primary-600);
+  }
+}
+
+.form-inline {
+  display: flex;
+  justify-content: space-between;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  width: 48%;
+}
+
+input, select, textarea {
+  display: block;
+  width: calc(100% - 20px);
+  padding: 10px;
+  margin: 5px 0;
+  border: 1px solid var(--md-primary-200);
+  border-radius: 5px;
+  background-color: var(--md-primary-50);
+}
+
+textarea {
+  height: 100px;
+}
+
+button {
+  background-color: var(--md-primary-500);
+  color: var(--md-primary-contrast-500);
+  border: none;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 5px;
+
+  &:hover {
+    background-color: var(--md-primary-700);
+  }
+}
+
+.btn-proyecto, .btn-espacios {
+  background-color: var(--md-primary-500);
+  margin-right: 10px;
+}
+
+.btn-continuar {
+  background-color: var(--md-warning-500);
+  color: var(--md-warning-contrast-500);
+
+  &:hover {
+    background-color: var(--md-warning-700);
+  }
+}
+
+.btn-guardar {
+  background-color: var(--md-primary-500);
+  color: var(--md-primary-contrast-500);
+
+  &:hover {
+    background-color: var(--md-primary-700);
+  }
+}
+
+.btn-generar-soporte {
+  background-color: var(--md-accent-500);
+  color: var(--md-accent-contrast-500);
+
+  &:hover {
+    background-color: var(--md-accent-700);
+  }
+}
+
+.button-group {
+  display: flex;
+  justify-content: space-between;
+}
+
+.modal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+  background: var(--md-primary-50);
+  padding: 20px;
+  border-radius: 5px;
+  position: relative;
+  border: 1px solid var(--md-primary-200);
+}
+
+.close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+  color: var(--md-primary-700);
+}
