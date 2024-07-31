@@ -1,30 +1,33 @@
-<div class="form-container">
-    <h2>{{ "definicion_formularios.titulo" | translate }}</h2>
-    <div class="form-group">
+<ng-container *ngIsGranted="[ROLES.ADMIN_SGA, ROLES.VICERRECTOR, ROLES.ASESOR_VICE, ROLES.COORDINADOR, ROLES.COORDINADOR_PREGADO, ROLES.COORDINADOR_POSGRADO, ROLES.ASISTENTE_ADMISIONES, ROLES.ADMIN_DOCENCIA, ROLES.ASIS_PROYECTO, ROLES.SEC_DECANATURA, ROLES.DECANO]">
+    <div class="form-container">
+      <h2>{{ "definicion_formularios.titulo" | translate }}</h2>
+      <div class="form-group">
         <label for="roles">{{ "definicion_formularios.seleccionar_roles" | translate }}</label>
         <select id="roles" class="form-control">
-            <option value="" disabled selected>{{ "definicion_formularios.seleccione" | translate }}</option>
-            <option value="administradores">{{ "definicion_formularios.administradores" | translate }}</option>
-            <option value="docentes">{{ "definicion_formularios.docentes" | translate }}</option>
-            <option value="estudiantes">{{ "definicion_formularios.estudiantes" | translate }}</option>
-            <option value="concejos_curriculares">{{ "definicion_formularios.concejos_curriculares" | translate }}</option>
+          <option value="" disabled selected>{{ "definicion_formularios.seleccione" | translate }}</option>
+          <option value="administradores">{{ "definicion_formularios.administradores" | translate }}</option>
+          <option value="docentes">{{ "definicion_formularios.docentes" | translate }}</option>
+          <option value="estudiantes">{{ "definicion_formularios.estudiantes" | translate }}</option>
+          <option value="concejos_curriculares">{{ "definicion_formularios.concejos_curriculares" | translate }}</option>
         </select>
-    </div>
-    
-    <div class="form-viewer">
+      </div>
+      
+      <div class="form-viewer">
         {{ "definicion_formularios.visualizador_formulario" | translate }}
-    </div>
-    
-    <div class="form-group">
+      </div>
+      
+      <div class="form-group">
         <label for="process">{{ "definicion_formularios.procesos_seleccionar" | translate }}</label>
         <div class="processes-grid">
-            <div class="process-card" *ngFor="let proceso of procesos" [ngClass]="{ 'selected': selectedProcess === proceso.nombre }" (click)="selectProcess(proceso.nombre)">
-                <mat-icon>{{ proceso.icon }}</mat-icon>
-                <span>{{ proceso.nombre }}</span>
-                <mat-icon *ngIf="selectedProcess === proceso.nombre" class="check-icon">check_circle</mat-icon>
-            </div>
+          <div class="process-card" *ngFor="let proceso of procesos" [ngClass]="{ 'selected': selectedProcess === proceso.nombre }" (click)="selectProcess(proceso.nombre)">
+            <mat-icon>{{ proceso.icon }}</mat-icon>
+            <span>{{ proceso.nombre }}</span>
+            <mat-icon *ngIf="selectedProcess === proceso.nombre" class="check-icon">check_circle</mat-icon>
+          </div>
         </div>
+      </div>
+  
+      <button class="btn btn-primary" (click)="guardar()">{{ "definicion_formularios.guardar" | translate }}</button>
     </div>
-
-    <button class="btn btn-primary" (click)="guardar()">{{ "definicion_formularios.guardar" | translate }}</button>
-</div>
+  </ng-container>
+  

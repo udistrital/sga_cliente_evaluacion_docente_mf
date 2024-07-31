@@ -1,11 +1,14 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { ROLES } from 'src/app/models/diccionario';
+import { UserService } from 'src/app/services/user.service';
+
 
 @Component({
   selector: 'app-asignacion-fechas',
   templateUrl: './asignacion-fechas.component.html',
   styleUrls: ['./asignacion-fechas.component.scss']
 })
-export class AsignacionFechasComponent {
+export class AsignacionFechasComponent implements OnInit {
   nivelFormacion: string = '';  // Inicializando con un valor por defecto
   niveles: string[] = ['Pregrado', 'Postgrado'];
   procesos: any[] = [
@@ -15,6 +18,16 @@ export class AsignacionFechasComponent {
     { nombre: 'Autoevaluación docente', fechaInicio: '', fechaFin: '' },
     { nombre: 'Coevaluación II', fechaInicio: '', fechaFin: '' }
   ];
+  userRoles: string[] = [];
+  ROLES = ROLES;
+
+  constructor(private userService: UserService) {}
+
+  ngOnInit(): void {
+    this.userService.getUserRoles().then(roles => {
+      this.userRoles = roles;
+    });
+  }
 
   validarFechas(proceso: any) {
     const fechaInicio = new Date(proceso.fechaInicio);
@@ -46,5 +59,9 @@ export class AsignacionFechasComponent {
   guardar() {
     // Lógica para guardar las fechas asignadas
     console.log('Fechas guardadas:', this.procesos);
+  }
+
+  hasRole(requiredRoles: string[]): boolean {
+    return requiredRoles.some(role => this.userRoles.includes(role));
   }
 }

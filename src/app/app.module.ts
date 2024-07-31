@@ -22,6 +22,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { EvaluacionesComponent } from './components/evaluaciones/evaluaciones.component';
+import { NgIsGrantedDirective } from './directives/ng-is-granted.directive';
+import { UserService } from './services/user.service';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, environment.apiUrl + 'assets/i18n/', '.json');
@@ -33,7 +35,8 @@ export function createTranslateLoader(http: HttpClient) {
     DefinicionFormulariosComponent,
     AsignacionFechasComponent,
     DefinirEscalasComponent,
-    EvaluacionesComponent
+    EvaluacionesComponent,
+    NgIsGrantedDirective 
   ],
   imports: [
     BrowserModule,
@@ -60,6 +63,7 @@ export function createTranslateLoader(http: HttpClient) {
     MatFormFieldModule
   ],
   providers: [
+    UserService,
     { provide: HTTP_INTERCEPTORS, useClass: SpinnerUtilInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]

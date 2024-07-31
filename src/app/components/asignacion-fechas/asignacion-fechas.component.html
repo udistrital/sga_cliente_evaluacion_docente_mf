@@ -1,4 +1,4 @@
-<div class="asignacion-fechas">
+<div class="asignacion-fechas" *ngIsGranted="[ROLES.ADMIN_SGA, ROLES.VICERRECTOR, ROLES.ASESOR_VICE, ROLES.COORDINADOR, ROLES.COORDINADOR_PREGADO, ROLES.COORDINADOR_POSGRADO, ROLES.ASISTENTE_ADMISIONES, ROLES.ADMIN_DOCENCIA, ROLES.ASIS_PROYECTO, ROLES.SEC_DECANATURA, ROLES.DECANO]">
   <h2>{{ "asignacion_fechas.titulo" | translate }}</h2>
   <div class="nivel-formacion">
     <label for="nivelFormacion">{{ "asignacion_fechas.seleccionar_nivel_formacion" | translate }}</label>

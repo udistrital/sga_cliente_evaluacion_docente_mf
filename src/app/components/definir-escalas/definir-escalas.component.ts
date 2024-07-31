@@ -1,18 +1,22 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { ROLES } from 'src/app/models/diccionario';
+import { UserService } from 'src/app/services/user.service';
+
 
 @Component({
   selector: 'app-definir-escalas',
   templateUrl: './definir-escalas.component.html',
   styleUrls: ['./definir-escalas.component.scss']
 })
-export class DefinirEscalasComponent {
+export class DefinirEscalasComponent implements OnInit {
   tipoEscala: string = '';
   descripcion: string = '';
   tipoEscalaTitulo: string = '';
   escalas: any[] = [];
-  visualizaciones: any[] = [];
   visualizacionesCualitativas: any[] = [];
   visualizacionesCuantitativas: any[] = [];
+  userRoles: string[] = [];
+  ROLES = ROLES;
 
   cualitativaEscalas = [
     { label: 'INSUFICIENTE', descripcion: 'No sucede y no se demuestra el criterio' },
@@ -29,6 +33,14 @@ export class DefinirEscalasComponent {
     { label: 'SOBRESALIENTE', descripcion: '4' },
     { label: 'EXCELENTE', descripcion: '5' }
   ];
+
+  constructor(private userService: UserService) {}
+
+  ngOnInit(): void {
+    this.userService.getUserRoles().then(roles => {
+      this.userRoles = roles;
+    });
+  }
 
   onChangeTipoEscala() {
     if (this.tipoEscala === 'cualitativa') {
@@ -100,5 +112,9 @@ export class DefinirEscalasComponent {
     if (input.value.length >= 3) {
       event.preventDefault();
     }
+  }
+
+  hasRole(requiredRoles: string[]): boolean {
+    return requiredRoles.some(role => this.userRoles.includes(role));
   }
 }

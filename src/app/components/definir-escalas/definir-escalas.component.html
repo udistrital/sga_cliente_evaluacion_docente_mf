@@ -1,93 +1,95 @@
-<div class="container">
-    <div class="form-container">
-        <h2>{{ "definir_escalas.titulo" | translate }}</h2>
-        <div class="form-group">
-            <label for="tipoEscala">{{ "definir_escalas.seleccionar_tipo_escala" | translate }}</label>
-            <select id="tipoEscala" class="form-control" [(ngModel)]="tipoEscala" (change)="onChangeTipoEscala()">
-                <option value="" disabled selected>{{ "definir_escalas.seleccione" | translate }}</option>
-                <option value="cualitativa">{{ "definir_escalas.cualitativa" | translate }}</option>
-                <option value="cuantitativa">{{ "definir_escalas.cuantitativa" | translate }}</option>
-            </select>
-        </div>
-        
-        <div *ngIf="tipoEscala" class="escala-container">
-            <h3>
-                <input [(ngModel)]="tipoEscalaTitulo" placeholder="{{ tipoEscala }} {{ 'definir_escalas.del_seud' | translate }}">
-                <button mat-icon-button class="small-icon"><mat-icon>edit</mat-icon></button>
-            </h3>
-            <textarea class="form-control" [(ngModel)]="descripcion" placeholder="{{ 'definir_escalas.descripcion' | translate }}"></textarea>
-        
-            <div class="escala-list">
-                <div class="escala-item" *ngFor="let escala of escalas; let i = index">
-                    <input [(ngModel)]="escala.label" placeholder="{{ 'definir_escalas.estado' | translate }}">
-                    <input [(ngModel)]="escala.descripcion" 
-                           [attr.placeholder]="tipoEscala === 'cualitativa' ? 'Descripción' : 'Valor numérico'"
-                           [attr.pattern]="tipoEscala === 'cuantitativa' ? '[0-9]*' : '.*'"
-                           [attr.maxlength]="tipoEscala === 'cuantitativa' ? '3' : null"
-                           (keypress)="tipoEscala === 'cuantitativa' ? restrictNumeric($event) : null">
+<ng-container *ngIsGranted="[ROLES.ADMIN_SGA, ROLES.VICERRECTOR, ROLES.ASESOR_VICE, ROLES.COORDINADOR, ROLES.COORDINADOR_PREGADO, ROLES.COORDINADOR_POSGRADO, ROLES.ASISTENTE_ADMISIONES, ROLES.ADMIN_DOCENCIA, ROLES.ASIS_PROYECTO, ROLES.SEC_DECANATURA, ROLES.DECANO]">
+    <div class="container">
+        <div class="form-container">
+            <h2>{{ "definir_escalas.titulo" | translate }}</h2>
+            <div class="form-group">
+                <label for="tipoEscala">{{ "definir_escalas.seleccionar_tipo_escala" | translate }}</label>
+                <select id="tipoEscala" class="form-control" [(ngModel)]="tipoEscala" (change)="onChangeTipoEscala()">
+                    <option value="" disabled selected>{{ "definir_escalas.seleccione" | translate }}</option>
+                    <option value="cualitativa">{{ "definir_escalas.cualitativa" | translate }}</option>
+                    <option value="cuantitativa">{{ "definir_escalas.cuantitativa" | translate }}</option>
+                </select>
+            </div>
+            
+            <div *ngIf="tipoEscala" class="escala-container">
+                <h3>
+                    <input [(ngModel)]="tipoEscalaTitulo" placeholder="{{ tipoEscala }} {{ 'definir_escalas.del_seud' | translate }}">
                     <button mat-icon-button class="small-icon"><mat-icon>edit</mat-icon></button>
+                </h3>
+                <textarea class="form-control" [(ngModel)]="descripcion" placeholder="{{ 'definir_escalas.descripcion' | translate }}"></textarea>
+            
+                <div class="escala-list">
+                    <div class="escala-item" *ngFor="let escala of escalas; let i = index">
+                        <input [(ngModel)]="escala.label" placeholder="{{ 'definir_escalas.estado' | translate }}">
+                        <input [(ngModel)]="escala.descripcion" 
+                               [attr.placeholder]="tipoEscala === 'cualitativa' ? 'Descripción' : 'Valor numérico'"
+                               [attr.pattern]="tipoEscala === 'cuantitativa' ? '[0-9]*' : '.*'"
+                               [attr.maxlength]="tipoEscala === 'cuantitativa' ? '3' : null"
+                               (keypress)="tipoEscala === 'cuantitativa' ? restrictNumeric($event) : null">
+                        <button mat-icon-button class="small-icon"><mat-icon>edit</mat-icon></button>
+                    </div>
+                </div>
+            
+                <button class="btn btn-secondary" (click)="agregarEscala()">{{ "definir_escalas.agregar_elemento_escala" | translate }}</button>
+                <button class="btn" (click)="visualizarEscalas()">{{ "definir_escalas.visualizar" | translate }}</button>
+                <button class="btn btn-primary" (click)="tablasElegidas()">{{ "definir_escalas.elegir" | translate }}</button>
+            </div>
+        </div>
+    
+        <div class="visualizations">
+            <div class="visualization-container cualitativa">
+                <h3>Vista tablas cualitativas</h3>
+                <div class="visualization-content" *ngIf="visualizacionesCualitativas.length > 0">
+                    <div *ngFor="let visualizacion of visualizacionesCualitativas" class="visualizacion" [class.selected]="visualizacion.selected" (click)="seleccionarTabla(visualizacion)">
+                        <h3>
+                            <input [(ngModel)]="visualizacion.tipoEscala" placeholder="Titulo de la escala">
+                            <button mat-icon-button (click)="eliminarVisualizacion(visualizacion, 'cualitativa')"><mat-icon>close</mat-icon></button>
+                        </h3>
+                        <p>{{ visualizacion.descripcion }}</p>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>{{ "definir_escalas.estado" | translate }}</th>
+                                    <th>{{ "definir_escalas.descripcion_columna" | translate }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let escala of visualizacion.escalas">
+                                    <td>{{ escala.label }}</td>
+                                    <td>{{ escala.descripcion }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
-        
-            <button class="btn btn-secondary" (click)="agregarEscala()">{{ "definir_escalas.agregar_elemento_escala" | translate }}</button>
-            <button class="btn" (click)="visualizarEscalas()">{{ "definir_escalas.visualizar" | translate }}</button>
-            <button class="btn btn-primary" (click)="tablasElegidas()">{{ "definir_escalas.elegir" | translate }}</button>
+    
+            <div class="visualization-container cuantitativa">
+                <h3>Vista tablas cuantitativas</h3>
+                <div class="visualization-content" *ngIf="visualizacionesCuantitativas.length > 0">
+                    <div *ngFor="let visualizacion of visualizacionesCuantitativas" class="visualizacion" [class.selected]="visualizacion.selected" (click)="seleccionarTabla(visualizacion)">
+                        <h3>
+                            <input [(ngModel)]="visualizacion.tipoEscala" placeholder="Titulo de la escala">
+                            <button mat-icon-button (click)="eliminarVisualizacion(visualizacion, 'cuantitativa')"><mat-icon>close</mat-icon></button>
+                        </h3>
+                        <p>{{ visualizacion.descripcion }}</p>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>{{ "definir_escalas.estado" | translate }}</th>
+                                    <th>Valor</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let escala of visualizacion.escalas">
+                                    <td>{{ escala.label }}</td>
+                                    <td>{{ escala.descripcion }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-
-    <div class="visualizations">
-        <div class="visualization-container cualitativa">
-            <h3>Vista tablas cualitativas</h3>
-            <div class="visualization-content" *ngIf="visualizacionesCualitativas.length > 0">
-                <div *ngFor="let visualizacion of visualizacionesCualitativas" class="visualizacion" [class.selected]="visualizacion.selected" (click)="seleccionarTabla(visualizacion)">
-                    <h3>
-                        <input [(ngModel)]="visualizacion.tipoEscala" placeholder="Titulo de la escala">
-                        <button mat-icon-button (click)="eliminarVisualizacion(visualizacion, 'cualitativa')"><mat-icon>close</mat-icon></button>
-                    </h3>
-                    <p>{{ visualizacion.descripcion }}</p>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>{{ "definir_escalas.estado" | translate }}</th>
-                                <th>{{ "definir_escalas.descripcion_columna" | translate }}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let escala of visualizacion.escalas">
-                                <td>{{ escala.label }}</td>
-                                <td>{{ escala.descripcion }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <div class="visualization-container cuantitativa">
-            <h3>Vista tablas cuantitativas</h3>
-            <div class="visualization-content" *ngIf="visualizacionesCuantitativas.length > 0">
-                <div *ngFor="let visualizacion of visualizacionesCuantitativas" class="visualizacion" [class.selected]="visualizacion.selected" (click)="seleccionarTabla(visualizacion)">
-                    <h3>
-                        <input [(ngModel)]="visualizacion.tipoEscala" placeholder="Titulo de la escala">
-                        <button mat-icon-button (click)="eliminarVisualizacion(visualizacion, 'cuantitativa')"><mat-icon>close</mat-icon></button>
-                    </h3>
-                    <p>{{ visualizacion.descripcion }}</p>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>{{ "definir_escalas.estado" | translate }}</th>
-                                <th>Valor</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let escala of visualizacion.escalas">
-                                <td>{{ escala.label }}</td>
-                                <td>{{ escala.descripcion }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+</ng-container>
