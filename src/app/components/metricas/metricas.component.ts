@@ -8,25 +8,23 @@ import { Color, ScaleType } from '@swimlane/ngx-charts';
   styleUrls: ['./metricas.component.scss']
 })
 export class MetricasComponent {
-  
+
   // Formularios
   firstFormGroup = this._formBuilder.group({
-    tipoReporte: ['', Validators.required] // Añadido el campo 'tipoReporte'
+    tipoReporte: ['', Validators.required],
+    periodo: ['', Validators.required] // Campo independiente
   });
-  secondFormGroupPeriodo = this._formBuilder.group({
-    periodo: ['', Validators.required]
+  secondFormGroupNivel = this._formBuilder.group({
+    nivel: ['', Validators.required]
   });
-  secondFormGroupProyecto = this._formBuilder.group({
-    proyecto: ['', Validators.required]
-  });
-  
+
   // Variables
   isLinear = true;
   showSecondCard = false;
   showChartCard = false;
   single: any[];
-  view: [number, number] = [700, 400]; // Asegurarse de que sea una tupla de dos números
-  selectedTipoReporte: string = ''; // Inicializado como una cadena vacía
+  view: [number, number] = [700, 400];
+  selectedTipoReporte: string = '';
 
   // Opciones del gráfico
   gradient: boolean = true;
@@ -36,8 +34,8 @@ export class MetricasComponent {
 
   colorScheme: Color = { domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA'], name: '', selectable: true, group: ScaleType.Ordinal };
 
-  periodos = ['2020-1', '2020-2', '2021-1', '2021-2']; // Ejemplo de periodos
-  proyectos = ['Proyecto 1', 'Proyecto 2', 'Proyecto 3']; // Ejemplo de proyectos
+  periodos = ['2020-1', '2020-2', '2021-1', '2021-2']; 
+  proyectos = ['Proyecto 1', 'Proyecto 2', 'Proyecto 3']; 
 
   constructor(private _formBuilder: FormBuilder) {
     this.single = [
@@ -73,23 +71,22 @@ export class MetricasComponent {
   }
 
   onTipoReporteChange() {
+    const tipoReporte = this.firstFormGroup.get('tipoReporte')!.value;
+    this.secondFormGroupNivel.reset();
     this.showSecondCard = false;
     this.showChartCard = false;
-    this.secondFormGroupPeriodo.reset();
-    this.secondFormGroupProyecto.reset();
   }
 
   continueToSecondCard() {
     if (this.firstFormGroup.valid) {
-      this.selectedTipoReporte = this.firstFormGroup.get('tipoReporte')!.value ?? ''; // Uso del operador de coalescencia nula
+      this.selectedTipoReporte = this.firstFormGroup.get('tipoReporte')!.value ?? '';
       this.showSecondCard = true;
-      this.showChartCard = false; // Resetear la tercera tarjeta al cambiar la segunda
+      this.showChartCard = false;
     }
   }
 
   generateChart() {
-    if ((this.selectedTipoReporte === 'periodo' && this.secondFormGroupPeriodo.valid) ||
-        (this.selectedTipoReporte === 'proyecto' && this.secondFormGroupProyecto.valid)) {
+    if (this.secondFormGroupNivel.valid) {
       this.showChartCard = true;
     }
   }

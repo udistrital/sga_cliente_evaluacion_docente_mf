@@ -1,19 +1,33 @@
+
 .form-container {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  display: flex;
+  flex-direction: column;
   gap: 10px;
 }
+
+.form-field {
+  width: 50%;
+  margin-bottom: 16px; 
+}
+
 
 .border-right {
   border-right: 1px solid black;
 }
 
-p,
+p{
+  margin-top: 20px;
+  margin-bottom: 20px;
+  display: block;
+  margin-top: 20px;
+  width: 100%;
+}
 button {
   margin-top: 20px;
   margin-bottom: 20px;
   display: block;
   margin-top: 20px;
+  width: 130px;
 }
 
 .checklist-container {
