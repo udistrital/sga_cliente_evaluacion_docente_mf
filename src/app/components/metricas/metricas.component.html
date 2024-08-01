@@ -1,83 +1,73 @@
 <mat-card>
-    <mat-card-header>
-      <mat-card-title>{{ 'metricas.metricas' | translate }}</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <mat-stepper orientation="vertical" [linear]="isLinear" #stepper>
-        <!-- Step 1: Periodo -->
-        <mat-step [stepControl]="firstFormGroup">
-          <form [formGroup]="firstFormGroup">
-            <ng-template matStepLabel>Seleccione el periodo y el tipo de reporte</ng-template>
-            <div>
-              <mat-card-subtitle>{{ 'GLOBAL.periodo' | translate }}</mat-card-subtitle>
-              <mat-form-field [formGroup]="firstFormGroup">
-                <mat-label>{{ 'GLOBAL.periodo' | translate }}:</mat-label>
-                <mat-select formControlName="periodo" required>
-                  <mat-option value="" disabled>{{ 'GLOBAL.seleccionar' | translate }}</mat-option>
-                  <mat-option *ngFor="let periodo of periodos" [value]="periodo">{{ periodo }}</mat-option>
-                </mat-select>
-              </mat-form-field>
-            </div>
-            <div>
-                <mat-card-subtitle>{{ 'GLOBAL.tipo_reporte' | translate }}</mat-card-subtitle>
-                <mat-form-field [formGroup]="firstFormGroup">
-                  <mat-label>{{ 'GLOBAL.tipo_reporte' | translate }}:</mat-label>
-                  <mat-select formControlName="periodo" required>
-                    <mat-option value="" disabled>{{ 'GLOBAL.seleccionar' | translate }}</mat-option>
-                    <mat-option *ngFor="let periodo of periodos" [value]="periodo">{{ periodo }}</mat-option>
-                  </mat-select>
-                </mat-form-field>
-              </div>
-            <div>
-              <button mat-stroked-button matStepperNext class="azulOscuro">{{ 'GLOBAL.continuar' | translate }}</button>
-            </div>
-          </form>
-        </mat-step>
-  
-        <!-- Step 2: Facultad -->
-        <mat-step [stepControl]="secondFormGroup">
-          <form [formGroup]="secondFormGroup">
-            <ng-template matStepLabel>{{ 'GLOBAL.facultad' | translate }}</ng-template>
-            <div>
-              <mat-card-subtitle>{{ 'GLOBAL.facultad' | translate }}</mat-card-subtitle>
-              <mat-form-field [formGroup]="secondFormGroup">
-                <mat-label>{{ 'GLOBAL.facultad' | translate }}:</mat-label>
-                <mat-select formControlName="facultad" required>
-                  <mat-option value="" disabled>{{ 'GLOBAL.seleccionar' | translate }}</mat-option>
-                  <mat-option *ngFor="let facultad of facultades" [value]="facultad">{{ facultad }}</mat-option>
-                </mat-select>
-              </mat-form-field>
-            </div>
-            <div>
-              <button mat-stroked-button matStepperPrevious class="azulOscuro">{{ 'GLOBAL.atras' | translate }}</button>
-              <button mat-stroked-button matStepperNext class="azulOscuro">{{ 'GLOBAL.continuar' | translate }}</button>
-            </div>
-          </form>
-        </mat-step>
-  
-        <!-- Step 3: Proyecto -->
-        <mat-step [stepControl]="thirdFormGroup">
-          <form [formGroup]="thirdFormGroup">
-            <ng-template matStepLabel>{{ 'GLOBAL.proyecto_academico' | translate }}</ng-template>
-            <div>
-              <mat-card-subtitle>{{ 'GLOBAL.proyecto_academico' | translate }}</mat-card-subtitle>
-              <mat-form-field [formGroup]="thirdFormGroup">
-                <mat-label>{{ 'GLOBAL.proyecto_academico' | translate }}:</mat-label>
-                <mat-select formControlName="proyecto" required>
-                  <mat-option value="" disabled>{{ 'GLOBAL.seleccionar' | translate }}</mat-option>
-                  <mat-option *ngFor="let proyecto of proyectos" [value]="proyecto">{{ proyecto }}</mat-option>
-                </mat-select>
-              </mat-form-field>
-            </div>
-            <div>
-              <ngx-charts-advanced-pie-chart [view]="view" [scheme]="colorScheme" [results]="single"
-                [gradient]="gradient" [legend]="showLegend" [labels]="showLabels" [doughnut]="isDoughnut"
-                (select)="onSelect($event)" (activate)="onActivate($event)" (deactivate)="onDeactivate($event)">
-              </ngx-charts-advanced-pie-chart>
-            </div>
-          </form>
-        </mat-step>
-      </mat-stepper>
-    </mat-card-content>
-  </mat-card>
-  
+  <mat-card-header>
+    <mat-card-title>{{ 'metricas.metricas' | translate }}</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <!-- Primera Tarjeta: Tipo de Reporte -->
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>{{ 'GLOBAL.tipo_reporte' | translate }}</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p class="spaced">Seleccione el tipo de reporte que desea generar.</p>
+        <form [formGroup]="firstFormGroup">
+          <mat-form-field class="spaced">
+            <mat-label>{{ 'GLOBAL.tipo_reporte' | translate }}:</mat-label>
+            <mat-select formControlName="tipoReporte" required (selectionChange)="onTipoReporteChange()">
+              <mat-option value="" disabled>{{ 'GLOBAL.seleccionar' | translate }}</mat-option>
+              <mat-option value="periodo">{{ 'GLOBAL.periodo' | translate }}</mat-option>
+              <mat-option value="proyecto">{{ 'GLOBAL.proyecto_academico' | translate }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <button mat-stroked-button class="azulOscuro" (click)="continueToSecondCard()">{{ 'GLOBAL.continuar' | translate }}</button>
+        </form>
+      </mat-card-content>
+    </mat-card>
+    
+    <!-- Segunda Tarjeta: Periodo o Proyecto -->
+    <mat-card *ngIf="showSecondCard">
+      <mat-card-header>
+        <mat-card-title *ngIf="selectedTipoReporte === 'periodo'">{{ 'GLOBAL.periodo' | translate }}</mat-card-title>
+        <mat-card-title *ngIf="selectedTipoReporte === 'proyecto'">{{ 'GLOBAL.proyecto_academico' | translate }}</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p *ngIf="selectedTipoReporte === 'periodo'" class="spaced">Seleccione el periodo para el cual desea generar el reporte.</p>
+        <p *ngIf="selectedTipoReporte === 'proyecto'" class="spaced">Seleccione el proyecto académico para el cual desea generar el reporte.</p>
+        <form *ngIf="selectedTipoReporte === 'periodo'" [formGroup]="secondFormGroupPeriodo">
+          <mat-form-field class="spaced">
+            <mat-label>{{ 'GLOBAL.periodo' | translate }}:</mat-label>
+            <mat-select formControlName="periodo" required>
+              <mat-option value="" disabled>{{ 'GLOBAL.seleccionar' | translate }}</mat-option>
+              <mat-option *ngFor="let periodo of periodos" [value]="periodo">{{ periodo }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <button mat-stroked-button class="azulOscuro" (click)="generateChart()">{{ 'GLOBAL.generar' | translate }}</button>
+        </form>
+        <form *ngIf="selectedTipoReporte === 'proyecto'" [formGroup]="secondFormGroupProyecto">
+          <mat-form-field class="spaced">
+            <mat-label>{{ 'GLOBAL.proyecto_academico' | translate }}:</mat-label>
+            <mat-select formControlName="proyecto" required>
+              <mat-option value="" disabled>{{ 'GLOBAL.seleccionar' | translate }}</mat-option>
+              <mat-option *ngFor="let proyecto of proyectos" [value]="proyecto">{{ proyecto }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <button mat-stroked-button class="azulOscuro" (click)="generateChart()">{{ 'GLOBAL.generar' | translate }}</button>
+        </form>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Tercera Tarjeta: Gráfico -->
+    <mat-card *ngIf="showChartCard">
+      <mat-card-header>
+        <mat-card-title>{{ 'GLOBAL.resultados' | translate }}</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p class="spaced">A continuación se muestra el gráfico generado con los datos seleccionados.</p>
+        <ngx-charts-advanced-pie-chart [view]="view" [scheme]="colorScheme" [results]="single"
+          [gradient]="gradient" [legend]="showLegend" [labels]="showLabels" [doughnut]="isDoughnut"
+          (select)="onSelect($event)" (activate)="onActivate($event)" (deactivate)="onDeactivate($event)">
+        </ngx-charts-advanced-pie-chart>
+      </mat-card-content>
+    </mat-card>
+  </mat-card-content>
+</mat-card>

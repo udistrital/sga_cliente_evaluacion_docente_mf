@@ -1,8 +1,6 @@
-import { Component, NgModule } from '@angular/core';
-import { FormBuilder, Validators, FormGroup } from '@angular/forms';
-import { MatStepper } from '@angular/material/stepper';
-import { BrowserModule } from '@angular/platform-browser';
-import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { Component } from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
+import { Color, ScaleType } from '@swimlane/ngx-charts';
 
 @Component({
   selector: 'app-metricas',
@@ -10,61 +8,56 @@ import { NgxChartsModule } from '@swimlane/ngx-charts';
   styleUrls: ['./metricas.component.scss']
 })
 export class MetricasComponent {
-
-  // Validadores
-  firstFormGroup: FormGroup;
-  secondFormGroup: FormGroup;
-  thirdFormGroup: FormGroup;
-
+  
+  // Formularios
+  firstFormGroup = this._formBuilder.group({
+    tipoReporte: ['', Validators.required] // Añadido el campo 'tipoReporte'
+  });
+  secondFormGroupPeriodo = this._formBuilder.group({
+    periodo: ['', Validators.required]
+  });
+  secondFormGroupProyecto = this._formBuilder.group({
+    proyecto: ['', Validators.required]
+  });
+  
   // Variables
   isLinear = true;
+  showSecondCard = false;
+  showChartCard = false;
+  single: any[];
+  view: [number, number] = [700, 400]; // Asegurarse de que sea una tupla de dos números
+  selectedTipoReporte: string = ''; // Inicializado como una cadena vacía
 
-  single: any[] = [
-    {
-      "name": "Germany",
-      "value": 8940000
-    },
-    {
-      "name": "USA",
-      "value": 5000000
-    },
-    {
-      "name": "France",
-      "value": 7200000
-    },
-    {
-      "name": "UK",
-      "value": 6200000
-    }
-  ];
-  view: [number, number] = [700, 400]; // Asegúrate de que sea [number, number]
-
-  // options
+  // Opciones del gráfico
   gradient: boolean = true;
   showLegend: boolean = true;
   showLabels: boolean = true;
   isDoughnut: boolean = false;
 
-  colorScheme: any = {
-    domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA']
-  };
+  colorScheme: Color = { domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA'], name: '', selectable: true, group: ScaleType.Ordinal };
 
-
-  // Datos quemados temporalmente
-  periodos = ['Periodo 1', 'Periodo 2', 'Periodo 3'];
-  facultades = ['Facultad 1', 'Facultad 2', 'Facultad 3'];
-  proyectos = ['Proyecto 1', 'Proyecto 2', 'Proyecto 3'];
+  periodos = ['2020-1', '2020-2', '2021-1', '2021-2']; // Ejemplo de periodos
+  proyectos = ['Proyecto 1', 'Proyecto 2', 'Proyecto 3']; // Ejemplo de proyectos
 
   constructor(private _formBuilder: FormBuilder) {
-    this.firstFormGroup = this._formBuilder.group({
-      periodo: ['', Validators.required]
-    });
-    this.secondFormGroup = this._formBuilder.group({
-      facultad: ['', Validators.required]
-    });
-    this.thirdFormGroup = this._formBuilder.group({
-      proyecto: ['', Validators.required]
-    });
+    this.single = [
+      {
+        "name": "Germany",
+        "value": 8940000
+      },
+      {
+        "name": "USA",
+        "value": 5000000
+      },
+      {
+        "name": "France",
+        "value": 7200000
+      },
+      {
+        "name": "UK",
+        "value": 6200000
+      }
+    ];
   }
 
   onSelect(data: any): void {
@@ -78,24 +71,26 @@ export class MetricasComponent {
   onDeactivate(data: any): void {
     console.log('Deactivate', JSON.parse(JSON.stringify(data)));
   }
-  cargarDatos(){
-    this.single = [
-      {
-        "name": "Ingeniería",
-        "value": 8940000
-      },
-      {
-        "name": "ASAB",
-        "value": 5000000
-      },
-      {
-        "name": "Ciencias",
-        "value": 7200000
-      },
-      {
-        "name": "Tecnológica",
-        "value": 6200000
-      }
-    ];
+
+  onTipoReporteChange() {
+    this.showSecondCard = false;
+    this.showChartCard = false;
+    this.secondFormGroupPeriodo.reset();
+    this.secondFormGroupProyecto.reset();
+  }
+
+  continueToSecondCard() {
+    if (this.firstFormGroup.valid) {
+      this.selectedTipoReporte = this.firstFormGroup.get('tipoReporte')!.value ?? ''; // Uso del operador de coalescencia nula
+      this.showSecondCard = true;
+      this.showChartCard = false; // Resetear la tercera tarjeta al cambiar la segunda
+    }
+  }
+
+  generateChart() {
+    if ((this.selectedTipoReporte === 'periodo' && this.secondFormGroupPeriodo.valid) ||
+        (this.selectedTipoReporte === 'proyecto' && this.secondFormGroupProyecto.valid)) {
+      this.showChartCard = true;
+    }
   }
 }
