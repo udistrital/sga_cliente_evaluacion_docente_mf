@@ -1,0 +1,37 @@
+<div class="asignacion-fechas">
+    <h2>{{ "asignacion_fechas.titulo" | translate }}</h2>
+    <div class="nivel-formacion">
+        <label for="nivelFormacion">{{ "asignacion_fechas.seleccionar_nivel_formacion" | translate }}</label>
+        <select id="nivelFormacion" [(ngModel)]="nivelFormacion">
+            <option value="" disabled selected>{{ "asignacion_fechas.seleccionar" | translate }}</option>
+            <option value="pregrado">{{ "asignacion_fechas.pregrado" | translate }}</option>
+            <option value="postgrado">{{ "asignacion_fechas.postgrado" | translate }}</option>
+        </select>
+    </div>
+    
+    <div class="procesos-grid">
+        <div class="proceso" *ngFor="let proceso of procesos">
+            <h3>{{ proceso.nombre }}</h3>
+            <div class="fechas">
+                <button mat-button (click)="pickerInicio.open()">
+                    {{ proceso.fechaInicio ? (proceso.fechaInicio | date: 'dd/MM/yyyy') : ('asignacion_fechas.seleccionar_fecha_inicio' | translate) }}
+                </button>
+                <mat-datepicker-toggle matSuffix [for]="pickerInicio"></mat-datepicker-toggle>
+                <mat-datepicker #pickerInicio [(ngModel)]="proceso.fechaInicio" (closed)="validarFechas(proceso)"></mat-datepicker>
+            </div>
+            <div class="fechas">
+                <button mat-button (click)="pickerFin.open()">
+                    {{ proceso.fechaFin ? (proceso.fechaFin | date: 'dd/MM/yyyy') : ('asignacion_fechas.seleccionar_fecha_fin' | translate) }}
+                </button>
+                <mat-datepicker-toggle matSuffix [for]="pickerFin"></mat-datepicker-toggle>
+                <mat-datepicker #pickerFin [(ngModel)]="proceso.fechaFin" (closed)="validarFechas(proceso)"></mat-datepicker>
+            </div>
+            <div class="selected-dates">
+                <p *ngIf="proceso.fechaInicio">{{ "asignacion_fechas.fecha_inicio_seleccionada" | translate }}: {{ proceso.fechaInicio | date: 'dd/MM/yyyy' }}</p>
+                <p *ngIf="proceso.fechaFin">{{ "asignacion_fechas.fecha_fin_seleccionada" | translate }}: {{ proceso.fechaFin | date: 'dd/MM/yyyy' }}</p>
+            </div>
+        </div>
+    </div>
+    
+    <button class="guardar-btn" (click)="guardar()">{{ "asignacion_fechas.guardar" | translate }}</button>
+</div>

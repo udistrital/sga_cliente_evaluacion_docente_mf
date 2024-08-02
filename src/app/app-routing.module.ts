@@ -4,36 +4,21 @@ import { RouterModule, Routes } from '@angular/router';
 import { getSingleSpaExtraProviders } from 'single-spa-angular';
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { DefinicionFormulariosComponent } from './componentes/definicion-formularios/definicion-formularios.component';
+import { AsignacionFechasComponent } from './componentes/asignacion-fechas/asignacion-fechas.component';
+import { DefinirEscalasComponent } from './componentes/definir-escalas/definir-escalas.component';
 
 const routes: Routes = [
   {
-    path: '',
+    path: 'definicion-formularios',
     component: DefinicionFormulariosComponent 
   },
-  // Otros componentes comentados porque no existen
-  // {
-  //   path: 'preasignacion',
-  //   component: PreasignacionComponent,
-  // },
-  // {
-  //   path: 'asignar',
-  //   component: AsignarPtdComponent,
-  // },
-  // {
-  //   path: 'verificar',
-  //   component: VerificarPtdComponent,
-  // },
-  // {
-  //   path: 'consolidado',
-  //   component: ConsolidadoComponent,
-  // },
-  // {
-  //   path: 'consolidado/revision',
-  //   component: RevisionConsolidadoComponent,
-  // },
   {
-    path: '**',
-    redirectTo: ''
+    path: 'asignacion-fechas',
+    component: AsignacionFechasComponent
+  },
+  {
+    path: 'definir-escalas',
+    component: DefinirEscalasComponent
   }
 ];
 
@@ -41,7 +26,7 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
   providers: [
-    { provide: APP_BASE_HREF, useValue: '/sga_cliente_evaluacion_docente_mf/' },
+    { provide: APP_BASE_HREF, useValue: '/evaluacion-docente/' },
     ...getSingleSpaExtraProviders(),
     provideHttpClient(withFetch())
   ]
