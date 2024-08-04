@@ -8,6 +8,7 @@ import { AsignacionFechasComponent } from './components/asignacion-fechas/asigna
 import { DefinirEscalasComponent } from './components/definir-escalas/definir-escalas.component';
 import { EvaluacionesComponent } from './components/evaluaciones/evaluaciones.component';
 import { MetricasComponent } from './components/metricas/metricas.component';
+import { ResultadosComponent } from './components/resultados/resultados.component';
 
 const routes: Routes = [
   {
@@ -29,6 +30,10 @@ const routes: Routes = [
   {
     path: 'metricas',
     component: MetricasComponent
+  },
+  {
+    path: 'resultados',
+    component: ResultadosComponent
   }
 ];
 

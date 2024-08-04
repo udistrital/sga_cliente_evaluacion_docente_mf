@@ -38,6 +38,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatTabsModule } from '@angular/material/tabs';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { ResultadosComponent } from './components/resultados/resultados.component';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, environment.apiUrl + 'assets/i18n/', '.json');
@@ -55,7 +56,8 @@ export function createTranslateLoader(http: HttpClient) {
     CoevaluacionIComponent,
     AutoevaluacionIIComponent,
     CoevaluacionIIComponent,
-    MetricasComponent
+    MetricasComponent, 
+    ResultadosComponent
   ],
   imports: [
     BrowserModule,
