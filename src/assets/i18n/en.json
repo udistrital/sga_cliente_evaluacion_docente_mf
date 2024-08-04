@@ -17,7 +17,8 @@
         "seleccionar": "Select",
         "periodo": "Period",
         "continuar": "Continue",
-        "atras": "Back"
+        "atras": "Back",
+        "generar": "Generate"
     },
     
     "asignacion_fechas": {
@@ -157,6 +158,15 @@
         "guardar": "Save"
     },
     "metricas":{
-        "metricas": "Metrics"
+        "metricas": "Metrics",
+        "tipo_reporte": "Report type",
+        "filtros": "Filters",
+        "elegir_todas": "All",
+        "vinculacion": "Linkage",
+        "componente": "Component",
+        "facultad": "Faculty",
+        "proyecto_curricular": "Curricular Project",
+        "docentes": "Teachers",
+        "periodo_y_tipo_reporte": "Period and report type"
     }
 }

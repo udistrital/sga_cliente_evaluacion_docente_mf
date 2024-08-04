@@ -17,7 +17,8 @@
         "seleccionar": "Seleccionar",
         "periodo": "Periodo",
         "continuar": "Continuar",
-        "atras": "Atrás"
+        "atras": "Atrás",
+        "generar": "Generar"
     },
 
     "asignacion_fechas": {
@@ -158,6 +159,15 @@
     },
 
     "metricas":{
-        "metricas": "Métricas"
+        "metricas": "Métricas",
+        "tipo_reporte": "Tipo de reporte",
+        "filtros": "Filtros del reporte",
+        "elegir_todas": "Todas",
+        "vinculacion": "Vinculación",
+        "componente": "Componente",
+        "facultad": "Facultad",
+        "proyecto_curricular": "Proyecto Curricular",
+        "docentes": "Docentes",
+        "periodo_y_tipo_reporte": "Periodo y tipo de reporte"
     }
 }
