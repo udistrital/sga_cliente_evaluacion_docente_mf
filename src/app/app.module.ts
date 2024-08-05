@@ -24,6 +24,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { EvaluacionesComponent } from './components/evaluaciones/evaluaciones.component';
 import { NgIsGrantedDirective } from './directives/ng-is-granted.directive';
 import { UserService } from './services/user.service';
+import { EventosService } from './services/eventos.service';
+import { ParametrosService } from './services/parametros.service';
+import { RequestManager } from './services/requestmanager.service';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, environment.apiUrl + 'assets/i18n/', '.json');
@@ -36,7 +39,7 @@ export function createTranslateLoader(http: HttpClient) {
     AsignacionFechasComponent,
     DefinirEscalasComponent,
     EvaluacionesComponent,
-    NgIsGrantedDirective 
+    NgIsGrantedDirective
   ],
   imports: [
     BrowserModule,
@@ -63,6 +66,10 @@ export function createTranslateLoader(http: HttpClient) {
     MatFormFieldModule
   ],
   providers: [
+    UserService,
+    EventosService, 
+    ParametrosService,
+    RequestManager,
     UserService,
     { provide: HTTP_INTERCEPTORS, useClass: SpinnerUtilInterceptor, multi: true }
   ],
