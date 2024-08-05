@@ -1,4 +1,4 @@
 export const environment = {
     production: false,
-    apiUrl: "https://pruebassgaplandocente.portaloas.udistrital.edu.co/"
+    apiUrl: "https://pruebassgaevaluaciondocente.portaloas.udistrital.edu.co/"
 }

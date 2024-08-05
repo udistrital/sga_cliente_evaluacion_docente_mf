@@ -1,4 +1,4 @@
 export const environment = {
     production: true,
-    apiUrl: "https://sgaplandocente.portaloas.udistrital.edu.co/"
+    apiUrl: "https://sgaevaluaciondocente.portaloas.udistrital.edu.co/"
 }
