@@ -14,7 +14,6 @@ import { AppComponent } from './app.component';
 import { DefinicionFormulariosComponent } from './components/definicion-formularios/definicion-formularios.component';
 import { AsignacionFechasComponent } from './components/asignacion-fechas/asignacion-fechas.component';
 import { DefinirEscalasComponent } from './components/definir-escalas/definir-escalas.component';
-
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatInputModule } from '@angular/material/input';
 import { MatNativeDateModule } from '@angular/material/core';
@@ -24,6 +23,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { EvaluacionesComponent } from './components/evaluaciones/evaluaciones.component';
 import { NgIsGrantedDirective } from './directives/ng-is-granted.directive';
 import { UserService } from './services/user.service';
+import { DateInterceptor } from './services/date.interceptor';
+import { DateStorageService } from './services/date-storage.service';
+import { TestComponent } from './components/test/test.component';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, environment.apiUrl + 'assets/i18n/', '.json');
@@ -36,7 +38,8 @@ export function createTranslateLoader(http: HttpClient) {
     AsignacionFechasComponent,
     DefinirEscalasComponent,
     EvaluacionesComponent,
-    NgIsGrantedDirective 
+    NgIsGrantedDirective,
+    TestComponent  
   ],
   imports: [
     BrowserModule,
@@ -64,7 +67,9 @@ export function createTranslateLoader(http: HttpClient) {
   ],
   providers: [
     UserService,
-    { provide: HTTP_INTERCEPTORS, useClass: SpinnerUtilInterceptor, multi: true }
+    DateStorageService,
+    { provide: HTTP_INTERCEPTORS, useClass: SpinnerUtilInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: DateInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
 })
