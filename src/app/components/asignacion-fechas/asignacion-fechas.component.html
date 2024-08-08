@@ -4,7 +4,8 @@
     <div class="nivel-formacion">
       <label for="nivelFormacion">{{ "asignacion_fechas.seleccionar_nivel_formacion" | translate }}</label>
       <select id="nivelFormacion" [(ngModel)]="nivelFormacion">
-        <option value="" disabled selected>{{ "asignacion_fechas.seleccionar" | translate }}</option>
+        <option value="" disabled selected>Selecciona el nivel de formación</option>
+        <option *ngFor="let nivel of niveles" [value]="nivel">{{ nivel }}</option>
         <option value="pregrado">{{ "asignacion_fechas.pregrado" | translate }}</option>
         <option value="postgrado">{{ "asignacion_fechas.postgrado" | translate }}</option>
       </select>
@@ -13,7 +14,7 @@
     <div class="periodo-formacion">
       <label for="periodoFormacion">{{ "asignacion_fechas.seleccionar_periodo" | translate }}</label>
       <select id="periodoFormacion" [(ngModel)]="periodoFormacion">
-        <option value="" disabled selected>{{ "asignacion_fechas.seleccionar" | translate }}</option>
+        <option value="" disabled selected>Selecciona el período de formación</option>
         <option value="periodo_1_2020">Periodo 1 del año 2020</option>
         <option value="periodo_2_2020">Periodo 2 del año 2020</option>
       </select>

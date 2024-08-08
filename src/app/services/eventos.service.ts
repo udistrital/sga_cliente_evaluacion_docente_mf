@@ -1,31 +1,42 @@
 import { Injectable } from '@angular/core';
-import { RequestManager } from '../managers/requestManager';
+import { AnyService } from './any.service'; // Importación correcta basada en la estructura
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment'; // Importa el entorno
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class EventosService {
 
-    constructor(private requestManager: RequestManager) {
-        this.requestManager.setPath('EVENTOS_CRUD');
-    }
+    private path = environment.EVENTOS_CRUD;
+
+    constructor(private anyService: AnyService) {}
 
     get(endpoint: string): Observable<any> {
-        this.requestManager.setPath('EVENTOS_CRUD');
-        return this.requestManager.get(endpoint);
+        return this.anyService.get(this.path, endpoint);
+    }
+
+    getp(endpoint: string): Observable<any> {
+        return this.anyService.getp(this.path, endpoint);
     }
 
     post(endpoint: string, element: any): Observable<any> {
-        this.requestManager.setPath('EVENTOS_CRUD');
-        return this.requestManager.post(endpoint, element);
+        return this.anyService.post(this.path, endpoint, element);
     }
 
-    put(endpoint: string, id: any, element: any): Observable<any> {
-        this.requestManager.setPath('EVENTOS_CRUD');
-        return this.requestManager.put(`${endpoint}/${id}`, element);
+    put(endpoint: string, element: any): Observable<any> {
+        return this.anyService.put(this.path, endpoint, element);
     }
 
-    delete(endpoint: string, id: any): Observable<any> {
-        this.requestManager.setPath('EVENTOS_CRUD');
-        return this.requestManager.delete(endpoint, id);
+    put2(endpoint: string, element: { Id: string; }): Observable<any> {
+        return this.anyService.put2(this.path, endpoint, element);
+    }
+
+    delete(endpoint: string, element: { Id: string; }): Observable<any> {
+        return this.anyService.delete(this.path, endpoint, element);
+    }
+
+    delete2(endpoint: string): Observable<any> {
+        return this.anyService.delete2(this.path, endpoint);
     }
 }
