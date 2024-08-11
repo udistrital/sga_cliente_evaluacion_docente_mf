@@ -23,9 +23,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { EvaluacionesComponent } from './components/evaluaciones/evaluaciones.component';
 import { NgIsGrantedDirective } from './directives/ng-is-granted.directive';
 import { UserService } from './services/user.service';
-import { DateInterceptor } from './services/date.interceptor';
-import { DateStorageService } from './services/date-storage.service';
-import { TestComponent } from './components/test/test.component';
+import { PruebaComponent } from './components/prueba/prueba.component';
+
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, environment.apiUrl + 'assets/i18n/', '.json');
@@ -38,8 +37,7 @@ export function createTranslateLoader(http: HttpClient) {
     AsignacionFechasComponent,
     DefinirEscalasComponent,
     EvaluacionesComponent,
-    NgIsGrantedDirective,
-    TestComponent  
+    NgIsGrantedDirective    
   ],
   imports: [
     BrowserModule,
@@ -67,9 +65,8 @@ export function createTranslateLoader(http: HttpClient) {
   ],
   providers: [
     UserService,
-    DateStorageService,
     { provide: HTTP_INTERCEPTORS, useClass: SpinnerUtilInterceptor, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: DateInterceptor, multi: true }
+    PruebaComponent
   ],
   bootstrap: [AppComponent]
 })

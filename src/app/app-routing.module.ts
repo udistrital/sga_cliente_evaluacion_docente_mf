@@ -7,7 +7,7 @@ import { DefinicionFormulariosComponent } from './components/definicion-formular
 import { AsignacionFechasComponent } from './components/asignacion-fechas/asignacion-fechas.component';
 import { DefinirEscalasComponent } from './components/definir-escalas/definir-escalas.component';
 import { EvaluacionesComponent } from './components/evaluaciones/evaluaciones.component';
-import { TestComponent } from './components/test/test.component';
+import { PruebaComponent } from './components/prueba/prueba.component';
 
 const routes: Routes = [
   {
@@ -27,8 +27,8 @@ const routes: Routes = [
     component: EvaluacionesComponent
   },
   {
-    path: 'test',
-    component: TestComponent
+    path: 'prueba',
+    component: PruebaComponent
   }
 ];
 
