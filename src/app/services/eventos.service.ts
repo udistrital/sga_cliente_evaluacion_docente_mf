@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { AnyService } from './any.service'; // Importación correcta basada en la estructura
+import { AnyService } from './any.service'; 
 import { Observable } from 'rxjs';
-import { environment } from '../../environments/environment'; // Importa el entorno
+import { environment } from '../../environments/environment'; 
 
 @Injectable({
     providedIn: 'root'
