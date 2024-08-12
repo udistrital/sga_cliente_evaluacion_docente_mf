@@ -1,5 +1,6 @@
 <div class="asignacion-fechas" *ngIf="hasRole([ROLES.ADMIN_SGA, ROLES.VICERRECTOR, ROLES.ASESOR_VICE, ROLES.COORDINADOR, ROLES.COORDINADOR_PREGADO, ROLES.COORDINADOR_POSGRADO, ROLES.ASISTENTE_ADMISIONES, ROLES.ADMIN_DOCENCIA, ROLES.ASIS_PROYECTO, ROLES.SEC_DECANATURA, ROLES.DECANO])">
   <h2>{{ "asignacion_fechas.titulo" | translate }}</h2>
+  
   <div class="selectors-container">
     <div class="nivel-formacion">
       <label for="nivelFormacion">{{ "asignacion_fechas.seleccionar_nivel_formacion" | translate }}</label>
@@ -77,11 +78,13 @@
     </div>
   </div>
 
+  <!-- Botón para guardar -->
   <button class="guardar-btn" (click)="guardar()">
     <mat-icon>archive</mat-icon>
     {{ "asignacion_fechas.guardar" | translate }}
   </button>
 
+  <!-- Mensaje de confirmación de guardado -->
   <div *ngIf="guardado" class="confirmation">
     <div class="confirmation-content">
       <h3>Confirmación de guardado</h3>
@@ -93,6 +96,7 @@
     </div>
   </div>
 
+  <!-- Lista de evaluaciones guardadas -->
   <div class="evaluaciones-guardadas" *ngIf="guardado">
     <p>Evaluaciones guardadas:</p>
     <ul>
@@ -100,6 +104,7 @@
     </ul>
   </div>
 
+  <!-- Mensaje de error -->
   <div *ngIf="mensajeError" class="error-message">
     <p>{{ mensajeError }}</p>
   </div>

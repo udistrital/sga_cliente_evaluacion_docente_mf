@@ -74,18 +74,19 @@ export class RequestManager {
    */
   post(endpoint: string, element: any) {
     return this.http.post<any>(`${this.path}${endpoint}`, element, this.httpOptions).pipe(
-      map(
-        (res) => {
-          if (res instanceof HttpResponse) {
-            return res.body;
-          } else {
-            return res;
-          }
-        },
-      ),
-      catchError(this.errManager.handleError),
+        map(
+            (res) => {
+                if (res instanceof HttpResponse) {
+                    return res.body;
+                } else {
+                    return res;
+                }
+            },
+        ),
+        catchError(this.errManager.handleError),
     );
-  }
+}
+
 
   /**
    * Perform a POST http request
