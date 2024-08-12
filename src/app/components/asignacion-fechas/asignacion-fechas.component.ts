@@ -89,7 +89,6 @@ export class AsignacionFechasComponent implements OnInit {
     );
   }
 
-  // Nuevo método para validar si la evaluación ya existe
   validarExistenciaEvaluacion(proceso: any, callback: (exists: boolean, data?: any) => void) {
     const params = {
       Nombre: proceso.nombre,
@@ -100,9 +99,9 @@ export class AsignacionFechasComponent implements OnInit {
     this.eventosService.get(`calendario_evento?Nombre=${encodeURIComponent(params.Nombre)}&FechaInicio=${params.FechaInicio}&FechaFin=${params.FechaFin}`)
       .subscribe(response => {
         if (response && response.length > 0) {
-          callback(true, response[0]); // Si ya existe, pasamos los datos
+          callback(true, response[0]); 
         } else {
-          callback(false); // Si no existe
+          callback(false);
         }
       }, error => {
         console.error('Error validando la existencia de la evaluación:', error);
@@ -135,14 +134,11 @@ export class AsignacionFechasComponent implements OnInit {
             );
 
             if (confirmar) {
-              // Si confirma, hacer PUT para actualizar
               this.actualizarEvaluacion(proceso, data.Id);
             } else {
-              // Si cancela, no hacer nada
               this.mensajeError = `El proceso de actualización fue cancelado para la evaluación "${proceso.nombre}".`;
             }
           } else {
-            // Si no existe, proceder con el POST
             this.crearNuevaEvaluacion(proceso, descripcionIndex);
           }
         });
