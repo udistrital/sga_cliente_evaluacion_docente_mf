@@ -1,16 +1,18 @@
 @import 'src/assets/styles/palette-angular-material.css';
 
 .asignacion-fechas {
-  width: 80%;
-  margin: 0 auto;
+  width: 100%;
+  height: 100vh; /* Ocupa toda la altura de la ventana */
   padding: 20px;
+  box-sizing: border-box; /* Asegura que el padding esté incluido en el 100% de width y height */
+  border: 2px solid var(--md-primary-500); /* Borde azul oscuro */
+  background-color: #fff; /* Fondo blanco */
   border-radius: 10px;
-  background-color: var(--md-primary-50);
 
   h2 {
     text-align: center;
-    color: var(--md-primary-contrast-400);
-    background-color: var(--md-primary-400);
+    color: var(--md-primary-contrast-400); /* Texto blanco */
+    background-color: var(--md-primary-400); /* Fondo azul oscuro */
     padding: 20px;
     border-radius: 10px;
     margin-bottom: 20px;
@@ -33,9 +35,9 @@
       select {
         width: 100%;
         padding: 10px;
-        border: 1px solid var(--md-primary-200);
+        border: 1px solid var(--md-primary-200); /* Borde azul claro */
         border-radius: 4px;
-        background-color: var(--md-primary-50);
+        background-color: var(--md-primary-50); /* Fondo azul muy claro */
       }
     }
   }
@@ -65,7 +67,7 @@
 
     .proceso {
       background-color: #fff;
-      border: 1px solid var(--md-primary-200);
+      border: 1px solid var(--md-primary-200); /* Borde azul claro */
       border-radius: 10px;
       padding: 15px;
       text-align: center;
@@ -77,7 +79,7 @@
         align-items: center;
         justify-content: center;
         margin-bottom: 10px;
-        background-color: var(--md-primary-400);
+        background-color: var(--md-primary-400); /* Fondo azul oscuro */
         padding: 10px;
         border-radius: 10px;
 
@@ -88,7 +90,7 @@
           text-align: center;
           font-size: 16px;
           font-weight: bold;
-          color: var(--md-primary-contrast-400);
+          color: var(--md-primary-contrast-400); /* Texto blanco */
         }
 
         .edit-icon {
@@ -135,15 +137,15 @@
     gap: 10px;
     width: 100%;
     padding: 10px;
-    background-color: var(--md-primary-500);
-    color: var(--md-primary-contrast-500);
+    background-color: var(--md-primary-500); /* Fondo azul principal */
+    color: var(--md-primary-contrast-500); /* Texto blanco */
     border: none;
     border-radius: 30px;
     cursor: pointer;
     margin-top: 30px;
 
     &:hover {
-      background-color: var(--md-primary-700);
+      background-color: var(--md-primary-700); /* Fondo azul más oscuro al pasar el mouse */
     }
 
     mat-icon {
@@ -157,7 +159,7 @@
     left: 50%;
     transform: translate(-50%, -50%);
     background-color: #000;
-    border: 1px solid var(--md-primary-400);
+    border: 1px solid var(--md-primary-400); /* Borde azul oscuro */
     border-radius: 10px;
     padding: 20px;
     color: #fff;
@@ -168,8 +170,8 @@
 
       h3 {
         margin-top: 0;
-        background-color: var(--md-primary-400);
-        color: var(--md-primary-contrast-400);
+        background-color: var(--md-primary-400); /* Fondo azul oscuro */
+        color: var(--md-primary-contrast-400); /* Texto blanco */
         padding: 10px;
         border-radius: 10px;
       }
@@ -182,7 +184,7 @@
 
   .evaluaciones-guardadas {
     margin-top: 20px;
-    background-color: var(--md-primary-50);
+    background-color: var(--md-primary-50); /* Fondo azul muy claro */
     padding: 10px;
     border-radius: 4px;
 
