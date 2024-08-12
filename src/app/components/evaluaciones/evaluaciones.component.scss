@@ -6,10 +6,10 @@
 
 .form-container {
   margin-top: 20px;
-  border: 1px solid var(--md-primary-200);
+  border: 1px solid var(--md-primary-700);
   border-radius: 10px;
   padding: 20px;
-  background-color: var(--md-primary-50);
+  background-color: #ffffff;
 }
 
 .evaluation-form {
@@ -21,43 +21,69 @@ h2 {
   font-size: 1.5em;
   margin-bottom: 20px;
   color: var(--md-primary-700);
+  margin-top: 10px;
+  margin-bottom: 15px;
+  border-bottom: 1px solid var(--md-primary-200);
+  padding-bottom: 10px;
 }
 
 .form-group {
-  margin-bottom: 15px;
+  margin-bottom: 25px;
   text-align: left;
 
   label {
     display: block;
     font-weight: bold;
     margin-bottom: 5px;
-    color: var(--md-primary-600);
+    color: var(--md-primary-700);
+    opacity: 0.85;  // Aumenta ligeramente la visibilidad del label
+  }
+
+  input, select, textarea {
+    display: block;
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid var(--md-primary-700);
+    border-radius: 5px;
+    background-color: #ffffff;
+    transition: border-color 0.3s, background-color 0.3s;
+    padding-right: 35px;
+
+    &:focus {
+      border-color: var(--md-primary-500);
+      background-color: var(--md-primary-50);
+    }
+
+    &::placeholder {
+      color: var(--md-primary-200);  // Placeholder suave y menos notable
+      opacity: 0.7;  // Placeholder visible pero no dominante
+    }
+  }
+
+  textarea {
+    height: 100px;
+  }
+
+  input[type="date"] {
+    position: relative;
+    padding-left: 40px;
+    background: url('data:image/svg+xml;base64,...') no-repeat 10px center;
+    background-size: 20px 20px;
+    background-color: #ffffff;
+  }
+
+  .form-inline {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;  /* Espacio adicional entre elementos inline */
   }
 }
 
-.form-inline {
+.button-group {
   display: flex;
   justify-content: space-between;
-}
-
-.input-group {
-  display: flex;
-  flex-direction: column;
-  width: 48%;
-}
-
-input, select, textarea {
-  display: block;
-  width: calc(100% - 20px);
-  padding: 10px;
-  margin: 5px 0;
-  border: 1px solid var(--md-primary-200);
-  border-radius: 5px;
-  background-color: var(--md-primary-50);
-}
-
-textarea {
-  height: 100px;
+  gap: 20px;
 }
 
 button {
@@ -69,50 +95,14 @@ button {
   text-decoration: none;
   display: inline-block;
   font-size: 16px;
-  margin: 4px 2px;
+  margin: 10px 2px;
   cursor: pointer;
   border-radius: 5px;
+  transition: background-color 0.3s;
 
   &:hover {
     background-color: var(--md-primary-700);
   }
-}
-
-.btn-proyecto, .btn-espacios {
-  background-color: var(--md-primary-500);
-  margin-right: 10px;
-}
-
-.btn-continuar {
-  background-color: var(--md-warning-500);
-  color: var(--md-warning-contrast-500);
-
-  &:hover {
-    background-color: var(--md-warning-700);
-  }
-}
-
-.btn-guardar {
-  background-color: var(--md-primary-500);
-  color: var(--md-primary-contrast-500);
-
-  &:hover {
-    background-color: var(--md-primary-700);
-  }
-}
-
-.btn-generar-soporte {
-  background-color: var(--md-accent-500);
-  color: var(--md-accent-contrast-500);
-
-  &:hover {
-    background-color: var(--md-accent-700);
-  }
-}
-
-.button-group {
-  display: flex;
-  justify-content: space-between;
 }
 
 .modal {
@@ -128,11 +118,11 @@ button {
 }
 
 .modal-content {
-  background: var(--md-primary-50);
+  background: #ffffff;
   padding: 20px;
   border-radius: 5px;
   position: relative;
-  border: 1px solid var(--md-primary-200);
+  border: 1px solid var(--md-primary-700);
 }
 
 .close {
@@ -141,4 +131,21 @@ button {
   right: 10px;
   cursor: pointer;
   color: var(--md-primary-700);
+}
+
+label {
+  display: inline-block;
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: var(--md-primary-700);
+}
+
+input, select, textarea {
+  display: inline-block;
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  margin-bottom: 10px;
+  border: 1px solid var(--md-primary-700);
+  border-radius: 5px;
 }
