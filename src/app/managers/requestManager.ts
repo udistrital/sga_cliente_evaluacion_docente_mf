@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { catchError, map } from 'rxjs/operators';
-import { HttpErrorManager } from './errorManager'
+import { Observable } from 'rxjs'; 
+import { HttpErrorManager } from './errorManager';
 
 /**
  * This class manage the http connections with internal REST services. Use the response format {
@@ -119,19 +120,17 @@ export class RequestManager {
    * @param element data to send as JSON, With the id to UPDATE
    * @returns Observable<any>
    */
-  put(endpoint: string, element: any) {
-    const path = (element.Id) ? `${this.path}${endpoint}/${element.Id}` : `${this.path}${endpoint}`;
+  put(endpoint: string, element: any): Observable<any> {
+    const path = `${this.path}${endpoint}`;
     return this.http.put<any>(path, element, this.httpOptions).pipe(
-      map(
-        (res) => {
-          if (res instanceof HttpResponse) {
-            return res.body;
-          } else {
-            return res;
-          }
-        },
-      ),
-      catchError(this.errManager.handleError),
+      map((res) => {
+        if (res instanceof HttpResponse) {
+          return res.body;
+        } else {
+          return res;
+        }
+      }),
+      catchError(this.errManager.handleError.bind(this)),
     );
   }
 

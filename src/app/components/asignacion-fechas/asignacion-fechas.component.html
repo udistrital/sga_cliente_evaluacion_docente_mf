@@ -96,6 +96,15 @@
     </div>
   </div>
 
+  <!-- Sección para mostrar los detalles de la evaluación existente -->
+  <div *ngIf="evaluacionExistente">
+    <p>Nombre: {{ evaluacionExistente.Nombre }}</p>
+    <p>Fecha de Inicio: {{ evaluacionExistente.FechaInicio | date: 'dd/MM/yyyy' }}</p>
+    <p>Fecha de Fin: {{ evaluacionExistente.FechaFin | date: 'dd/MM/yyyy' }}</p>
+    <p>Fecha de Creación: {{ evaluacionExistente.FechaCreacion | date: 'dd/MM/yyyy' }}</p>
+    <button mat-raised-button color="primary" (click)="actualizarEvaluacion(evaluacionExistente.Id, evaluacionExistente)">Actualizar Evaluación</button>
+  </div>
+
   <!-- Lista de evaluaciones guardadas -->
   <div class="evaluaciones-guardadas" *ngIf="guardado">
     <p>Evaluaciones guardadas:</p>

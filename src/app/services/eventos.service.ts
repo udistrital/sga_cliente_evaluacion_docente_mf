@@ -23,7 +23,7 @@ export class EventosService {
     put(endpoint: string, id: any, element: any): Observable<any> {
         this.requestManager.setPath('EVENTOS_CRUD');
         return this.requestManager.put(`${endpoint}/${id}`, element);
-    }
+    }    
 
     delete(endpoint: string, id: any): Observable<any> {
         this.requestManager.setPath('EVENTOS_CRUD');
