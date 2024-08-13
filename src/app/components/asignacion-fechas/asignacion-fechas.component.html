@@ -87,12 +87,12 @@
   <!-- Mensaje de confirmación de guardado -->
   <div *ngIf="guardado" class="confirmation">
     <div class="confirmation-content">
-      <h3>Confirmación de guardado</h3>
-      <button mat-icon-button (click)="cerrarConfirmacion()">
-        <mat-icon>close</mat-icon>
-      </button>
-      <p>Los ajustes fueron aplicados</p>
-      <button mat-raised-button color="primary" (click)="cerrarConfirmacion()">OK</button>
+        <h3>Confirmación de guardado</h3>
+        <div class="icon-wrapper">
+            <mat-icon>help_outline</mat-icon> <!-- Ícono de interrogación -->
+        </div>
+        <p>Los ajustes fueron aplicados</p>
+        <button mat-raised-button color="primary" (click)="cerrarConfirmacion()">OK</button>
     </div>
   </div>
 
@@ -114,7 +114,7 @@
   </div>
 
   <!-- Mensaje de error -->
-  <div *ngIf="mensajeError" class="error-message">
+  <div *ngIf="errorPut" class="error-message">
     <p>{{ mensajeError }}</p>
   </div>
 </div>

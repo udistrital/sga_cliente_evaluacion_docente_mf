@@ -34,6 +34,7 @@ export class AsignacionFechasComponent implements OnInit {
   evaluacionesGuardadas: string[] = [];
   mensajeError: string = '';
   evaluaciones: any[] = [];
+  errorPut: boolean = false;
 
   constructor(
     private userService: UserService,
@@ -108,7 +109,7 @@ export class AsignacionFechasComponent implements OnInit {
             const descripcion = `Evaluación ${descripcionIndex}`;
             const fechaInicio = new Date(proceso.fechaInicio).toISOString();
 
-            // Primero validamos si ya existe un evento con la misma Descripción y FechaInicio
+            // Validar existencia basado en descripción, fecha de inicio y nombre
             this.validarExistenciaEvaluacion(proceso, descripcion, fechaInicio, (exists, data) => {
                 if (exists) {
                     // Mostrar datos y mensaje para confirmar actualización
@@ -134,7 +135,6 @@ export class AsignacionFechasComponent implements OnInit {
         }
     }
 }
-
 
   crearNuevaEvaluacion(proceso: any, descripcionIndex: number) {
     const calendarioEvento = {
@@ -200,62 +200,63 @@ export class AsignacionFechasComponent implements OnInit {
 
   actualizarEvaluacion(id: number, proceso: any) {
     const calendarioEvento = {
-        Id: id,
-        Nombre: proceso.nombre || this.evaluacionExistente.Nombre,
-        Descripcion: `Evaluación Actualizada`,
-        FechaCreacion: this.evaluacionExistente.FechaCreacion,  // Fecha de creación original
-        FechaModificacion: new Date().toISOString(),
-        FechaInicio: new Date(proceso.fechaInicio || this.evaluacionExistente.FechaInicio).toISOString(),
-        FechaFin: new Date(proceso.fechaFin || this.evaluacionExistente.FechaFin).toISOString(),
-        Activo: true,
-        DependenciaId: "{}",
-        EventoPadreId: null,
-        TipoEventoId: {
-            Id: 202,
-            Nombre: "Evaluaciones Docente",
-            Descripcion: "Evaluaciones realizadas por los docentes",
-            CodigoAbreviacion: "EVAL_DOC",
-            Activo: true,
-            FechaCreacion: "2024-08-05T07:11:43Z",
-            FechaModificacion: "2024-08-05T07:11:43Z",
-            TipoRecurrenciaId: {
-                Id: 7,
-                Nombre: "Semestral",
-                Descripcion: "Semestral",
-                CodigoAbreviacion: "SEM",
-                Activo: true,
-                FechaCreacion: "2019-12-18T02:10:05Z",
-                FechaModificacion: "2019-12-18T02:10:05Z"
-            },
-            CalendarioID: {
-                Id: 120,
-                Nombre: "Evaluaciones Docentes 2024",
-                Descripcion: "Calendario de Evaluaciones para los docentes del año 2023",
-                DependenciaId: "{\"proyectos\": [24, 23, 8]}",
-                DocumentoId: 146529,
-                PeriodoId: 6,
-                AplicacionId: 0,
-                Nivel: 1,
-                Activo: true,
-                FechaCreacion: "2024-08-05T06:53:01Z",
-                FechaModificacion: "2024-08-05T06:53:01Z",
-                CalendarioPadreId: null,
-                DocumentoExtensionId: 146537,
-                AplicaExtension: true,
-                DependenciaParticularId: "{\"proyectos\":[24,8]}",
-                MultiplePeriodoId: ""
-            }
-        },
-        UbicacionId: 0,
-        AplicaEdicionActividades: false,
-        PosterUrl: "https://example.com/poster.jpg"
+      Id: id,
+      Nombre: proceso.nombre || this.evaluacionExistente.Nombre,
+      Descripcion: `Evaluación Actualizada`,
+      FechaCreacion: this.evaluacionExistente.FechaCreacion,  // Fecha de creación original
+      FechaModificacion: new Date().toISOString(),
+      FechaInicio: new Date(proceso.fechaInicio || this.evaluacionExistente.FechaInicio).toISOString(),
+      FechaFin: new Date(proceso.fechaFin || this.evaluacionExistente.FechaFin).toISOString(),
+      Activo: true,
+      DependenciaId: "{}",
+      EventoPadreId: null,
+      TipoEventoId: {
+          Id: 202,
+          Nombre: "Evaluaciones Docente",
+          Descripcion: "Evaluaciones realizadas por los docentes",
+          CodigoAbreviacion: "EVAL_DOC",
+          Activo: true,
+          FechaCreacion: "2024-08-05T07:11:43Z",
+          FechaModificacion: "2024-08-05T07:11:43Z",
+          TipoRecurrenciaId: {
+              Id: 7,
+              Nombre: "Semestral",
+              Descripcion: "Semestral",
+              CodigoAbreviacion: "SEM",
+              Activo: true,
+              FechaCreacion: "2019-12-18T02:10:05Z",
+              FechaModificacion: "2019-12-18T02:10:05Z"
+          },
+          CalendarioID: {
+              Id: 120,
+              Nombre: "Evaluaciones Docentes 2024",
+              Descripcion: "Calendario de Evaluaciones para los docentes del año 2023",
+              DependenciaId: "{\"proyectos\": [24, 23, 8]}",
+              DocumentoId: 146529,
+              PeriodoId: 6,
+              AplicacionId: 0,
+              Nivel: 1,
+              Activo: true,
+              FechaCreacion: "2024-08-05T06:53:01Z",
+              FechaModificacion: "2024-08-05T06:53:01Z",
+              CalendarioPadreId: null,
+              DocumentoExtensionId: 146537,
+              AplicaExtension: true,
+              DependenciaParticularId: "{\"proyectos\":[24,8]}",
+              MultiplePeriodoId: ""
+          }
+      },
+      UbicacionId: 0,
+      AplicaEdicionActividades: false,
+      PosterUrl: "https://example.com/poster.jpg"
     };
 
-    // Llamada al método put del servicio
     this.eventosService.put('calendario_evento', id, calendarioEvento).subscribe(response => {
       this.popUpManager.showSuccessAlert(`Evaluación actualizada con éxito.`);
+      this.errorPut = false;  // Indica que no hubo error
     }, error => {
       console.error('Error actualizando la evaluación:', error);
+      this.errorPut = true;  // Indica que hubo un error
       this.mensajeError = 'Error actualizando la evaluación: ' + error.message;
     });
   }
@@ -264,7 +265,12 @@ export class AsignacionFechasComponent implements OnInit {
     this.eventosService.get(`calendario_evento?query=Descripcion:${descripcion},FechaInicio:${fechaInicio},Activo:true`)
         .subscribe(response => {
             if (response && response.length > 0) {
-                callback(true, response[0]);
+                const evaluacionEncontrada = response.find((evalItem: any) => evalItem.Nombre === proceso.nombre);
+                if (evaluacionEncontrada) {
+                    callback(true, evaluacionEncontrada);
+                } else {
+                    callback(false);
+                }
             } else {
                 callback(false);
             }
@@ -274,6 +280,7 @@ export class AsignacionFechasComponent implements OnInit {
             callback(false);
         });
   }
+  
 
   mostrarDatosEvaluacionExistente(data: any) {
     this.evaluacionExistente = data; // Asignar la evaluación existente
