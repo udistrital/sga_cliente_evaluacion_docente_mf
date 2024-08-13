@@ -14,9 +14,12 @@
       <label for="periodoFormacion">{{ "asignacion_fechas.seleccionar_periodo" | translate }}</label>
       <select id="periodoFormacion" [(ngModel)]="periodoFormacion">
         <option value="" disabled selected>Selecciona el período de formación</option>
-        <option *ngFor="let periodo of periodos" [value]="periodo.Id">{{ periodo.Nombre }}</option>
+        <option *ngFor="let periodo of periodos" [value]="periodo.Id">
+          <span [ngClass]="{'punto-verde': periodo.Activo, 'punto-rojo': !periodo.Activo}"></span>
+          {{ periodo.Nombre }} - {{ periodo.Descripcion }}
+        </option>
       </select>
-    </div>
+    </div>    
   </div>
 
   <div class="procesos-grid">
