@@ -4,6 +4,7 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Subject, BehaviorSubject, combineLatest } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, switchMap, map } from 'rxjs/operators';
 import { AnyService } from 'src/app/services/any.service';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'ngx-dinamicform',
@@ -19,6 +20,8 @@ export class DynamicFormComponent implements OnInit, OnChanges {
   @Output() interlaced: EventEmitter<any> = new EventEmitter();
   @Output() percentage: EventEmitter<any> = new EventEmitter();
   
+  emptyControl = new FormControl(null);
+  form: FormGroup;
   data: any;
   searchTerm$ = new Subject<any>();
   @ViewChild(MatDatepicker, { static: true }) datepicker!: MatDatepicker<Date>;
@@ -28,9 +31,21 @@ export class DynamicFormComponent implements OnInit, OnChanges {
   init!: boolean;
 
   constructor(
+    private fb: FormBuilder,
     private sanitization: DomSanitizer,
     private anyService: AnyService,
   ) {
+    // Inicializar el formulario con un grupo vacío
+    this.form = this.fb.group({
+      step_1: this.fb.group({
+        // controles para el paso 1
+      }),
+      step_2: this.fb.group({
+        // controles para el paso 2
+      }),
+      // Añade todos los pasos necesarios
+    });
+
     this.data = {
       valid: true,
       data: {},
@@ -77,6 +92,7 @@ export class DynamicFormComponent implements OnInit, OnChanges {
   ngOnChanges(changes: any) {
     if (changes.normalform && changes.normalform.currentValue) {
       this.normalform = changes.normalform.currentValue;
+      this.initializeForm();
     }
     if (changes.modeloData && changes.modeloData.currentValue) {
       this.modeloData = changes.modeloData.currentValue;
@@ -131,6 +147,8 @@ export class DynamicFormComponent implements OnInit, OnChanges {
       this.normalform.tipo_formulario = 'mini';
     }
 
+    this.initializeForm();
+
     this.normalform.campos = this.normalform.campos.map((d: any) => {
       d.clase = 'form-control';
       if (d.relacion === undefined) {
@@ -150,6 +168,14 @@ export class DynamicFormComponent implements OnInit, OnChanges {
     });
   }
 
+  initializeForm() {
+    const formGroup: { [key: string]: any } = {};
+    this.normalform.campos.forEach((c: any) => {
+      formGroup[c.nombre] = [c.valor || ''];
+    });
+    this.form = this.fb.group(formGroup);
+  }
+  
   onChange(event: any, c: any) {
     if (c.etiqueta === 'file') {
       c.urlTemp = URL.createObjectURL(event.target.files[0]);
@@ -159,6 +185,10 @@ export class DynamicFormComponent implements OnInit, OnChanges {
     }
     this.validCampo(c);
   }
+
+  getStepControlName(step: number): string {
+    return `step_${step}`;
+}
 
   onChangeDate(event: any, c: any) {
     c.valor = event.value;
@@ -329,17 +359,16 @@ export class DynamicFormComponent implements OnInit, OnChanges {
     c.valor = !c.valor;
     c.alerta = '';
   }
-
   getUniqueSteps(campos: any[]): number[] {
     const uniqueSteps: number[] = [];
     for (const campo of campos) {
-      if (!uniqueSteps.includes(campo.step)) {
+      if (!uniqueSteps.includes(campo.step) && this.form.get(this.getStepControlName(campo.step))) {
         uniqueSteps.push(campo.step);
       }
     }
     return uniqueSteps;
   }
-
+  
   getFieldsInStep(step: number): any[] {
     return this.normalform.campos.filter((c: any) => c.step === step);
   }

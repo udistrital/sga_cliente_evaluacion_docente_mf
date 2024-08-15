@@ -29,6 +29,7 @@ import { UserService } from './services/user.service';
 import { EventosService } from './services/eventos.service';
 import { ParametrosService } from './services/parametros.service';
 import { AnyService } from './services/any.service';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, environment.apiUrl + 'assets/i18n/', '.json');
@@ -67,6 +68,7 @@ export function createTranslateLoader(http: HttpClient) {
     MatButtonModule,
     MatIconModule,
     MatFormFieldModule,
+    MatExpansionModule,
     MatStepperModule  
   ],
   providers: [
