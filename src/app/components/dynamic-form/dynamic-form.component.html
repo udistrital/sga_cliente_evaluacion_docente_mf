@@ -1,0 +1,235 @@
+<div [ngSwitch]="normalform.tipo_formulario">
+
+    <!-- Formulario Mini -->
+    <form *ngSwitchCase="'mini'" class="form-horizontal">
+        <mat-card>
+            <mat-card-header>
+                <mat-card-title>{{ normalform.titulo }}</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <div class="form-grid">
+                    <div *ngFor="let c of normalform.campos" class="{{ c.claseGrid }}"
+                        [ngClass]="{ 'display-none': c.ocultar }" [ngSwitch]="c.etiqueta">
+
+                        <!-- Input -->
+                        <mat-form-field *ngSwitchCase="'input'" appearance="outline" style="width: 100%"
+                            floatLabel="always">
+                            <mat-label>{{ c.requerido ? "* " + c.label : c.label }}</mat-label>
+                            <input matInput [(ngModel)]="c.valor" (ngModelChange)="validCampo(c)"
+                                [ngModelOptions]="{ standalone: true }" [type]="c.tipo" [id]="c.nombre" [min]="c.min"
+                                [max]="c.max" [placeholder]="c.placeholder" [disabled]="c.deshabilitar"
+                                [pattern]="c.pattern" />
+                            <mat-hint class="text-danger">{{ c.alerta }}</mat-hint>
+                        </mat-form-field>
+
+                        <!-- Checkbox -->
+                        <div *ngSwitchCase="'checkbox'" class="mt-4">
+                            <mat-checkbox [(ngModel)]="c.valor" (change)="onCheckboxChange(c)"
+                                [ngModelOptions]="{ standalone: true }" [disabled]="c.deshabilitar">
+                                {{ c.requerido ? "* " + c.label : c.label }}
+                            </mat-checkbox>
+                            <mat-hint class="text-danger">{{ c.alerta }}</mat-hint>
+                        </div>
+
+                        <!-- Textarea -->
+                        <mat-form-field *ngSwitchCase="'textarea'" appearance="outline" style="width: 100%"
+                            floatLabel="always">
+                            <mat-label>{{ c.requerido ? "* " + c.label : c.label }}</mat-label>
+                            <textarea matInput [(ngModel)]="c.valor" (ngModelChange)="validCampo(c)"
+                                [ngModelOptions]="{ standalone: true }" [id]="c.nombre" [placeholder]="c.placeholder"
+                                [disabled]="c.deshabilitar" cdkTextareaAutosize cdkAutosizeMinRows="3"
+                                cdkAutosizeMaxRows="6"></textarea>
+                            <mat-hint class="text-danger">{{ c.alerta }}</mat-hint>
+                        </mat-form-field>
+
+                        <!-- Datepicker -->
+                        <mat-form-field *ngSwitchCase="'mat-date'" appearance="outline" style="width: 100%"
+                            floatLabel="always">
+                            <mat-label>{{ c.requerido ? "* " + c.label : c.label }}</mat-label>
+                            <input matInput [matDatepicker]="picker" [(ngModel)]="c.valor"
+                                (dateChange)="onChangeDate($event, c); validCampo(c)"
+                                [ngModelOptions]="{ standalone: true }" [placeholder]="c.placeholder"
+                                [disabled]="c.deshabilitar" />
+                            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                            <mat-datepicker #picker></mat-datepicker>
+                            <mat-hint class="text-danger">{{ c.alerta }}</mat-hint>
+                        </mat-form-field>
+
+                        <!-- Select -->
+                        <mat-form-field *ngSwitchCase="'select'" appearance="outline" style="width: 100%"
+                            floatLabel="always">
+                            <mat-label>{{ c.requerido ? "* " + c.label : c.label }}</mat-label>
+                            <mat-select [(ngModel)]="c.valor" (selectionChange)="validCampo(c)"
+                                [ngModelOptions]="{ standalone: true }" [disabled]="c.deshabilitar">
+                                <mat-option value="">{{ '--Seleccionar--' }}</mat-option>
+                                <mat-option *ngFor="let item of c.opciones" [value]="item">
+                                    {{ c.key ? item[c.key] : (item | json) }}
+                                </mat-option>
+                            </mat-select>
+                            <mat-hint class="text-danger">{{ c.alerta }}</mat-hint>
+                        </mat-form-field>
+
+                        <!-- File Input -->
+                        <div *ngSwitchCase="'file'" class="input-file">
+                            <label>{{ c.requerido ? "* " + c.label : c.label }}</label>
+                            <input type="file" (change)="onChange($event, c)" [disabled]="c.deshabilitar" />
+                            <mat-hint class="text-danger">{{ c.alerta }}</mat-hint>
+                            <div *ngIf="c.urlTemp" class="mt-2">
+                                <button mat-button color="primary" (click)="download(c.urlTemp, c.nombre, 500, 500)">
+                                    <mat-icon>cloud_download</mat-icon>
+                                    {{ "GLOBAL.click_aqui" | translate }}
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Button -->
+                        <div *ngSwitchCase="'button'" class="mt-4">
+                            <button mat-flat-button color="primary" [id]="c.id" (click)="auxButton(c)">
+                                <mat-icon>{{ c.icono }}</mat-icon>
+                                {{ c.label }}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <ng-content></ng-content>
+
+                <div class="mt-4" *ngIf="normalform.btnLimpiar || normalform.btn">
+                    <button mat-flat-button color="warn" (click)="clearForm()" *ngIf="normalform.btnLimpiar">
+                        {{ normalform.btnLimpiar }}
+                    </button>
+                    <button mat-flat-button color="accent" (click)="validForm()" *ngIf="normalform.btn">
+                        {{ normalform.btn }}
+                    </button>
+                </div>
+            </mat-card-content>
+        </mat-card>
+    </form>
+
+    <!-- Formulario por Pasos (bySteps) -->
+    <form *ngSwitchCase="'bySteps'" class="form-horizontal">
+        <mat-card>
+            <mat-card-header>
+                <mat-card-title>{{ normalform.titulo }}</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <mat-vertical-stepper #stepper>
+                    <mat-step
+                        *ngFor="let step of getUniqueSteps(normalform.campos); let isFirst = first; let isLast = last"
+                        [label]="('GLOBAL.paso' | translate) + ' ' + step">
+
+                        <div class="form-grid">
+                            <div *ngFor="let c of getFieldsInStep(step)" class="{{ c.claseGrid }}"
+                                [ngClass]="{ 'display-none': c.ocultar }" [ngSwitch]="c.etiqueta">
+
+                                <!-- Input -->
+                                <mat-form-field *ngSwitchCase="'input'" appearance="outline" style="width: 100%"
+                                    floatLabel="always">
+                                    <mat-label>{{ c.requerido ? "* " + c.label : c.label }}</mat-label>
+                                    <input matInput [(ngModel)]="c.valor" (ngModelChange)="validCampo(c)"
+                                        [ngModelOptions]="{ standalone: true }" [type]="c.tipo" [id]="c.nombre"
+                                        [min]="c.min" [max]="c.max" [placeholder]="c.placeholder"
+                                        [disabled]="c.deshabilitar" [pattern]="c.pattern" />
+                                    <mat-hint class="text-danger">{{ c.alerta }}</mat-hint>
+                                </mat-form-field>
+
+                                <!-- Checkbox -->
+                                <div *ngSwitchCase="'checkbox'" class="mt-4">
+                                    <mat-checkbox [(ngModel)]="c.valor" (change)="onCheckboxChange(c)"
+                                        [ngModelOptions]="{ standalone: true }" [disabled]="c.deshabilitar">
+                                        {{ c.requerido ? "* " + c.label : c.label }}
+                                    </mat-checkbox>
+                                    <mat-hint class="text-danger">{{ c.alerta }}</mat-hint>
+                                </div>
+
+                                <!-- Datepicker -->
+                                <mat-form-field *ngSwitchCase="'mat-date'" appearance="outline" style="width: 100%"
+                                    floatLabel="always">
+                                    <mat-label>{{ c.requerido ? "* " + c.label : c.label }}</mat-label>
+                                    <input matInput [matDatepicker]="picker" [(ngModel)]="c.valor"
+                                        (dateChange)="onChangeDate($event, c); validCampo(c)"
+                                        [ngModelOptions]="{ standalone: true }" [placeholder]="c.placeholder"
+                                        [disabled]="c.deshabilitar" />
+                                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                    <mat-datepicker #picker></mat-datepicker>
+                                    <mat-hint class="text-danger">{{ c.alerta }}</mat-hint>
+                                </mat-form-field>
+
+                                <!-- Select -->
+                                <mat-form-field *ngSwitchCase="'select'" appearance="outline" style="width: 100%"
+                                    floatLabel="always">
+                                    <mat-label>{{ c.requerido ? "* " + c.label : c.label }}</mat-label>
+                                    <mat-select [(ngModel)]="c.valor" (selectionChange)="validCampo(c)"
+                                        [ngModelOptions]="{ standalone: true }" [disabled]="c.deshabilitar">
+                                        <mat-option value="">{{ '--Seleccionar--' }}</mat-option>
+                                        <mat-option *ngFor="let item of c.opciones" [value]="item">
+                                            {{ c.key ? item[c.key] : (item | json) }}
+                                        </mat-option>
+                                    </mat-select>
+                                    <mat-hint class="text-danger">{{ c.alerta }}</mat-hint>
+                                </mat-form-field>
+
+                                <!-- Auto Complete -->
+                                <mat-form-field *ngSwitchCase="'autocomplete'" appearance="outline" style="width: 100%"
+                                    floatLabel="always">
+                                    <mat-label>{{ c.requerido ? "* " + c.label : c.label }}</mat-label>
+                                    <input type="text" matInput [placeholder]="c.placeholder" [matAutocomplete]="auto"
+                                        [disabled]="c.deshabilitar" (keyup)="handleKeyUp($event, c)" />
+                                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayWithFn"
+                                        (optionSelected)="setNewValue($event.option.value, c)">
+                                        <mat-option *ngFor="let item of c.opciones" [value]="item">
+                                            {{ c.key ? item[c.key] : (item | json) }}
+                                        </mat-option>
+                                    </mat-autocomplete>
+                                    <mat-hint class="text-danger">{{ c.alerta }}</mat-hint>
+                                </mat-form-field>
+
+                                <!-- File Input -->
+                                <div *ngSwitchCase="'file'" class="input-file">
+                                    <label>{{ c.requerido ? "* " + c.label : c.label }}</label>
+                                    <input type="file" (change)="onChange($event, c)" [disabled]="c.deshabilitar" />
+                                    <mat-hint class="text-danger">{{ c.alerta }}</mat-hint>
+                                    <div *ngIf="c.urlTemp" class="mt-2">
+                                        <button mat-button color="primary"
+                                            (click)="download(c.urlTemp, c.nombre, 500, 500)">
+                                            <mat-icon>cloud_download</mat-icon>
+                                            {{ "GLOBAL.click_aqui" | translate }}
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Button -->
+                                <div *ngSwitchCase="'button'" class="mt-4">
+                                    <button mat-flat-button color="primary" [id]="c.id" (click)="auxButton(c)">
+                                        <mat-icon>{{ c.icono }}</mat-icon>
+                                        {{ c.label }}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4" style="display: flex; justify-content: space-between;">
+                            <button mat-stroked-button color="primary" matStepperPrevious [disabled]="isFirst">
+                                {{ "GLOBAL.regresar" | translate }}
+                            </button>
+                            <button mat-stroked-button color="primary" matStepperNext [disabled]="isLast">
+                                {{ "GLOBAL.siguiente" | translate }}
+                            </button>
+                        </div>
+                    </mat-step>
+                </mat-vertical-stepper>
+
+                <ng-content></ng-content>
+
+                <div class="mt-4" *ngIf="normalform.btnLimpiar || normalform.btn">
+                    <button mat-flat-button color="warn" (click)="clearForm()" *ngIf="normalform.btnLimpiar">
+                        {{ normalform.btnLimpiar }}
+                    </button>
+                    <button mat-flat-button color="accent" (click)="validForm()" *ngIf="normalform.btn">
+                        {{ normalform.btn }}
+                    </button>
+                </div>
+            </mat-card-content>
+        </mat-card>
+    </form>
+</div>
