@@ -1,4 +1,4 @@
 export const environment = {
     production: false,
-    apiUrl: "http://localhost:4218/"
+    apiUrl: "https://pruebassgaadministracion.portaloas.udistrital.edu.co"
 }

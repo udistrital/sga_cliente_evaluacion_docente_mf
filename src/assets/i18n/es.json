@@ -30,7 +30,10 @@
         "concejos_curriculares": "Concejos Curriculares",
         "visualizador_formulario": "Visualizador del formulario",
         "procesos_seleccionar": "Procesos a seleccionar",
-        "guardar": "Guardar"
+        "guardar": "Guardar",
+        "cerrar": "Cerrar",
+        "sin_permisos_titulo": "Acceso denegado",
+        "sin_permisos_mensaje": "No tienes los permisos necesarios para visualizar esta información. Por favor, contacta al administrador del sistema para obtener más detalles o para solicitar acceso."
     },
 
     "definir_escalas": {
