@@ -1,7 +1,8 @@
-
 import { Component, OnInit } from '@angular/core';
 import { ROLES } from 'src/app/models/diccionario';
 import { UserService } from 'src/app/services/user.service';
+import { MatSelectChange } from '@angular/material/select';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-evaluaciones',
@@ -14,35 +15,83 @@ export class EvaluacionesComponent implements OnInit {
   showModal = false;
   userRoles: string[] = [];
   ROLES = ROLES;
+  showDynamicForm = false;
+  formData: any = {}; 
+  heteroForm: FormGroup;
+  coevaluacionIIForm: FormGroup;
+  coevaluacionIForm: FormGroup;
+  autoevaluacionIIForm: FormGroup;
+  autoevaluacionIForm: FormGroup;
 
-  // Propiedades para manejar los valores por defecto e interacción
-  inicioFecha: string = '2024-01-01';  // Fecha predeterminada
-  finFecha: string = '2024-12-31';     // Fecha predeterminada
-
-  estudianteNombre: string = 'Estudiante Predeterminado';
-  estudianteIdentificacion: string = '123456789';
-
-  proyectoCurricular: string = 'proyecto1';
-  proyectoCurricular2: string = 'proyecto2';
-  proyectoCurricularN: string = 'proyectoN';
-
-  docenteNombre: string = 'docente1';
-  docenteIdentificacion: string = '987654321';
-
-  espacioAcademico: string = 'Espacio Académico 1';
-  espacioAcademico2: string = 'Espacio Académico 2';
-  espacioAcademicoN: string = 'Espacio Académico N';
-
-  descripcionProceso: string = 'Descripción predeterminada del proceso.';
-  formularioProceso: string = 'Formulario predeterminado.';
-
-  grupoSeleccionado: string = 'grupo1';
-
-  constructor(private userService: UserService) {}
-
+  constructor(private fb: FormBuilder, private userService: UserService) {
+    // Inicialización en el constructor
+    this.heteroForm = this.fb.group({});
+    this.coevaluacionIIForm = this.fb.group({});
+    this.coevaluacionIForm = this.fb.group({});
+    this.autoevaluacionIIForm = this.fb.group({});
+    this.autoevaluacionIForm = this.fb.group({});
+  }
   ngOnInit(): void {
+    this.initializeForms();
+
+    // Obtener los roles del usuario
     this.userService.getUserRoles().then(roles => {
       this.userRoles = roles;
+    });
+  }
+
+  initializeForms(): void {
+    this.heteroForm = this.fb.group({
+      inicioFecha: ['', Validators.required],
+      finFecha: ['', Validators.required],
+      estudianteNombre: ['', Validators.required],
+      estudianteIdentificacion: ['', Validators.required],
+      proyectoCurricular: ['', Validators.required],
+      docenteNombre: ['', Validators.required],
+      descripcionProceso: ['', Validators.required]
+    });
+
+    this.coevaluacionIIForm = this.fb.group({
+      inicioFecha: ['', Validators.required],
+      finFecha: ['', Validators.required],
+      proyectoCurricular: ['', Validators.required],
+      docenteNombre: ['', Validators.required],
+      descripcionProceso: ['', Validators.required]
+    });
+
+    this.coevaluacionIForm = this.fb.group({
+      inicioFecha: ['', Validators.required],
+      finFecha: ['', Validators.required],
+      proyectoCurricular: ['', Validators.required],
+      espacioAcademico: ['', Validators.required],
+      docenteNombre: ['', Validators.required],
+      grupoSeleccionado: ['', Validators.required],
+      descripcionProceso: ['', Validators.required]
+    });
+
+    this.autoevaluacionIIForm = this.fb.group({
+      inicioFecha: ['', Validators.required],
+      finFecha: ['', Validators.required],
+      docenteNombre: ['', Validators.required],
+      docenteIdentificacion: ['', Validators.required],
+      proyectoCurricular: ['', Validators.required],
+      proyectoCurricular2: ['', Validators.required],
+      proyectoCurricularN: ['', Validators.required],
+      espacioAcademico: ['', Validators.required],
+      espacioAcademico2: ['', Validators.required],
+      espacioAcademicoN: ['', Validators.required],
+      descripcionProceso: ['', Validators.required]
+    });
+
+    this.autoevaluacionIForm = this.fb.group({
+      inicioFecha: ['', Validators.required],
+      finFecha: ['', Validators.required],
+      estudianteNombre: ['', Validators.required],
+      estudianteIdentificacion: ['', Validators.required],
+      proyectoCurricular: ['', Validators.required],
+      proyectoCurricular2: ['', Validators.required],
+      descripcionProceso: ['', Validators.required],
+      formularioProceso: ['', Validators.required]
     });
   }
 
@@ -50,88 +99,149 @@ export class EvaluacionesComponent implements OnInit {
     this.showTerms = !this.showTerms;
   }
 
-  onSelectChange(event: Event) {
-    const selectElement = event.target as HTMLSelectElement;
-    this.selectedEvaluation = selectElement.value;
-
+  onSelectChange(event: MatSelectChange) {
+    this.selectedEvaluation = event.value;
+  
     // Ajustar valores relacionados según la evaluación seleccionada
-    if (this.selectedEvaluation === 'heteroevaluacion') {
-      this.setHeteroevaluacionData();
-    } else if (this.selectedEvaluation === 'coevaluacion-i') {
-      this.setCoevaluacionIData();
-    } else if (this.selectedEvaluation === 'coevaluacion-ii') {
-      this.setCoevaluacionIIData();
-    } else if (this.selectedEvaluation === 'autoevaluacion-i') {
-      this.setAutoevaluacionIData();
-    } else if (this.selectedEvaluation === 'autoevaluacion-ii') {
-      this.setAutoevaluacionIIData();
+    switch (this.selectedEvaluation) {
+      case 'heteroevaluacion':
+        this.setHeteroevaluacionData();
+        break;
+      case 'coevaluacion-i':
+        this.setCoevaluacionIData();
+        break;
+      case 'coevaluacion-ii':
+        this.setCoevaluacionIIData();
+        break;
+      case 'autoevaluacion-i':
+        this.setAutoevaluacionIData();
+        break;
+      case 'autoevaluacion-ii':
+        this.setAutoevaluacionIIData();
+        break;
     }
   }
 
+  onVisualizar() {
+    switch (this.selectedEvaluation) {
+      case 'heteroevaluacion':
+        this.formData = this.heteroForm.value;
+        break;
+      case 'coevaluacion-i':
+        this.formData = this.coevaluacionIForm.value;
+        break;
+      case 'coevaluacion-ii':
+        this.formData = this.coevaluacionIIForm.value;
+        break;
+      case 'autoevaluacion-i':
+        this.formData = this.autoevaluacionIForm.value;
+        break;
+      case 'autoevaluacion-ii':
+        this.formData = this.autoevaluacionIIForm.value;
+        break;
+    }
+    this.showDynamicForm = true;
+  }
+
   setHeteroevaluacionData() {
-    this.inicioFecha = '2024-01-15';
-    this.finFecha = '2024-05-30';
-    this.estudianteNombre = 'Estudiante Heteroevaluación';
-    this.estudianteIdentificacion = '123456789H';
-    this.proyectoCurricular = 'proyecto1';
-    this.docenteNombre = 'Docente Heteroevaluación';
-    this.descripcionProceso = 'Descripción del proceso de Heteroevaluación.';
-    this.formularioProceso = 'Formulario de Heteroevaluación.';
+    this.heteroForm.patchValue({
+      inicioFecha: '2024-01-15',
+      finFecha: '2024-05-30',
+      estudianteNombre: 'Estudiante Heteroevaluación',
+      estudianteIdentificacion: '123456789H',
+      proyectoCurricular: 'proyecto1',
+      docenteNombre: 'Docente Heteroevaluación',
+      descripcionProceso: 'Descripción del proceso de Heteroevaluación.'
+    });
   }
 
   setCoevaluacionIData() {
-    this.inicioFecha = '2024-02-01';
-    this.finFecha = '2024-06-15';
-    this.proyectoCurricular = 'proyecto2';
-    this.espacioAcademico = 'Espacio Académico Coevaluación I';
-    this.docenteNombre = 'Docente Coevaluación I';
-    this.grupoSeleccionado = 'grupo2';
-    this.descripcionProceso = 'Descripción del proceso de Coevaluación I.';
-    this.formularioProceso = 'Formulario de Coevaluación I.';
+    this.coevaluacionIForm.patchValue({
+      inicioFecha: '2024-02-01',
+      finFecha: '2024-06-15',
+      proyectoCurricular: 'proyecto2',
+      docenteNombre: 'Docente Coevaluación I',
+      descripcionProceso: 'Descripción del proceso de Coevaluación I.',
+      espacioAcademico: 'Espacio Académico Coevaluación I',
+      grupoSeleccionado: 'grupo2'
+    });
   }
 
   setCoevaluacionIIData() {
-    this.inicioFecha = '2024-03-01';
-    this.finFecha = '2024-07-01';
-    this.proyectoCurricular = 'proyecto1';
-    this.docenteNombre = 'Docente Coevaluación II';
-    this.espacioAcademico = 'Espacio Académico Coevaluación II';
-    this.descripcionProceso = 'Descripción del proceso de Coevaluación II.';
-    this.formularioProceso = 'Formulario de Coevaluación II.';
+    this.coevaluacionIIForm.patchValue({
+      inicioFecha: '2024-03-01',
+      finFecha: '2024-07-01',
+      proyectoCurricular: 'proyecto1',
+      docenteNombre: 'Docente Coevaluación II',
+      descripcionProceso: 'Descripción del proceso de Coevaluación II.',
+      espacioAcademico: 'Espacio Académico Coevaluación II'
+    });
   }
 
   setAutoevaluacionIData() {
-    this.inicioFecha = '2024-04-01';
-    this.finFecha = '2024-08-01';
-    this.estudianteNombre = 'Estudiante Autoevaluación I';
-    this.estudianteIdentificacion = '123456789A';
-    this.proyectoCurricular = 'proyecto1';
-    this.descripcionProceso = 'Descripción del proceso de Autoevaluación I.';
-    this.formularioProceso = 'Formulario de Autoevaluación I.';
+    this.autoevaluacionIForm.patchValue({
+      inicioFecha: '2024-04-01',
+      finFecha: '2024-08-01',
+      estudianteNombre: 'Estudiante Autoevaluación I',
+      estudianteIdentificacion: '123456789A',
+      proyectoCurricular: 'proyecto1',
+      descripcionProceso: 'Descripción del proceso de Autoevaluación I.'
+    });
   }
 
   setAutoevaluacionIIData() {
-    this.inicioFecha = '2024-05-01';
-    this.finFecha = '2024-09-01';
-    this.docenteNombre = 'Docente Autoevaluación II';
-    this.docenteIdentificacion = '987654321A';
-    this.proyectoCurricular = 'proyecto2';
-    this.espacioAcademico = 'Espacio Académico Autoevaluación II';
-    this.descripcionProceso = 'Descripción del proceso de Autoevaluación II.';
-    this.formularioProceso = 'Formulario de Autoevaluación II.';
+    this.autoevaluacionIIForm.patchValue({
+      inicioFecha: '2024-05-01',
+      finFecha: '2024-09-01',
+      docenteNombre: 'Docente Autoevaluación II',
+      docenteIdentificacion: '987654321A',
+      proyectoCurricular: 'proyecto2',
+      descripcionProceso: 'Descripción del proceso de Autoevaluación II.'
+    });
   }
 
   onGuardar() {
-    console.log(`Guardando ${this.selectedEvaluation}`);
-    console.log(`Datos a guardar: 
-    Fecha Inicio: ${this.inicioFecha}, 
-    Fecha Fin: ${this.finFecha}, 
-    Estudiante: ${this.estudianteNombre}, 
-    Identificación: ${this.estudianteIdentificacion},
-    Proyecto: ${this.proyectoCurricular}, 
-    Docente: ${this.docenteNombre},
-    Descripción: ${this.descripcionProceso}, 
-    Formulario: ${this.formularioProceso}`);
+    let formValues;
+
+    switch (this.selectedEvaluation) {
+      case 'heteroevaluacion':
+        if (this.heteroForm.valid) {
+          formValues = this.heteroForm.value;
+          console.log(`Guardando Heteroevaluación`);
+        }
+        break;
+      case 'coevaluacion-i':
+        if (this.coevaluacionIForm.valid) {
+          formValues = this.coevaluacionIForm.value;
+          console.log(`Guardando Coevaluación I`);
+        }
+        break;
+      case 'coevaluacion-ii':
+        if (this.coevaluacionIIForm.valid) {
+          formValues = this.coevaluacionIIForm.value;
+          console.log(`Guardando Coevaluación II`);
+        }
+        break;
+      case 'autoevaluacion-i':
+        if (this.autoevaluacionIForm.valid) {
+          formValues = this.autoevaluacionIForm.value;
+          console.log(`Guardando Autoevaluación I`);
+        }
+        break;
+      case 'autoevaluacion-ii':
+        if (this.autoevaluacionIIForm.valid) {
+          formValues = this.autoevaluacionIIForm.value;
+          console.log(`Guardando Autoevaluación II`);
+        }
+        break;
+    }
+
+    if (formValues) {
+      console.log(`Datos a guardar:`, formValues);
+      // Aquí podrías agregar la lógica para enviar los datos al servidor o realizar otras acciones necesarias
+    } else {
+      console.log('El formulario no es válido. Por favor, completa todos los campos requeridos.');
+    }
   }
 
   onGenerarSoporte() {
@@ -146,6 +256,10 @@ export class EvaluacionesComponent implements OnInit {
     console.log(`Confirmando ${this.selectedEvaluation}`);
     this.closeModal();
   }
+
+  closeDynamicForm() {
+    this.showDynamicForm = false;
+  }  
 
   closeModal() {
     this.showModal = false;

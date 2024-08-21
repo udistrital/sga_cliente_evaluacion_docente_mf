@@ -1,5 +1,3 @@
-@import 'src/assets/styles/palette-angular-material.css';
-
 .container {
   margin: 20px;
 }
@@ -12,6 +10,43 @@
   background-color: #ffffff;
 }
 
+.center-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 150px; /* Ajusta la altura según lo necesario */
+  border: 2px dashed #b0b0b0; /* Bordes punteados */
+  border-radius: 5px;
+  margin-top: 10px;
+  background-color: #f9f9f9; /* Fondo del contenedor */
+}
+
+.btn-visualizar {
+  background-color: var(--md-primary-500);
+  color: var(--md-primary-contrast-500);
+  border: none;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 16px;
+  margin: 0;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+
+  i {
+      font-size: 24px;
+  }
+
+  &:hover {
+      background-color: var(--md-primary-700);
+  }
+}
+
+
 .evaluation-form {
   display: flex;
   flex-direction: column;
@@ -19,16 +54,14 @@
 
 h2 {
   font-size: 1.5em;
-  margin-bottom: 20px;
+  margin-bottom: 15px; /* Se ajustó para reducir el espacio */
   color: var(--md-primary-700);
-  margin-top: 10px;
-  margin-bottom: 15px;
   border-bottom: 1px solid var(--md-primary-200);
   padding-bottom: 10px;
 }
 
 .form-group {
-  margin-bottom: 25px;
+  margin-bottom: 15px; /* Se ajustó para reducir el espacio */
   text-align: left;
 
   label {
@@ -36,7 +69,7 @@ h2 {
     font-weight: bold;
     margin-bottom: 5px;
     color: var(--md-primary-700);
-    opacity: 0.85;  // Aumenta ligeramente la visibilidad del label
+    opacity: 0.85;
   }
 
   input, select, textarea {
@@ -56,8 +89,8 @@ h2 {
     }
 
     &::placeholder {
-      color: var(--md-primary-200);  // Placeholder suave y menos notable
-      opacity: 0.7;  // Placeholder visible pero no dominante
+      color: var(--md-primary-200);
+      opacity: 0.7;
     }
   }
 
@@ -76,14 +109,14 @@ h2 {
   .form-inline {
     display: flex;
     justify-content: space-between;
-    gap: 20px;  /* Espacio adicional entre elementos inline */
+    gap: 10px;  /* Se ajustó para reducir el espacio */
   }
 }
 
 .button-group {
   display: flex;
   justify-content: space-between;
-  gap: 20px;
+  gap: 10px;  /* Se ajustó para reducir el espacio */
 }
 
 button {
@@ -95,7 +128,7 @@ button {
   text-decoration: none;
   display: inline-block;
   font-size: 16px;
-  margin: 10px 2px;
+  margin: 5px 2px; /* Se ajustó para reducir el espacio */
   cursor: pointer;
   border-radius: 5px;
   transition: background-color 0.3s;
