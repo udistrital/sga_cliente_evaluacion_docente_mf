@@ -1,4 +1,4 @@
-<ng-container *ngIsGranted="[ROLES.ADMIN_SGA, ROLES.DOCENTE, ROLES.ESTUDIANTE, ROLES.CONSEJO_CURRICULAR]">
+<ng-container *ngIf="hasRole([ROLES.ADMIN_SGA, ROLES.DOCENTE, ROLES.ESTUDIANTE, ROLES.CONSEJO_CURRICULAR]); else noPermission">
     <div class="container">
         <div class="form-container">
             <h2>{{ "definir_escalas.titulo" | translate }}</h2>
@@ -92,4 +92,23 @@
             </div>
         </div>
     </div>
-</ng-container>
+
+  </ng-container>
+  
+  <!-- Modal para mostrar cuando el usuario no tiene permisos -->
+  <ng-template #noPermission>
+    <div class="modal-overlay" *ngIf="!hasRole([ROLES.ADMIN_SGA, ROLES.DOCENTE, ROLES.ESTUDIANTE, ROLES.CONSEJO_CURRICULAR])">
+      <div class="modal-content">
+        <h2>{{ "definicion_formularios.sin_permisos_titulo" | translate }}</h2>
+        <p>{{ "definicion_formularios.sin_permisos_mensaje" | translate }}</p>
+        <!-- Icono grande de carita triste -->
+        <div class="sad-face-icon">
+          <mat-icon class="sad-icon">sentiment_dissatisfied</mat-icon>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+  
+  
+  
+  

@@ -50,11 +50,5 @@ export class DefinicionFormulariosComponent implements OnInit {
     return requiredRoles.some(role => this.userRoles.includes(role));
   }
 
-  openModal() {
-    this.modalVisible = true;
-  }
 
-  closeModal() {
-    this.modalVisible = false;
-  }
 }

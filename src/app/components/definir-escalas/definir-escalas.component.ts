@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ROLES } from 'src/app/models/diccionario';
 import { UserService } from 'src/app/services/user.service';
+import { DateService } from 'src/app/services/date.service';
 
 
 @Component({
@@ -33,13 +34,22 @@ export class DefinirEscalasComponent implements OnInit {
     { label: 'SOBRESALIENTE', descripcion: '4' },
     { label: 'EXCELENTE', descripcion: '5' }
   ];
+  dateHeader: string | undefined;
 
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService, private dateService: DateService) { }
 
   ngOnInit(): void {
     this.userService.getUserRoles().then(roles => {
       this.userRoles = roles;
-    });
+
+      this.dateService.getDateHeader().subscribe(
+        (date: string) => {
+          this.dateHeader = date;
+          console.log('DateHeader:', this.dateHeader);
+        },
+        (error: any) => console.error('Error:', error),
+      );
+    }).catch(error => console.error('Error al obtener los roles de usuario:', error));
   }
 
   onChangeTipoEscala() {
