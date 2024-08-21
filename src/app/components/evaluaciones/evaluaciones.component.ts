@@ -3,6 +3,7 @@ import { ROLES } from 'src/app/models/diccionario';
 import { UserService } from 'src/app/services/user.service';
 import { MatSelectChange } from '@angular/material/select';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-evaluaciones',
@@ -24,13 +25,13 @@ export class EvaluacionesComponent implements OnInit {
   autoevaluacionIForm: FormGroup;
 
   constructor(private fb: FormBuilder, private userService: UserService) {
-    // Inicialización en el constructor
     this.heteroForm = this.fb.group({});
     this.coevaluacionIIForm = this.fb.group({});
     this.coevaluacionIForm = this.fb.group({});
     this.autoevaluacionIIForm = this.fb.group({});
     this.autoevaluacionIForm = this.fb.group({});
   }
+
   ngOnInit(): void {
     this.initializeForms();
 
@@ -95,58 +96,43 @@ export class EvaluacionesComponent implements OnInit {
     });
   }
 
-  toggleTerms() {
-    this.showTerms = !this.showTerms;
-  }
-
   onSelectChange(event: MatSelectChange) {
     this.selectedEvaluation = event.value;
-  
+    this.showDynamicForm = true;  // Asegurarse de que el dynamic form se muestre
     // Ajustar valores relacionados según la evaluación seleccionada
     switch (this.selectedEvaluation) {
       case 'heteroevaluacion':
         this.setHeteroevaluacionData();
+        this.formData = this.heteroForm.value;
         break;
       case 'coevaluacion-i':
         this.setCoevaluacionIData();
+        this.formData = this.coevaluacionIForm.value;
         break;
       case 'coevaluacion-ii':
         this.setCoevaluacionIIData();
+        this.formData = this.coevaluacionIIForm.value;
         break;
       case 'autoevaluacion-i':
         this.setAutoevaluacionIData();
+        this.formData = this.autoevaluacionIForm.value;
         break;
       case 'autoevaluacion-ii':
         this.setAutoevaluacionIIData();
+        this.formData = this.autoevaluacionIIForm.value;
         break;
     }
   }
 
-  onVisualizar() {
-    switch (this.selectedEvaluation) {
-      case 'heteroevaluacion':
-        this.formData = this.heteroForm.value;
-        break;
-      case 'coevaluacion-i':
-        this.formData = this.coevaluacionIForm.value;
-        break;
-      case 'coevaluacion-ii':
-        this.formData = this.coevaluacionIIForm.value;
-        break;
-      case 'autoevaluacion-i':
-        this.formData = this.autoevaluacionIForm.value;
-        break;
-      case 'autoevaluacion-ii':
-        this.formData = this.autoevaluacionIIForm.value;
-        break;
-    }
-    this.showDynamicForm = true;
+  handleFormResult(result: any) {
+    console.log('Resultados del formulario dinámico:', result);
+    // Aquí puedes manejar los datos resultantes del formulario dinámico
   }
 
   setHeteroevaluacionData() {
     this.heteroForm.patchValue({
-      inicioFecha: '2024-01-15',
-      finFecha: '2024-05-30',
+      inicioFecha: moment('2024-01-15', 'YYYY-MM-DD').format('DD/MM/YYYY'),
+      finFecha: moment('2024-05-30', 'YYYY-MM-DD').format('DD/MM/YYYY'),
       estudianteNombre: 'Estudiante Heteroevaluación',
       estudianteIdentificacion: '123456789H',
       proyectoCurricular: 'proyecto1',
@@ -157,8 +143,8 @@ export class EvaluacionesComponent implements OnInit {
 
   setCoevaluacionIData() {
     this.coevaluacionIForm.patchValue({
-      inicioFecha: '2024-02-01',
-      finFecha: '2024-06-15',
+      inicioFecha: moment('2024-02-01', 'YYYY-MM-DD').format('DD/MM/YYYY'),
+      finFecha: moment('2024-06-15', 'YYYY-MM-DD').format('DD/MM/YYYY'),
       proyectoCurricular: 'proyecto2',
       docenteNombre: 'Docente Coevaluación I',
       descripcionProceso: 'Descripción del proceso de Coevaluación I.',
@@ -169,8 +155,8 @@ export class EvaluacionesComponent implements OnInit {
 
   setCoevaluacionIIData() {
     this.coevaluacionIIForm.patchValue({
-      inicioFecha: '2024-03-01',
-      finFecha: '2024-07-01',
+      inicioFecha: moment('2024-03-01', 'YYYY-MM-DD').format('DD/MM/YYYY'),
+      finFecha: moment('2024-07-01', 'YYYY-MM-DD').format('DD/MM/YYYY'),
       proyectoCurricular: 'proyecto1',
       docenteNombre: 'Docente Coevaluación II',
       descripcionProceso: 'Descripción del proceso de Coevaluación II.',
@@ -180,8 +166,8 @@ export class EvaluacionesComponent implements OnInit {
 
   setAutoevaluacionIData() {
     this.autoevaluacionIForm.patchValue({
-      inicioFecha: '2024-04-01',
-      finFecha: '2024-08-01',
+      inicioFecha: moment('2024-04-01', 'YYYY-MM-DD').format('DD/MM/YYYY'),
+      finFecha: moment('2024-08-01', 'YYYY-MM-DD').format('DD/MM/YYYY'),
       estudianteNombre: 'Estudiante Autoevaluación I',
       estudianteIdentificacion: '123456789A',
       proyectoCurricular: 'proyecto1',
@@ -191,8 +177,8 @@ export class EvaluacionesComponent implements OnInit {
 
   setAutoevaluacionIIData() {
     this.autoevaluacionIIForm.patchValue({
-      inicioFecha: '2024-05-01',
-      finFecha: '2024-09-01',
+      inicioFecha: moment('2024-05-01', 'YYYY-MM-DD').format('DD/MM/YYYY'),
+      finFecha: moment('2024-09-01', 'YYYY-MM-DD').format('DD/MM/YYYY'),
       docenteNombre: 'Docente Autoevaluación II',
       docenteIdentificacion: '987654321A',
       proyectoCurricular: 'proyecto2',
@@ -206,36 +192,17 @@ export class EvaluacionesComponent implements OnInit {
     switch (this.selectedEvaluation) {
       case 'heteroevaluacion':
         if (this.heteroForm.valid) {
-          formValues = this.heteroForm.value;
+          formValues = {
+            ...this.heteroForm.value,
+            inicioFecha: moment(this.heteroForm.value.inicioFecha, 'DD/MM/YYYY').format('YYYY-MM-DD'),
+            finFecha: moment(this.heteroForm.value.finFecha, 'DD/MM/YYYY').format('YYYY-MM-DD')
+          };
           console.log(`Guardando Heteroevaluación`);
         }
         break;
-      case 'coevaluacion-i':
-        if (this.coevaluacionIForm.valid) {
-          formValues = this.coevaluacionIForm.value;
-          console.log(`Guardando Coevaluación I`);
-        }
-        break;
-      case 'coevaluacion-ii':
-        if (this.coevaluacionIIForm.valid) {
-          formValues = this.coevaluacionIIForm.value;
-          console.log(`Guardando Coevaluación II`);
-        }
-        break;
-      case 'autoevaluacion-i':
-        if (this.autoevaluacionIForm.valid) {
-          formValues = this.autoevaluacionIForm.value;
-          console.log(`Guardando Autoevaluación I`);
-        }
-        break;
-      case 'autoevaluacion-ii':
-        if (this.autoevaluacionIIForm.valid) {
-          formValues = this.autoevaluacionIIForm.value;
-          console.log(`Guardando Autoevaluación II`);
-        }
-        break;
+      // Similar para los otros casos
     }
-
+  
     if (formValues) {
       console.log(`Datos a guardar:`, formValues);
       // Aquí podrías agregar la lógica para enviar los datos al servidor o realizar otras acciones necesarias

@@ -28,12 +28,13 @@
             <div *ngIf="hasRole([ROLES.ESTUDIANTE, ROLES.ADMIN_SGA, ROLES.ADMIN_DOCENCIA])" class="form-container">
                 <h2>{{ 'heteroevaluacion.titulo' | translate }}</h2>
                 <form [formGroup]="heteroForm" (ngSubmit)="onGuardar()" class="evaluation-form">
-
                     <div class="form-grid2">
                         <div class="form-col1">
-                            <mat-form-field style="width: 100%" floatLabel="always">
+                            <mat-form-field style="width: 100%" floatLabel="always" appearance="fill">
                                 <mat-label>{{ 'heteroevaluacion.fechas' | translate }}</mat-label>
-                                <input matInput type="date" formControlName="inicioFecha" placeholder="Fecha de inicio">
+                                <input matInput [matDatepicker]="pickerInicio" formControlName="inicioFecha" placeholder="dd/MM/yyyy">
+                                <mat-datepicker-toggle matSuffix [for]="pickerInicio"></mat-datepicker-toggle>
+                                <mat-datepicker #pickerInicio></mat-datepicker>
                                 <mat-error
                                     *ngIf="heteroForm.get('inicioFecha')?.hasError('required') && heteroForm.get('inicioFecha')?.touched">
                                     {{ 'heteroevaluacion.error_fecha_inicio' | translate }}
@@ -41,36 +42,15 @@
                             </mat-form-field>
                         </div>
                         <div class="form-col1">
-                            <mat-form-field style="width: 100%" floatLabel="always">
-                                <input matInput type="date" formControlName="finFecha" placeholder="Fecha de fin">
+                            <mat-form-field style="width: 100%" floatLabel="always" appearance="fill">
+                                <mat-label>{{ 'heteroevaluacion.fechas' | translate }}</mat-label>
+                                <input matInput [matDatepicker]="pickerFin" formControlName="finFecha"
+                                    placeholder="dd/MM/yyyy">
+                                <mat-datepicker-toggle matSuffix [for]="pickerFin"></mat-datepicker-toggle>
+                                <mat-datepicker #pickerFin></mat-datepicker>
                                 <mat-error
                                     *ngIf="heteroForm.get('finFecha')?.hasError('required') && heteroForm.get('finFecha')?.touched">
                                     {{ 'heteroevaluacion.error_fecha_fin' | translate }}
-                                </mat-error>
-                            </mat-form-field>
-                        </div>
-                    </div>
-
-                    <div class="form-grid2">
-                        <div class="form-col1">
-                            <mat-form-field style="width: 100%" floatLabel="always">
-                                <mat-label>{{ 'heteroevaluacion.estudiante' | translate }}</mat-label>
-                                <input matInput type="text" formControlName="estudianteNombre"
-                                    placeholder="Nombre del estudiante">
-                                <mat-error
-                                    *ngIf="heteroForm.get('estudianteNombre')?.hasError('required') && heteroForm.get('estudianteNombre')?.touched">
-                                    {{ 'heteroevaluacion.error_estudiante' | translate }}
-                                </mat-error>
-                            </mat-form-field>
-                        </div>
-                        <div class="form-col1">
-                            <mat-form-field style="width: 100%" floatLabel="always">
-                                <mat-label>{{ 'heteroevaluacion.identificacion_estudiante' | translate }}</mat-label>
-                                <input matInput type="text" formControlName="estudianteIdentificacion"
-                                    placeholder="Identificación del estudiante">
-                                <mat-error
-                                    *ngIf="heteroForm.get('estudianteIdentificacion')?.hasError('required') && heteroForm.get('estudianteIdentificacion')?.touched">
-                                    {{ 'heteroevaluacion.error_identificacion_estudiante' | translate }}
                                 </mat-error>
                             </mat-form-field>
                         </div>
@@ -122,14 +102,8 @@
                             </mat-error>
                         </mat-form-field>
                     </div>
-
-                    <!-- Contenedor para el botón "Visualizar Formulario" -->
-                    <div class="form-col1 center-content">
-                        <button mat-flat-button color="accent" (click)="onVisualizar()">
-                            <mat-icon>visibility</mat-icon>
-                            {{ 'Visualizar formulario' | translate }}
-                        </button>
-                    </div>
+                    <!-- Mostrar directamente el componente dynamic-form -->
+                    <ngx-dinamicform [normalform]="formData" (result)="handleFormResult($event)"></ngx-dinamicform>
 
                     <div class="form-col1">
                         <button mat-flat-button color="accent" type="submit" [disabled]="heteroForm.invalid">
@@ -141,7 +115,6 @@
             </div>
         </ng-container>
 
-
         <!-- Formulario de Coevaluación II -->
         <ng-container *ngIf="selectedEvaluation === 'coevaluacion-ii'">
             <div *ngIf="hasRole([ROLES.DOCENTE, ROLES.ADMIN_SGA, ROLES.ADMIN_DOCENCIA])" class="form-container">
@@ -150,9 +123,12 @@
 
                     <div class="form-grid2">
                         <div class="form-col1">
-                            <mat-form-field style="width: 100%" floatLabel="always">
+                            <mat-form-field style="width: 100%" floatLabel="always" appearance="fill">
                                 <mat-label>{{ 'coevaluacion_ii.fechas' | translate }}</mat-label>
-                                <input matInput type="date" formControlName="inicioFecha" placeholder="Fecha de inicio">
+                                <input matInput [matDatepicker]="pickerInicio" formControlName="inicioFecha"
+                                    placeholder="dd/MM/yyyy">
+                                <mat-datepicker-toggle matSuffix [for]="pickerInicio"></mat-datepicker-toggle>
+                                <mat-datepicker #pickerInicio></mat-datepicker>
                                 <mat-error
                                     *ngIf="coevaluacionIIForm.get('inicioFecha')?.hasError('required') && coevaluacionIIForm.get('inicioFecha')?.touched">
                                     {{ 'coevaluacion_ii.error_fecha_inicio' | translate }}
@@ -160,8 +136,12 @@
                             </mat-form-field>
                         </div>
                         <div class="form-col1">
-                            <mat-form-field style="width: 100%" floatLabel="always">
-                                <input matInput type="date" formControlName="finFecha" placeholder="Fecha de fin">
+                            <mat-form-field style="width: 100%" floatLabel="always" appearance="fill">
+                                <mat-label>{{ 'coevaluacion_ii.fechas' | translate }}</mat-label>
+                                <input matInput [matDatepicker]="pickerFin" formControlName="finFecha"
+                                    placeholder="dd/MM/yyyy">
+                                <mat-datepicker-toggle matSuffix [for]="pickerFin"></mat-datepicker-toggle>
+                                <mat-datepicker #pickerFin></mat-datepicker>
                                 <mat-error
                                     *ngIf="coevaluacionIIForm.get('finFecha')?.hasError('required') && coevaluacionIIForm.get('finFecha')?.touched">
                                     {{ 'coevaluacion_ii.error_fecha_fin' | translate }}
@@ -223,13 +203,8 @@
                         </mat-form-field>
                     </div>
 
-                    <!-- Contenedor para el botón "Visualizar Formulario" -->
-                    <div class="form-col1 center-content">
-                        <button mat-flat-button color="accent" (click)="onVisualizar()">
-                            <mat-icon>visibility</mat-icon>
-                            {{ 'Visualizar formulario' | translate }}
-                        </button>
-                    </div>
+                    <!-- Mostrar directamente el componente dynamic-form -->
+                    <ngx-dinamicform [normalform]="formData" (result)="handleFormResult($event)"></ngx-dinamicform>
 
                     <div class="form-col1">
                         <button mat-flat-button color="accent" type="submit" [disabled]="coevaluacionIIForm.invalid">
@@ -241,7 +216,6 @@
             </div>
         </ng-container>
 
-
         <!-- Formulario de Coevaluación I -->
         <ng-container *ngIf="selectedEvaluation === 'coevaluacion-i'">
             <div *ngIf="hasRole([ROLES.ADMIN_SGA, ROLES.ADMIN_DOCENCIA])" class="form-container">
@@ -249,9 +223,12 @@
                 <form [formGroup]="coevaluacionIForm" (ngSubmit)="onGuardar()" class="evaluation-form">
                     <div class="form-grid2">
                         <div class="form-col1">
-                            <mat-form-field style="width: 100%" floatLabel="always">
+                            <mat-form-field style="width: 100%" floatLabel="always" appearance="fill">
                                 <mat-label>{{ 'coevaluacion_i.fechas' | translate }}</mat-label>
-                                <input matInput type="date" formControlName="inicioFecha" placeholder="Fecha de inicio">
+                                <input matInput [matDatepicker]="pickerInicio" formControlName="inicioFecha"
+                                    placeholder="dd/MM/yyyy">
+                                <mat-datepicker-toggle matSuffix [for]="pickerInicio"></mat-datepicker-toggle>
+                                <mat-datepicker #pickerInicio></mat-datepicker>
                                 <mat-error
                                     *ngIf="coevaluacionIForm.get('inicioFecha')?.hasError('required') && coevaluacionIForm.get('inicioFecha')?.touched">
                                     {{ 'coevaluacion_i.error_fecha_inicio' | translate }}
@@ -259,8 +236,12 @@
                             </mat-form-field>
                         </div>
                         <div class="form-col1">
-                            <mat-form-field style="width: 100%" floatLabel="always">
-                                <input matInput type="date" formControlName="finFecha" placeholder="Fecha de fin">
+                            <mat-form-field style="width: 100%" floatLabel="always" appearance="fill">
+                                <mat-label>{{ 'coevaluacion_i.fechas' | translate }}</mat-label>
+                                <input matInput [matDatepicker]="pickerFin" formControlName="finFecha"
+                                    placeholder="dd/MM/yyyy">
+                                <mat-datepicker-toggle matSuffix [for]="pickerFin"></mat-datepicker-toggle>
+                                <mat-datepicker #pickerFin></mat-datepicker>
                                 <mat-error
                                     *ngIf="coevaluacionIForm.get('finFecha')?.hasError('required') && coevaluacionIForm.get('finFecha')?.touched">
                                     {{ 'coevaluacion_i.error_fecha_fin' | translate }}
@@ -344,13 +325,8 @@
                         </mat-form-field>
                     </div>
 
-                    <!-- Contenedor para el botón "Visualizar Formulario" -->
-                    <div class="form-col1 center-content">
-                        <button mat-flat-button color="accent" (click)="onVisualizar()">
-                            <mat-icon>visibility</mat-icon>
-                            {{ 'Visualizar formulario' | translate }}
-                        </button>
-                    </div>
+                    <!-- Mostrar directamente el componente dynamic-form -->
+                    <ngx-dinamicform [normalform]="formData" (result)="handleFormResult($event)"></ngx-dinamicform>
 
                     <div class="form-col1">
                         <button mat-flat-button color="accent" type="submit" [disabled]="coevaluacionIForm.invalid">
@@ -361,7 +337,6 @@
             </div>
         </ng-container>
 
-
         <!-- Formulario de Autoevaluación II -->
         <ng-container *ngIf="selectedEvaluation === 'autoevaluacion-ii'">
             <div *ngIf="hasRole([ROLES.DOCENTE, ROLES.ADMIN_SGA, ROLES.ADMIN_DOCENCIA])" class="form-container">
@@ -369,9 +344,12 @@
                 <form [formGroup]="autoevaluacionIIForm" (ngSubmit)="onGuardar()" class="evaluation-form">
                     <div class="form-grid2">
                         <div class="form-col1">
-                            <mat-form-field style="width: 100%" floatLabel="always">
+                            <mat-form-field style="width: 100%" floatLabel="always" appearance="fill">
                                 <mat-label>{{ 'autoevaluacion_ii.fechas' | translate }}</mat-label>
-                                <input matInput type="date" formControlName="inicioFecha" placeholder="Fecha de inicio">
+                                <input matInput [matDatepicker]="pickerInicio" formControlName="inicioFecha"
+                                    placeholder="dd/MM/yyyy">
+                                <mat-datepicker-toggle matSuffix [for]="pickerInicio"></mat-datepicker-toggle>
+                                <mat-datepicker #pickerInicio></mat-datepicker>
                                 <mat-error
                                     *ngIf="autoevaluacionIIForm.get('inicioFecha')?.hasError('required') && autoevaluacionIIForm.get('inicioFecha')?.touched">
                                     {{ 'autoevaluacion_ii.error_fecha_inicio' | translate }}
@@ -379,8 +357,12 @@
                             </mat-form-field>
                         </div>
                         <div class="form-col1">
-                            <mat-form-field style="width: 100%" floatLabel="always">
-                                <input matInput type="date" formControlName="finFecha" placeholder="Fecha de fin">
+                            <mat-form-field style="width: 100%" floatLabel="always" appearance="fill">
+                                <mat-label>{{ 'autoevaluacion_ii.fechas' | translate }}</mat-label>
+                                <input matInput [matDatepicker]="pickerFin" formControlName="finFecha"
+                                    placeholder="dd/MM/yyyy">
+                                <mat-datepicker-toggle matSuffix [for]="pickerFin"></mat-datepicker-toggle>
+                                <mat-datepicker #pickerFin></mat-datepicker>
                                 <mat-error
                                     *ngIf="autoevaluacionIIForm.get('finFecha')?.hasError('required') && autoevaluacionIIForm.get('finFecha')?.touched">
                                     {{ 'autoevaluacion_ii.error_fecha_fin' | translate }}
@@ -450,12 +432,8 @@
                         </mat-form-field>
                     </div>
 
-                    <div class="form-col1 center-content">
-                        <button mat-flat-button color="accent" (click)="onVisualizar()">
-                            <mat-icon>visibility</mat-icon>
-                            {{ 'Visualizar formulario' | translate }}
-                        </button>
-                    </div>
+                    <!-- Mostrar directamente el componente dynamic-form -->
+                    <ngx-dinamicform [normalform]="formData" (result)="handleFormResult($event)"></ngx-dinamicform>
 
                     <div class="form-col1">
                         <button mat-flat-button color="accent" type="submit" [disabled]="autoevaluacionIIForm.invalid">
@@ -466,7 +444,6 @@
             </div>
         </ng-container>
 
-
         <!-- Formulario de Autoevaluación I -->
         <ng-container *ngIf="selectedEvaluation === 'autoevaluacion-i'">
             <div *ngIf="hasRole([ROLES.ESTUDIANTE, ROLES.ADMIN_SGA, ROLES.ADMIN_DOCENCIA])" class="form-container">
@@ -474,9 +451,12 @@
                 <form [formGroup]="autoevaluacionIForm" (ngSubmit)="onGuardar()" class="evaluation-form">
                     <div class="form-grid2">
                         <div class="form-col1">
-                            <mat-form-field style="width: 100%" floatLabel="always">
+                            <mat-form-field style="width: 100%" floatLabel="always" appearance="fill">
                                 <mat-label>{{ 'autoevaluacion_i.fechas' | translate }}</mat-label>
-                                <input matInput type="date" formControlName="inicioFecha" placeholder="Fecha de inicio">
+                                <input matInput [matDatepicker]="pickerInicio" formControlName="inicioFecha"
+                                    placeholder="dd/MM/yyyy">
+                                <mat-datepicker-toggle matSuffix [for]="pickerInicio"></mat-datepicker-toggle>
+                                <mat-datepicker #pickerInicio></mat-datepicker>
                                 <mat-error
                                     *ngIf="autoevaluacionIForm.get('inicioFecha')?.hasError('required') && autoevaluacionIForm.get('inicioFecha')?.touched">
                                     {{ 'autoevaluacion_i.error_fecha_inicio' | translate }}
@@ -484,8 +464,12 @@
                             </mat-form-field>
                         </div>
                         <div class="form-col1">
-                            <mat-form-field style="width: 100%" floatLabel="always">
-                                <input matInput type="date" formControlName="finFecha" placeholder="Fecha de fin">
+                            <mat-form-field style="width: 100%" floatLabel="always" appearance="fill">
+                                <mat-label>{{ 'autoevaluacion_i.fechas' | translate }}</mat-label>
+                                <input matInput [matDatepicker]="pickerFin" formControlName="finFecha"
+                                    placeholder="dd/MM/yyyy">
+                                <mat-datepicker-toggle matSuffix [for]="pickerFin"></mat-datepicker-toggle>
+                                <mat-datepicker #pickerFin></mat-datepicker>
                                 <mat-error
                                     *ngIf="autoevaluacionIForm.get('finFecha')?.hasError('required') && autoevaluacionIForm.get('finFecha')?.touched">
                                     {{ 'autoevaluacion_i.error_fecha_fin' | translate }}
@@ -556,12 +540,8 @@
                         </mat-form-field>
                     </div>
 
-                    <div class="form-col1 center-content">
-                        <button mat-flat-button color="accent" (click)="onVisualizar()">
-                            <mat-icon>visibility</mat-icon>
-                            {{ 'Visualizar formulario' | translate }}
-                        </button>
-                    </div>
+                    <!-- Mostrar directamente el componente dynamic-form -->
+                    <ngx-dinamicform [normalform]="formData" (result)="handleFormResult($event)"></ngx-dinamicform>
 
                     <div class="form-col1">
                         <button mat-flat-button color="accent" type="submit" [disabled]="autoevaluacionIForm.invalid">
@@ -571,8 +551,6 @@
                 </form>
             </div>
         </ng-container>
-
-
     </div>
 
 </body>
