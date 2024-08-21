@@ -1,7 +1,7 @@
 {
     "HOME": {
         "TITLE": "SGA",
-        "SELECT": "Cambiar idioma",
+        "SELECT": "Seleccionar tipo de evaluación",
         "LOGIN": "Iniciar sesión",
         "LOGOUT": "Cerrar sesión",
         "THEME": "Tema"
@@ -113,7 +113,8 @@
         "descripcion": "Descripción",
         "formulario": "Formulario correspondiente",
         "formulario_placeholder": "Formulario correspondiente",
-        "guardar": "Guardar"
+        "guardar": "Guardar",
+        "grupo": "Grupo de Estudiantes"
     },
 
     "autoevaluacion_ii": {

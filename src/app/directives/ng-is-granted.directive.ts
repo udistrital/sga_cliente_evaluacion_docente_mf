@@ -1,3 +1,4 @@
+// ng-is-granted.directive.ts
 import { Directive, Input, OnDestroy, TemplateRef, ViewContainerRef } from "@angular/core";
 import { BehaviorSubject, Observable, Subject, takeUntil } from "rxjs";
 import { UserService } from "../services/user.service";

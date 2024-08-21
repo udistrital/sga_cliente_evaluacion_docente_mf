@@ -1,7 +1,7 @@
 {
     "HOME": {
         "TITLE": "SGA",
-        "SELECT": "Change language",
+        "SELECT": "Select evaluation type",
         "LOGIN": "Login",
         "LOGOUT": "Logout",
         "THEME": "Theme"
@@ -22,7 +22,7 @@
     },
     
     "asignacion_fechas": {
-        "titulo": "Date Assignment for Processes",
+        "titulo": "Assignment of dates for processes",
         "seleccionar_nivel_formacion": "Select the level of training to assign",
         "seleccionar": "Select",
         "pregrado": "Undergraduate",
@@ -35,21 +35,21 @@
     },
 
     "definicion_formularios": {
-        "titulo": "Define Forms",
+        "titulo": "Define forms",
         "seleccionar_roles": "Select roles involved",
         "seleccione": "Select",
         "administradores": "Administrators",
         "docentes": "Teachers",
         "estudiantes": "Students",
         "concejos_curriculares": "Curricular Councils",
-        "visualizador_formulario": "Form Viewer",
+        "visualizador_formulario": "Form viewer",
         "procesos_seleccionar": "Processes to select",
         "guardar": "Save"
     },
 
     "definir_escalas": {
         "titulo": "Define Scale",
-        "seleccionar_tipo_escala": "Select scale type",
+        "seleccionar_tipo_escala": "Select type of scale",
         "seleccione": "Select",
         "cualitativa": "Qualitative",
         "cuantitativa": "Quantitative",
@@ -57,28 +57,28 @@
         "del_seud": "of SEUD",
         "descripcion": "Define description or objectives",
         "agregar_elemento_escala": "Add scale element",
-        "estado": "State",
+        "estado": "Status",
         "descripcion_columna": "Description",
-        "visualizar": "visualize"
+        "visualizar": "View"
     },
-
+    
     "heteroevaluacion": {
-    "titulo": "Heteroevaluation",
-    "fechas": "Dates",
-    "inicio": "Start",
-    "fin": "End",
-    "estudiante": "Student",
-    "nombre_estudiante": "Student Name",
-    "identificacion_estudiante": "Student ID",
-    "identificacion": "ID",
-    "proyecto_curricular": "Curricular Project",
-    "proyecto1": "Name of curricular project 1",
-    "proyecto2": "Name of curricular project 2",
-    "descripcion_proceso": "Process description and user guidance",
-    "descripcion": "Description",
-    "formulario": "Corresponding form",
-    "formulario_placeholder": "Corresponding form",
-    "guardar": "Save"
+        "titulo": "Heteroevaluation",
+        "fechas": "Dates",
+        "inicio": "Start",
+        "fin": "End",
+        "estudiante": "Student",
+        "nombre_estudiante": "Student's Name",
+        "identificacion_estudiante": "Student Identification",
+        "identificacion": "Identification",
+        "proyecto_curricular": "Curricular Project",
+        "proyecto1": "Curricular project name 1",
+        "proyecto2": "Curricular project name 2",
+        "descripcion_proceso": "Process description and user guidance",
+        "descripcion": "Description",
+        "formulario": "Corresponding form",
+        "formulario_placeholder": "Corresponding form",
+        "guardar": "Save"
     },
 
     "autoevaluacion_i": {
@@ -87,12 +87,12 @@
         "inicio": "Start",
         "fin": "End",
         "estudiante": "Student",
-        "nombre_estudiante": "Student Name",
-        "identificacion_estudiante": "Student ID",
-        "identificacion": "ID",
+        "nombre_estudiante": "Student's Name",
+        "identificacion_estudiante": "Student Identification",
+        "identificacion": "Identification",
         "proyecto_curricular": "Curricular Project",
-        "proyecto1": "Name of curricular project 1",
-        "proyecto2": "Name of curricular project 2",
+        "proyecto1": "Curricular project name 1",
+        "proyecto2": "Curricular project name 2",
         "descripcion_proceso": "Process description and user guidance",
         "descripcion": "Description",
         "formulario": "Corresponding form",
@@ -101,7 +101,7 @@
     },
 
     "coevaluacion_i": {
-        "titulo": "Peer evaluation I",
+        "titulo": "Co-evaluation I",
         "fechas": "Dates",
         "inicio": "Start",
         "fin": "End",
@@ -113,7 +113,8 @@
         "descripcion": "Description",
         "formulario": "Corresponding form",
         "formulario_placeholder": "Corresponding form",
-        "guardar": "Save"
+        "guardar": "Save",
+        "grupo": "Student Group"
     },
 
     "autoevaluacion_ii": {
@@ -122,13 +123,13 @@
         "inicio": "Start",
         "fin": "End",
         "nombre_docente": "Teacher's Name",
-        "nombre": "Name",
-        "identificacion_docente": "Teacher's ID",
-        "identificacion": "ID",
+        "nombre": "Teacher's Name",
+        "identificacion_docente": "Teacher Identification",
+        "identificacion": "Identification",
         "proyecto_curricular": "Curricular Project",
-        "proyecto1": "Name of curricular project 1",
-        "proyecto2": "Name of curricular project 2",
-        "proyectoN": "Name of curricular project n",
+        "proyecto1": "Curricular project name 1",
+        "proyecto2": "Curricular project name 2",
+        "proyectoN": "Curricular project name n",
         "espacios_academicos": "Academic Spaces",
         "espacio1": "List of academic spaces associated with the teacher and the curricular project",
         "espacio2": "List of academic spaces associated with the teacher and the curricular project",
@@ -141,7 +142,7 @@
     },
     
     "coevaluacion_ii": {
-        "titulo": "Peer evaluation II",
+        "titulo": "Co-evaluation II",
         "fechas": "Dates",
         "inicio": "Start",
         "fin": "End",

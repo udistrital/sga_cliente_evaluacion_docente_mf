@@ -1,25 +1,283 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evaluaciones Completa</title>
+</head>
+<body>
+
 <div class="container">
-    <h1>Evaluación a Editar</h1>
-    <p>Descripción breve sobre los diferentes tipos de evaluación.</p>
-    
-    <button (click)="toggleTerms()">Términos y Condiciones</button>
-    <div *ngIf="showTerms">
-        <p>Ejemplo de un texto sobre políticas de seguridad. Toda la información suministrada es confidencial.</p>
-    </div>
-    
-    <label for="tipo-evaluacion">Seleccionar tipo de evaluación:</label>
+    <h1>{{ 'HOME.TITLE' | translate }}</h1>
+
+    <label for="tipo-evaluacion">{{ 'HOME.SELECT' | translate }}</label>
     <select id="tipo-evaluacion" (change)="onSelectChange($event)">
-        <option value="">Seleccione una opción</option>
-        <option value="heteroevaluacion">Heteroevaluación</option>
-        <option value="autoevaluacion-i">Autoevaluación I</option>
-        <option value="coevaluacion-i">Coevaluación I</option>
-        <option value="autoevaluacion-ii">Autoevaluación II</option>
-        <option value="coevaluacion-ii">Coevaluación II</option>
+        <option value="">{{ 'definicion_formularios.seleccione' | translate }}</option>
+        <option value="heteroevaluacion">{{ 'heteroevaluacion.titulo' | translate }}</option>
+        <option value="autoevaluacion-i">{{ 'autoevaluacion_i.titulo' | translate }}</option>
+        <option value="coevaluacion-i">{{ 'coevaluacion_i.titulo' | translate }}</option>
+        <option value="autoevaluacion-ii">{{ 'autoevaluacion_ii.titulo' | translate }}</option>
+        <option value="coevaluacion-ii">{{ 'coevaluacion_ii.titulo' | translate }}</option>
     </select>
-    
-    <app-heteroevaluacion *ngIf="selectedEvaluation === 'heteroevaluacion'"></app-heteroevaluacion>
-    <app-autoevaluacion-i *ngIf="selectedEvaluation === 'autoevaluacion-i'"></app-autoevaluacion-i>
-    <app-coevaluacion-i *ngIf="selectedEvaluation === 'coevaluacion-i'"></app-coevaluacion-i>
-    <app-autoevaluacion-ii *ngIf="selectedEvaluation === 'autoevaluacion-ii'"></app-autoevaluacion-ii>
-    <app-coevaluacion-ii *ngIf="selectedEvaluation === 'coevaluacion-ii'"></app-coevaluacion-ii>
+
+    <!-- Formulario de Heteroevaluación -->
+    <ng-container *ngIf="selectedEvaluation === 'heteroevaluacion'">
+        <div *ngIf="hasRole([ROLES.ESTUDIANTE, ROLES.ADMIN_SGA, ROLES.ADMIN_DOCENCIA])" class="form-container">
+            <h2>{{ 'heteroevaluacion.titulo' | translate }}</h2>
+            <form class="evaluation-form">
+                <div class="form-group">
+                    <label for="fechas">{{ 'heteroevaluacion.fechas' | translate }}</label>
+                    <div class="form-inline">
+                        <input type="date" id="inicio" placeholder="{{ 'heteroevaluacion.inicio' | translate }}">
+                        <input type="date" id="fin" placeholder="{{ 'heteroevaluacion.fin' | translate }}">
+                    </div>
+                </div>
+                <div class="form-group form-inline">
+                    <div class="input-group">
+                        <label for="estudiante">{{ 'heteroevaluacion.estudiante' | translate }}</label>
+                        <input type="text" id="estudiante" placeholder="{{ 'heteroevaluacion.nombre_estudiante' | translate }}">
+                    </div>
+                    <div class="input-group">
+                        <label for="identificacion">{{ 'heteroevaluacion.identificacion_estudiante' | translate }}</label>
+                        <input type="text" id="identificacion" placeholder="{{ 'heteroevaluacion.identificacion' | translate }}">
+                    </div>
+                </div>
+                <div class="form-group form-inline">
+                    <label for="proyecto">{{ 'heteroevaluacion.proyecto_curricular' | translate }}</label>
+                    <select id="proyecto">
+                        <option value="" disabled selected>{{ 'definicion_formularios.seleccione' | translate }}</option>
+                        <option value="proyecto1">{{ 'heteroevaluacion.proyecto1' | translate }}</option>
+                        <option value="proyecto2">{{ 'heteroevaluacion.proyecto2' | translate }}</option>
+                    </select>
+                </div>
+                <div class="form-group form-inline">
+                    <label for="docente">{{ 'coevaluacion_ii.docente' | translate }}</label>
+                    <select id="docente">
+                        <option value="" disabled selected>{{ 'definicion_formularios.seleccione' | translate }}</option>
+                        <option value="docente1">{{ 'coevaluacion_ii.nombre_docente' | translate }} 1</option>
+                        <option value="docente2">{{ 'coevaluacion_ii.nombre_docente' | translate }} 2</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="descripcion">{{ 'heteroevaluacion.descripcion_proceso' | translate }}</label>
+                    <textarea id="descripcion" placeholder="{{ 'heteroevaluacion.descripcion' | translate }}"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="formulario">{{ 'heteroevaluacion.formulario' | translate }}</label>
+                    <textarea id="formulario" placeholder="{{ 'heteroevaluacion.formulario_placeholder' | translate }}"></textarea>
+                </div>
+                <button class="btn-guardar" (click)="onGuardar()">{{ 'heteroevaluacion.guardar' | translate }}</button>
+            </form>
+        </div>
+    </ng-container>
+
+    <!-- Formulario de Coevaluación II -->
+    <ng-container *ngIf="selectedEvaluation === 'coevaluacion-ii'">
+        <div *ngIf="hasRole([ROLES.DOCENTE, ROLES.ADMIN_SGA, ROLES.ADMIN_DOCENCIA])" class="form-container">
+            <h2>{{ 'coevaluacion_ii.titulo' | translate }}</h2>
+            <form class="evaluation-form">
+                <div class="form-group">
+                    <label for="fechas">{{ 'coevaluacion_ii.fechas' | translate }}</label>
+                    <div class="form-inline">
+                        <input type="date" id="inicio" placeholder="{{ 'coevaluacion_ii.inicio' | translate }}">
+                        <input type="date" id="fin" placeholder="{{ 'coevaluacion_ii.fin' | translate }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="proyecto">{{ 'coevaluacion_ii.proyecto_curricular' | translate }}</label>
+                    <input type="text" id="proyecto" placeholder="{{ 'coevaluacion_ii.proyecto' | translate }}">
+                </div>
+                <div class="form-group">
+                    <label for="docente">{{ 'coevaluacion_ii.docente' | translate }}</label>
+                    <select id="docente">
+                        <option value="" disabled selected>{{ 'definicion_formularios.seleccione' | translate }}</option>
+                        <option value="docente1">{{ 'coevaluacion_ii.nombre_docente' | translate }} 1</option>
+                        <option value="docente2">{{ 'coevaluacion_ii.nombre_docente' | translate }} 2</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="espacio">{{ 'coevaluacion_ii.espacio_academico' | translate }}</label>
+                    <input type="text" id="espacio" placeholder="{{ 'coevaluacion_ii.espacio' | translate }}">
+                </div>
+                <div class="form-group">
+                    <label for="descripcion">{{ 'coevaluacion_ii.descripcion_proceso' | translate }}</label>
+                    <textarea id="descripcion" placeholder="{{ 'coevaluacion_ii.descripcion' | translate }}"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="formulario">{{ 'coevaluacion_ii.formulario' | translate }}</label>
+                    <textarea id="formulario" placeholder="{{ 'coevaluacion_ii.formulario_placeholder' | translate }}"></textarea>
+                </div>
+                <div class="button-group">
+                    <button class="btn-generar-soporte" (click)="onGenerarSoporte()">{{ 'definicion_formularios.visualizar' | translate }}</button>
+                    <button class="btn-guardar" (click)="onGuardar()">{{ 'coevaluacion_ii.guardar' | translate }}</button>
+                </div>
+            </form>
+        </div>
+    </ng-container>
+
+    <!-- Formulario de Coevaluación I -->
+    <ng-container *ngIf="selectedEvaluation === 'coevaluacion-i'">
+        <div *ngIf="hasRole([ROLES.ADMIN_SGA, ROLES.ADMIN_DOCENCIA])" class="form-container">
+            <h2>{{ 'coevaluacion_i.titulo' | translate }}</h2>
+            <form class="evaluation-form">
+                <div class="form-group">
+                    <label for="fechas">{{ 'coevaluacion_i.fechas' | translate }}</label>
+                    <div class="form-inline">
+                        <input type="date" id="inicio" placeholder="{{ 'coevaluacion_i.inicio' | translate }}">
+                        <input type="date" id="fin" placeholder="{{ 'coevaluacion_i.fin' | translate }}">
+                    </div>
+                </div>
+                <div class="form-group form-inline">
+                    <div class="input-group">
+                        <label for="proyecto">{{ 'coevaluacion_i.proyecto_curricular' | translate }}</label>
+                        <select id="proyecto">
+                            <option value="" disabled selected>{{ 'definicion_formularios.seleccione' | translate }}</option>
+                            <option value="proyecto1">{{ 'coevaluacion_i.proyecto' | translate }} 1</option>
+                            <option value="proyecto2">{{ 'coevaluacion_i.proyecto' | translate }} 2</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="espacio">{{ 'coevaluacion_i.espacio_academico' | translate }}</label>
+                        <select id="espacio">
+                            <option value="" disabled selected>{{ 'definicion_formularios.seleccione' | translate }}</option>
+                            <option value="espacio1">{{ 'coevaluacion_i.espacio' | translate }} 1</option>
+                            <option value="espacio2">{{ 'coevaluacion_i.espacio' | translate }} 2</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group form-inline">
+                    <div class="input-group">
+                        <label for="docente">{{ 'coevaluacion_ii.docente' | translate }}</label>
+                        <input type="text" id="docente" placeholder="{{ 'coevaluacion_ii.nombre_docente' | translate }}">
+                    </div>
+                    <div class="input-group">
+                        <label for="grupo">{{ 'definicion_formularios.procesos_seleccionar' | translate }}</label>
+                        <select id="grupo">
+                            <option value="" disabled selected>{{ 'definicion_formularios.seleccione' | translate }}</option>
+                            <option value="grupo1">{{ 'coevaluacion_i.grupo' | translate }} 1</option>
+                            <option value="grupo2">{{ 'coevaluacion_i.grupo' | translate }} 2</option>
+                        </select>
+                    </div>
+                </div>
+                <button class="btn-continuar" (click)="onContinuar()">{{ 'definicion_formularios.visualizar' | translate }}</button>
+                <div class="form-group">
+                    <label for="descripcion">{{ 'coevaluacion_i.descripcion_proceso' | translate }}</label>
+                    <textarea id="descripcion" placeholder="{{ 'coevaluacion_i.descripcion' | translate }}"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="formulario">{{ 'coevaluacion_i.formulario' | translate }}</label>
+                    <textarea id="formulario" placeholder="{{ 'coevaluacion_i.formulario_placeholder' | translate }}"></textarea>
+                </div>
+                <div class="button-group">
+                    <button class="btn-generar-soporte" (click)="onGenerarSoporte()">{{ 'definicion_formularios.visualizar' | translate }}</button>
+                    <button class="btn-guardar" (click)="onGuardar()">{{ 'coevaluacion_i.guardar' | translate }}</button>
+                </div>
+            </form>
+        </div>
+    </ng-container>
+
+    <!-- Formulario de Autoevaluación II -->
+    <ng-container *ngIf="selectedEvaluation === 'autoevaluacion-ii'">
+        <div *ngIf="hasRole([ROLES.DOCENTE, ROLES.ADMIN_SGA, ROLES.ADMIN_DOCENCIA])" class="form-container">
+            <h2>{{ 'autoevaluacion_ii.titulo' | translate }}</h2>
+            <form class="evaluation-form">
+                <div class="form-group">
+                    <label for="fechas">{{ 'autoevaluacion_ii.fechas' | translate }}</label>
+                    <div class="form-inline">
+                        <input type="date" id="inicio" placeholder="{{ 'autoevaluacion_ii.inicio' | translate }}">
+                        <input type="date" id="fin" placeholder="{{ 'autoevaluacion_ii.fin' | translate }}">
+                    </div>
+                </div>
+                <div class="form-group form-inline">
+                    <div class="input-group">
+                        <label for="nombre-docente">{{ 'autoevaluacion_ii.nombre_docente' | translate }}</label>
+                        <input type="text" id="nombre-docente" placeholder="{{ 'autoevaluacion_ii.nombre' | translate }}">
+                    </div>
+                    <div class="input-group">
+                        <label for="identificacion-docente">{{ 'autoevaluacion_ii.identificacion_docente' | translate }}</label>
+                        <input type="text" id="identificacion-docente" placeholder="{{ 'autoevaluacion_ii.identificacion' | translate }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="button-group">
+                        <button class="btn-proyecto">{{ 'autoevaluacion_ii.proyecto_curricular' | translate }}</button>
+                        <button class="btn-espacios">{{ 'autoevaluacion_ii.espacios_academicos' | translate }}</button>
+                    </div>
+                </div>
+                <div class="form-group form-inline">
+                    <div class="input-group">
+                        <input type="text" placeholder="{{ 'autoevaluacion_ii.proyecto1' | translate }}">
+                        <textarea placeholder="{{ 'autoevaluacion_ii.espacio1' | translate }}"></textarea>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" placeholder="{{ 'autoevaluacion_ii.proyecto2' | translate }}">
+                        <textarea placeholder="{{ 'autoevaluacion_ii.espacio2' | translate }}"></textarea>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" placeholder="{{ 'autoevaluacion_ii.proyectoN' | translate }}">
+                        <textarea placeholder="{{ 'autoevaluacion_ii.espacioN' | translate }}"></textarea>
+                    </div>
+                </div>
+                <button class="btn-continuar" (click)="onContinuar()">{{ 'definicion_formularios.visualizar' | translate }}</button>
+                <div class="form-group">
+                    <label for="descripcion">{{ 'autoevaluacion_ii.descripcion_proceso' | translate }}</label>
+                    <textarea id="descripcion" placeholder="{{ 'autoevaluacion_ii.descripcion' | translate }}"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="formulario">{{ 'autoevaluacion_ii.formulario' | translate }}</label>
+                    <textarea id="formulario" placeholder="{{ 'autoevaluacion_ii.formulario_placeholder' | translate }}"></textarea>
+                </div>
+                <div class="button-group">
+                    <button class="btn-generar-soporte" (click)="onGenerarSoporte()">{{ 'definicion_formularios.visualizar' | translate }}</button>
+                    <button class="btn-guardar" (click)="onGuardar()">{{ 'autoevaluacion_ii.guardar' | translate }}"></button>
+                </div>
+            </form>
+        </div>
+    </ng-container>
+
+    <!-- Formulario de Autoevaluación I -->
+    <ng-container *ngIf="selectedEvaluation === 'autoevaluacion-i'">
+        <div *ngIf="hasRole([ROLES.ESTUDIANTE, ROLES.ADMIN_SGA, ROLES.ADMIN_DOCENCIA])" class="form-container">
+            <h2>{{ 'autoevaluacion_i.titulo' | translate }}</h2>
+            <form class="evaluation-form">
+                <div class="form-group">
+                    <label for="fechas">{{ 'autoevaluacion_i.fechas' | translate }}</label>
+                    <div class="form-inline">
+                        <input type="date" id="inicio" placeholder="{{ 'autoevaluacion_i.inicio' | translate }}">
+                        <input type="date" id="fin" placeholder="{{ 'autoevaluacion_i.fin' | translate }}">
+                    </div>
+                </div>
+                <div class="form-group form-inline">
+                    <div class="input-group">
+                        <label for="estudiante">{{ 'autoevaluacion_i.estudiante' | translate }}</label>
+                        <input type="text" id="estudiante" placeholder="{{ 'autoevaluacion_i.nombre_estudiante' | translate }}">
+                    </div>
+                    <div class="input-group">
+                        <label for="identificacion">{{ 'autoevaluacion_i.identificacion_estudiante' | translate }}</label>
+                        <input type="text" id="identificacion" placeholder="{{ 'autoevaluacion_i.identificacion' | translate }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <button class="btn-proyecto">{{ 'autoevaluacion_i.proyecto_curricular' | translate }}</button>
+                    <div class="form-inline">
+                        <input type="text" placeholder="{{ 'autoevaluacion_i.proyecto1' | translate }}">
+                        <input type="text" placeholder="{{ 'autoevaluacion_i.proyecto2' | translate }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="descripcion">{{ 'autoevaluacion_i.descripcion_proceso' | translate }}</label>
+                    <textarea id="descripcion" placeholder="{{ 'autoevaluacion_i.descripcion' | translate }}"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="formulario">{{ 'autoevaluacion_i.formulario' | translate }}</label>
+                    <textarea id="formulario" placeholder="{{ 'autoevaluacion_i.formulario_placeholder' | translate }}"></textarea>
+                </div>
+                <button class="btn-guardar" (click)="onGuardar()">{{ 'autoevaluacion_i.guardar' | translate }}</button>
+            </form>
+        </div>
+    </ng-container>
+
 </div>
+
+</body>
+</html>
