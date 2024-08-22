@@ -162,3 +162,59 @@
         </mat-card>
     </form>
 </div>
+
+<div [ngSwitch]="normalform.tipo_formulario">
+    <!-- Formulario de Autoevaluación -->
+    <form [formGroup]="form" *ngSwitchCase="'autoevaluacion-i'" class="form-horizontal">
+        <mat-card>
+            <mat-card-header>
+                <mat-card-title>{{ normalform.titulo }}</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <div class="form-grid">
+                    <!-- Instrucción -->
+                    <table class="instruction-table">
+                        <tr>
+                            <td style="background-color: #e0f7e0;">INSTRUCCIÓN 01</td>
+                            <td>
+                                Estimado estudiante:<br>
+                                Por favor autoevalúe su desempeño como estudiante en este espacio curricular. Los ítems 01 a 05 de selección múltiple con única respuesta son obligatorios. Puede realizar anotaciones de mejoramiento para conseguir sus resultados de aprendizaje en los espacios destinados para tal fin.
+                            </td>
+                        </tr>
+                    </table>
+
+                    <!-- Preguntas con opciones en texto -->
+                    <div *ngFor="let question of questionsAutoevaluacion; let i = index" class="question-block">
+                        <p><strong>{{ question.text }}</strong></p>
+                        <mat-radio-group [formControlName]="'question_' + i">
+                            <mat-radio-button *ngFor="let option of question.options" [value]="option.value">
+                                {{ option.text }}
+                            </mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+
+                    <!-- Comentarios sobre las acciones a tomar -->
+                    <p class="instruction">
+                        Dada su respuesta anterior, escriba las acciones que tomará para fortalecer su éxito en este espacio curricular:
+                    </p>
+                    <div *ngFor="let comment of commentsAutoevaluacion; let i = index">
+                        <mat-form-field style="width: 100%">
+                            <textarea matInput placeholder="Acción {{ i + 1 }}" [formControlName]="'comment_' + i"></textarea>
+                        </mat-form-field>
+                    </div>
+                </div>
+
+                <ng-content></ng-content>
+
+                <div class="mt-4" *ngIf="normalform.btnLimpiar || normalform.btn">
+                    <button mat-flat-button color="warn" (click)="clearForm()" *ngIf="normalform.btnLimpiar">
+                        {{ normalform.btnLimpiar }}
+                    </button>
+                    <button mat-flat-button color="accent" (click)="validForm()" *ngIf="normalform.btn">
+                        {{ normalform.btn }}
+                    </button>
+                </div>
+            </mat-card-content>
+        </mat-card>
+    </form>
+</div>

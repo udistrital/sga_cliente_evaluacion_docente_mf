@@ -61,14 +61,75 @@ export class DynamicFormComponent implements OnInit, OnChanges {
     "20. Es evidente que prepara sus clases y actividades para estimular mi logro de resultados de aprendizaje y competencias"
   ];
 
+  // Preguntas de la autoevaluación del aprendizaje
+  questionsAutoevaluacion = [
+    {
+      text: "01. Asumo las actividades que me plantea este espacio curricular en cada unidad de aprendizaje",
+      options: [
+        { value: "Evito hacer las actividades", text: "Evito hacer las actividades" },
+        { value: "A veces me animan las actividades", text: "A veces me animan las actividades" },
+        { value: "Con frecuencia hago las actividades del espacio curricular", text: "Con frecuencia hago las actividades del espacio curricular" },
+        { value: "Me encanta las actividades si he tenido éxito en actividades similares", text: "Me encanta las actividades si he tenido éxito en actividades similares" },
+        { value: "Espero con positivismo el próximo reto", text: "Espero con positivismo el próximo reto" }
+      ]
+    },
+    {
+      text: "02. Siento que puedo lograr los resultados de aprendizaje esperados",
+      options: [
+        { value: "Nunca", text: "Nunca" },
+        { value: "A veces", text: "A veces" },
+        { value: "Con alguna frecuencia", text: "Con alguna frecuencia" },
+        { value: "La mayor parte del tiempo", text: "La mayor parte del tiempo" },
+        { value: "Siempre", text: "Siempre" }
+      ]
+    },
+    {
+      text: "03. Acepto los resultados de la evaluación que realiza mi docente",
+      options: [
+        { value: "Me siento mal con los resultados negativos", text: "Me siento mal con los resultados negativos" },
+        { value: "Me siento bien solo si me interesa el espacio curricular", text: "Me siento bien solo si me interesa el espacio curricular" },
+        { value: "Con frecuencia miro las devoluciones de mi docente positivamente", text: "Con frecuencia miro las devoluciones de mi docente positivamente" },
+        { value: "La mayor parte del tiempo miro las devoluciones de mi docente positivamente", text: "La mayor parte del tiempo miro las devoluciones de mi docente positivamente" },
+        { value: "Siempre miro las devoluciones de mi docente positivamente", text: "Siempre miro las devoluciones de mi docente positivamente" }
+      ]
+    },
+    {
+      text: "04. Estrategias de autoaprendizaje (I)",
+      options: [
+        { value: "No movilizo recursos personales para mi aprendizaje en este espacio curricular", text: "No movilizo recursos personales para mi aprendizaje en este espacio curricular" },
+        { value: "A veces movilizo recursos personales para mi aprendizaje en este espacio curricular", text: "A veces movilizo recursos personales para mi aprendizaje en este espacio curricular" },
+        { value: "Con frecuencia movilizo recursos personales para mi aprendizaje en este espacio curricular", text: "Con frecuencia movilizo recursos personales para mi aprendizaje en este espacio curricular" },
+        { value: "La mayor parte de las veces movilizo recursos personales para mi aprendizaje en este espacio curricular", text: "La mayor parte de las veces movilizo recursos personales para mi aprendizaje en este espacio curricular" },
+        { value: "Siempre movilizo recursos personales para mi aprendizaje en este espacio curricular", text: "Siempre movilizo recursos personales para mi aprendizaje en este espacio curricular" }
+      ]
+    },
+    {
+      text: "05. Estrategias de autoaprendizaje (II)",
+      options: [
+        { value: "No me animo a usar redes para mi aprendizaje en este espacio curricular", text: "No me animo a usar redes para mi aprendizaje en este espacio curricular" },
+        { value: "A veces me animo a usar redes para mi aprendizaje en este espacio curricular", text: "A veces me animo a usar redes para mi aprendizaje en este espacio curricular" },
+        { value: "Con frecuencia me animo a usar redes para mi aprendizaje en este espacio curricular", text: "Con frecuencia me animo a usar redes para mi aprendizaje en este espacio curricular" },
+        { value: "La mayor parte de las veces me animo a usar redes para mi aprendizaje en este espacio curricular", text: "La mayor parte de las veces me animo a usar redes para mi aprendizaje en este espacio curricular" },
+        { value: "Siempre me animo a usar redes para mi aprendizaje en este espacio curricular", text: "Siempre me animo a usar redes para mi aprendizaje en este espacio curricular" }
+      ]
+    }
+  ];
+
+  // Comentarios para acciones a tomar
+  commentsAutoevaluacion = [
+    "1. ",
+    "2. ",
+    "3. "
+  ];
+
+
   get allQuestions() {
     return [...this.questions01, ...this.questions02, ...this.questions03];
   }
 
   constructor(
     private fb: FormBuilder,
-    private sanitizer: DomSanitizer, // Ajuste aquí
-    private anyService: AnyService
+    private sanitizer: DomSanitizer,
   ) {
     this.initializeForm();
     this.initializeData();
@@ -77,6 +138,7 @@ export class DynamicFormComponent implements OnInit, OnChanges {
   ngOnInit() {
     if (!this.normalform.tipo_formulario) {
       this.normalform.tipo_formulario = 'mini';
+      this.normalform.tipo_formulario = 'autoevaluacion-i';
     }
     this.initializeFormFields();
   }
@@ -90,8 +152,10 @@ export class DynamicFormComponent implements OnInit, OnChanges {
 
   private initializeForm() {
     const formGroup: { [key: string]: any } = {};
-    this.allQuestions.forEach((_, index) => {
+    this.questionsAutoevaluacion.forEach((_, index) => {
       formGroup['question_' + index] = new FormControl('');
+    });
+    this.commentsAutoevaluacion.forEach((_, index) => {
       formGroup['comment_' + index] = new FormControl('');
     });
     this.form = this.fb.group(formGroup);
