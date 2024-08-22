@@ -8,6 +8,8 @@ import { DefinicionFormulariosComponent } from './components/definicion-formular
 import { AsignacionFechasComponent } from './components/asignacion-fechas/asignacion-fechas.component';
 import { DefinirEscalasComponent } from './components/definir-escalas/definir-escalas.component';
 import { EvaluacionesComponent } from './components/evaluaciones/evaluaciones.component';
+import { MetricasComponent } from './components/metricas/metricas.component';
+import { ResultadosComponent } from './components/resultados/resultados.component';
 import { DynamicFormComponent } from './components/dynamic-form/dynamic-form.component'; // Importa el nuevo componente
 
 const routes: Routes = [
@@ -26,6 +28,14 @@ const routes: Routes = [
   {
     path: 'evaluaciones',
     component: EvaluacionesComponent
+  },
+  {
+    path: 'metricas',
+    component: MetricasComponent
+  },
+  {
+    path: 'resultados',
+    component: ResultadosComponent
   },
   {
     path: 'dynamic-form',

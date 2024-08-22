@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -30,7 +30,19 @@ import { EventosService } from './services/eventos.service';
 import { ParametrosService } from './services/parametros.service';
 import { AnyService } from './services/any.service';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MetricasComponent } from './components/metricas/metricas.component';
 import { MatRadioModule } from '@angular/material/radio';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSortModule } from '@angular/material/sort';
+import { MatTableModule } from '@angular/material/table';
+import { MatTabsModule } from '@angular/material/tabs';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { ResultadosComponent } from './components/resultados/resultados.component';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, environment.apiUrl + 'assets/i18n/', '.json');
@@ -44,17 +56,42 @@ export function createTranslateLoader(http: HttpClient) {
     DefinirEscalasComponent,
     EvaluacionesComponent,
     NgIsGrantedDirective,
-    DynamicFormComponent
+    DynamicFormComponent,
+    NgIsGrantedDirective,
+    MetricasComponent, 
+    ResultadosComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
+    NgxChartsModule,
     CommonModule,
     BrowserAnimationsModule,
     MATERIAL_MODULES,
     HttpClientModule,
     SpinnerUtilModule,
     MatRadioModule,
+    FormsModule,
+    CommonModule,
+    BrowserModule,
+    MatTabsModule,
+    MatIconModule,
+    MatStepperModule,
+    MatCardModule,
+    MatInputModule,
+    MatTableModule,
+    MatDialogModule,
+    MatSelectModule,
+    AppRoutingModule,
+    MatCheckboxModule,
+    MatFormFieldModule,
+    MatPaginatorModule,
+    MatNativeDateModule,
+    ReactiveFormsModule,
+    MatDatepickerModule,
+    MatSortModule,
+    MatAutocompleteModule,
+    BrowserAnimationsModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -73,6 +110,7 @@ export function createTranslateLoader(http: HttpClient) {
     MatExpansionModule,
     MatStepperModule  
   ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [
     UserService,
     EventosService, 
