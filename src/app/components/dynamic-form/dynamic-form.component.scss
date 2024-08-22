@@ -1,0 +1,42 @@
+.instruction-table {
+    width: 100%;
+    background-color: white;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+
+    td {
+        border: 1px solid #ddd;
+        padding: 8px;
+    }
+}
+
+.evaluation-table {
+    width: 100%;
+    background-color: white;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+
+    th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+    }
+
+    th {
+        background-color: #f2f2f2;
+        text-align: center;
+    }
+
+    .left-align {
+        text-align: left;
+    }
+}
+
+.instruction {
+    margin-top: 20px;
+    font-weight: bold;
+}
+
+mat-form-field {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}

@@ -6,6 +6,7 @@ import { debounceTime, distinctUntilChanged, filter, switchMap, map } from 'rxjs
 import { AnyService } from 'src/app/services/any.service';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 
+
 @Component({
   selector: 'ngx-dinamicform',
   templateUrl: './dynamic-form.component.html',
@@ -27,27 +28,53 @@ export class DynamicFormComponent implements OnInit, OnChanges {
   form: FormGroup = new FormGroup({});
   emptyControl = new FormControl(null);
   data: any;
-  searchTerm$ = new Subject<any>();
+  init = true;
+   // Preguntas del ámbito 01
+  questions01 = [
+    "01. Demuestra conocimiento de los contenidos que se van a enseñar en mi espacio curricular",
+    "02. Demuestra habilidades para conducir procesos de enseñanza-aprendizaje según los contenidos de mi espacio curricular",
+    "03. Demuestra comprensión de ritmos de aprendizaje diferenciados y adapta el aula de clase a estas necesidades",
+    "04. Demuestra habilidades para organizar y explicar ideas",
+    "05. Demuestra habilidades para observar su aula, diagnosticar necesidades y adaptarse al contexto"
+  ];
 
-  // View references
-  @ViewChild(MatDatepicker, { static: true }) datepicker!: MatDatepicker<Date>;
-  @ViewChildren('documento') fileInputs!: QueryList<ElementRef>;
-  DocumentoInputVariable!: ElementRef;
+  // Preguntas del ámbito 02
+  questions02 = [
+    "06. Me da a conocer lo que debo saber, comprender y ser capaz de hacer en mi espacio curricular",
+    "07. Me enseña lo que debo saber, comprender y ser capaz de hacer en mi espacio curricular",
+    "08. Integra en la enseñanza las competencias, la didáctica y la evaluación",
+    "09. Logra que sepa actuar de manera competente en contextos particulares señalados por el contenido de mi espacio curricular",
+    "10. Me enseña a relacionar las competencias y los resultados de aprendizaje de mi espacio curricular"
+  ];
 
-  init = false;
+  // Preguntas del ámbito 03
+  questions03 = [
+    "11. Desarrolla las unidades de aprendizaje de mi espacio curricular",
+    "12. Evalúa mis evidencias de aprendizaje y me proporciona devoluciones claras para mi mejoramiento",
+    "13. Demuestra compromiso general con el ambiente de aprendizaje de mi salón",
+    "14. Demuestra respeto por diversidades y diferencias sexo-genéricas, cognitivas, lingüísticas, raciales y culturales dentro y fuera de mi salón",
+    "15. Me motiva para el alcance de competencias y resultados de aprendizaje",
+    "16. Promueve el desarrollo de autoconceptos positivos para el estudiantado",
+    "17. Realiza actividades apropiadas para la consecución de los resultados de aprendizaje y el desarrollo de competencias",
+    "18. Recibe y maneja positivamente preguntas, ideas y opiniones que mantienen al estudiantado pendiente e involucrado en clase",
+    "19. Se adapta a niveles y ritmos de aprendizaje diferenciados tanto míos como de mis compañer@s de clase",
+    "20. Es evidente que prepara sus clases y actividades para estimular mi logro de resultados de aprendizaje y competencias"
+  ];
+
+  get allQuestions() {
+    return [...this.questions01, ...this.questions02, ...this.questions03];
+  }
 
   constructor(
     private fb: FormBuilder,
-    private sanitization: DomSanitizer,
-    private anyService: AnyService,
+    private sanitizer: DomSanitizer, // Ajuste aquí
+    private anyService: AnyService
   ) {
     this.initializeForm();
     this.initializeData();
-    this.setupSearchSubscription();
   }
-
+  
   ngOnInit() {
-    this.init = true;
     if (!this.normalform.tipo_formulario) {
       this.normalform.tipo_formulario = 'mini';
     }
@@ -55,16 +82,19 @@ export class DynamicFormComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: any) {
-    this.handleInputChanges(changes);
+    if (changes.normalform && changes.normalform.currentValue) {
+      this.normalform = changes.normalform.currentValue;
+      this.initializeFormFields();
+    }
   }
 
-  // Initialize form with empty group structure
   private initializeForm() {
-    this.form = this.fb.group({
-      step_1: this.fb.group({}),
-      step_2: this.fb.group({}),
-      // Add additional steps as necessary
+    const formGroup: { [key: string]: any } = {};
+    this.allQuestions.forEach((_, index) => {
+      formGroup['question_' + index] = new FormControl('');
+      formGroup['comment_' + index] = new FormControl('');
     });
+    this.form = this.fb.group(formGroup);
   }
 
   private initializeData() {
@@ -76,7 +106,7 @@ export class DynamicFormComponent implements OnInit, OnChanges {
     };
   }
 
-  private setupSearchSubscription() {
+  /*private setupSearchSubscription() {
     this.searchTerm$
       .pipe(
         debounceTime(700),
@@ -87,7 +117,7 @@ export class DynamicFormComponent implements OnInit, OnChanges {
         )
       )
       .subscribe(response => this.handleSearchResponse(response));
-  }
+  }*/
 
   private handleInputChanges(changes: any) {
     if (changes.normalform?.currentValue) {
@@ -107,23 +137,13 @@ export class DynamicFormComponent implements OnInit, OnChanges {
   }
 
   private initializeFormFields() {
-    const formGroup: { [key: string]: any } = {};
-    this.normalform.campos.forEach((c: any) => {
-      formGroup[c.nombre] = [c.valor || ''];
-    });
-    this.form = this.fb.group(formGroup);
-
-    this.normalform.campos = this.normalform.campos.map((d: any) => {
-      d.clase = 'form-control';
-      d.relacion = d.relacion !== undefined ? d.relacion : true;
-      d.valor = d.valor || (d.etiqueta === 'checkbox' ? false : '');
-      d.deshabilitar = d.deshabilitar || false;
-      if (d.etiqueta === 'fileRev') {
-        d.File = undefined;
-        d.urlTemp = undefined;
-      }
-      return d;
-    });
+    if (this.normalform && Array.isArray(this.normalform.campos)) {
+      const formGroup: { [key: string]: any } = {};
+      this.normalform.campos.forEach((c: any) => {
+        formGroup[c.nombre] = [c.valor || ''];
+      });
+      this.form = this.fb.group(formGroup);
+    }
   }
 
   private populateFormWithModelData() {
@@ -201,14 +221,10 @@ export class DynamicFormComponent implements OnInit, OnChanges {
   }
 
   clearForm() {
-    this.normalform.campos.forEach((d: any) => {
-      d.valor = d.etiqueta === 'checkbox' ? false : null;
-      this.resetField(d);
-    });
-    this.percentage.emit(0);
+    this.form.reset();
   }
-
-  private resetField(d: any) {
+  
+  /*private resetField(d: any) {
     if (d.etiqueta === 'file' || d.etiqueta === 'fileRev') {
       this.resetFileField(d);
     }
@@ -217,15 +233,15 @@ export class DynamicFormComponent implements OnInit, OnChanges {
     }
     d.alerta = '';
     d.clase = 'form-control form-control-success';
-  }
+  }*/
 
-  private resetFileField(d: any) {
+  /*private resetFileField(d: any) {
     const nativeElement = this.DocumentoInputVariable?.nativeElement || null;
     if (nativeElement) nativeElement.value = '';
     d.File = undefined;
     d.url = '';
     d.urlTemp = '';
-  }
+  }*/
 
   private resetAutocompleteField() {
     const e = document.querySelectorAll('.inputAuto');
@@ -310,27 +326,14 @@ export class DynamicFormComponent implements OnInit, OnChanges {
   }
 
   validForm() {
-    const result: any = {};
-    let requeridos = 0;
-    let resueltos = 0;
-    this.data.data = {};
-    this.data.valid = true;
-
-    this.normalform.campos.forEach((d: any) => {
-      requeridos = d.requerido && !d.ocultar ? requeridos + 1 : requeridos;
-      if (this.validCampo(d, false)) {
-        this.populateResult(d, result);
-        resueltos = d.requerido ? resueltos + 1 : resueltos;
-      } else {
-        this.data.valid = false;
-      }
-    });
-
-    this.calculatePercentage(resueltos, requeridos);
-    this.result.emit(this.data);
-
-    return this.data;
+    if (this.form.valid) {
+      console.log("Formulario válido:", this.form.value);
+      this.result.emit(this.form.value);
+    } else {
+      console.log("Formulario no válido");
+    }
   }
+
 
   private populateResult(d: any, result: any) {
     if ((d.etiqueta === 'file' || d.etiqueta === 'fileRev') && !d.ocultar) {
@@ -371,7 +374,7 @@ export class DynamicFormComponent implements OnInit, OnChanges {
   }
 
   cleanURL(oldURL: string): SafeResourceUrl {
-    return this.sanitization.bypassSecurityTrustUrl(oldURL);
+    return this.sanitizer.bypassSecurityTrustUrl(oldURL);
   }
 
   onCheckboxChange(c: any) {
@@ -393,7 +396,7 @@ export class DynamicFormComponent implements OnInit, OnChanges {
     return this.normalform.campos.filter((c: any) => c.step === step);
   }
 
-  handleKeyUp(event: KeyboardEvent, c: any) {
+  /*handleKeyUp(event: KeyboardEvent, c: any) {
     const target = event.target as HTMLInputElement;
     this.searchTerm$.next({
       text: target.value,
@@ -402,9 +405,9 @@ export class DynamicFormComponent implements OnInit, OnChanges {
       field: c,
       keyToFilter: c.keyToFilter,
     });
-  }
+  }*/
 
-  private searchEntries(text: string, path: string, query: string, keyToFilter: string, field: any) {
+  /*private searchEntries(text: string, path: string, query: string, keyToFilter: string, field: any) {
     const channelOptions = new BehaviorSubject<any>({ field });
     const options$ = channelOptions.asObservable();
     const queryOptions$ = this.anyService.get(path, query.replace(keyToFilter, text));
@@ -416,7 +419,7 @@ export class DynamicFormComponent implements OnInit, OnChanges {
         keyToFilter: text,
       }))
     );
-  }
+  }*/
 
   private handleSearchResponse(response: any) {
     const opciones = response.queryOptions.Data || response.queryOptions;

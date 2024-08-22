@@ -32,7 +32,8 @@
                         <div class="form-col1">
                             <mat-form-field style="width: 100%" floatLabel="always" appearance="fill">
                                 <mat-label>{{ 'heteroevaluacion.fechas' | translate }}</mat-label>
-                                <input matInput [matDatepicker]="pickerInicio" formControlName="inicioFecha" placeholder="dd/MM/yyyy">
+                                <input matInput [matDatepicker]="pickerInicio" formControlName="inicioFecha"
+                                    placeholder="dd/MM/yyyy">
                                 <mat-datepicker-toggle matSuffix [for]="pickerInicio"></mat-datepicker-toggle>
                                 <mat-datepicker #pickerInicio></mat-datepicker>
                                 <mat-error
@@ -102,8 +103,11 @@
                             </mat-error>
                         </mat-form-field>
                     </div>
+
                     <!-- Mostrar directamente el componente dynamic-form -->
-                    <ngx-dinamicform [normalform]="formData" (result)="handleFormResult($event)"></ngx-dinamicform>
+                    <ng-container *ngIf="showDynamicForm">
+                        <ngx-dinamicform [normalform]="formData" (result)="handleFormResult($event)"></ngx-dinamicform>
+                    </ng-container>
 
                     <div class="form-col1">
                         <button mat-flat-button color="accent" type="submit" [disabled]="heteroForm.invalid">
@@ -204,7 +208,9 @@
                     </div>
 
                     <!-- Mostrar directamente el componente dynamic-form -->
-                    <ngx-dinamicform [normalform]="formData" (result)="handleFormResult($event)"></ngx-dinamicform>
+                    <ng-container *ngIf="showDynamicForm">
+                        <ngx-dinamicform [normalform]="formData" (result)="handleFormResult($event)"></ngx-dinamicform>
+                    </ng-container>
 
                     <div class="form-col1">
                         <button mat-flat-button color="accent" type="submit" [disabled]="coevaluacionIIForm.invalid">
@@ -326,7 +332,9 @@
                     </div>
 
                     <!-- Mostrar directamente el componente dynamic-form -->
-                    <ngx-dinamicform [normalform]="formData" (result)="handleFormResult($event)"></ngx-dinamicform>
+                    <ng-container *ngIf="showDynamicForm">
+                        <ngx-dinamicform [normalform]="formData" (result)="handleFormResult($event)"></ngx-dinamicform>
+                    </ng-container>
 
                     <div class="form-col1">
                         <button mat-flat-button color="accent" type="submit" [disabled]="coevaluacionIForm.invalid">
@@ -433,7 +441,9 @@
                     </div>
 
                     <!-- Mostrar directamente el componente dynamic-form -->
-                    <ngx-dinamicform [normalform]="formData" (result)="handleFormResult($event)"></ngx-dinamicform>
+                    <ng-container *ngIf="showDynamicForm">
+                        <ngx-dinamicform [normalform]="formData" (result)="handleFormResult($event)"></ngx-dinamicform>
+                    </ng-container>
 
                     <div class="form-col1">
                         <button mat-flat-button color="accent" type="submit" [disabled]="autoevaluacionIIForm.invalid">
@@ -541,7 +551,9 @@
                     </div>
 
                     <!-- Mostrar directamente el componente dynamic-form -->
-                    <ngx-dinamicform [normalform]="formData" (result)="handleFormResult($event)"></ngx-dinamicform>
+                    <ng-container *ngIf="showDynamicForm">
+                        <ngx-dinamicform [normalform]="formData" (result)="handleFormResult($event)"></ngx-dinamicform>
+                    </ng-container>
 
                     <div class="form-col1">
                         <button mat-flat-button color="accent" type="submit" [disabled]="autoevaluacionIForm.invalid">

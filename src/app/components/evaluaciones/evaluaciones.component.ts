@@ -33,6 +33,7 @@ export class EvaluacionesComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log('DynamicFormComponent initialized with formData:', this.formData);
     this.initializeForms();
 
     // Obtener los roles del usuario
@@ -97,32 +98,43 @@ export class EvaluacionesComponent implements OnInit {
   }
 
   onSelectChange(event: MatSelectChange) {
+    console.log('Selected evaluation:', this.selectedEvaluation);
     this.selectedEvaluation = event.value;
-    this.showDynamicForm = true;  // Asegurarse de que el dynamic form se muestre
-    // Ajustar valores relacionados según la evaluación seleccionada
-    switch (this.selectedEvaluation) {
-      case 'heteroevaluacion':
-        this.setHeteroevaluacionData();
-        this.formData = this.heteroForm.value;
-        break;
-      case 'coevaluacion-i':
-        this.setCoevaluacionIData();
-        this.formData = this.coevaluacionIForm.value;
-        break;
-      case 'coevaluacion-ii':
-        this.setCoevaluacionIIData();
-        this.formData = this.coevaluacionIIForm.value;
-        break;
-      case 'autoevaluacion-i':
-        this.setAutoevaluacionIData();
-        this.formData = this.autoevaluacionIForm.value;
-        break;
-      case 'autoevaluacion-ii':
-        this.setAutoevaluacionIIData();
-        this.formData = this.autoevaluacionIIForm.value;
-        break;
+    this.showDynamicForm = true;
+
+    if (this.selectedEvaluation === 'heteroevaluacion') {
+        this.formData = {
+            tipo_formulario: 'mini',
+            titulo: 'Evaluación de Heteroevaluación',
+            formato: 'Código SIGUD por asignar',
+            actor: 'Estudiantes',
+            cronograma: 'Semana 4 a 7 del calendario académico',
+            rubricas: 'Selección múltiple',
+            instruccion: 'Estimado estudiante: Por favor evalúe formativamente a su docente utilizando el formato dispuesto para ello. Los ítems 01 a 20 de selección múltiple con única respuesta son obligatorios. Puede realizar anotaciones de felicitación o de sugerencias respetuosas en los espacios destinados para tal fin. Utilice como referencia la siguiente escala para medir el grado de desempeño a evaluar:',
+            escalas: [
+                { label: 'INSUFICIENTE', descripcion: 'No sucede y no se demuestra el criterio' },
+                { label: 'NECESITA MEJORAR', descripcion: 'Sucede parcialmente pero no se demuestra el criterio' },
+                { label: 'BUENO', descripcion: 'Sucede con frecuencia y se demuestra el criterio en un nivel básico' },
+                { label: 'SOBRESALIENTE', descripcion: 'Sucede la mayor parte del tiempo y se demuestra el criterio de forma adecuada' },
+                { label: 'EXCELENTE', descripcion: 'Sucede siempre y se demuestra el criterio completamente' }
+            ],
+            comentariosLabel: 'Dado los ítems anteriores, quisiera felicitarlo o sugerirle respetuosamente lo siguiente:',
+            comentariosControl: 'comentarios',
+            comentariosPlaceholder: 'Ingrese sus comentarios aquí...',
+            campos: [
+                { nombre: 'item1', label: '01. Demuestra conocimiento de los contenidos que se van a enseñar en mi espacio curricular' },
+                { nombre: 'item2', label: '02. Demuestra habilidades para conducir procesos de enseñanza-aprendizaje según los contenidos de mi espacio curricular' },
+                { nombre: 'item3', label: '03. Demuestra comprensión de ritmos de aprendizaje diferenciados y adapta el aula de clase a estas necesidades' },
+                { nombre: 'item4', label: '04. Demuestra habilidades para organizar y explicar ideas' },
+                { nombre: 'item5', label: '05. Demuestra habilidades para observar su aula, diagnosticar necesidades y adaptarse al contexto' }
+            ],
+            btn: 'Guardar',
+            btnLimpiar: 'Limpiar'
+        };
     }
-  }
+
+    console.log('formData:', this.formData);
+}
 
   handleFormResult(result: any) {
     console.log('Resultados del formulario dinámico:', result);

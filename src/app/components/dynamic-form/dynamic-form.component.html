@@ -1,5 +1,4 @@
 <div [ngSwitch]="normalform.tipo_formulario">
-
     <!-- Formulario Mini -->
     <form [formGroup]="form" *ngSwitchCase="'mini'" class="form-horizontal">
         <mat-card>
@@ -8,303 +7,146 @@
             </mat-card-header>
             <mat-card-content>
                 <div class="form-grid">
-                    <div *ngFor="let c of normalform.campos" class="{{ c.claseGrid }}"
-                        [ngClass]="{ 'display-none': c.ocultar }" [ngSwitch]="c.etiqueta">
+                    <!-- Instrucciones y Escalas -->
+                    <table class="instruction-table">
+                        <tr>
+                            <td style="background-color: #e0f7e0;">FORMATO</td>
+                            <td>Código SIGUD por asignar</td>
+                        </tr>
+                        <tr>
+                            <td style="background-color: #e0f7e0;">ACTOR</td>
+                            <td>Estudiantes</td>
+                        </tr>
+                        <tr>
+                            <td style="background-color: #e0f7e0;">CRONOGRAMA</td>
+                            <td>Semana 4 a 7 del calendario académico</td>
+                        </tr>
+                        <tr>
+                            <td style="background-color: #e0f7e0;">RÚBRICAS</td>
+                            <td>Selección múltiple</td>
+                        </tr>
+                        <tr>
+                            <td style="background-color: #e0f7e0;">INSTRUCCIÓN</td>
+                            <td>
+                                Estimado estudiante:<br>
+                                Por favor evalúe formativamente a su docente utilizando el formato dispuesto para ello. 
+                                Los ítems 01 a 20 de selección múltiple con única respuesta son obligatorios. 
+                                Puede realizar anotaciones de felicitación o de sugerencias respetuosas en los espacios destinados para tal fin.
+                                Utilice como referencia la siguiente escala para medir el grado de desempeño a evaluar:
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="background-color: #e0f7e0;">ESCALA</td>
+                            <td>
+                                INSUFICIENTE = No sucede y no se demuestra el criterio<br>
+                                NECESITA MEJORAR = Sucede parcialmente pero no se demuestra el criterio<br>
+                                BUENO = Sucede con frecuencia y se demuestra el criterio en un nivel básico<br>
+                                SOBRESALIENTE = Sucede la mayor parte del tiempo y se demuestra el criterio de forma adecuada<br>
+                                EXCELENTE = Sucede siempre y se demuestra el criterio completamente
+                            </td>
+                        </tr>
+                    </table>
 
-                        <!-- Input -->
-                        <mat-form-field *ngSwitchCase="'input'" appearance="outline" style="width: 100%"
-                            floatLabel="always">
-                            <mat-label>{{ c.requerido ? "* " + c.label : c.label }}</mat-label>
-                            <input matInput [formControlName]="c.nombre" (ngModelChange)="validCampo(c)" [type]="c.tipo"
-                                [id]="c.nombre" [min]="c.min" [max]="c.max" [placeholder]="c.placeholder"
-                                [disabled]="c.deshabilitar" [pattern]="c.pattern" />
-                            <mat-hint class="text-danger">{{ c.alerta }}</mat-hint>
+                    <!-- Tabla Ámbito 01 -->
+                    <table class="evaluation-table">
+                        <tr>
+                            <th style="background-color: #cce7ff;">ÁMBITO 01: LA DOCENCIA</th>
+                            <th style="background-color: #cce7ff;">Insuficiente</th>
+                            <th style="background-color: #cce7ff;">Necesita Mejorar</th>
+                            <th style="background-color: #cce7ff;">Bueno</th>
+                            <th style="background-color: #cce7ff;">Sobresaliente</th>
+                            <th style="background-color: #cce7ff;">Excelente</th>
+                        </tr>
+                        <tr *ngFor="let question of questions01; let i = index">
+                            <td class="left-align">{{ question }}</td>
+                            <td>
+                                <input type="radio" [formControlName]="'question_' + i" value="Insuficiente">
+                            </td>
+                            <td>
+                                <input type="radio" [formControlName]="'question_' + i" value="Necesita Mejorar">
+                            </td>
+                            <td>
+                                <input type="radio" [formControlName]="'question_' + i" value="Bueno">
+                            </td>
+                            <td>
+                                <input type="radio" [formControlName]="'question_' + i" value="Sobresaliente">
+                            </td>
+                            <td>
+                                <input type="radio" [formControlName]="'question_' + i" value="Excelente">
+                            </td>
+                        </tr>
+                    </table>
+
+                    <!-- Tabla Ámbito 02 -->
+                    <table class="evaluation-table">
+                        <tr>
+                            <th style="background-color: #cce7ff;">ÁMBITO 02: LA ENSEÑANZA</th>
+                            <th style="background-color: #cce7ff;">Insuficiente</th>
+                            <th style="background-color: #cce7ff;">Necesita Mejorar</th>
+                            <th style="background-color: #cce7ff;">Bueno</th>
+                            <th style="background-color: #cce7ff;">Sobresaliente</th>
+                            <th style="background-color: #cce7ff;">Excelente</th>
+                        </tr>
+                        <tr *ngFor="let question of questions02; let i = index">
+                            <td class="left-align">{{ question }}</td>
+                            <td>
+                                <input type="radio" [formControlName]="'question_' + (i + questions01.length)" value="Insuficiente">
+                            </td>
+                            <td>
+                                <input type="radio" [formControlName]="'question_' + (i + questions01.length)" value="Necesita Mejorar">
+                            </td>
+                            <td>
+                                <input type="radio" [formControlName]="'question_' + (i + questions01.length)" value="Bueno">
+                            </td>
+                            <td>
+                                <input type="radio" [formControlName]="'question_' + (i + questions01.length)" value="Sobresaliente">
+                            </td>
+                            <td>
+                                <input type="radio" [formControlName]="'question_' + (i + questions01.length)" value="Excelente">
+                            </td>
+                        </tr>
+                    </table>
+
+                    <!-- Tabla Ámbito 03 -->
+                    <table class="evaluation-table">
+                        <tr>
+                            <th style="background-color: #cce7ff;">ÁMBITO 03: LA PRÁCTICA</th>
+                            <th style="background-color: #cce7ff;">Insuficiente</th>
+                            <th style="background-color: #cce7ff;">Necesita Mejorar</th>
+                            <th style="background-color: #cce7ff;">Bueno</th>
+                            <th style="background-color: #cce7ff;">Sobresaliente</th>
+                            <th style="background-color: #cce7ff;">Excelente</th>
+                        </tr>
+                        <tr *ngFor="let question of questions03; let i = index">
+                            <td class="left-align">{{ question }}</td>
+                            <td>
+                                <input type="radio" [formControlName]="'question_' + (i + questions01.length + questions02.length)" value="Insuficiente">
+                            </td>
+                            <td>
+                                <input type="radio" [formControlName]="'question_' + (i + questions01.length + questions02.length)" value="Necesita Mejorar">
+                            </td>
+                            <td>
+                                <input type="radio" [formControlName]="'question_' + (i + questions01.length + questions02.length)" value="Bueno">
+                            </td>
+                            <td>
+                                <input type="radio" [formControlName]="'question_' + (i + questions01.length + questions02.length)" value="Sobresaliente">
+                            </td>
+                            <td>
+                                <input type="radio" [formControlName]="'question_' + (i + questions01.length + questions02.length)" value="Excelente">
+                            </td>
+                        </tr>
+                    </table>
+
+                    <!-- Enunciado y Campos de Entrada -->
+                    <p class="instruction">
+                        Dados los ítems anteriores, quisiera felicitarle o sugerirle respetuosamente lo siguiente (usar solo el numeral sobre el que desee felicitar o sugerir):
+                    </p>
+                    <div *ngFor="let question of allQuestions; let i = index">
+                        <mat-form-field style="width: 100%">
+                            <textarea matInput placeholder="Comentario sobre el ítem {{ i + 1 }}" [formControlName]="'comment_' + i"></textarea>
                         </mat-form-field>
-
-                        <!-- Checkbox -->
-                        <div *ngSwitchCase="'checkbox'" class="mt-4">
-                            <mat-checkbox [formControlName]="c.nombre" (change)="onCheckboxChange(c)"
-                                [disabled]="c.deshabilitar">
-                                {{ c.requerido ? "* " + c.label : c.label }}
-                            </mat-checkbox>
-                            <mat-hint class="text-danger">{{ c.alerta }}</mat-hint>
-                        </div>
-
-                        <!-- Textarea -->
-                        <mat-form-field *ngSwitchCase="'textarea'" appearance="outline" style="width: 100%"
-                            floatLabel="always">
-                            <mat-label>{{ c.requerido ? "* " + c.label : c.label }}</mat-label>
-                            <textarea matInput [formControlName]="c.nombre" (ngModelChange)="validCampo(c)"
-                                [id]="c.nombre" [placeholder]="c.placeholder" [disabled]="c.deshabilitar"
-                                cdkTextareaAutosize cdkAutosizeMinRows="3" cdkAutosizeMaxRows="6"></textarea>
-                            <mat-hint class="text-danger">{{ c.alerta }}</mat-hint>
-                        </mat-form-field>
-
-                        <!-- Datepicker -->
-                        <mat-form-field *ngSwitchCase="'mat-date'" appearance="outline" style="width: 100%"
-                            floatLabel="always">
-                            <mat-label>{{ c.requerido ? "* " + c.label : c.label }}</mat-label>
-                            <input matInput [matDatepicker]="picker" [formControlName]="c.nombre"
-                                (dateChange)="onChangeDate($event, c); validCampo(c)" [placeholder]="c.placeholder"
-                                [disabled]="c.deshabilitar" />
-                            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                            <mat-datepicker #picker></mat-datepicker>
-                            <mat-hint class="text-danger">{{ c.alerta }}</mat-hint>
-                        </mat-form-field>
-
-                        <!-- Select -->
-                        <mat-form-field *ngSwitchCase="'select'" appearance="outline" style="width: 100%"
-                            floatLabel="always">
-                            <mat-label>{{ c.requerido ? "* " + c.label : c.label }}</mat-label>
-                            <mat-select [formControlName]="c.nombre" (selectionChange)="validCampo(c)"
-                                [disabled]="c.deshabilitar">
-                                <mat-option value="">{{ '--Seleccionar--' }}</mat-option>
-                                <mat-option *ngFor="let item of c.opciones" [value]="item">
-                                    {{ c.key ? item[c.key] : (item | json) }}
-                                </mat-option>
-                            </mat-select>
-                            <mat-hint class="text-danger">{{ c.alerta }}</mat-hint>
-                        </mat-form-field>
-
-                        <!-- File Input -->
-                        <div *ngSwitchCase="'file'" class="input-file">
-                            <label>{{ c.requerido ? "* " + c.label : c.label }}</label>
-                            <input type="file" (change)="onChange($event, c)" [disabled]="c.deshabilitar" />
-                            <mat-hint class="text-danger">{{ c.alerta }}</mat-hint>
-                            <div *ngIf="c.urlTemp" class="mt-2">
-                                <button mat-button color="primary" (click)="download(c.urlTemp, c.nombre, 500, 500)">
-                                    <mat-icon>cloud_download</mat-icon>
-                                    {{ "GLOBAL.click_aqui" | translate }}
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Button -->
-                        <div *ngSwitchCase="'button'" class="mt-4">
-                            <button mat-flat-button color="primary" [id]="c.id" (click)="auxButton(c)">
-                                <mat-icon>{{ c.icono }}</mat-icon>
-                                {{ c.label }}
-                            </button>
-                        </div>
                     </div>
                 </div>
-
-                <ng-content></ng-content>
-
-                <div class="mt-4" *ngIf="normalform.btnLimpiar || normalform.btn">
-                    <button mat-flat-button color="warn" (click)="clearForm()" *ngIf="normalform.btnLimpiar">
-                        {{ normalform.btnLimpiar }}
-                    </button>
-                    <button mat-flat-button color="accent" (click)="validForm()" *ngIf="normalform.btn">
-                        {{ normalform.btn }}
-                    </button>
-                </div>
-            </mat-card-content>
-        </mat-card>
-    </form>
-
-    <!-- Formulario por Pasos (bySteps) -->
-    <form [formGroup]="form" *ngSwitchCase="'bySteps'" class="form-horizontal">
-        <mat-card>
-            <mat-card-header>
-                <mat-card-title>{{ normalform.titulo }}</mat-card-title>
-            </mat-card-header>
-            <mat-card-content>
-                <mat-vertical-stepper [linear]="true" formGroupName="stepperForm">
-                    <mat-step
-                        *ngFor="let step of getUniqueSteps(normalform.campos); let isFirst = first; let isLast = last"
-                        [stepControl]="form.get(getStepControlName(step)) || emptyControl">
-                        <ng-template matStepLabel>
-                            {{ ('GLOBAL.paso' | translate) + ' ' + step }}
-                        </ng-template>
-
-                        <div class="form-grid">
-                            <div *ngFor="let c of getFieldsInStep(step)" class="{{ c.claseGrid }}"
-                                [ngClass]="{ 'display-none': c.ocultar }" [ngSwitch]="c.etiqueta">
-
-                                <!-- Input -->
-                                <mat-form-field *ngSwitchCase="'input'" appearance="outline" style="width: 100%"
-                                    floatLabel="always">
-                                    <mat-label>{{ c.requerido ? "* " + c.label : c.label }}</mat-label>
-                                    <input matInput [formControlName]="c.nombre" (ngModelChange)="validCampo(c)"
-                                        [type]="c.tipo" [id]="c.nombre" [min]="c.min" [max]="c.max"
-                                        [placeholder]="c.placeholder" [disabled]="c.deshabilitar"
-                                        [pattern]="c.pattern" />
-                                    <mat-hint class="text-danger">{{ c.alerta }}</mat-hint>
-                                </mat-form-field>
-
-                                <!-- Checkbox -->
-                                <div *ngSwitchCase="'checkbox'" class="mt-4">
-                                    <mat-checkbox [formControlName]="c.nombre" (change)="onCheckboxChange(c)"
-                                        [disabled]="c.deshabilitar">
-                                        {{ c.requerido ? "* " + c.label : c.label }}
-                                    </mat-checkbox>
-                                    <mat-hint class="text-danger">{{ c.alerta }}</mat-hint>
-                                </div>
-
-                                <!-- Datepicker -->
-                                <mat-form-field *ngSwitchCase="'mat-date'" appearance="outline" style="width: 100%"
-                                    floatLabel="always">
-                                    <mat-label>{{ c.requerido ? "* " + c.label : c.label }}</mat-label>
-                                    <input matInput [matDatepicker]="picker" [formControlName]="c.nombre"
-                                        (dateChange)="onChangeDate($event, c); validCampo(c)"
-                                        [placeholder]="c.placeholder" [disabled]="c.deshabilitar" />
-                                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                                    <mat-datepicker #picker></mat-datepicker>
-                                    <mat-hint class="text-danger">{{ c.alerta }}</mat-hint>
-                                </mat-form-field>
-
-                                <!-- Select -->
-                                <mat-form-field *ngSwitchCase="'select'" appearance="outline" style="width: 100%"
-                                    floatLabel="always">
-                                    <mat-label>{{ c.requerido ? "* " + c.label : c.label }}</mat-label>
-                                    <mat-select [formControlName]="c.nombre" (selectionChange)="validCampo(c)"
-                                        [disabled]="c.deshabilitar">
-                                        <mat-option value="">{{ '--Seleccionar--' }}</mat-option>
-                                        <mat-option *ngFor="let item of c.opciones" [value]="item">
-                                            {{ c.key ? item[c.key] : (item | json) }}
-                                        </mat-option>
-                                    </mat-select>
-                                    <mat-hint class="text-danger">{{ c.alerta }}</mat-hint>
-                                </mat-form-field>
-
-                                <!-- Auto Complete -->
-                                <mat-form-field *ngSwitchCase="'autocomplete'" appearance="outline" style="width: 100%"
-                                    floatLabel="always">
-                                    <mat-label>{{ c.requerido ? "* " + c.label : c.label }}</mat-label>
-                                    <input type="text" matInput [placeholder]="c.placeholder" [matAutocomplete]="auto"
-                                        [disabled]="c.deshabilitar" (keyup)="handleKeyUp($event, c)" />
-                                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayWithFn"
-                                        (optionSelected)="setNewValue($event.option.value, c)">
-                                        <mat-option *ngFor="let item of c.opciones" [value]="item">
-                                            {{ c.key ? item[c.key] : (item | json) }}
-                                        </mat-option>
-                                    </mat-autocomplete>
-                                    <mat-hint class="text-danger">{{ c.alerta }}</mat-hint>
-                                </mat-form-field>
-
-                                <!-- File Input -->
-                                <div *ngSwitchCase="'file'" class="input-file">
-                                    <label>{{ c.requerido ? "* " + c.label : c.label }}</label>
-                                    <input type="file" (change)="onChange($event, c)" [disabled]="c.deshabilitar" />
-                                    <mat-hint class="text-danger">{{ c.alerta }}</mat-hint>
-                                    <div *ngIf="c.urlTemp" class="mt-2">
-                                        <button mat-button color="primary"
-                                            (click)="download(c.urlTemp, c.nombre, 500, 500)">
-                                            <mat-icon>cloud_download</mat-icon>
-                                            {{ "GLOBAL.click_aqui" | translate }}
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <!-- Button -->
-                                <div *ngSwitchCase="'button'" class="mt-4">
-                                    <button mat-flat-button color="primary" [id]="c.id" (click)="auxButton(c)">
-                                        <mat-icon>{{ c.icono }}</mat-icon>
-                                        {{ c.label }}
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="mt-4" style="display: flex; justify-content: space-between;">
-                            <button mat-stroked-button color="primary" matStepperPrevious [disabled]="isFirst">
-                                {{ "GLOBAL.regresar" | translate }}
-                            </button>
-                            <button mat-stroked-button color="primary" matStepperNext [disabled]="isLast">
-                                {{ "GLOBAL.siguiente" | translate }}
-                            </button>
-                        </div>
-                    </mat-step>
-                </mat-vertical-stepper>
-
-                <ng-content></ng-content>
-
-                <div class="mt-4" *ngIf="normalform.btnLimpiar || normalform.btn">
-                    <button mat-flat-button color="warn" (click)="clearForm()" *ngIf="normalform.btnLimpiar">
-                        {{ normalform.btnLimpiar }}
-                    </button>
-                    <button mat-flat-button color="accent" (click)="validForm()" *ngIf="normalform.btn">
-                        {{ normalform.btn }}
-                    </button>
-                </div>
-            </mat-card-content>
-        </mat-card>
-    </form>
-
-    <!-- Formulario Expansible -->
-    <form [formGroup]="form" *ngSwitchCase="'expansion'" class="form-horizontal">
-        <mat-card>
-            <mat-card-header>
-                <mat-card-title>{{ normalform.titulo }}</mat-card-title>
-            </mat-card-header>
-            <mat-card-content>
-                <mat-accordion>
-                    <mat-expansion-panel *ngFor="let c of normalform.campos">
-                        <mat-expansion-panel-header>
-                            <mat-panel-title>
-                                {{ c.label }}
-                            </mat-panel-title>
-                        </mat-expansion-panel-header>
-
-                        <!-- Input -->
-                        <mat-form-field *ngIf="c.etiqueta === 'input'" appearance="outline" style="width: 100%"
-                            floatLabel="always">
-                            <mat-label>{{ c.requerido ? "* " + c.label : c.label }}</mat-label>
-                            <input matInput [formControlName]="c.nombre" (ngModelChange)="validCampo(c)" [type]="c.tipo"
-                                [id]="c.nombre" [min]="c.min" [max]="c.max" [placeholder]="c.placeholder"
-                                [disabled]="c.deshabilitar" [pattern]="c.pattern" />
-                            <mat-hint class="text-danger">{{ c.alerta }}</mat-hint>
-                        </mat-form-field>
-
-                        <!-- Checkbox -->
-                        <div *ngIf="c.etiqueta === 'checkbox'" class="mt-4">
-                            <mat-checkbox [formControlName]="c.nombre" (change)="onCheckboxChange(c)"
-                                [disabled]="c.deshabilitar">
-                                {{ c.requerido ? "* " + c.label : c.label }}
-                            </mat-checkbox>
-                            <mat-hint class="text-danger">{{ c.alerta }}</mat-hint>
-                        </div>
-
-                        <!-- Textarea -->
-                        <mat-form-field *ngIf="c.etiqueta === 'textarea'" appearance="outline" style="width: 100%"
-                            floatLabel="always">
-                            <mat-label>{{ c.requerido ? "* " + c.label : c.label }}</mat-label>
-                            <textarea matInput [formControlName]="c.nombre" (ngModelChange)="validCampo(c)"
-                                [id]="c.nombre" [placeholder]="c.placeholder" [disabled]="c.deshabilitar"
-                                cdkTextareaAutosize cdkAutosizeMinRows="3" cdkAutosizeMaxRows="6"></textarea>
-                            <mat-hint class="text-danger">{{ c.alerta }}</mat-hint>
-                        </mat-form-field>
-
-                        <!-- Select -->
-                        <mat-form-field *ngIf="c.etiqueta === 'select'" appearance="outline" style="width: 100%"
-                            floatLabel="always">
-                            <mat-label>{{ c.requerido ? "* " + c.label : c.label }}</mat-label>
-                            <mat-select [formControlName]="c.nombre" (selectionChange)="validCampo(c)"
-                                [disabled]="c.deshabilitar">
-                                <mat-option value="">{{ '--Seleccionar--' }}</mat-option>
-                                <mat-option *ngFor="let item of c.opciones" [value]="item">
-                                    {{ c.key ? item[c.key] : (item | json) }}
-                                </mat-option>
-                            </mat-select>
-                            <mat-hint class="text-danger">{{ c.alerta }}</mat-hint>
-                        </mat-form-field>
-
-                        <!-- File Input -->
-                        <div *ngIf="c.etiqueta === 'file'" class="input-file">
-                            <label>{{ c.requerido ? "* " + c.label : c.label }}</label>
-                            <input type="file" (change)="onChange($event, c)" [disabled]="c.deshabilitar" />
-                            <mat-hint class="text-danger">{{ c.alerta }}</mat-hint>
-                            <div *ngIf="c.urlTemp" class="mt-2">
-                                <button mat-button color="primary" (click)="download(c.urlTemp, c.nombre, 500, 500)">
-                                    <mat-icon>cloud_download</mat-icon>
-                                    {{ "GLOBAL.click_aqui" | translate }}
-                                </button>
-                            </div>
-                        </div>
-
-                    </mat-expansion-panel>
-                </mat-accordion>
 
                 <ng-content></ng-content>
 
