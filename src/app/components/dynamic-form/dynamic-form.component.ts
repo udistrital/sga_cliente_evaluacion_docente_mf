@@ -8,7 +8,7 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 
 
 @Component({
-  selector: 'ngx-dinamicform',
+  selector: 'ngx-dynamic-form',
   templateUrl: './dynamic-form.component.html',
   styleUrls: ['./dynamic-form.component.scss'],
 })
@@ -29,36 +29,21 @@ export class DynamicFormComponent implements OnInit, OnChanges {
   emptyControl = new FormControl(null);
   data: any;
   init = true;
-   // Preguntas del ámbito 01
+
+  // Preguntas de ejemplo, ajusta estos valores según tus necesidades
   questions01 = [
     "01. Demuestra conocimiento de los contenidos que se van a enseñar en mi espacio curricular",
     "02. Demuestra habilidades para conducir procesos de enseñanza-aprendizaje según los contenidos de mi espacio curricular",
-    "03. Demuestra comprensión de ritmos de aprendizaje diferenciados y adapta el aula de clase a estas necesidades",
-    "04. Demuestra habilidades para organizar y explicar ideas",
-    "05. Demuestra habilidades para observar su aula, diagnosticar necesidades y adaptarse al contexto"
   ];
 
-  // Preguntas del ámbito 02
   questions02 = [
     "06. Me da a conocer lo que debo saber, comprender y ser capaz de hacer en mi espacio curricular",
     "07. Me enseña lo que debo saber, comprender y ser capaz de hacer en mi espacio curricular",
-    "08. Integra en la enseñanza las competencias, la didáctica y la evaluación",
-    "09. Logra que sepa actuar de manera competente en contextos particulares señalados por el contenido de mi espacio curricular",
-    "10. Me enseña a relacionar las competencias y los resultados de aprendizaje de mi espacio curricular"
   ];
 
-  // Preguntas del ámbito 03
   questions03 = [
     "11. Desarrolla las unidades de aprendizaje de mi espacio curricular",
     "12. Evalúa mis evidencias de aprendizaje y me proporciona devoluciones claras para mi mejoramiento",
-    "13. Demuestra compromiso general con el ambiente de aprendizaje de mi salón",
-    "14. Demuestra respeto por diversidades y diferencias sexo-genéricas, cognitivas, lingüísticas, raciales y culturales dentro y fuera de mi salón",
-    "15. Me motiva para el alcance de competencias y resultados de aprendizaje",
-    "16. Promueve el desarrollo de autoconceptos positivos para el estudiantado",
-    "17. Realiza actividades apropiadas para la consecución de los resultados de aprendizaje y el desarrollo de competencias",
-    "18. Recibe y maneja positivamente preguntas, ideas y opiniones que mantienen al estudiantado pendiente e involucrado en clase",
-    "19. Se adapta a niveles y ritmos de aprendizaje diferenciados tanto míos como de mis compañer@s de clase",
-    "20. Es evidente que prepara sus clases y actividades para estimular mi logro de resultados de aprendizaje y competencias"
   ];
 
   // Preguntas de la autoevaluación del aprendizaje
@@ -115,18 +100,77 @@ export class DynamicFormComponent implements OnInit, OnChanges {
     }
   ];
 
-  // Comentarios para acciones a tomar
   commentsAutoevaluacion = [
-    "1. ",
-    "2. ",
-    "3. "
+    "Comentario 1",
+    "Comentario 2",
+    "Comentario 3"
   ];
 
+  // Información quemada para pruebas
+  formData = {
+    "tipoEvaluacion": "1",
+    "docente": "1",
+    "espacioAcademico": "1",
+    "seccion": [
+      {
+        "orden": 1,
+        "nombreSeccion": "Sección 1",
+        "items": {
+          "descripcion": [
+            {
+              "orden": 1,
+              "nombreItem": "Descripción 1",
+              "campo": {
+                "tipoCampo": 1,
+                "escala": [
+                  { "valor1": "Insuficiente" },
+                  { "valor2": "Excelente" }
+                ]
+              }
+            }
+          ],
+          "cuantitativo": [
+            {
+              "orden": 1,
+              "nombreItem": "Cuantitativo 1",
+              "campo": {
+                "tipoCampo": 2,
+                "valor": 0,
+                "escala": [
+                  { "valor1": "Insuficiente", "peso1": 1 },
+                  { "valor2": "Excelente", "peso2": 5 }
+                ]
+              }
+            }
+          ],
+          "cualitativo": [
+            {
+              "orden": 1,
+              "nombreItem": "Cualitativo 1",
+              "campo": {
+                "tipoCampo": 3
+              }
+            }
+          ],
+          "soporte": [
+            {
+              "orden": 1,
+              "nombreItem": "Soporte 1",
+              "campo": {
+                "tipoCampo": 4,
+                "archivo": []
+              }
+            }
+          ]
+        }
+      }
+    ]
+  };
 
   get allQuestions() {
     return [...this.questions01, ...this.questions02, ...this.questions03];
   }
-
+  
   constructor(
     private fb: FormBuilder,
     private sanitizer: DomSanitizer,
@@ -134,7 +178,7 @@ export class DynamicFormComponent implements OnInit, OnChanges {
     this.initializeForm();
     this.initializeData();
   }
-  
+
   ngOnInit() {
     if (!this.normalform.tipo_formulario) {
       this.normalform.tipo_formulario = 'mini';
@@ -152,11 +196,8 @@ export class DynamicFormComponent implements OnInit, OnChanges {
 
   private initializeForm() {
     const formGroup: { [key: string]: any } = {};
-    this.questionsAutoevaluacion.forEach((_, index) => {
+    this.questions01.forEach((_, index) => {
       formGroup['question_' + index] = new FormControl('');
-    });
-    this.commentsAutoevaluacion.forEach((_, index) => {
-      formGroup['comment_' + index] = new FormControl('');
     });
     this.form = this.fb.group(formGroup);
   }
@@ -168,6 +209,45 @@ export class DynamicFormComponent implements OnInit, OnChanges {
       percentage: 0,
       files: [],
     };
+  }
+
+  validForm() {
+    if (this.form.valid) {
+      const formattedData = this.formatFormData(this.formData);
+      console.log("Formulario válido:", formattedData);
+      this.result.emit(formattedData);
+    } else {
+      console.log("Formulario no válido");
+    }
+  }
+
+  private formatFormData(formData: any): any {
+    // Aquí se organiza la información según la estructura mencionada
+    return {
+      tipoEvaluacion: formData.tipoEvaluacion,
+      docente: formData.docente,
+      espacioAcademico: formData.espacioAcademico,
+      seccion: formData.seccion.map((section: any) => ({
+        orden: section.orden,
+        nombreSeccion: section.nombreSeccion,
+        items: {
+          descripcion: section.items.descripcion,
+          cuantitativo: section.items.cuantitativo,
+          cualitativo: section.items.cualitativo,
+          soporte: section.items.soporte,
+        }
+      }))
+    };
+  }
+
+  private initializeFormFields() {
+    if (this.normalform && Array.isArray(this.normalform.campos)) {
+      const formGroup: { [key: string]: any } = {};
+      this.normalform.campos.forEach((c: any) => {
+        formGroup[c.nombre] = [c.valor || ''];
+      });
+      this.form = this.fb.group(formGroup);
+    }
   }
 
   /*private setupSearchSubscription() {
@@ -197,16 +277,6 @@ export class DynamicFormComponent implements OnInit, OnChanges {
     if (changes.clean && this.init) {
       this.clearForm();
       this.clean = false;
-    }
-  }
-
-  private initializeFormFields() {
-    if (this.normalform && Array.isArray(this.normalform.campos)) {
-      const formGroup: { [key: string]: any } = {};
-      this.normalform.campos.forEach((c: any) => {
-        formGroup[c.nombre] = [c.valor || ''];
-      });
-      this.form = this.fb.group(formGroup);
     }
   }
 
@@ -387,15 +457,6 @@ export class DynamicFormComponent implements OnInit, OnChanges {
     field2.clase = 'form-control form-control-success';
     field1.alerta = '';
     field2.alerta = '';
-  }
-
-  validForm() {
-    if (this.form.valid) {
-      console.log("Formulario válido:", this.form.value);
-      this.result.emit(this.form.value);
-    } else {
-      console.log("Formulario no válido");
-    }
   }
 
 
