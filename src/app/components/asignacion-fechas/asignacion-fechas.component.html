@@ -1,5 +1,6 @@
 <div class="asignacion-fechas" *ngIf="hasRole([ROLES.ADMIN_SGA, ROLES.VICERRECTOR, ROLES.ASESOR_VICE, ROLES.COORDINADOR, ROLES.COORDINADOR_PREGADO, ROLES.COORDINADOR_POSGRADO, ROLES.ASISTENTE_ADMISIONES, ROLES.ADMIN_DOCENCIA, ROLES.ASIS_PROYECTO, ROLES.SEC_DECANATURA, ROLES.DECANO])">
   <h2>{{ "asignacion_fechas.titulo" | translate }}</h2>
+  
   <div class="selectors-container">
     <div class="nivel-formacion">
       <label for="nivelFormacion">{{ "asignacion_fechas.seleccionar_nivel_formacion" | translate }}</label>
@@ -13,9 +14,12 @@
       <label for="periodoFormacion">{{ "asignacion_fechas.seleccionar_periodo" | translate }}</label>
       <select id="periodoFormacion" [(ngModel)]="periodoFormacion">
         <option value="" disabled selected>Selecciona el período de formación</option>
-        <option *ngFor="let periodo of periodos" [value]="periodo.Id">{{ periodo.Nombre }}</option>
+        <option *ngFor="let periodo of periodos" [value]="periodo.Id">
+          <span [ngClass]="{'punto-verde': periodo.Activo, 'punto-rojo': !periodo.Activo}"></span>
+          {{ periodo.Nombre }} - {{ periodo.Descripcion }}
+        </option>
       </select>
-    </div>
+    </div>    
   </div>
 
   <div class="procesos-grid">
@@ -77,22 +81,34 @@
     </div>
   </div>
 
+  <!-- Botón para guardar -->
   <button class="guardar-btn" (click)="guardar()">
     <mat-icon>archive</mat-icon>
     {{ "asignacion_fechas.guardar" | translate }}
   </button>
 
+  <!-- Mensaje de confirmación de guardado -->
   <div *ngIf="guardado" class="confirmation">
     <div class="confirmation-content">
-      <h3>Confirmación de guardado</h3>
-      <button mat-icon-button (click)="cerrarConfirmacion()">
-        <mat-icon>close</mat-icon>
-      </button>
-      <p>Los ajustes fueron aplicados</p>
-      <button mat-raised-button color="primary" (click)="cerrarConfirmacion()">OK</button>
+        <h3>Confirmación de guardado</h3>
+        <div class="icon-wrapper">
+            <mat-icon>help_outline</mat-icon> <!-- Ícono de interrogación -->
+        </div>
+        <p>Los ajustes fueron aplicados</p>
+        <button mat-raised-button color="primary" (click)="cerrarConfirmacion()">OK</button>
     </div>
   </div>
 
+  <!-- Sección para mostrar los detalles de la evaluación existente -->
+  <div *ngIf="evaluacionExistente">
+    <p>Nombre: {{ evaluacionExistente.Nombre }}</p>
+    <p>Fecha de Inicio: {{ evaluacionExistente.FechaInicio | date: 'dd/MM/yyyy' }}</p>
+    <p>Fecha de Fin: {{ evaluacionExistente.FechaFin | date: 'dd/MM/yyyy' }}</p>
+    <p>Fecha de Creación: {{ evaluacionExistente.FechaCreacion | date: 'dd/MM/yyyy' }}</p>
+    <button mat-raised-button color="primary" (click)="actualizarEvaluacion(evaluacionExistente.Id, evaluacionExistente)">Actualizar Evaluación</button>
+  </div>
+
+  <!-- Lista de evaluaciones guardadas -->
   <div class="evaluaciones-guardadas" *ngIf="guardado">
     <p>Evaluaciones guardadas:</p>
     <ul>
@@ -100,7 +116,8 @@
     </ul>
   </div>
 
-  <div *ngIf="mensajeError" class="error-message">
+  <!-- Mensaje de error -->
+  <div *ngIf="errorPut" class="error-message">
     <p>{{ mensajeError }}</p>
   </div>
 </div>
