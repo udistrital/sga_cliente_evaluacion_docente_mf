@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -23,8 +23,28 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { EvaluacionesComponent } from './components/evaluaciones/evaluaciones.component';
 import { NgIsGrantedDirective } from './directives/ng-is-granted.directive';
 import { UserService } from './services/user.service';
+import { EventosService } from './services/eventos.service';
+import { ParametrosService } from './services/parametros.service';
+import { AnyService } from './services/any.service';
+import { HeteroevaluacionComponent } from './components/evaluaciones/heteroevaluacion/heteroevaluacion.component';
+import { AutoevaluacionIComponent } from './components/evaluaciones/autoevaluacion-i/autoevaluacion-i.component';
+import { CoevaluacionIComponent } from './components/evaluaciones/coevaluacion-i/coevaluacion-i.component';
+import { AutoevaluacionIIComponent } from './components/evaluaciones/autoevaluacion-ii/autoevaluacion-ii.component';
+import { CoevaluacionIIComponent } from './components/evaluaciones/coevaluacion-ii/coevaluacion-ii.component';
+import { MetricasComponent } from './components/metricas/metricas.component';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSortModule } from '@angular/material/sort';
+import { MatTableModule } from '@angular/material/table';
+import { MatStepperModule } from '@angular/material/stepper';
+import { MatTabsModule } from '@angular/material/tabs';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { ResultadosComponent } from './components/resultados/resultados.component';
 import { PruebaComponent } from './components/prueba/prueba.component';
-
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, environment.apiUrl + 'assets/i18n/', '.json');
@@ -37,16 +57,45 @@ export function createTranslateLoader(http: HttpClient) {
     AsignacionFechasComponent,
     DefinirEscalasComponent,
     EvaluacionesComponent,
-    NgIsGrantedDirective    
+    NgIsGrantedDirective,
+    HeteroevaluacionComponent,
+    AutoevaluacionIComponent,
+    CoevaluacionIComponent,
+    AutoevaluacionIIComponent,
+    CoevaluacionIIComponent,
+    MetricasComponent, 
+    ResultadosComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
+    NgxChartsModule,
     CommonModule,
     BrowserAnimationsModule,
     MATERIAL_MODULES,
     HttpClientModule,
     SpinnerUtilModule,
+    FormsModule,
+    CommonModule,
+    BrowserModule,
+    MatTabsModule,
+    MatIconModule,
+    MatStepperModule,
+    MatCardModule,
+    MatInputModule,
+    MatTableModule,
+    MatDialogModule,
+    MatSelectModule,
+    AppRoutingModule,
+    MatCheckboxModule,
+    MatFormFieldModule,
+    MatPaginatorModule,
+    MatNativeDateModule,
+    ReactiveFormsModule,
+    MatDatepickerModule,
+    MatSortModule,
+    MatAutocompleteModule,
+    BrowserAnimationsModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -63,10 +112,14 @@ export function createTranslateLoader(http: HttpClient) {
     MatIconModule,
     MatFormFieldModule
   ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [
+    EventosService, 
+    ParametrosService,
+    AnyService,
     UserService,
-    { provide: HTTP_INTERCEPTORS, useClass: SpinnerUtilInterceptor, multi: true },
-    PruebaComponent
+    PruebaComponent,
+    { provide: HTTP_INTERCEPTORS, useClass: SpinnerUtilInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
 })

@@ -1,0 +1,67 @@
+<div class="container">
+  <mat-card class="card">
+    <div class="select-container">
+      <mat-form-field appearance="fill" class="select-field">
+        <mat-label>Periodo</mat-label>
+        <mat-select>
+          <mat-option *ngFor="let periodo of periodos" [value]="periodo">
+            {{periodo}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" class="select-field">
+        <mat-label>Facultad</mat-label>
+        <mat-select>
+          <mat-option *ngFor="let facultad of facultades" [value]="facultad">
+            {{facultad}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" class="select-field">
+        <mat-label>Proyecto</mat-label>
+        <mat-select>
+          <mat-option *ngFor="let proyecto of proyectos" [value]="proyecto">
+            {{proyecto}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" class="select-field">
+        <mat-label>Espacio Académico</mat-label>
+        <mat-select>
+          <mat-option *ngFor="let espacio of espaciosAcademicos" [value]="espacio">
+            {{espacio}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </mat-card>
+
+  <mat-card class="card">
+    <h2>Cuantitativo</h2>
+
+    <ngx-charts-bar-vertical-2d
+  [view]="view"
+  [scheme]="colorScheme"
+  [results]="multi"
+  [gradient]="gradient"
+  [xAxis]="showXAxis"
+  [yAxis]="showYAxis"
+  [legend]="showLegend"
+  [showXAxisLabel]="showXAxisLabel"
+  [showYAxisLabel]="showYAxisLabel"
+  [xAxisLabel]="xAxisLabel"
+  [yAxisLabel]="yAxisLabel"
+  [legendTitle]="legendTitle"
+  (select)="onSelect($event)"
+  (activate)="onActivate($event)"
+  (deactivate)="onDeactivate($event)">
+</ngx-charts-bar-vertical-2d>
+  </mat-card>
+
+  <mat-card class="card">
+    <h2>Cualitativo</h2>
+  </mat-card>
+</div>

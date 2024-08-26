@@ -1,4 +1,11 @@
 {
+    
+    "GLOBAL": {
+        "atencion": "Attention",
+        "aceptar": "Accept",
+        "cancelar": "Cancel"
+    },
+    
     "HOME": {
         "TITLE": "SGA",
         "SELECT": "Select evaluation type",
@@ -7,6 +14,20 @@
         "THEME": "Theme"
     },
 
+    "GLOBAL":{
+        "GUARDAR": "Save",
+        "CANCELAR": "Cancel",
+        "ELIMINAR": "Delete",
+        "EDITAR": "Edit",
+        "AGREGAR": "Add",
+        "proyecto_academico": "Academic Project",
+        "seleccionar": "Select",
+        "periodo": "Period",
+        "continuar": "Continue",
+        "atras": "Back",
+        "generar": "Generate"
+    },
+    
     "asignacion_fechas": {
         "titulo": "Assignment of dates for processes",
         "seleccionar_nivel_formacion": "Select the level of training to assign",
@@ -17,7 +38,9 @@
         "seleccionar_fecha_fin": "Select end date",
         "fecha_inicio_seleccionada": "Start date selected",
         "fecha_fin_seleccionada": "End date selected",
-        "guardar": "Save"
+        "guardar": "Save",
+        "confirmacion_guardado": "Save Confirmation",
+        "ajustes_aplicados": "Changes applied successfully"
     },
 
     "definicion_formularios": {
@@ -143,5 +166,17 @@
         "formulario": "Corresponding form",
         "formulario_placeholder": "Corresponding form",
         "guardar": "Save"
+    },
+    "metricas":{
+        "metricas": "Metrics",
+        "tipo_reporte": "Report type",
+        "filtros": "Filters",
+        "elegir_todas": "All",
+        "vinculacion": "Linkage",
+        "componente": "Component",
+        "facultad": "Faculty",
+        "proyecto_curricular": "Curricular Project",
+        "docentes": "Teachers",
+        "periodo_y_tipo_reporte": "Period and report type"
     }
 }

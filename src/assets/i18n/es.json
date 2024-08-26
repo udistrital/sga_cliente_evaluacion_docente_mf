@@ -1,10 +1,31 @@
 {
+    
+    "GLOBAL": {
+        "atencion": "Atención",
+        "aceptar": "Aceptar",
+        "cancelar": "Cancelar"
+    },
+    
     "HOME": {
         "TITLE": "SGA",
         "SELECT": "Seleccionar tipo de evaluación",
         "LOGIN": "Iniciar sesión",
         "LOGOUT": "Cerrar sesión",
         "THEME": "Tema"
+    },
+
+    "GLOBAL":{
+        "GUARDAR": "Guardar",
+        "CANCELAR": "Cancelar",
+        "ELIMINAR": "Eliminar",
+        "EDITAR": "Editar",
+        "AGREGAR": "Agregar",
+        "proyecto_academico": "Proyecto Académico",
+        "seleccionar": "Seleccionar",
+        "periodo": "Periodo",
+        "continuar": "Continuar",
+        "atras": "Atrás",
+        "generar": "Generar"
     },
 
     "asignacion_fechas": {
@@ -17,7 +38,9 @@
         "seleccionar_fecha_fin": "Seleccionar fecha fin",
         "fecha_inicio_seleccionada": "Fecha inicio seleccionada",
         "fecha_fin_seleccionada": "Fecha fin seleccionada",
-        "guardar": "Guardar"
+        "guardar": "Guardar",
+        "confirmacion_guardado": "Confirmación de guardado",
+        "ajustes_aplicados": "Los ajustes fueron aplicados exitosamente"
     },
 
     "definicion_formularios": {
@@ -143,5 +166,18 @@
         "formulario": "Formulario correspondiente",
         "formulario_placeholder": "Formulario correspondiente",
         "guardar": "Guardar"
+    },
+
+    "metricas":{
+        "metricas": "Métricas",
+        "tipo_reporte": "Tipo de reporte",
+        "filtros": "Filtros del reporte",
+        "elegir_todas": "Todas",
+        "vinculacion": "Vinculación",
+        "componente": "Componente",
+        "facultad": "Facultad",
+        "proyecto_curricular": "Proyecto Curricular",
+        "docentes": "Docentes",
+        "periodo_y_tipo_reporte": "Periodo y tipo de reporte"
     }
 }

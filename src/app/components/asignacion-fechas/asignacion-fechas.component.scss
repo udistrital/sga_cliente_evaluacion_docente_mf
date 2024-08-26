@@ -1,35 +1,44 @@
 @import 'src/assets/styles/palette-angular-material.css';
 
 .asignacion-fechas {
-  width: 80%;
-  margin: 0 auto;
+  width: 100%;
+  height: 100vh; /* Ocupa toda la altura de la ventana */
   padding: 20px;
+  box-sizing: border-box; /* Asegura que el padding esté incluido en el 100% de width y height */
+  border: 2px solid var(--md-primary-500); /* Borde azul oscuro */
+  background-color: #fff; /* Fondo blanco */
   border-radius: 10px;
-  background-color: var(--md-primary-50);
 
   h2 {
     text-align: center;
-    color: var(--md-primary-contrast-400);
-    background-color: var(--md-primary-400);
-    padding: 10px;
+    color: var(--md-primary-contrast-400); /* Texto blanco */
+    background-color: var(--md-primary-400); /* Fondo azul oscuro */
+    padding: 20px;
     border-radius: 10px;
     margin-bottom: 20px;
   }
 
-  .nivel-formacion {
+  .selectors-container {
+    display: flex;
+    justify-content: space-between;
     margin-bottom: 20px;
 
-    label {
-      display: block;
-      margin-bottom: 5px;
-    }
+    .nivel-formacion,
+    .periodo-formacion {
+      width: 48%;
 
-    select {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid var(--md-primary-200);
-      border-radius: 4px;
-      background-color: var(--md-primary-50);
+      label {
+        display: block;
+        margin-bottom: 5px;
+      }
+
+      select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid var(--md-primary-200); /* Borde azul claro */
+        border-radius: 4px;
+        background-color: var(--md-primary-50); /* Fondo azul muy claro */
+      }
     }
   }
 
@@ -40,37 +49,74 @@
 
     .fila-procesos {
       display: flex;
-      justify-content: space-between;
+      justify-content: center;
       gap: 20px;
+
+      &.fila-1 {
+        .proceso {
+          width: calc(33.33% - 20px); /* Tres procesos en la primera fila */
+        }
+      }
+
+      &.fila-2 {
+        .proceso {
+          width: calc(50% - 20px); /* Dos procesos en la segunda fila */
+        }
+      }
     }
 
     .proceso {
       background-color: #fff;
-      border: 1px solid var(--md-primary-200);
+      border: 1px solid var(--md-primary-200); /* Borde azul claro */
       border-radius: 10px;
       padding: 15px;
       text-align: center;
       flex: 1;
 
-      h3 {
-        margin-top: 0;
-        background-color: var(--md-primary-400);
-        color: var(--md-primary-contrast-400);
+      .proceso-header {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 10px;
+        background-color: var(--md-primary-400); /* Fondo azul oscuro */
         padding: 10px;
-        border-radius: 4px;
-      }
+        border-radius: 10px;
 
-      .fechas {
-        margin: 10px 0;
-
-        mat-form-field {
+        .nombre-input {
           width: 100%;
+          border: none;
+          background-color: transparent;
+          text-align: center;
+          font-size: 16px;
+          font-weight: bold;
+          color: var(--md-primary-contrast-400); /* Texto blanco */
         }
 
-        mat-datepicker-toggle {
-          margin-left: -32px; /* Ajuste para colocar el icono al lado derecho del botón */
-          position: relative;
-          right: -8px;
+        .edit-icon {
+          position: absolute;
+          right: 10px;
+          cursor: pointer;
+        }
+      }
+
+      .fechas-container {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+
+        .fechas {
+          flex: 1;
+
+          mat-form-field {
+            width: 100%;
+          }
+
+          mat-datepicker-toggle {
+            margin-left: -32px; /* Ajuste para colocar el icono al lado derecho del botón */
+            position: relative;
+            right: -8px;
+          }
         }
       }
 
@@ -91,19 +137,99 @@
     gap: 10px;
     width: 100%;
     padding: 10px;
-    background-color: var(--md-primary-500);
-    color: var(--md-primary-contrast-500);
+    background-color: var(--md-primary-500); /* Fondo azul principal */
+    color: var(--md-primary-contrast-500); /* Texto blanco */
     border: none;
-    border-radius: 4px;
+    border-radius: 30px;
     cursor: pointer;
     margin-top: 30px;
 
     &:hover {
-      background-color: var(--md-primary-700);
+      background-color: var(--md-primary-700); /* Fondo azul más oscuro al pasar el mouse */
     }
 
     mat-icon {
       font-size: 24px;
     }
   }
+
+  .confirmation {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff; /* Fondo blanco */
+    border: 1px solid var(--md-primary-400); /* Borde azul oscuro */
+    border-radius: 10px;
+    padding: 20px;
+    color: #000; /* Texto negro */
+    z-index: 1000;
+
+    .confirmation-content {
+        text-align: center;
+
+        h3 {
+            margin-top: 0;
+            background-color: var(--md-primary-400); /* Fondo azul oscuro */
+            color: var(--md-primary-contrast-400); /* Texto blanco */
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        .icon-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 40px;
+            color: var(--md-warning-500); /* Color amarillo para el ícono de interrogación */
+            margin-bottom: 10px;
+        }
+
+        button {
+            margin-top: 20px;
+            background-color: var(--md-primary-500); /* Fondo del botón */
+            color: var(--md-primary-contrast-500); /* Texto del botón */
+            &:hover {
+                background-color: var(--md-primary-700); /* Fondo del botón al pasar el mouse */
+            }
+        }
+    }
+}
+
+  .evaluaciones-guardadas {
+    margin-top: 20px;
+    background-color: var(--md-primary-50); /* Fondo azul muy claro */
+    padding: 10px;
+    border-radius: 4px;
+
+    p {
+      margin: 0 0 10px;
+      font-weight: bold;
+    }
+
+    ul {
+      padding: 0;
+      list-style: none;
+
+      li {
+        margin: 5px 0;
+      }
+    }
+  }
+
+  .error-message {
+    color: red;
+    text-align: center;
+    margin-top: 20px;
+  }
+
+  .punto-verde {
+    width: 10px;
+    height: 10px;
+    background-color: green;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 8px;
+  }
+
 }
