@@ -30,7 +30,7 @@ export class DynamicFormComponent implements OnInit, OnChanges {
   data: any;
   init = true;
 
-  // Preguntas de ejemplo, ajusta estos valores según tus necesidades
+  // Preguntas de ejemplo
   questions01 = [
     "01. Demuestra conocimiento de los contenidos que se van a enseñar en mi espacio curricular",
     "02. Demuestra habilidades para conducir procesos de enseñanza-aprendizaje según los contenidos de mi espacio curricular",
