@@ -6,7 +6,7 @@ import {
   OnInit,
   Output,
 } from "@angular/core";
-import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
+import { DomSanitizer } from "@angular/platform-browser";
 import { FormBuilder, FormControl, FormGroup } from "@angular/forms";
 
 @Component({
@@ -244,7 +244,7 @@ export class DynamicFormComponent implements OnInit, OnChanges {
 
   constructor(
     private fb: FormBuilder,
-    private sanitizer: DomSanitizer // Asegúrate de agregar esta línea
+    private sanitizer: DomSanitizer
   ) {
     this.initializeForm();
     this.initializeData();
@@ -350,27 +350,40 @@ export class DynamicFormComponent implements OnInit, OnChanges {
     );
   }
 
-  validForm() {
+  validarForm() {
     if (this.form.valid) {
-      const formattedData = this.formatFormData(this.normalform);
-      console.log("Formulario válido:", formattedData);
-      this.result.emit(formattedData);
+      const formData = this.form.value;
+
+      // Construyendo la estructura para la petición
+      const requestData = {
+        id_periodo: 1,
+        id_tercero: 1,
+        id_evaliado: 1,
+        proyecto_curricular: 123,
+        espacio_academico: 12,
+        plantilla_id: 456,
+        respuestas: Object.keys(formData).map((key) => {
+          const valor = formData[key];
+          if (Array.isArray(valor)) {
+            // Si es un array, se asume que son archivos
+            return { item_id: key, archivos: valor };
+          } else {
+            // Si no es array, es un valor o comentario
+            return { item_id: key, valor: valor };
+          }
+        }),
+      };
+
+      // Mostrando el JSON resultante en la consola
+      console.log("Datos del formulario para la petición:", requestData);
+
+      // Emisión del resultado
+      this.result.emit(requestData);
     } else {
       console.log("Formulario no válido");
     }
   }
 
-  private formatFormData(formData: any): any {
-    const respuestas = this.normalform.campos.map((campo: any) => {
-      const valor = this.form.get(campo.nombre)?.value;
-      return { nombre: campo.nombre, valor: valor };
-    });
-
-    return {
-      ...formData,
-      respuestas: respuestas,
-    };
-  }
 
   setPercentage() {
     let requeridos = 0;

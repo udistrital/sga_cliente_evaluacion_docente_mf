@@ -38,12 +38,13 @@
                         </tr>
                     </table>
 
-                    <!-- Primera Tabla de Evaluación (Ámbito 01: LA DOCENCIA) -->
+                    <!-- Evaluación: ÁMBITO 01: LA DOCENCIA -->
                     <table class="evaluation-table">
                         <tr>
                             <th style="background-color: #cce7ff;">ÁMBITO 01: LA DOCENCIA</th>
-                            <th style="background-color: #cce7ff;" *ngFor="let escala of normalform.escalas">{{
-                                escala.label }}</th>
+                            <th style="background-color: #cce7ff;" *ngFor="let escala of normalform.escalas">
+                                {{ escala.label }}
+                            </th>
                         </tr>
                         <tr *ngFor="let campo of normalform.campos.slice(0, 5)">
                             <td class="left-align">{{ campo.label }}</td>
@@ -56,9 +57,7 @@
                     </table>
 
                     <!-- Comentarios para la primera tabla -->
-                    <p class="instruction">
-                        {{ normalform.comentariosLabel }}
-                    </p>
+                    <p class="instruction">{{ normalform.comentariosLabel }}</p>
                     <div *ngFor="let i of [0,1,2,3,4]">
                         <mat-form-field style="width: 100%">
                             <textarea matInput placeholder="{{ normalform.comentariosPlaceholder }}"
@@ -66,12 +65,13 @@
                         </mat-form-field>
                     </div>
 
-                    <!-- Segunda Tabla de Evaluación (Ámbito 02: LA ENSEÑANZA) -->
+                    <!-- Evaluación: ÁMBITO 02: LA ENSEÑANZA -->
                     <table class="evaluation-table">
                         <tr>
                             <th style="background-color: #cce7ff;">ÁMBITO 02: LA ENSEÑANZA</th>
-                            <th style="background-color: #cce7ff;" *ngFor="let escala of normalform.escalas">{{
-                                escala.label }}</th>
+                            <th style="background-color: #cce7ff;" *ngFor="let escala of normalform.escalas">
+                                {{ escala.label }}
+                            </th>
                         </tr>
                         <tr *ngFor="let campo of normalform.campos.slice(5, 10)">
                             <td class="left-align">{{ campo.label }}</td>
@@ -94,12 +94,13 @@
                         </mat-form-field>
                     </div>
 
-                    <!-- Tercera Tabla de Evaluación (Ámbito 03: LA PRÁCTICA) -->
+                    <!-- Evaluación: ÁMBITO 03: LA PRÁCTICA -->
                     <table class="evaluation-table">
                         <tr>
                             <th style="background-color: #cce7ff;">ÁMBITO 03: LA PRÁCTICA</th>
-                            <th style="background-color: #cce7ff;" *ngFor="let escala of normalform.escalas">{{
-                                escala.label }}</th>
+                            <th style="background-color: #cce7ff;" *ngFor="let escala of normalform.escalas">
+                                {{ escala.label }}
+                            </th>
                         </tr>
                         <tr *ngFor="let campo of normalform.campos.slice(10, 20)">
                             <td class="left-align">{{ campo.label }}</td>
@@ -128,7 +129,7 @@
                     <button mat-flat-button color="warn" (click)="clearForm()" *ngIf="normalform.btnLimpiar">
                         {{ normalform.btnLimpiar }}
                     </button>
-                    <button mat-flat-button color="accent" (click)="validForm()" *ngIf="normalform.btn">
+                    <button mat-flat-button color="accent" (click)="validarForm()" *ngIf="normalform.btn">
                         {{ normalform.btn }}
                     </button>
                 </div>
@@ -188,9 +189,7 @@
                     </table>
 
                     <!-- Comentarios -->
-                    <p class="instruction">
-                        {{ normalform.comentariosLabel }}
-                    </p>
+                    <p class="instruction">{{ normalform.comentariosLabel }}</p>
                     <div *ngFor="let i of [0,1,2]">
                         <mat-form-field style="width: 100%">
                             <textarea matInput placeholder="{{ normalform.comentariosPlaceholder }}"
@@ -204,7 +203,7 @@
                     <button mat-flat-button color="warn" (click)="clearForm()" *ngIf="normalform.btnLimpiar">
                         {{ normalform.btnLimpiar }}
                     </button>
-                    <button mat-flat-button color="accent" (click)="validForm()" *ngIf="normalform.btn">
+                    <button mat-flat-button color="accent" (click)="validarForm()" *ngIf="normalform.btn">
                         {{ normalform.btn }}
                     </button>
                 </div>
@@ -268,7 +267,7 @@
                         <button mat-flat-button color="warn" (click)="clearForm()" *ngIf="normalform.btnLimpiar">
                             {{ normalform.btnLimpiar }}
                         </button>
-                        <button mat-flat-button color="accent" (click)="validForm()" *ngIf="normalform.btn">
+                        <button mat-flat-button color="accent" (click)="validarForm()" *ngIf="normalform.btn">
                             {{ normalform.btn }}
                         </button>
                     </div>
@@ -402,7 +401,7 @@
                         <button mat-flat-button color="warn" (click)="clearForm()" *ngIf="normalform.btnLimpiar">
                             {{ normalform.btnLimpiar }}
                         </button>
-                        <button mat-flat-button color="accent" (click)="validForm()" *ngIf="normalform.btn">
+                        <button mat-flat-button color="accent" (click)="validarForm()" *ngIf="normalform.btn">
                             {{ normalform.btn }}
                         </button>
                     </div>
