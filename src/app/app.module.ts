@@ -23,11 +23,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { EvaluacionesComponent } from './components/evaluaciones/evaluaciones.component';
 import { NgIsGrantedDirective } from './directives/ng-is-granted.directive';
 import { UserService } from './services/user.service';
-import { HeteroevaluacionComponent } from './components/evaluaciones/heteroevaluacion/heteroevaluacion.component';
-import { AutoevaluacionIComponent } from './components/evaluaciones/autoevaluacion-i/autoevaluacion-i.component';
-import { CoevaluacionIComponent } from './components/evaluaciones/coevaluacion-i/coevaluacion-i.component';
-import { AutoevaluacionIIComponent } from './components/evaluaciones/autoevaluacion-ii/autoevaluacion-ii.component';
-import { CoevaluacionIIComponent } from './components/evaluaciones/coevaluacion-ii/coevaluacion-ii.component';
 import { MetricasComponent } from './components/metricas/metricas.component';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatCardModule } from '@angular/material/card';
@@ -53,12 +48,7 @@ export function createTranslateLoader(http: HttpClient) {
     AsignacionFechasComponent,
     DefinirEscalasComponent,
     EvaluacionesComponent,
-    NgIsGrantedDirective 
-    HeteroevaluacionComponent,
-    AutoevaluacionIComponent,
-    CoevaluacionIComponent,
-    AutoevaluacionIIComponent,
-    CoevaluacionIIComponent,
+    NgIsGrantedDirective,            
     MetricasComponent, 
     ResultadosComponent
   ],

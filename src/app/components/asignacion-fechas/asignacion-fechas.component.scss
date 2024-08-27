@@ -1,11 +1,9 @@
-@import 'src/assets/styles/palette-angular-material.css';
-
 .asignacion-fechas {
   width: 80%;
   margin: 0 auto;
   padding: 20px;
   border-radius: 10px;
-  background-color: var(--md-primary-50);
+  background-color: #ffffff;
 
   h2 {
     text-align: center;
@@ -46,16 +44,17 @@
 
     .proceso {
       background-color: #fff;
-      border: 1px solid var(--md-primary-200);
       border-radius: 10px;
       padding: 15px;
       text-align: center;
       flex: 1;
+      box-shadow: 0 0.5rem 1rem 0 rgba(44, 51, 73, 0.1);
 
       h3 {
         margin-top: 0;
-        background-color: var(--md-primary-400);
+        background-color: var(--md-primary-700);
         color: var(--md-primary-contrast-400);
+        font-weight: 400;
         padding: 10px;
         border-radius: 4px;
       }
@@ -106,4 +105,8 @@
       font-size: 24px;
     }
   }
+}
+
+.w-100 {
+  width: 50%;
 }

@@ -23,6 +23,8 @@
 
     "asignacion_fechas": {
         "titulo": "Asignación de fechas para los procesos",
+        "sub_titulo": "Módulo para la asignación de fechas de los siguientes procesos",
+        "alerta": "A continuación, deberá seleccionar el nivel educativo e ingresar la información requerida sobre las fechas.",
         "seleccionar_nivel_formacion": "Seleccionar el nivel de formación a asignar",
         "seleccionar": "Seleccionar",
         "pregrado": "Pregrado",
@@ -36,8 +38,15 @@
 
     "definicion_formularios": {
         "titulo": "Definir formularios",
+        "titulo_roles": "Roles",
+        "titulo_visualizador": "Visualizador de Formulario",        
+        "sub_titulo_visualizador": "Sección para la visualización del Formaulario",                
+        "sub_titulo_proceso": "Sección para la selección del Proceso",                
+        "sub_titulo": "Módulo para la definición de los siguientes formularios",
+        "sub_titulo_roles": "Sección para la asignación de Roles",
+        "alerta": "A continuación, deberá seleccionar los roles que intervienen y el proceso, que puede ser Heteroevaluación, Autoevaluación de estudiantes, Coevaluación I, Autoevaluación docente, o Coevaluación II.",
         "seleccionar_roles": "Seleccionar roles que intervienen",
-        "seleccione": "Seleccione",
+        "seleccione": "Seleccionar ROL",
         "administradores": "Administradores",
         "docentes": "Docentes",
         "estudiantes": "Estudiantes",
