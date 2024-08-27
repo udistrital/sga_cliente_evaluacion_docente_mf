@@ -212,3 +212,202 @@
         </mat-card>
     </form>
 </div>
+
+<div *ngIf="normalform && normalform.tipo_formulario === 'coevaluacion-i'">
+    <form [formGroup]="form" class="form-horizontal">
+        <mat-card>
+            <mat-card-header>
+                <mat-card-title>{{ normalform.titulo }}</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <div class="form-grid">
+                    <!-- Información del formato -->
+                    <table class="instruction-table">
+                        <tr>
+                            <td style="background-color: #e0f7e0;">FORMATO</td>
+                            <td>{{ normalform.formato }}</td>
+                        </tr>
+                        <tr>
+                            <td style="background-color: #e0f7e0;">ACTOR</td>
+                            <td>{{ normalform.actor }}</td>
+                        </tr>
+                        <tr>
+                            <td style="background-color: #e0f7e0;">CRONOGRAMA</td>
+                            <td>{{ normalform.cronograma }}</td>
+                        </tr>
+                        <tr>
+                            <td style="background-color: #e0f7e0;">DOCUMENTO</td>
+                            <td>{{ normalform.documento }}</td>
+                        </tr>
+                        <tr>
+                            <td style="background-color: #e0f7e0;">INSTRUCCIÓN</td>
+                            <td>{{ normalform.instruccion }}</td>
+                        </tr>
+                    </table>
+
+                    <!-- Campos de texto -->
+                    <mat-form-field style="width: 100%" *ngFor="let campo of normalform.campos" [ngSwitch]="campo.tipo">
+                        <ng-container *ngSwitchCase="'text'">
+                            <mat-label>{{ campo.label }}</mat-label>
+                            <input matInput [formControlName]="campo.nombre" [placeholder]="campo.placeholder">
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'textarea'">
+                            <mat-label>{{ campo.label }}</mat-label>
+                            <textarea matInput [formControlName]="campo.nombre" [rows]="campo.cantidad"
+                                [placeholder]="campo.placeholder"></textarea>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'file'">
+                            <mat-label>{{ campo.label }}</mat-label>
+                            <input type="file" matInput (change)="onFileChange($event, campo)">
+                            <button mat-flat-button color="primary">{{ campo.buttonLabel }}</button>
+                        </ng-container>
+                    </mat-form-field>
+
+                    <!-- Botones de Acción -->
+                    <div class="mt-4">
+                        <button mat-flat-button color="warn" (click)="clearForm()" *ngIf="normalform.btnLimpiar">
+                            {{ normalform.btnLimpiar }}
+                        </button>
+                        <button mat-flat-button color="accent" (click)="validForm()" *ngIf="normalform.btn">
+                            {{ normalform.btn }}
+                        </button>
+                    </div>
+                </div>
+            </mat-card-content>
+        </mat-card>
+    </form>
+</div>
+
+<div *ngIf="normalform && normalform.tipo_formulario === 'autoevaluacion-ii'">
+    <form [formGroup]="form" class="form-horizontal">
+        <mat-card>
+            <mat-card-header>
+                <mat-card-title>{{ normalform.titulo }}</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <div class="form-grid">
+                    <!-- Información del formato -->
+                    <table class="instruction-table">
+                        <tr>
+                            <td style="background-color: #e0f7e0;">FORMATO</td>
+                            <td>{{ normalform.formato }}</td>
+                        </tr>
+                        <tr>
+                            <td style="background-color: #e0f7e0;">ACTOR</td>
+                            <td>{{ normalform.actor }}</td>
+                        </tr>
+                        <tr>
+                            <td style="background-color: #e0f7e0;">CRONOGRAMA</td>
+                            <td>{{ normalform.cronograma }}</td>
+                        </tr>
+                        <tr>
+                            <td style="background-color: #e0f7e0;">RÚBRICAS</td>
+                            <td>{{ normalform.rubricas }}</td>
+                        </tr>
+                        <tr>
+                            <td style="background-color: #e0f7e0;">INSTRUCCIÓN</td>
+                            <td>{{ normalform.instruccion }}</td>
+                        </tr>
+                        <tr>
+                            <td style="background-color: #e0f7e0;">ESCALA</td>
+                            <td>{{ normalform.escala }}</td>
+                        </tr>
+                    </table>
+
+                    <!-- Primera tabla de preguntas -->
+                    <table class="evaluation-table">
+                        <thead>
+                            <tr>
+                                <th>RÚBRICAS HOLÍSTICAS</th>
+                                <th>ÁMBITO 01: LA DOCENCIA</th>
+                                <th>RESPUESTA ÚNICA</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <ng-container *ngFor="let pregunta of normalform.campos[0].preguntas">
+                                <tr>
+                                    <td>
+                                        <ng-container *ngFor="let opcion of normalform.campos[0].opciones">
+                                            <p>{{ opcion.texto }}</p>
+                                        </ng-container>
+                                    </td>
+                                    <td>{{ pregunta.texto }}</td>
+                                    <td>
+                                        <mat-form-field>
+                                            <mat-select [formControlName]="'docencia_' + pregunta.id"
+                                                placeholder="Menu">
+                                                <mat-option *ngFor="let opcion of normalform.campos[0].opciones"
+                                                    [value]="opcion.valor">
+                                                    {{ opcion.texto }}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </td>
+                                </tr>
+                            </ng-container>
+                        </tbody>
+                    </table>
+
+                    <!-- Segunda tabla de preguntas -->
+                    <table class="evaluation-table">
+                        <thead>
+                            <tr>
+                                <th>RÚBRICAS HOLÍSTICAS</th>
+                                <th>ÁMBITO 02: LA ENSEÑANZA</th>
+                                <th>RESPUESTA ÚNICA</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <ng-container *ngFor="let pregunta of normalform.campos[1].preguntas">
+                                <tr>
+                                    <td>
+                                        <ng-container *ngFor="let opcion of normalform.campos[1].opciones">
+                                            <p>{{ opcion.texto }}</p>
+                                        </ng-container>
+                                    </td>
+                                    <td>{{ pregunta.texto }}</td>
+                                    <td>
+                                        <mat-form-field>
+                                            <mat-select [formControlName]="'ensenanza_' + pregunta.id"
+                                                placeholder="Menu">
+                                                <mat-option *ngFor="let opcion of normalform.campos[1].opciones"
+                                                    [value]="opcion.valor">
+                                                    {{ opcion.texto }}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </td>
+                                </tr>
+                            </ng-container>
+                        </tbody>
+                    </table>
+
+                    <!-- Campos de texto -->
+                    <mat-form-field style="width: 100%" *ngFor="let campo of normalform.campos.slice(2)"
+                        [ngSwitch]="campo.tipo">
+                        <ng-container *ngSwitchCase="'textarea'">
+                            <mat-label>{{ campo.label }}</mat-label>
+                            <textarea matInput [formControlName]="campo.nombre" [rows]="campo.cantidad"
+                                [placeholder]="campo.placeholder"></textarea>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'file'">
+                            <mat-label>{{ campo.label }}</mat-label>
+                            <input type="file" matInput (change)="onFileChange($event, campo)">
+                            <button mat-flat-button color="primary">{{ campo.buttonLabel }}</button>
+                        </ng-container>
+                    </mat-form-field>
+
+                    <!-- Botones de Acción -->
+                    <div class="mt-4">
+                        <button mat-flat-button color="warn" (click)="clearForm()" *ngIf="normalform.btnLimpiar">
+                            {{ normalform.btnLimpiar }}
+                        </button>
+                        <button mat-flat-button color="accent" (click)="validForm()" *ngIf="normalform.btn">
+                            {{ normalform.btn }}
+                        </button>
+                    </div>
+                </div>
+            </mat-card-content>
+        </mat-card>
+    </form>
+</div>

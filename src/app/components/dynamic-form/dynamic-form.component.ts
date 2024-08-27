@@ -395,6 +395,10 @@ export class DynamicFormComponent implements OnInit, OnChanges {
     }
   }
 
+  downloadFile(url: string): void {
+    window.open(url, '_blank');
+  }
+  
   clearForm() {
     this.form.reset();
     console.log("Form cleared");
