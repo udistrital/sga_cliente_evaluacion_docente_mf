@@ -36,7 +36,6 @@ import { MatStepperModule } from '@angular/material/stepper';
 import { MatTabsModule } from '@angular/material/tabs';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { ResultadosComponent } from './components/resultados/resultados.component';
-import { PruebaComponent } from './components/prueba/prueba.component';
 import { ParametrosService } from './services/parametros.service';
 import { EventosService } from './services/eventos.service';
 import { AnyService } from './services/any.service';
@@ -108,7 +107,6 @@ export function createTranslateLoader(http: HttpClient) {
     ParametrosService,
     AnyService,
     UserService,
-    PruebaComponent,
     { provide: HTTP_INTERCEPTORS, useClass: SpinnerUtilInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]

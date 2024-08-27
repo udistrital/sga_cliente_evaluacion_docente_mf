@@ -62,7 +62,8 @@
         "concejos_curriculares": "Concejos Curriculares",
         "visualizador_formulario": "Visualizador del formulario",
         "procesos_seleccionar": "Procesos a seleccionar",
-        "guardar": "Guardar"
+        "guardar": "Guardar",
+        "campo_requerido": "Campo requerido"
     },
 
     "definir_escalas": {
