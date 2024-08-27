@@ -1,6 +1,5 @@
-<div [ngSwitch]="normalform.tipo_formulario">
-    <!-- Formulario Mini -->
-    <form [formGroup]="form" *ngSwitchCase="'mini'" class="form-horizontal">
+<div *ngIf="normalform && normalform.tipo_formulario === 'mini'">
+    <form [formGroup]="form" class="form-horizontal">
         <mat-card>
             <mat-card-header>
                 <mat-card-title>{{ normalform.titulo }}</mat-card-title>
@@ -11,146 +10,121 @@
                     <table class="instruction-table">
                         <tr>
                             <td style="background-color: #e0f7e0;">FORMATO</td>
-                            <td>Código SIGUD por asignar</td>
+                            <td>{{ normalform.formato }}</td>
                         </tr>
                         <tr>
                             <td style="background-color: #e0f7e0;">ACTOR</td>
-                            <td>Estudiantes</td>
+                            <td>{{ normalform.actor }}</td>
                         </tr>
                         <tr>
                             <td style="background-color: #e0f7e0;">CRONOGRAMA</td>
-                            <td>Semana 4 a 7 del calendario académico</td>
+                            <td>{{ normalform.cronograma }}</td>
                         </tr>
                         <tr>
                             <td style="background-color: #e0f7e0;">RÚBRICAS</td>
-                            <td>Selección múltiple</td>
+                            <td>{{ normalform.rubricas }}</td>
                         </tr>
                         <tr>
                             <td style="background-color: #e0f7e0;">INSTRUCCIÓN</td>
-                            <td>
-                                Estimado estudiante:<br>
-                                Por favor evalúe formativamente a su docente utilizando el formato dispuesto para ello. 
-                                Los ítems 01 a 20 de selección múltiple con única respuesta son obligatorios. 
-                                Puede realizar anotaciones de felicitación o de sugerencias respetuosas en los espacios destinados para tal fin.
-                                Utilice como referencia la siguiente escala para medir el grado de desempeño a evaluar:
-                            </td>
+                            <td>{{ normalform.instruccion }}</td>
                         </tr>
                         <tr>
                             <td style="background-color: #e0f7e0;">ESCALA</td>
                             <td>
-                                INSUFICIENTE = No sucede y no se demuestra el criterio<br>
-                                NECESITA MEJORAR = Sucede parcialmente pero no se demuestra el criterio<br>
-                                BUENO = Sucede con frecuencia y se demuestra el criterio en un nivel básico<br>
-                                SOBRESALIENTE = Sucede la mayor parte del tiempo y se demuestra el criterio de forma adecuada<br>
-                                EXCELENTE = Sucede siempre y se demuestra el criterio completamente
+                                <div *ngFor="let escala of normalform.escalas">
+                                    {{ escala.label }} = {{ escala.descripcion }}
+                                </div>
                             </td>
                         </tr>
                     </table>
 
-                    <!-- Tabla Ámbito 01 -->
+                    <!-- Primera Tabla de Evaluación (Ámbito 01: LA DOCENCIA) -->
                     <table class="evaluation-table">
                         <tr>
                             <th style="background-color: #cce7ff;">ÁMBITO 01: LA DOCENCIA</th>
-                            <th style="background-color: #cce7ff;">Insuficiente</th>
-                            <th style="background-color: #cce7ff;">Necesita Mejorar</th>
-                            <th style="background-color: #cce7ff;">Bueno</th>
-                            <th style="background-color: #cce7ff;">Sobresaliente</th>
-                            <th style="background-color: #cce7ff;">Excelente</th>
+                            <th style="background-color: #cce7ff;" *ngFor="let escala of normalform.escalas">{{
+                                escala.label }}</th>
                         </tr>
-                        <tr *ngFor="let question of questions01; let i = index">
-                            <td class="left-align">{{ question }}</td>
-                            <td>
-                                <input type="radio" [formControlName]="'question_' + i" value="Insuficiente">
-                            </td>
-                            <td>
-                                <input type="radio" [formControlName]="'question_' + i" value="Necesita Mejorar">
-                            </td>
-                            <td>
-                                <input type="radio" [formControlName]="'question_' + i" value="Bueno">
-                            </td>
-                            <td>
-                                <input type="radio" [formControlName]="'question_' + i" value="Sobresaliente">
-                            </td>
-                            <td>
-                                <input type="radio" [formControlName]="'question_' + i" value="Excelente">
+                        <tr *ngFor="let campo of normalform.campos.slice(0, 5)">
+                            <td class="left-align">{{ campo.label }}</td>
+                            <td *ngFor="let escala of normalform.escalas">
+                                <mat-radio-group [formControlName]="campo.nombre">
+                                    <mat-radio-button [value]="escala.label"></mat-radio-button>
+                                </mat-radio-group>
                             </td>
                         </tr>
                     </table>
 
-                    <!-- Tabla Ámbito 02 -->
+                    <!-- Comentarios para la primera tabla -->
+                    <p class="instruction">
+                        {{ normalform.comentariosLabel }}
+                    </p>
+                    <div *ngFor="let i of [0,1,2,3,4]">
+                        <mat-form-field style="width: 100%">
+                            <textarea matInput placeholder="{{ normalform.comentariosPlaceholder }}"
+                                [formControlName]="'comment_' + i"></textarea>
+                        </mat-form-field>
+                    </div>
+
+                    <!-- Segunda Tabla de Evaluación (Ámbito 02: LA ENSEÑANZA) -->
                     <table class="evaluation-table">
                         <tr>
                             <th style="background-color: #cce7ff;">ÁMBITO 02: LA ENSEÑANZA</th>
-                            <th style="background-color: #cce7ff;">Insuficiente</th>
-                            <th style="background-color: #cce7ff;">Necesita Mejorar</th>
-                            <th style="background-color: #cce7ff;">Bueno</th>
-                            <th style="background-color: #cce7ff;">Sobresaliente</th>
-                            <th style="background-color: #cce7ff;">Excelente</th>
+                            <th style="background-color: #cce7ff;" *ngFor="let escala of normalform.escalas">{{
+                                escala.label }}</th>
                         </tr>
-                        <tr *ngFor="let question of questions02; let i = index">
-                            <td class="left-align">{{ question }}</td>
-                            <td>
-                                <input type="radio" [formControlName]="'question_' + (i + questions01.length)" value="Insuficiente">
-                            </td>
-                            <td>
-                                <input type="radio" [formControlName]="'question_' + (i + questions01.length)" value="Necesita Mejorar">
-                            </td>
-                            <td>
-                                <input type="radio" [formControlName]="'question_' + (i + questions01.length)" value="Bueno">
-                            </td>
-                            <td>
-                                <input type="radio" [formControlName]="'question_' + (i + questions01.length)" value="Sobresaliente">
-                            </td>
-                            <td>
-                                <input type="radio" [formControlName]="'question_' + (i + questions01.length)" value="Excelente">
+                        <tr *ngFor="let campo of normalform.campos.slice(5, 10)">
+                            <td class="left-align">{{ campo.label }}</td>
+                            <td *ngFor="let escala of normalform.escalas">
+                                <mat-radio-group [formControlName]="campo.nombre">
+                                    <mat-radio-button [value]="escala.label"></mat-radio-button>
+                                </mat-radio-group>
                             </td>
                         </tr>
                     </table>
 
-                    <!-- Tabla Ámbito 03 -->
+                    <!-- Comentarios para la segunda tabla -->
+                    <p class="instruction">
+                        Dado los ítems anteriores, quisiera felicitarlo o sugerirle respetuosamente lo siguiente:
+                    </p>
+                    <div *ngFor="let i of [5,6,7,8,9]">
+                        <mat-form-field style="width: 100%">
+                            <textarea matInput placeholder="{{ normalform.comentariosPlaceholder }}"
+                                [formControlName]="'comment_' + i"></textarea>
+                        </mat-form-field>
+                    </div>
+
+                    <!-- Tercera Tabla de Evaluación (Ámbito 03: LA PRÁCTICA) -->
                     <table class="evaluation-table">
                         <tr>
                             <th style="background-color: #cce7ff;">ÁMBITO 03: LA PRÁCTICA</th>
-                            <th style="background-color: #cce7ff;">Insuficiente</th>
-                            <th style="background-color: #cce7ff;">Necesita Mejorar</th>
-                            <th style="background-color: #cce7ff;">Bueno</th>
-                            <th style="background-color: #cce7ff;">Sobresaliente</th>
-                            <th style="background-color: #cce7ff;">Excelente</th>
+                            <th style="background-color: #cce7ff;" *ngFor="let escala of normalform.escalas">{{
+                                escala.label }}</th>
                         </tr>
-                        <tr *ngFor="let question of questions03; let i = index">
-                            <td class="left-align">{{ question }}</td>
-                            <td>
-                                <input type="radio" [formControlName]="'question_' + (i + questions01.length + questions02.length)" value="Insuficiente">
-                            </td>
-                            <td>
-                                <input type="radio" [formControlName]="'question_' + (i + questions01.length + questions02.length)" value="Necesita Mejorar">
-                            </td>
-                            <td>
-                                <input type="radio" [formControlName]="'question_' + (i + questions01.length + questions02.length)" value="Bueno">
-                            </td>
-                            <td>
-                                <input type="radio" [formControlName]="'question_' + (i + questions01.length + questions02.length)" value="Sobresaliente">
-                            </td>
-                            <td>
-                                <input type="radio" [formControlName]="'question_' + (i + questions01.length + questions02.length)" value="Excelente">
+                        <tr *ngFor="let campo of normalform.campos.slice(10, 20)">
+                            <td class="left-align">{{ campo.label }}</td>
+                            <td *ngFor="let escala of normalform.escalas">
+                                <mat-radio-group [formControlName]="campo.nombre">
+                                    <mat-radio-button [value]="escala.label"></mat-radio-button>
+                                </mat-radio-group>
                             </td>
                         </tr>
                     </table>
 
-                    <!-- Enunciado y Campos de Entrada -->
+                    <!-- Comentarios para la tercera tabla -->
                     <p class="instruction">
-                        Dados los ítems anteriores, quisiera felicitarle o sugerirle respetuosamente lo siguiente (usar solo el numeral sobre el que desee felicitar o sugerir):
+                        Dado los ítems anteriores, quisiera felicitarlo o sugerirle respetuosamente lo siguiente:
                     </p>
-                    <div *ngFor="let question of allQuestions; let i = index">
+                    <div *ngFor="let i of [10,11,12,13,14,15,16,17,18,19]">
                         <mat-form-field style="width: 100%">
-                            <textarea matInput placeholder="Comentario sobre el ítem {{ i + 1 }}" [formControlName]="'comment_' + i"></textarea>
+                            <textarea matInput placeholder="{{ normalform.comentariosPlaceholder }}"
+                                [formControlName]="'comment_' + i"></textarea>
                         </mat-form-field>
                     </div>
                 </div>
 
-                <ng-content></ng-content>
-
-                <div class="mt-4" *ngIf="normalform.btnLimpiar || normalform.btn">
+                <!-- Botones de Acción -->
+                <div class="mt-4">
                     <button mat-flat-button color="warn" (click)="clearForm()" *ngIf="normalform.btnLimpiar">
                         {{ normalform.btnLimpiar }}
                     </button>
@@ -163,50 +137,70 @@
     </form>
 </div>
 
-<div [ngSwitch]="normalform.tipo_formulario">
-    <!-- Formulario de Autoevaluación -->
-    <form [formGroup]="form" *ngSwitchCase="'autoevaluacion-i'" class="form-horizontal">
+<!-- Sección adicional para otros tipos de formularios que no sean 'mini' -->
+<div *ngIf="normalform && normalform.tipo_formulario !== 'mini'">
+    <form [formGroup]="form" class="form-horizontal">
+        <mat-card>
+            <mat-card-header>
+                <mat-card-title>{{ normalform.titulo }}</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <!-- Aquí iría la estructura de otros formularios según el tipo -->
+            </mat-card-content>
+        </mat-card>
+    </form>
+</div>
+
+<div *ngIf="normalform && normalform.tipo_formulario === 'autoevaluacion-i'">
+    <form [formGroup]="form" class="form-horizontal">
         <mat-card>
             <mat-card-header>
                 <mat-card-title>{{ normalform.titulo }}</mat-card-title>
             </mat-card-header>
             <mat-card-content>
                 <div class="form-grid">
-                    <!-- Instrucción -->
+                    <!-- Instrucciones y Escalas -->
                     <table class="instruction-table">
                         <tr>
-                            <td style="background-color: #e0f7e0;">INSTRUCCIÓN 01</td>
-                            <td>
-                                Estimado estudiante:<br>
-                                Por favor autoevalúe su desempeño como estudiante en este espacio curricular. Los ítems 01 a 05 de selección múltiple con única respuesta son obligatorios. Puede realizar anotaciones de mejoramiento para conseguir sus resultados de aprendizaje en los espacios destinados para tal fin.
+                            <td style="background-color: #e0f7e0;">INSTRUCCIÓN</td>
+                            <td>{{ normalform.instruccion }}</td>
+                        </tr>
+                    </table>
+
+                    <!-- Tabla de Evaluación (Autoevaluación Estudiantil) -->
+                    <table class="evaluation-table">
+                        <tr>
+                            <th style="background-color: #cce7ff;">AUTOGESTIÓN DEL APRENDIZAJE</th>
+                            <th style="background-color: #cce7ff;" *ngFor="let escala of normalform.campos[0].opciones">
+                                {{ escala.label }}</th>
+                        </tr>
+                        <tr *ngFor="let campo of normalform.campos; let i = index">
+                            <td class="left-align">{{ campo.label }}</td>
+                            <td *ngFor="let opcion of campo.opciones">
+                                <div>
+                                    <p>{{ opcion.descripcion }}</p>
+                                    <mat-radio-group [formControlName]="campo.nombre">
+                                        <mat-radio-button [value]="opcion.label"></mat-radio-button>
+                                    </mat-radio-group>
+                                </div>
                             </td>
                         </tr>
                     </table>
 
-                    <!-- Preguntas con opciones en texto -->
-                    <div *ngFor="let question of questionsAutoevaluacion; let i = index" class="question-block">
-                        <p><strong>{{ question.text }}</strong></p>
-                        <mat-radio-group [formControlName]="'question_' + i">
-                            <mat-radio-button *ngFor="let option of question.options" [value]="option.value">
-                                {{ option.text }}
-                            </mat-radio-button>
-                        </mat-radio-group>
-                    </div>
-
-                    <!-- Comentarios sobre las acciones a tomar -->
+                    <!-- Comentarios -->
                     <p class="instruction">
-                        Dada su respuesta anterior, escriba las acciones que tomará para fortalecer su éxito en este espacio curricular:
+                        {{ normalform.comentariosLabel }}
                     </p>
-                    <div *ngFor="let comment of commentsAutoevaluacion; let i = index">
+                    <div *ngFor="let i of [0,1,2]">
                         <mat-form-field style="width: 100%">
-                            <textarea matInput placeholder="Acción {{ i + 1 }}" [formControlName]="'comment_' + i"></textarea>
+                            <textarea matInput placeholder="{{ normalform.comentariosPlaceholder }}"
+                                [formControlName]="'comment_' + i"></textarea>
                         </mat-form-field>
                     </div>
                 </div>
 
-                <ng-content></ng-content>
-
-                <div class="mt-4" *ngIf="normalform.btnLimpiar || normalform.btn">
+                <!-- Botones de Acción -->
+                <div class="mt-4">
                     <button mat-flat-button color="warn" (click)="clearForm()" *ngIf="normalform.btnLimpiar">
                         {{ normalform.btnLimpiar }}
                     </button>
