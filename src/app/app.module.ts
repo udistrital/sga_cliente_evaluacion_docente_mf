@@ -23,6 +23,17 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { EvaluacionesComponent } from './components/evaluaciones/evaluaciones.component';
 import { NgIsGrantedDirective } from './directives/ng-is-granted.directive';
 import { UserService } from './services/user.service';
+<<<<<<< HEAD
+=======
+import { EventosService } from './services/eventos.service';
+import { ParametrosService } from './services/parametros.service';
+import { AnyService } from './services/any.service';
+import { HeteroevaluacionComponent } from './components/evaluaciones/heteroevaluacion/heteroevaluacion.component';
+import { AutoevaluacionIComponent } from './components/evaluaciones/autoevaluacion-i/autoevaluacion-i.component';
+import { CoevaluacionIComponent } from './components/evaluaciones/coevaluacion-i/coevaluacion-i.component';
+import { AutoevaluacionIIComponent } from './components/evaluaciones/autoevaluacion-ii/autoevaluacion-ii.component';
+import { CoevaluacionIIComponent } from './components/evaluaciones/coevaluacion-ii/coevaluacion-ii.component';
+>>>>>>> origin/develop
 import { MetricasComponent } from './components/metricas/metricas.component';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatCardModule } from '@angular/material/card';
@@ -36,6 +47,7 @@ import { MatStepperModule } from '@angular/material/stepper';
 import { MatTabsModule } from '@angular/material/tabs';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { ResultadosComponent } from './components/resultados/resultados.component';
+import { PruebaComponent } from './components/prueba/prueba.component';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, environment.apiUrl + 'assets/i18n/', '.json');
@@ -48,7 +60,16 @@ export function createTranslateLoader(http: HttpClient) {
     AsignacionFechasComponent,
     DefinirEscalasComponent,
     EvaluacionesComponent,
+<<<<<<< HEAD
     NgIsGrantedDirective,            
+=======
+    NgIsGrantedDirective,
+    HeteroevaluacionComponent,
+    AutoevaluacionIComponent,
+    CoevaluacionIComponent,
+    AutoevaluacionIIComponent,
+    CoevaluacionIIComponent,
+>>>>>>> origin/develop
     MetricasComponent, 
     ResultadosComponent
   ],
@@ -100,7 +121,11 @@ export function createTranslateLoader(http: HttpClient) {
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [
+    EventosService, 
+    ParametrosService,
+    AnyService,
     UserService,
+    PruebaComponent,
     { provide: HTTP_INTERCEPTORS, useClass: SpinnerUtilInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]

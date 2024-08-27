@@ -1,4 +1,11 @@
 {
+    
+    "GLOBAL": {
+        "atencion": "Atención",
+        "aceptar": "Aceptar",
+        "cancelar": "Cancelar"
+    },
+    
     "HOME": {
         "TITLE": "SGA",
         "SELECT": "Seleccionar tipo de evaluación",
@@ -33,7 +40,9 @@
         "seleccionar_fecha_fin": "Seleccionar fecha fin",
         "fecha_inicio_seleccionada": "Fecha inicio seleccionada",
         "fecha_fin_seleccionada": "Fecha fin seleccionada",
-        "guardar": "Guardar"
+        "guardar": "Guardar",
+        "confirmacion_guardado": "Confirmación de guardado",
+        "ajustes_aplicados": "Los ajustes fueron aplicados exitosamente"
     },
 
     "definicion_formularios": {

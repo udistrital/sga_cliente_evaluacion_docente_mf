@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <mat-card *ngIsGranted="[ROLES.ADMIN_SGA, ROLES.VICERRECTOR, ROLES.ASESOR_VICE, ROLES.COORDINADOR, ROLES.COORDINADOR_PREGADO, ROLES.COORDINADOR_POSGRADO, ROLES.ASISTENTE_ADMISIONES, ROLES.ADMIN_DOCENCIA, ROLES.ASIS_PROYECTO, ROLES.SEC_DECANATURA, ROLES.DECANO]">
   <mat-card-header>
     <mat-card-title>
@@ -97,3 +98,128 @@
     </div>
   </mat-card-content>
 </mat-card>
+=======
+<div class="asignacion-fechas" *ngIf="hasRole([ROLES.ADMIN_SGA, ROLES.VICERRECTOR, ROLES.ASESOR_VICE, ROLES.COORDINADOR, ROLES.COORDINADOR_PREGADO, ROLES.COORDINADOR_POSGRADO, ROLES.ASISTENTE_ADMISIONES, ROLES.ADMIN_DOCENCIA, ROLES.ASIS_PROYECTO, ROLES.SEC_DECANATURA, ROLES.DECANO])">
+  <h2>{{ "asignacion_fechas.titulo" | translate }}</h2>
+  
+  <div class="selectors-container">
+    <div class="nivel-formacion">
+      <label for="nivelFormacion">{{ "asignacion_fechas.seleccionar_nivel_formacion" | translate }}</label>
+      <select id="nivelFormacion" [(ngModel)]="nivelFormacion">
+        <option value="" disabled selected>Selecciona el nivel de formación</option>
+        <option *ngFor="let nivel of niveles" [value]="nivel">{{ nivel }}</option>
+      </select>
+    </div>
+
+    <div class="periodo-formacion">
+      <label for="periodoFormacion">{{ "asignacion_fechas.seleccionar_periodo" | translate }}</label>
+      <select id="periodoFormacion" [(ngModel)]="periodoFormacion">
+        <option value="" disabled selected>Selecciona el período de formación</option>
+        <option *ngFor="let periodo of periodos" [value]="periodo.Id">
+          <span [ngClass]="{'punto-verde': periodo.Activo, 'punto-rojo': !periodo.Activo}"></span>
+          {{ periodo.Nombre }} - {{ periodo.Descripcion }}
+        </option>
+      </select>
+    </div>    
+  </div>
+
+  <div class="procesos-grid">
+    <div class="fila-procesos fila-1">
+      <div class="proceso" *ngFor="let proceso of procesos.slice(0, 3)">
+        <div class="proceso-header" (mouseover)="proceso.showIcon = true" (mouseleave)="proceso.showIcon = false">
+          <input [(ngModel)]="proceso.nombre" class="nombre-input" [readonly]="!proceso.editando"/>
+          <mat-icon class="edit-icon" *ngIf="proceso.showIcon" matTooltip="Editar nombre" (click)="editarNombre(proceso)">edit</mat-icon>
+        </div>
+        <div class="fechas-container">
+          <div class="fechas">
+            <mat-form-field appearance="fill">
+              <mat-label>{{ "asignacion_fechas.seleccionar_fecha_inicio" | translate }}</mat-label>
+              <input matInput [matDatepicker]="pickerInicio" [(ngModel)]="proceso.fechaInicio" (dateChange)="validarFechas(proceso)">
+              <mat-datepicker-toggle matSuffix [for]="pickerInicio"></mat-datepicker-toggle>
+              <mat-datepicker #pickerInicio></mat-datepicker>
+            </mat-form-field>
+            <mat-form-field appearance="fill">
+              <mat-label>{{ "asignacion_fechas.seleccionar_fecha_fin" | translate }}</mat-label>
+              <input matInput [matDatepicker]="pickerFin" [(ngModel)]="proceso.fechaFin" [min]="proceso.fechaInicio" (dateChange)="validarFechas(proceso)">
+              <mat-datepicker-toggle matSuffix [for]="pickerFin"></mat-datepicker-toggle>
+              <mat-datepicker #pickerFin></mat-datepicker>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="selected-dates">
+          <p *ngIf="proceso.fechaInicio">{{ "asignacion_fechas.fecha_inicio_seleccionada" | translate }}: {{ proceso.fechaInicio | date: 'dd/MM/yyyy' }}</p>
+          <p *ngIf="proceso.fechaFin">{{ "asignacion_fechas.fecha_fin_seleccionada" | translate }}: {{ proceso.fechaFin | date: 'dd/MM/yyyy' }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="fila-procesos fila-2">
+      <div class="proceso" *ngFor="let proceso of procesos.slice(3, 5)">
+        <div class="proceso-header" (mouseover)="proceso.showIcon = true" (mouseleave)="proceso.showIcon = false">
+          <input [(ngModel)]="proceso.nombre" class="nombre-input" [readonly]="!proceso.editando"/>
+          <mat-icon class="edit-icon" *ngIf="proceso.showIcon" matTooltip="Editar nombre" (click)="editarNombre(proceso)">edit</mat-icon>
+        </div>
+        <div class="fechas-container">
+          <div class="fechas">
+            <mat-form-field appearance="fill">
+              <mat-label>{{ "asignacion_fechas.seleccionar_fecha_inicio" | translate }}</mat-label>
+              <input matInput [matDatepicker]="pickerInicio" [(ngModel)]="proceso.fechaInicio" (dateChange)="validarFechas(proceso)">
+              <mat-datepicker-toggle matSuffix [for]="pickerInicio"></mat-datepicker-toggle>
+              <mat-datepicker #pickerInicio></mat-datepicker>
+            </mat-form-field>
+            <mat-form-field appearance="fill">
+              <mat-label>{{ "asignacion_fechas.seleccionar_fecha_fin" | translate }}</mat-label>
+              <input matInput [matDatepicker]="pickerFin" [(ngModel)]="proceso.fechaFin" [min]="proceso.fechaInicio" (dateChange)="validarFechas(proceso)">
+              <mat-datepicker-toggle matSuffix [for]="pickerFin"></mat-datepicker-toggle>
+              <mat-datepicker #pickerFin></mat-datepicker>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="selected-dates">
+          <p *ngIf="proceso.fechaInicio">{{ "asignacion_fechas.fecha_inicio_seleccionada" | translate }}: {{ proceso.fechaInicio | date: 'dd/MM/yyyy' }}</p>
+          <p *ngIf="proceso.fechaFin">{{ "asignacion_fechas.fecha_fin_seleccionada" | translate }}: {{ proceso.fechaFin | date: 'dd/MM/yyyy' }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Botón para guardar -->
+  <button class="guardar-btn" (click)="guardar()">
+    <mat-icon>archive</mat-icon>
+    {{ "asignacion_fechas.guardar" | translate }}
+  </button>
+
+  <!-- Mensaje de confirmación de guardado -->
+  <div *ngIf="guardado" class="confirmation">
+    <div class="confirmation-content">
+        <h3>Confirmación de guardado</h3>
+        <div class="icon-wrapper">
+            <mat-icon>help_outline</mat-icon> <!-- Ícono de interrogación -->
+        </div>
+        <p>Los ajustes fueron aplicados</p>
+        <button mat-raised-button color="primary" (click)="cerrarConfirmacion()">OK</button>
+    </div>
+  </div>
+
+  <!-- Sección para mostrar los detalles de la evaluación existente -->
+  <div *ngIf="evaluacionExistente">
+    <p>Nombre: {{ evaluacionExistente.Nombre }}</p>
+    <p>Fecha de Inicio: {{ evaluacionExistente.FechaInicio | date: 'dd/MM/yyyy' }}</p>
+    <p>Fecha de Fin: {{ evaluacionExistente.FechaFin | date: 'dd/MM/yyyy' }}</p>
+    <p>Fecha de Creación: {{ evaluacionExistente.FechaCreacion | date: 'dd/MM/yyyy' }}</p>
+    <button mat-raised-button color="primary" (click)="actualizarEvaluacion(evaluacionExistente.Id, evaluacionExistente)">Actualizar Evaluación</button>
+  </div>
+
+  <!-- Lista de evaluaciones guardadas -->
+  <div class="evaluaciones-guardadas" *ngIf="guardado">
+    <p>Evaluaciones guardadas:</p>
+    <ul>
+      <li *ngFor="let eval of evaluacionesGuardadas">{{ eval }}</li>
+    </ul>
+  </div>
+
+  <!-- Mensaje de error -->
+  <div *ngIf="errorPut" class="error-message">
+    <p>{{ mensajeError }}</p>
+  </div>
+</div>
+>>>>>>> origin/develop
