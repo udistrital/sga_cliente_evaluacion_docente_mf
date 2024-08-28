@@ -188,6 +188,13 @@
         "facultad": "Facultad",
         "proyecto_curricular": "Proyecto Curricular",
         "docentes": "Docentes",
-        "periodo_y_tipo_reporte": "Periodo y tipo de reporte"
+        "periodo_y_tipo_reporte": "Periodo y tipo de reporte",
+        "sub_titulo": "  Seleccione el periodo y el tipo de reporte para obtener la información deseada",
+        "seleccione_periodo_tipo": "Seleccione el periodo y el tipo de reporte",
+        "resultados": "Gráficas",
+        "seleccione_filtro_reporte": "Seleccione las opciones de filtrado que desea para el reporte",
+        "global": "Global",
+        "mensaje_facultad": "Seleccione el nivel para el cual desea generar el reporte y las opciones de filtrado por Facultad",
+        "mensaje_global": "Seleccione el nivel para el cual desea generar el reporte y las opciones de filtrado Global"        
     }
 }

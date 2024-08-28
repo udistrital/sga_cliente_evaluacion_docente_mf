@@ -5,7 +5,7 @@ import { Color, ScaleType } from '@swimlane/ngx-charts';
 @Component({
   selector: 'app-metricas',
   templateUrl: './metricas.component.html',
-  styleUrls: ['./metricas.component.scss']
+  styleUrls: ['./metricas.component.scss'],
 })
 export class MetricasComponent implements OnInit {
 
@@ -14,7 +14,7 @@ export class MetricasComponent implements OnInit {
   secondFormGroupNivel: FormGroup;
 
   // Variables
-  isLinear = true;
+  isLinear = false; // Si deseas que el stepper sea lineal
   showSecondCard = false;
   showChartCard = false;
   single: any[];
@@ -33,7 +33,7 @@ export class MetricasComponent implements OnInit {
   showLabels: boolean = true;
   isDoughnut: boolean = false;
 
-  colorScheme: Color = { domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA'], name: '', selectable: true, group: ScaleType.Ordinal };
+  colorScheme: Color = { domain: ['#4f95b1', '#03678f', '#90c9ff', '#013960'], name: '', selectable: true, group: ScaleType.Ordinal };
 
   periodos = ['2020-1', '2020-2', '2021-1', '2021-2'];
   tiposVinculacion = ['Tipo 1', 'Tipo 2', 'Tipo 3'];
@@ -42,13 +42,20 @@ export class MetricasComponent implements OnInit {
   tiposComponentes = ['Componente 1', 'Componente 2', 'Componente 3'];
   facultades = ['Facultad 1', 'Facultad 2', 'Facultad 3'];
 
+  // Opciones de Roles
+  roleOptions = [
+    { value: 'administradores', label: 'definicion_formularios.administradores' },
+    { value: 'docentes', label: 'definicion_formularios.docentes' },
+    { value: 'estudiantes', label: 'definicion_formularios.estudiantes' },
+    { value: 'docconcejos_curricularesentes', label: 'definicion_formularios.concejos_curriculares' }
+  ];
 
   constructor(private _formBuilder: FormBuilder) {
     this.single = [
       { name: 'Germany', value: 8940000 },
       { name: 'USA', value: 5000000 },
       { name: 'France', value: 7200000 },
-      { name: 'UK', value: 6200000 }
+      { name: 'UK', value: 7200000 }
     ];
 
     this.firstFormGroup = this._formBuilder.group({
@@ -65,9 +72,11 @@ export class MetricasComponent implements OnInit {
       tipoProyecto: [{ value: '', disabled: true }],
       tipoVinculacion: [{ value: '', disabled: true }],
       tipoDocente: [{ value: '', disabled: true }],
-      tipoComponente: [{ value: '', disabled: true }]
+      tipoComponente: [{ value: '', disabled: true }],
+      roles: ['', Validators.required] // Agregado nuevo campo
     });
 
+    // Suscripciones a cambios en los campos
     this.secondFormGroupNivel.get('optionProyecto')!.valueChanges.subscribe((checked) => {
       this.showTipoProyectoSelect = checked;
       if (checked) {
