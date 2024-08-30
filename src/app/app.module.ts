@@ -48,6 +48,7 @@ import { PruebaComponent } from './components/prueba/prueba.component';
 import { NuxeoComponent } from './components/nuxeo/nuxeo.component';
 import { GestorDocumentalService } from './services/gestor-documental.service';
 import { DocumentoService } from './services/documento.service';
+import { PruebaComponent } from './components/prueba/prueba.component';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, environment.apiUrl + 'assets/i18n/', '.json');
@@ -125,6 +126,7 @@ export function createTranslateLoader(http: HttpClient) {
     PruebaComponent,
     GestorDocumentalService,
     DocumentoService,
+    PruebaComponent,
     { provide: HTTP_INTERCEPTORS, useClass: SpinnerUtilInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
