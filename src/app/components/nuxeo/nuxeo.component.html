@@ -1,0 +1,11 @@
+<div class="nuxeo-container">
+    <h2>Cargar y Descargar Actas</h2>
+
+    <!-- Campo para seleccionar archivos sin matInput -->
+    <input type="file" (change)="handleFileInputChange($event)" />
+
+    <div class="buttons-group">
+        <button mat-raised-button color="primary" (click)="confirmUpload()">Cargar Archivo</button>
+        <button mat-raised-button color="accent" (click)="downloadActa()">Descargar Archivo</button>
+    </div>
+</div>

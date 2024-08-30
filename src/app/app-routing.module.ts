@@ -12,6 +12,7 @@ import { PruebaComponent } from './components/prueba/prueba.component';
 import { MetricasComponent } from './components/metricas/metricas.component';
 import { ResultadosComponent } from './components/resultados/resultados.component';
 import { DynamicFormComponent } from './components/dynamic-form/dynamic-form.component'; // Importa el nuevo componente
+import { NuxeoComponent } from './components/nuxeo/nuxeo.component';
 
 const routes: Routes = [
   {
@@ -42,6 +43,9 @@ const routes: Routes = [
     path: 'resultados',
     component: ResultadosComponent
   },
+  { 
+    path: 'nuxeo', 
+    component: NuxeoComponent },
   {
     path: 'dynamic-form',
     component: DynamicFormComponent

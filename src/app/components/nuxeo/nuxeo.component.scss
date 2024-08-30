@@ -1,0 +1,25 @@
+.nuxeo-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px;
+    
+    mat-form-field {
+        width: 100%;
+        max-width: 400px;
+        margin-bottom: 20px;
+    }
+    
+    .buttons-group {
+        display: flex;
+        gap: 10px;
+        
+        button {
+            padding: 10px 20px;
+        }
+    }
+}
+
+input[type="file"] {
+    margin: 20px 0;
+}

@@ -45,6 +45,9 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { ResultadosComponent } from './components/resultados/resultados.component';
 import { PruebaComponent } from './components/prueba/prueba.component';
+import { NuxeoComponent } from './components/nuxeo/nuxeo.component';
+import { GestorDocumentalService } from './services/gestor-documental.service';
+import { DocumentoService } from './services/documento.service';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, environment.apiUrl + 'assets/i18n/', '.json');
@@ -60,7 +63,8 @@ export function createTranslateLoader(http: HttpClient) {
     NgIsGrantedDirective,
     DynamicFormComponent,
     NgIsGrantedDirective,
-    MetricasComponent, 
+    MetricasComponent,
+    NuxeoComponent,
     ResultadosComponent
   ],
   imports: [
@@ -119,6 +123,8 @@ export function createTranslateLoader(http: HttpClient) {
     AnyService,
     UserService,
     PruebaComponent,
+    GestorDocumentalService,
+    DocumentoService,
     { provide: HTTP_INTERCEPTORS, useClass: SpinnerUtilInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
