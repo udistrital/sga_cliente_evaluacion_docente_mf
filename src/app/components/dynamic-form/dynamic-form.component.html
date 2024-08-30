@@ -381,8 +381,42 @@
                         </tbody>
                     </table>
 
-                    <!-- Campos de texto -->
-                    <mat-form-field style="width: 100%" *ngFor="let campo of normalform.campos.slice(2)"
+                    <!-- Tercera tabla de preguntas -->
+                    <table class="evaluation-table">
+                        <thead>
+                            <tr>
+                                <th>RÚBRICAS HOLÍSTICAS</th>
+                                <th>ÁMBITO 03: LA PRÁCTICA</th>
+                                <th>RESPUESTA ÚNICA</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <ng-container *ngFor="let pregunta of normalform.campos[2].preguntas">
+                                <tr>
+                                    <td>
+                                        <ng-container *ngFor="let opcion of normalform.campos[2].opciones">
+                                            <p>{{ opcion.texto }}</p>
+                                        </ng-container>
+                                    </td>
+                                    <td>{{ pregunta.texto }}</td>
+                                    <td>
+                                        <mat-form-field>
+                                            <mat-select [formControlName]="'practica_' + pregunta.id"
+                                                placeholder="Menu">
+                                                <mat-option *ngFor="let opcion of normalform.campos[2].opciones"
+                                                    [value]="opcion.valor">
+                                                    {{ opcion.texto }}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </td>
+                                </tr>
+                            </ng-container>
+                        </tbody>
+                    </table>
+
+                    <!-- Campos de texto adicionales -->
+                    <mat-form-field style="width: 100%" *ngFor="let campo of normalform.campos.slice(3)"
                         [ngSwitch]="campo.tipo">
                         <ng-container *ngSwitchCase="'textarea'">
                             <mat-label>{{ campo.label }}</mat-label>
@@ -405,6 +439,65 @@
                             {{ normalform.btn }}
                         </button>
                     </div>
+                </div>
+            </mat-card-content>
+        </mat-card>
+    </form>
+</div>
+
+<!-- Coevaluación II usando dynamic form -->
+<div *ngIf="normalform">
+    <form [formGroup]="form" class="form-horizontal">
+        <mat-card>
+            <mat-card-header>
+                <mat-card-title>{{ normalform.titulo }}</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <!-- Primera tabla -->
+                <table class="informative-table">
+                    <tr>
+                        <td style="background-color: #d9ead3;">FORMATO</td>
+                        <td>{{ normalform.formato }}</td>
+                    </tr>
+                    <tr>
+                        <td style="background-color: #d9ead3;">ACTOR</td>
+                        <td>{{ normalform.actor }}</td>
+                    </tr>
+                    <tr>
+                        <td style="background-color: #d9ead3;">CRONOGRAMA</td>
+                        <td>{{ normalform.cronograma }}</td>
+                    </tr>
+                    <tr>
+                        <td style="background-color: #d9ead3;">RÚBRICAS</td>
+                        <td>{{ normalform.rubricas }}</td>
+                    </tr>
+                </table>
+
+                <!-- Segunda tabla -->
+                <table class="evaluation-table">
+                    <tr>
+                        <th style="background-color: #c9daf8;">ÁMBITO</th>
+                        <th style="background-color: #c9daf8;">Insuficiente</th>
+                        <th style="background-color: #c9daf8;">Necesita mejorar</th>
+                        <th style="background-color: #c9daf8;">Bueno</th>
+                        <th style="background-color: #c9daf8;">Sobresaliente</th>
+                        <th style="background-color: #c9daf8;">Excelente</th>
+                    </tr>
+                    <tr *ngFor="let campo of normalform.campos">
+                        <td>{{ campo.label }}</td>
+                        <td *ngFor="let escala of campo.opciones">
+                            <mat-radio-group [formControlName]="campo.nombre">
+                                <mat-radio-button [value]="escala.valor"></mat-radio-button>
+                            </mat-radio-group>
+                        </td>
+                    </tr>
+                </table>
+
+                <!-- Botón de guardar -->
+                <div class="mt-4">
+                    <button mat-flat-button color="accent" (click)="validarForm()">
+                        Guardar
+                    </button>
                 </div>
             </mat-card-content>
         </mat-card>

@@ -12,7 +12,7 @@ import * as moment from "moment";
 })
 export class EvaluacionesComponent implements OnInit {
   showTerms = false;
-  selectedEvaluation = "";
+  selectedEvaluation: string = "";
   showModal = false;
   userRoles: string[] = [];
   ROLES = ROLES;
@@ -24,6 +24,7 @@ export class EvaluacionesComponent implements OnInit {
   coevaluacionIForm: FormGroup;
   autoevaluacionIIForm: FormGroup;
   autoevaluacionIForm: FormGroup;
+  normalform: any;
 
   constructor(private fb: FormBuilder, private userService: UserService) {
     this.heteroForm = this.fb.group({});
@@ -568,12 +569,12 @@ export class EvaluacionesComponent implements OnInit {
 
   loadAutoevaluacionIIData() {
     this.formData = {
-      tipo_formulario: 'autoevaluacion-ii',
-      titulo: 'Autoevaluación del cuerpo docente',
-      formato: 'Código SIGUD por asignar',
-      actor: 'Docentes',
-      cronograma: 'Semanas 10 a 11',
-      rubricas: 'Selección múltiple',
+      tipo_formulario: "autoevaluacion-ii",
+      titulo: "Autoevaluación del cuerpo docente",
+      formato: "Código SIGUD por asignar",
+      actor: "Docentes",
+      cronograma: "Semanas 10 a 11",
+      rubricas: "Selección múltiple",
       instruccion: `Estimado cuerpo docente:
                     Por favor autoevalúe con plan de mejoramiento su desempeño docente utilizando el formato dispuesto para ello.
                     Los ítems 01 a 15 con única respuesta son obligatorios en cada dimensión.`,
@@ -583,97 +584,261 @@ export class EvaluacionesComponent implements OnInit {
               SOBRESALIENTE = Sucede la mayor parte del tiempo y se demuestra el criterio de forma adecuada
               EXCELENTE = Sucede siempre y se demuestra el criterio completamente`,
       campos: [
+        // Ámbito 01: LA DOCENCIA
         {
-          nombre: 'docencia', 
-          label: 'ÁMBITO 01: LA DOCENCIA',
-          tipo: 'select',
+          nombre: "docencia",
+          label: "ÁMBITO 01: LA DOCENCIA",
+          tipo: "select",
           opciones: [
-            { valor: 'insuficiente', texto: 'Insuficiente' },
-            { valor: 'necesita_mejorar', texto: 'Necesita mejorar' },
-            { valor: 'bueno', texto: 'Bueno' },
-            { valor: 'sobresaliente', texto: 'Sobresaliente' },
-            { valor: 'excelente', texto: 'Excelente' }
+            { valor: "insuficiente", texto: "Insuficiente" },
+            { valor: "necesita_mejorar", texto: "Necesita mejorar" },
+            { valor: "bueno", texto: "Bueno" },
+            { valor: "sobresaliente", texto: "Sobresaliente" },
+            { valor: "excelente", texto: "Excelente" },
           ],
           preguntas: [
-            { id: 1, texto: '01. No conozco los contenidos que imparto y no tengo habilidades para conducir procesos de enseñanza-aprendizaje' },
-            { id: 2, texto: '02. Conozco parcialmente los contenidos que imparto y se me dificulta conducir procesos de enseñanza-aprendizaje' },
-            { id: 3, texto: '03. Conozco parcialmente los contenidos que imparto, pero tengo habilidades para conducir procesos de enseñanza-aprendizaje' },
-            { id: 4, texto: '04. Conozco lo que enseño y tengo habilidades para conducir procesos de enseñanza-aprendizaje' },
-            { id: 5, texto: '05. Vinculo mi investigación propia a lo que enseño y tengo habilidades para conducir procesos de enseñanza-aprendizaje' }
-          ]
+            {
+              id: 1,
+              texto:
+                "01. No conozco los contenidos que imparto y no tengo habilidades para conducir procesos de enseñanza-aprendizaje",
+            },
+            {
+              id: 2,
+              texto:
+                "02. Conozco parcialmente los contenidos que imparto y se me dificulta conducir procesos de enseñanza-aprendizaje",
+            },
+            {
+              id: 3,
+              texto:
+                "03. Conozco parcialmente los contenidos que imparto, pero tengo habilidades para conducir procesos de enseñanza-aprendizaje",
+            },
+            {
+              id: 4,
+              texto:
+                "04. Conozco lo que enseño y tengo habilidades para conducir procesos de enseñanza-aprendizaje",
+            },
+            {
+              id: 5,
+              texto:
+                "05. Vinculo mi investigación propia a lo que enseño y tengo habilidades para conducir procesos de enseñanza-aprendizaje",
+            },
+          ],
         },
+        // Ámbito 02: LA ENSEÑANZA
         {
-          nombre: 'ensenanza', 
-          label: 'ÁMBITO 02: LA ENSEÑANZA',
-          tipo: 'select',
+          nombre: "ensenanza",
+          label: "ÁMBITO 02: LA ENSEÑANZA",
+          tipo: "select",
           opciones: [
-            { valor: 'insuficiente', texto: 'Insuficiente' },
-            { valor: 'necesita_mejorar', texto: 'Necesita mejorar' },
-            { valor: 'bueno', texto: 'Bueno' },
-            { valor: 'sobresaliente', texto: 'Sobresaliente' },
-            { valor: 'excelente', texto: 'Excelente' }
+            { valor: "insuficiente", texto: "Insuficiente" },
+            { valor: "necesita_mejorar", texto: "Necesita mejorar" },
+            { valor: "bueno", texto: "Bueno" },
+            { valor: "sobresaliente", texto: "Sobresaliente" },
+            { valor: "excelente", texto: "Excelente" },
           ],
           preguntas: [
-            { id: 6, texto: '06. No doy a conocer las competencias y resultados de aprendizaje ni integro en mi enseñanza competencias, didáctica y evaluación' },
-            { id: 7, texto: '07. Doy a conocer a mis alumnos parcialmente los contenidos que imparto y se me dificulta integrar en mi enseñanza competencias, didáctica y evaluación' },
-            { id: 8, texto: '08. Doy a conocer a mis alumnos parcialmente los contenidos que imparto, pero integro en mi enseñanza competencias, didáctica y evaluación' },
-            { id: 9, texto: '09. Doy a conocer a mis alumnos los contenidos que imparto e integro en mi enseñanza competencias, didáctica y evaluación' },
-            { id: 10, texto: '10. Doy a conocer a mis alumnos los contenidos que imparto basados en mi investigación e integro en mi enseñanza competencias, didáctica y evaluación' }
-          ]
-        }
+            {
+              id: 6,
+              texto:
+                "06. No doy a conocer las competencias y resultados de aprendizaje ni integro en mi enseñanza competencias, didáctica y evaluación",
+            },
+            {
+              id: 7,
+              texto:
+                "07. Doy a conocer a mis alumnos parcialmente los contenidos que imparto y se me dificulta integrar en mi enseñanza competencias, didáctica y evaluación",
+            },
+            {
+              id: 8,
+              texto:
+                "08. Doy a conocer a mis alumnos parcialmente los contenidos que imparto, pero integro en mi enseñanza competencias, didáctica y evaluación",
+            },
+            {
+              id: 9,
+              texto:
+                "09. Doy a conocer a mis alumnos los contenidos que imparto e integro en mi enseñanza competencias, didáctica y evaluación",
+            },
+            {
+              id: 10,
+              texto:
+                "10. Doy a conocer a mis alumnos los contenidos que imparto basados en mi investigación e integro en mi enseñanza competencias, didáctica y evaluación",
+            },
+          ],
+        },
+        // Ámbito 03: LA PRÁCTICA (Datos de la imagen)
+        {
+          nombre: "practica",
+          label: "ÁMBITO 03: LA PRÁCTICA",
+          tipo: "select",
+          opciones: [
+            { valor: "insuficiente", texto: "Insuficiente" },
+            { valor: "necesita_mejorar", texto: "Necesita mejorar" },
+            { valor: "bueno", texto: "Bueno" },
+            { valor: "sobresaliente", texto: "Sobresaliente" },
+            { valor: "excelente", texto: "Excelente" },
+          ],
+          preguntas: [
+            {
+              id: 11,
+              texto:
+                "11. No demuestro compromiso con el clima de aprendizaje y no realizo actividades apropiadas para la consecución de resultados de aprendizaje y desarrollo de competencias",
+            },
+            {
+              id: 12,
+              texto:
+                "12. Demuestro parcialmente compromiso con el clima de aprendizaje y no realizo actividades apropiadas para la consecución de resultados de aprendizaje y desarrollo de competencias",
+            },
+            {
+              id: 13,
+              texto:
+                "13. Demuestro parcialmente compromiso con el clima de aprendizaje, pero realizo actividades apropiadas para la consecución de resultados de aprendizaje y desarrollo de competencias",
+            },
+            {
+              id: 14,
+              texto:
+                "14. Demuestro con frecuencia compromiso con el clima de aprendizaje y realizo actividades apropiadas para la consecución de resultados de aprendizaje y desarrollo de competencias",
+            },
+            {
+              id: 15,
+              texto:
+                "15. Demuestro siempre mi compromiso con el clima de aprendizaje y realizo actividades apropiadas para la consecución de resultados de aprendizaje y desarrollo de competencias",
+            },
+          ],
+        },
       ],
-      btnLimpiar: 'Limpiar',
-      btn: 'Guardar',
-      extra: 'cargue_evidencias'
+      btnLimpiar: "Limpiar",
+      btn: "Guardar",
+      extra: "cargue_evidencias",
     };
-  }  
+  }
 
   loadCoevaluacionIIData() {
     this.formData = {
-      tipo_formulario: "coevaluacion-ii",
+      tipo_formulario: "informativo",
       titulo: "Coevaluación II",
-    };
-    this.modeloData = {
-      sections: [
+      formato: "Código SIGUD por asignar",
+      actor: "Consejos Curriculares",
+      cronograma: "Semana 14 a 15",
+      rubricas: "Selección múltiple",
+      instruccion: `Estimado Consejo Curricular:
+                      Por favor coevalúe con plan de mejoramiento su desempeño docente utilizando el formato dispuesto para ello. 
+                      Los ítems PROMEDIO con única respuesta son obligatorios en cada dimensión.`,
+      escala: `INSUFICIENTE = No sucede y no se demuestra el criterio
+                NECESITA MEJORAR = Sucede parcialmente pero no se demuestra el criterio
+                BUENO = Sucede con frecuencia y se demuestra el criterio en un nivel básico
+                SOBRESALIENTE = Sucede la mayor parte del tiempo y se demuestra el criterio de forma adecuada
+                EXCELENTE = Sucede siempre y se demuestra el criterio completamente`,
+      secciones: [
         {
           title: "SECCIÓN 01 - ANÁLISIS DE LA HETEROEVALUACIÓN",
-          header: {
-            ambito: "ÁMBITO",
-            options: ["Insuficiente", "Necesita mejorar", "Bueno", "Sobresaliente", "Excelente"]
-          },
-          rows: [
-            { ambito: "01. ÁMBITO 01: DOCENCIA", name: "ambito_docencia", options: ["insuficiente", "necesita_mejorar", "bueno", "sobresaliente", "excelente"] },
-            { ambito: "02. ÁMBITO 02: ENSEÑANZA", name: "ambito_ensenanza", options: ["insuficiente", "necesita_mejorar", "bueno", "sobresaliente", "excelente"] },
-            { ambito: "03. ÁMBITO 03: PRÁCTICA", name: "ambito_practica", options: ["insuficiente", "necesita_mejorar", "bueno", "sobresaliente", "excelente"] },
-            { ambito: "04. AUTOGESTIÓN DEL ESTUDIANTADO", name: "autogestion_estudiantil", options: ["insuficiente", "necesita_mejorar", "bueno", "sobresaliente", "excelente"] }
-          ]
-        },
-        {
-          title: "SECCIÓN 02 - ANÁLISIS DE LA COEVALUACIÓN I",
-          instruction: "Lean el acta de coevaluación I para tener elementos cualitativos de coevaluación del cuerpo docente. No se asigna escala evaluativa para esta sección.",
-          downloadable: true,
-          downloadUrl: "/path/to/co-evaluation-acta.pdf"
-        },
-        {
-          title: "SECCIÓN 03 - ANÁLISIS DE LA AUTOEVALUACIÓN",
-          header: {
-            ambito: "ÁMBITO",
-            options: ["Insuficiente", "Necesita mejorar", "Bueno", "Sobresaliente", "Excelente"]
-          },
-          rows: [
-            { ambito: "01. ÁMBITO 01: DOCENCIA", name: "ambito_auto_docencia", options: ["insuficiente", "necesita_mejorar", "bueno", "sobresaliente", "excelente"] },
-            { ambito: "02. ÁMBITO 02: ENSEÑANZA", name: "ambito_auto_ensenanza", options: ["insuficiente", "necesita_mejorar", "bueno", "sobresaliente", "excelente"] },
-            { ambito: "03. ÁMBITO 03: PRÁCTICA", name: "ambito_auto_practica", options: ["insuficiente", "necesita_mejorar", "bueno", "sobresaliente", "excelente"] }
+          instruccion:
+            "De acuerdo con los resultados de la heteroevaluación conceptúen un promedio y decidan una opción de la escala provista.",
+          ambitos: [
+            {
+              ambito: "01. ÁMBITO 01: DOCENCIA",
+              opciones: [
+                "Insuficiente",
+                "Necesita mejorar",
+                "Bueno",
+                "Sobresaliente",
+                "Excelente",
+              ].map((texto) => ({
+                valor: texto.toLowerCase().replace(" ", "_"),
+                texto,
+              })),
+            },
+            {
+              ambito: "02. ÁMBITO 02: ENSEÑANZA",
+              opciones: [
+                "Insuficiente",
+                "Necesita mejorar",
+                "Bueno",
+                "Sobresaliente",
+                "Excelente",
+              ].map((texto) => ({
+                valor: texto.toLowerCase().replace(" ", "_"),
+                texto,
+              })),
+            },
+            {
+              ambito: "03. ÁMBITO 03: PRÁCTICA",
+              opciones: [
+                "Insuficiente",
+                "Necesita mejorar",
+                "Bueno",
+                "Sobresaliente",
+                "Excelente",
+              ].map((texto) => ({
+                valor: texto.toLowerCase().replace(" ", "_"),
+                texto,
+              })),
+            },
+            {
+              ambito: "04. AUTOGESTIÓN DEL ESTUDIANTADO",
+              opciones: [
+                "Insuficiente",
+                "Necesita mejorar",
+                "Bueno",
+                "Sobresaliente",
+                "Excelente",
+              ].map((texto) => ({
+                valor: texto.toLowerCase().replace(" ", "_"),
+                texto,
+              })),
+            },
           ],
-          downloadable: true,
-          downloadUrl: "/path/to/auto-evaluation.pdf"
-        }
+        },
       ],
-      promedio: {
-        options: ["Insuficiente", "Necesita mejorar", "Bueno", "Sobresaliente", "Excelente"]
-      }
+      promedio_asignado: {
+        opciones: [
+          "Insuficiente",
+          "Necesita mejorar",
+          "Bueno",
+          "Sobresaliente",
+          "Excelente",
+        ].map((texto) => ({
+          valor: texto.toLowerCase().replace(" ", "_"),
+          texto,
+        })),
+      },
     };
-  }  
+
+    interface Opcion {
+      valor: string;
+      texto: string;
+    }
+
+    interface Ambito {
+      ambito: string;
+      opciones: Opcion[];
+    }
+
+    this.normalform = {
+      titulo: this.formData.titulo,
+      formato: this.formData.formato,
+      actor: this.formData.actor,
+      cronograma: this.formData.cronograma,
+      rubricas: this.formData.rubricas,
+      campos: this.formData.secciones[0].ambitos.map(
+        (ambito: Ambito, index: number) => ({
+          nombre: `ambito_${index + 1}`,
+          label: ambito.ambito,
+          tipo: "radio",
+          opciones: ambito.opciones.map((opcion: Opcion) => ({
+            valor: opcion.valor,
+            texto: opcion.texto,
+          })),
+        })
+      ),
+    };
+
+    this.modeloData = {
+      ambito_01_docencia: "",
+      ambito_02_ensenanza: "",
+      ambito_03_practica: "",
+      ambito_04_autogestion: "",
+      promedio_asignado: "",
+    };
+  }
 
   handleFormResult(result: any) {
     console.log("Resultados del formulario dinámico:", result);

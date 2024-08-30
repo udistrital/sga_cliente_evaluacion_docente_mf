@@ -178,6 +178,19 @@ export class DynamicFormComponent implements OnInit, OnChanges {
     },
   ];
 
+  questions04 = [
+    { id: 1, texto: "Seguridad de la Información" },
+    { id: 2, texto: "Gestión de Riesgos" },
+  ];
+
+  options04 = [
+    { valor: "insuficiente", texto: "Insuficiente" },
+    { valor: "necesita_mejorar", texto: "Necesita mejorar" },
+    { valor: "bueno", texto: "Bueno" },
+    { valor: "sobresaliente", texto: "Sobresaliente" },
+    { valor: "excelente", texto: "Excelente" },
+  ];
+
   commentsAutoevaluacion = ["Comentario 1", "Comentario 2", "Comentario 3"];
 
   // Información quemada para pruebas
@@ -238,14 +251,13 @@ export class DynamicFormComponent implements OnInit, OnChanges {
     ],
   };
 
+  
+
   get allQuestions() {
     return [...this.questions01, ...this.questions02, ...this.questions03];
   }
 
-  constructor(
-    private fb: FormBuilder,
-    private sanitizer: DomSanitizer
-  ) {
+  constructor(private fb: FormBuilder, private sanitizer: DomSanitizer) {
     this.initializeForm();
     this.initializeData();
   }
@@ -254,10 +266,56 @@ export class DynamicFormComponent implements OnInit, OnChanges {
       "DynamicFormComponent initialized with normalform:",
       this.normalform
     );
+
+    // Configuración inicial para definir el tipo de formulario si no está definido
     if (!this.normalform.tipo_formulario) {
       this.normalform.tipo_formulario = "mini";
     }
+
+    // Agregando los campos para el nuevo ámbito en Autoevaluación II
+    if (this.normalform.tipo_formulario === "autoevaluacion-ii") {
+      this.normalform.campos.push({
+        nombre: "seguridad_informacion",
+        tipo: "select",
+        opciones: [
+          { valor: "insuficiente", texto: "Insuficiente" },
+          { valor: "necesita_mejorar", texto: "Necesita mejorar" },
+          { valor: "bueno", texto: "Bueno" },
+          { valor: "sobresaliente", texto: "Sobresaliente" },
+          { valor: "excelente", texto: "Excelente" },
+        ],
+        preguntas: [
+          { id: 1, texto: "Seguridad de la Información" },
+          { id: 2, texto: "Gestión de Riesgos" },
+        ],
+      });
+    }
+
+    // Inicializar el formulario basado en el tipo de formulario
     this.initializeFormFields();
+
+    // Configuración específica para el formulario informativo de Coevaluación II
+    if (this.normalform.tipo_formulario === "informativo") {
+      this.initializeInformativoForm();
+    }
+
+    this.initializeFormFields();
+  }
+
+  initializeInformativoForm() {
+    const formGroup: { [key: string]: any } = {};
+    this.normalform.secciones[0].ambitos.forEach(
+      (ambito: any, index: number) => {
+        formGroup[`ambito_${index + 1}`] = new FormControl(
+          this.modeloData[`ambito_${index + 1}`] || ""
+        );
+      }
+    );
+    formGroup["promedio_asignado"] = new FormControl(
+      this.modeloData.promedio_asignado || ""
+    );
+    this.form = this.fb.group(formGroup);
+    console.log("Informativo Form initialized:", this.form.value);
   }
 
   ngOnChanges(changes: any) {
@@ -301,7 +359,9 @@ export class DynamicFormComponent implements OnInit, OnChanges {
       );
       const formGroup: { [key: string]: any } = {};
       this.normalform.campos.forEach((c: any) => {
-        formGroup[c.nombre] = new FormControl(c.valor || "");
+        c.preguntas.forEach((pregunta: any) => {
+          formGroup[`${c.nombre}_${pregunta.id}`] = new FormControl("");
+        });
       });
       this.form = this.fb.group(formGroup);
       console.log("Form initialized:", this.form.value);
@@ -353,37 +413,49 @@ export class DynamicFormComponent implements OnInit, OnChanges {
   validarForm() {
     if (this.form.valid) {
       const formData = this.form.value;
-
+  
       // Construyendo la estructura para la petición
       const requestData = {
         id_periodo: 1,
         id_tercero: 1,
         id_evaliado: 1,
-        proyecto_curricular: 123,
-        espacio_academico: 12,
-        plantilla_id: 456,
-        respuestas: Object.keys(formData).map((key) => {
-          const valor = formData[key];
-          if (Array.isArray(valor)) {
-            // Si es un array, se asume que son archivos
-            return { item_id: key, archivos: valor };
-          } else {
-            // Si no es array, es un valor o comentario
-            return { item_id: key, valor: valor };
-          }
-        }),
+        proyecto_curricular: 123, // ajustar esto dinámicamente
+        espacio_academico: 12, // ajustar esto dinámicamente
+        plantilla_id: 456, //  ajustar esto dinámicamente
+        respuestas: [] as any[], 
       };
-
+  
+      // Mapeando el formulario a la estructura de 'respuestas'
+      Object.keys(formData).forEach((key) => {
+        const valor = formData[key];
+        const itemId = parseInt(key.split('_')[1], 10);
+  
+        if (Array.isArray(valor)) {
+          // Si es un array, se asume que son archivos
+          const respuesta = {
+            item_id: itemId,
+            archivos: valor.map(f => f.name),
+          };
+          requestData.respuestas.push(respuesta);
+        } else {
+          const respuesta = {
+            item_id: itemId,
+            valor: valor,
+          };
+          requestData.respuestas.push(respuesta);
+        }
+      });
+  
       // Mostrando el JSON resultante en la consola
       console.log("Datos del formulario para la petición:", requestData);
-
+  
       // Emisión del resultado
       this.result.emit(requestData);
     } else {
       console.log("Formulario no válido");
     }
   }
-
+  
 
   setPercentage() {
     let requeridos = 0;
@@ -409,9 +481,9 @@ export class DynamicFormComponent implements OnInit, OnChanges {
   }
 
   downloadFile(url: string): void {
-    window.open(url, '_blank');
+    window.open(url, "_blank");
   }
-  
+
   clearForm() {
     this.form.reset();
     console.log("Form cleared");
@@ -557,3 +629,5 @@ export class DynamicFormComponent implements OnInit, OnChanges {
     c.resultado ? this.result.emit(dataTemp) : this.resultAux.emit(dataTemp);
   }
 }
+
+
