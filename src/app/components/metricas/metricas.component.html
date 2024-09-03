@@ -218,15 +218,24 @@
         </form>
       </mat-step>
       <mat-step>
-        <ng-template matStepLabel>{{ 'metricas.resultados' | translate }}</ng-template>
+        <ng-template matStepLabel>{{ 'Resultados de Evaluación Docente' }}</ng-template>
         <mat-card-content *ngIf="showChartCard">
-          <p class="spaced">A continuación se muestra el gráfico generado con los datos seleccionados.</p>
-          <ngx-charts-advanced-pie-chart [view]="view" [scheme]="colorScheme" [results]="single" [gradient]="gradient"
-            [legend]="showLegend" [labels]="showLabels" [doughnut]="isDoughnut" (select)="onSelect($event)"
-            (activate)="onActivate($event)" (deactivate)="onDeactivate($event)">
+          <p class="spaced">A continuación se muestra el gráfico generado con los datos de la evaluación docente.</p>
+          <ngx-charts-advanced-pie-chart 
+            [view]="view" 
+            [scheme]="colorScheme" 
+            [results]="single" 
+            [gradient]="gradient"
+            [legend]="showLegend" 
+            [labels]="showLabels" 
+            [doughnut]="isDoughnut" 
+            (select)="onSelect($event)"
+            (activate)="onActivate($event)" 
+            (deactivate)="onDeactivate($event)">
           </ngx-charts-advanced-pie-chart>
         </mat-card-content>
       </mat-step>
+      
     </mat-stepper>
 
   </mat-card-content>

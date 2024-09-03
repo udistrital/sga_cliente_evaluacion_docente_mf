@@ -14,7 +14,7 @@ export class MetricasComponent implements OnInit {
   secondFormGroupNivel: FormGroup;
 
   // Variables
-  isLinear = false; // Si deseas que el stepper sea lineal
+  isLinear = false;
   showSecondCard = false;
   showChartCard = false;
   single: any[];
@@ -33,7 +33,7 @@ export class MetricasComponent implements OnInit {
   showLabels: boolean = true;
   isDoughnut: boolean = false;
 
-  colorScheme: Color = { domain: ['#4f95b1', '#03678f', '#90c9ff', '#013960'], name: '', selectable: true, group: ScaleType.Ordinal };
+  colorScheme: Color = { domain: ['#4f95b1', '#03678f', '#90c9ff', '#062e67', '#013960'], name: '', selectable: true, group: ScaleType.Ordinal };
 
   periodos = ['2020-1', '2020-2', '2021-1', '2021-2'];
   tiposVinculacion = ['Tipo 1', 'Tipo 2', 'Tipo 3'];
@@ -51,11 +51,13 @@ export class MetricasComponent implements OnInit {
   ];
 
   constructor(private _formBuilder: FormBuilder) {
+    // Datos de ejemplo para una evaluación docente
     this.single = [
-      { name: 'Germany', value: 8940000 },
-      { name: 'USA', value: 5000000 },
-      { name: 'France', value: 7200000 },
-      { name: 'UK', value: 7200000 }
+      { name: 'Satisfacción general', value: 85 },
+      { name: 'Claridad en la enseñanza', value: 78 },
+      { name: 'Dominio del tema', value: 92 },
+      { name: 'Accesibilidad del docente', value: 75 },
+      { name: 'Material de apoyo', value: 80 }
     ];
 
     this.firstFormGroup = this._formBuilder.group({
@@ -73,7 +75,7 @@ export class MetricasComponent implements OnInit {
       tipoVinculacion: [{ value: '', disabled: true }],
       tipoDocente: [{ value: '', disabled: true }],
       tipoComponente: [{ value: '', disabled: true }],
-      roles: ['', Validators.required] // Agregado nuevo campo
+      roles: ['', Validators.required] 
     });
 
     // Suscripciones a cambios en los campos

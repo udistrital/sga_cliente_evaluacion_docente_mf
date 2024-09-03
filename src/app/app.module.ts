@@ -93,7 +93,6 @@ export function createTranslateLoader(http: HttpClient) {
       }
     }),
     FormsModule,
-    ReactiveFormsModule,
     MatDatepickerModule,
     MatInputModule,
     MatNativeDateModule,
