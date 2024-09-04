@@ -10,21 +10,41 @@
         <form [formGroup]="firstFormGroup">
           <ng-template matStepLabel>{{ 'metricas.seleccione_periodo_tipo' | translate }}</ng-template>
           <div class="form-container">
+
+
             <mat-form-field class="w-100" appearance="outline">
-              <mat-label>{{ "GLOBAL.periodo" | translate }}</mat-label>
+              <mat-label>{{ "metricas.periodo_academico" | translate }}</mat-label>
               <mat-icon class="mat-icon-outlined" color="primary" matPrefix>calendar_today</mat-icon>
-              <mat-select formControlName="periodo" required>
+              <mat-select formControlName="periodos" required (selectionChange)="selectPeriodo($event)">
                 <mat-option disabled value="">
                   --{{ 'GLOBAL.seleccionar' | translate }}--
                 </mat-option>
                 <mat-option *ngFor="let periodo of periodos" [value]="periodo">
-                  {{ periodo }}
+                  <div style="display: flex; flex-wrap: wrap; align-items: center">
+                    <div
+                      class="badge"
+                      [ngStyle]="{
+                        backgroundColor: periodo.Activo
+                          ? 'var(--success-accent)'
+                          : 'var(--danger-base)'
+                      }"
+                    ></div>
+                    <b>{{ periodo.Nombre }}</b>
+                    <small style="margin-left: 5px; font-size: 0.8em; color: gray">
+                      (Inicio vigencia: {{ periodo.InicioVigencia | date : "yyyy-MM-dd" }})
+                    </small>
+                  </div>
                 </mat-option>
               </mat-select>
-              <mat-error *ngIf="secondFormGroupNivel.get('roles')?.hasError('required')">
+              <mat-error *ngIf="secondFormGroupNivel.get('periodos')?.hasError('required')">
                 {{ 'definicion_formularios.campo_requerido' | translate }}
               </mat-error>
             </mat-form-field>
+            
+
+
+
+            
             <mat-form-field class="w-100" appearance="outline">
               <mat-label>{{ "metricas.tipo_reporte" | translate }}</mat-label>
               <mat-icon class="mat-icon-outlined" color="primary" matPrefix>pie_chart</mat-icon>
@@ -53,7 +73,7 @@
           <ng-template matStepLabel>{{ 'metricas.seleccione_filtro_reporte' | translate }}</ng-template>
 
             <!-- Global -->
-            <mat-card-content *ngIf="showGlobal showSecondCard">              
+            <mat-card-content *ngIf="showGlobal && showSecondCard">              
               <p class="spaced">{{ "metricas.mensaje_global" | translate }} </p>
               <form [formGroup]="secondFormGroupNivel">
               

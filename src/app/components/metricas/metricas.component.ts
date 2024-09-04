@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { Color, ScaleType } from '@swimlane/ngx-charts';
+import { Parametros } from '../../utils/Parametros';
+import { Periodo } from "../../models/periodo";
+import { ParametrosService } from 'src/app/services/parametros.service';
 
 @Component({
   selector: 'app-metricas',
@@ -26,6 +29,9 @@ export class MetricasComponent implements OnInit {
   showTipoComponenteSelect: boolean = false;
   showTipoProyectoSelect: boolean = false;
   showTipoDocenteSelect: boolean = false;
+  periodos: Periodo[] = []; // Inicializado como un array vacío
+  periodo: Periodo = new Periodo({}); // Inicializar el objeto periodo
+  periodosAnteriores: Periodo[] = [];
 
   // Opciones del gráfico
   gradient: boolean = true;
@@ -35,7 +41,6 @@ export class MetricasComponent implements OnInit {
 
   colorScheme: Color = { domain: ['#4f95b1', '#03678f', '#90c9ff', '#062e67', '#013960'], name: '', selectable: true, group: ScaleType.Ordinal };
 
-  periodos = ['2020-1', '2020-2', '2021-1', '2021-2'];
   tiposVinculacion = ['Tipo 1', 'Tipo 2', 'Tipo 3'];
   tiposProyectos = ['Proyecto 1', 'Proyecto 2', 'Proyecto 3'];
   tiposDocentes = ['Docente 1', 'Docente 2', 'Docente 3'];
@@ -49,8 +54,9 @@ export class MetricasComponent implements OnInit {
     { value: 'estudiantes', label: 'definicion_formularios.estudiantes' },
     { value: 'docconcejos_curricularesentes', label: 'definicion_formularios.concejos_curriculares' }
   ];
+  
 
-  constructor(private _formBuilder: FormBuilder) {
+  constructor(private _formBuilder: FormBuilder, private parametrosService: ParametrosService) {
     // Datos de ejemplo para una evaluación docente
     this.single = [
       { name: 'Satisfacción general', value: 85 },
@@ -61,7 +67,7 @@ export class MetricasComponent implements OnInit {
     ];
 
     this.firstFormGroup = this._formBuilder.group({
-      periodo: ['', Validators.required],
+      periodos: ['', Validators.required],
       tipoReporte: ['', Validators.required]
     });
 
@@ -116,7 +122,14 @@ export class MetricasComponent implements OnInit {
     });
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.cargarPeriodos()
+      .then((resp) => (this.periodos = resp))
+      .catch((err) => {
+        console.error("Error al cargar periodos:", err);
+        this.periodos = [];
+      });
+  }
 
   onSelect(data: any): void {
     console.log('Item clicked', JSON.parse(JSON.stringify(data)));
@@ -139,6 +152,50 @@ export class MetricasComponent implements OnInit {
     this.showFacultad = this.selectedTipoReporte === 'facultad';
   }
 
+  cargarPeriodos(): Promise<Periodo[]> {
+    return new Promise((resolve, reject) => {
+      this.parametrosService
+        .get("periodo?query=CodigoAbreviacion:PA&sortby=Id&order=desc&limit=0")
+        .subscribe({
+          next: (resp: { Data: Periodo[]; }) => {
+            if (resp && resp.Data) {
+              resolve(resp.Data as Periodo[]);
+            } else {
+              reject(new Error("No se encontraron periodos"));
+            }
+          },
+          error: (err: any) => {
+            reject(err);
+          },
+        });
+    });
+  }
+
+
+  cargarPeriodosAnteriores(periodo: Periodo) {
+    this.periodosAnteriores = this.periodos.filter((porPeriodo) => {
+      if (
+        porPeriodo.Year <= periodo.Year &&
+        porPeriodo.Id < periodo.Id &&
+        porPeriodo.Nombre < periodo.Nombre
+      ) {
+        return porPeriodo;
+      } else {
+        return false;
+      }
+    });
+  }
+
+
+  selectPeriodo(event: any) {
+    this.periodo = event.value;
+    if (this.periodo.Id) {
+      this.cargarPeriodosAnteriores(this.periodo);
+      // Aquí puedes llamar a cualquier método adicional que necesite el periodo seleccionado
+    } else {
+      this.periodosAnteriores = [];
+    }
+  }
   continueToSecondCard() {
     if (this.firstFormGroup.valid) {
       this.showSecondCard = true;
