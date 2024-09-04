@@ -34,6 +34,7 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatSnackBarModule } from '@angular/material/snack-bar'; // Importar MatSnackBarModule
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { ResultadosComponent } from './components/resultados/resultados.component';
 import { ParametrosService } from './services/parametros.service';
@@ -51,8 +52,8 @@ export function createTranslateLoader(http: HttpClient) {
     AsignacionFechasComponent,
     DefinirEscalasComponent,
     EvaluacionesComponent,
-    NgIsGrantedDirective,            
-    MetricasComponent, 
+    NgIsGrantedDirective,
+    MetricasComponent,
     ResultadosComponent
   ],
   imports: [
@@ -75,6 +76,7 @@ export function createTranslateLoader(http: HttpClient) {
     MatTableModule,
     MatDialogModule,
     MatSelectModule,
+    MatSnackBarModule, // Añadir MatSnackBarModule
     AppRoutingModule,
     MatCheckboxModule,
     MatFormFieldModule,

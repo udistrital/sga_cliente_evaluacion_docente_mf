@@ -1,9 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { Color, ScaleType } from '@swimlane/ngx-charts';
-import { Parametros } from '../../utils/Parametros';
 import { Periodo } from "../../models/periodo";
 import { ParametrosService } from 'src/app/services/parametros.service';
+import {
+  MatSnackBar,
+  MatSnackBarHorizontalPosition,
+  MatSnackBarVerticalPosition,
+} from '@angular/material/snack-bar';
+
 
 @Component({
   selector: 'app-metricas',
@@ -54,9 +59,12 @@ export class MetricasComponent implements OnInit {
     { value: 'estudiantes', label: 'definicion_formularios.estudiantes' },
     { value: 'docconcejos_curricularesentes', label: 'definicion_formularios.concejos_curriculares' }
   ];
-  
 
-  constructor(private _formBuilder: FormBuilder, private parametrosService: ParametrosService) {
+  // Snack-bar Position Variables
+  horizontalPosition: MatSnackBarHorizontalPosition = 'right';
+  verticalPosition: MatSnackBarVerticalPosition = 'top';
+
+  constructor(private _formBuilder: FormBuilder, private parametrosService: ParametrosService, private _snackBar: MatSnackBar) {
     // Datos de ejemplo para una evaluación docente
     this.single = [
       { name: 'Satisfacción general', value: 85 },
@@ -171,21 +179,13 @@ export class MetricasComponent implements OnInit {
     });
   }
 
-
   cargarPeriodosAnteriores(periodo: Periodo) {
     this.periodosAnteriores = this.periodos.filter((porPeriodo) => {
-      if (
-        porPeriodo.Year <= periodo.Year &&
-        porPeriodo.Id < periodo.Id &&
-        porPeriodo.Nombre < periodo.Nombre
-      ) {
-        return porPeriodo;
-      } else {
-        return false;
-      }
+      return porPeriodo.Year <= periodo.Year &&
+             porPeriodo.Id < periodo.Id &&
+             porPeriodo.Nombre < periodo.Nombre;
     });
   }
-
 
   selectPeriodo(event: any) {
     this.periodo = event.value;
@@ -196,6 +196,7 @@ export class MetricasComponent implements OnInit {
       this.periodosAnteriores = [];
     }
   }
+
   continueToSecondCard() {
     if (this.firstFormGroup.valid) {
       this.showSecondCard = true;
@@ -215,4 +216,19 @@ export class MetricasComponent implements OnInit {
       optionComponente: checked
     });
   }
+
+  openSnackBar() {
+    this._snackBar.open('¡Los datos se han guardado correctamente! 😊', '', {
+      horizontalPosition: this.horizontalPosition,
+      verticalPosition: this.verticalPosition,
+      panelClass: ['custom-snackbar'],
+      duration: 2000
+    });
+  }
+
+
+  
+  
+  
+  
 }

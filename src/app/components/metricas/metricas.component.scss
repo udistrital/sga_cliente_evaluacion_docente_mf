@@ -74,11 +74,6 @@ table {
   width: auto;
 }
 
-/*  .scrollable-table {
-  overflow-x: visible;
-  background-color: aqua;
-}   */
-
 .small-form-field {
   width: 100px;
   /* Ajusta este valor según tus necesidades */
@@ -135,4 +130,14 @@ table {
   width: 0.5em;
   height: 0.5em;
   border-radius: 100%;
+}
+
+mat-form-field {
+  margin-right: 12px;
+}
+
+::ng-deep .mat-mdc-snack-bar-container {
+  --mdc-snackbar-container-color: #03678F;
+  --mdc-snackbar-supporting-text-color: rgba(255, 255, 255, 0.87);
+  --mat-snack-bar-button-color: #145a95;
 }

@@ -40,6 +40,7 @@
                 {{ 'definicion_formularios.campo_requerido' | translate }}
               </mat-error>
             </mat-form-field>
+
             
 
 
@@ -61,7 +62,7 @@
             </mat-form-field>
           </div>
           <div>
-            <button mat-button matStepperNext class="azulOscuro fixed-button" (click)="continueToSecondCard()">
+            <button mat-stroked-button (click)="openSnackBar()" mat-button matStepperNext class="azulOscuro fixed-button" (click)="continueToSecondCard()">
               {{ 'GLOBAL.continuar' | translate }}
             </button>
           </div>
@@ -120,7 +121,7 @@
                   </mat-form-field>
                 </div>
                 <div>
-                  <button mat-button matStepperNext class="azulOscuro fixed-button" (click)="generateChart()">
+                  <button mat-stroked-button (click)="openSnackBar()" mat-button matStepperNext class="azulOscuro fixed-button" (click)="generateChart()">
                     {{ 'GLOBAL.continuar' | translate }}
                   </button>
                 </div>
@@ -229,7 +230,7 @@
                   </mat-form-field>
                 </div>
                 <div>
-                  <button mat-button matStepperNext class="azulOscuro fixed-button" (click)="generateChart()">
+                  <button mat-stroked-button (click)="openSnackBar()" mat-button matStepperNext class="azulOscuro fixed-button" (click)="generateChart()">
                     {{ 'GLOBAL.continuar' | translate }}
                   </button>
                 </div>
