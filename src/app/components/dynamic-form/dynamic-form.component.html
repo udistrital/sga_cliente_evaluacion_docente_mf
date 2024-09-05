@@ -31,7 +31,8 @@
 
                 <!-- Opción de selección múltiple (checkboxes) -->
                 <div *ngIf="pregunta.tipo === 'checkbox'">
-                    <mat-checkbox *ngFor="let option of pregunta.options" [formControlName]="'pregunta_' + generateControlName(pregunta.text)">
+                    <mat-checkbox *ngFor="let option of pregunta.options"
+                        [formControlName]="'pregunta_' + generateControlName(pregunta.text)">
                         {{ option.texto }}
                     </mat-checkbox>
                 </div>
@@ -44,17 +45,26 @@
                     </mat-form-field>
                 </div>
 
+                <!-- Input para la carga de archivos -->
+                <div *ngIf="pregunta.tipo === 'file'">
+                    <mat-form-field appearance="fill">
+                        <mat-label>Cargar archivo</mat-label>
+                        <input type="file" (change)="handleFileInputChange($event)">
+                    </mat-form-field>
+                </div>
+
                 <!-- Botones Anterior y Siguiente para avanzar entre preguntas -->
                 <div>
                     <button mat-button matStepperPrevious>Anterior</button>
-                    <button mat-button (click)="onNext(innerStepper, i, j)" [disabled]="!getFormControl(i, 'pregunta_' + generateControlName(pregunta.text)).valid">Siguiente</button>
+                    <button mat-button (click)="onNext(innerStepper, i, j)"
+                        [disabled]="!getFormControl(i, 'pregunta_' + generateControlName(pregunta.text)).valid">Siguiente</button>
                 </div>
             </mat-step>
         </mat-vertical-stepper>
 
         <!-- Botón "Cargar Evidencias" al final de cada ámbito para Autoevaluación II -->
         <div *ngIf="selectedForm.tipo_formulario === 'autoevaluacion-ii'">
-            <button mat-raised-button color="primary">
+            <button mat-raised-button color="primary" (click)="cargarEvidencias()">
                 <mat-icon>upload</mat-icon> Cargar Evidencias
             </button>
         </div>
@@ -69,7 +79,7 @@
 <!-- Enunciado y botón "Cargar Evidencias" para Coevaluación I al final del formulario -->
 <div *ngIf="selectedForm.tipo_formulario === 'coevaluacion-i'">
     <p>El cuerpo docente debe cargar el acta de coevaluación del espacio curricular en este botón:</p>
-    <button mat-raised-button color="primary">
+    <button mat-raised-button color="primary" (click)="cargarEvidencias()">
         <mat-icon>upload</mat-icon> Cargar Evidencias
     </button>
 </div>
