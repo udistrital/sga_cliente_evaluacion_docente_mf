@@ -1,66 +1,34 @@
-.instruction-table {
+.full-width {
     width: 100%;
-    background-color: white;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-
-    td {
-        border: 1px solid #ddd;
-        padding: 8px;
-    }
 }
 
-.evaluation-table {
-    width: 100%;
-    background-color: white;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-
-    th, td {
-        border: 1px solid #ddd;
-        padding: 8px;
-    }
-
-    th {
-        background-color: #f2f2f2;
-        text-align: center;
-    }
-
-    .left-align {
-        text-align: left;
-    }
-}
-
-.instruction {
+.button-container {
     margin-top: 20px;
-    font-weight: bold;
+    display: flex;
+    justify-content: flex-end;
 }
 
-mat-form-field {
-    margin-top: 10px;
+.comentario-input {
+    width: 100%;
     margin-bottom: 10px;
 }
 
-.instruction-table {
-    width: 100%;
-    border-collapse: collapse;
-    td {
-        padding: 8px;
-        border: 1px solid #ccc;
-    }
-}
-    
-.evaluation-table {
-    width: 100%;
+.enunciado {
     margin-top: 20px;
-    border-collapse: collapse;
-    th, td {
-        border: 1px solid #ccc;
-        padding: 10px;
-        text-align: left;
-    }
-    th {
-        background-color: #f0f0f0;
-    }
+    font-style: italic;
+  color: #2a5d83; /* Puedes cambiar este color para que coincida con tu diseño */
 }
-    
+
+mat-radio-group {
+    display: flex;
+    flex-direction: column; /* Hace que los radio buttons se alineen verticalmente */
+}
+
+mat-radio-button {
+    margin-bottom: 10px; /* Añade espacio entre los botones de opción */
+}
+
+.radio-vertical {
+    display: block;
+    margin-bottom: 8px;
+}

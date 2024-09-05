@@ -9,3 +9,62 @@
         <button mat-raised-button color="accent" (click)="downloadActa()">Descargar Archivo</button>
     </div>
 </div>
+
+<!-- Sección de Pruebas Formulario -->
+<div class="formulario-container">
+    <h3>Pruebas Formulario</h3>
+
+    <div class="form-selection">
+        <p>Selecciona Formulario</p>
+        <mat-form-field appearance="fill">
+            <mat-label>Formulario</mat-label> <!-- Corregido: matlabel a mat-label -->
+            <mat-select (selectionChange)="onFormChange($event)">
+                <mat-option *ngFor="let form of forms" [value]="form.value">{{ form.viewValue }}</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <!-- Botón Vista Completa -->
+        <button *ngIf="selectedForm === 'form1'" mat-raised-button color="accent" (click)="toggleFullView()">
+            {{ showFullView ? 'Vista por pasos' : 'Vista Completa' }}
+        </button>
+    </div>
+
+    <!-- Stepper Vertical para Formulario 1 -->
+    <mat-vertical-stepper *ngIf="selectedForm === 'form1' && !showFullView" [linear]="true" #stepper>
+        <mat-step *ngFor="let question of currentFormQuestions; let i = index" [stepControl]="question.control">
+            <form [formGroup]="question.control">
+                <ng-template matStepLabel>{{ question.label }}</ng-template>
+                <mat-radio-group formControlName="response" (change)="goToNextStep(stepper, i)">
+                    <mat-radio-button *ngFor="let option of options" [value]="option">{{ option }}</mat-radio-button>
+                </mat-radio-group>
+                <div class="button-group">
+                    <button mat-button matStepperPrevious *ngIf="i > 0">Anterior</button>
+                    <button mat-button matStepperNext *ngIf="i < currentFormQuestions.length - 1">Siguiente</button>
+                    <button mat-button matStepperNext *ngIf="i === currentFormQuestions.length - 1">Finalizar</button>
+                </div>
+            </form>
+        </mat-step>
+    </mat-vertical-stepper>
+
+    <!-- Vista Completa con Expansion Panels para Formulario 1 -->
+    <div *ngIf="selectedForm === 'form1' && showFullView" class="full-view">
+        <mat-accordion>
+            <mat-expansion-panel *ngFor="let question of currentFormQuestions; let i = index" [expanded]="i === 0">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        {{ question.label }}
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+                <form [formGroup]="question.control">
+                    <mat-radio-group formControlName="response">
+                        <mat-radio-button *ngFor="let option of options" [value]="option">{{ option
+                            }}</mat-radio-button>
+                    </mat-radio-group>
+                </form>
+            </mat-expansion-panel>
+        </mat-accordion>
+        <div class="button-group">
+            <button mat-raised-button color="primary" (click)="submitFullViewForm()">Finalizar</button>
+        </div>
+    </div>
+</div>

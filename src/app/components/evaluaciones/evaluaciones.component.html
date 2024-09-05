@@ -4,12 +4,24 @@
     <mat-form-field style="width: 100%" floatLabel="always">
         <mat-label>{{ 'HOME.SELECT' | translate }}</mat-label>
         <mat-select id="tipo-evaluacion" [(value)]="selectedEvaluation" (selectionChange)="onSelectChange($event)">
-            <mat-option value="">{{ 'definicion_formularios.seleccione' | translate }}</mat-option>
-            <mat-option value="heteroevaluacion">{{ 'heteroevaluacion.titulo' | translate }}</mat-option>
-            <mat-option value="autoevaluacion-i">{{ 'autoevaluacion_i.titulo' | translate }}</mat-option>
-            <mat-option value="coevaluacion-i">{{ 'coevaluacion_i.titulo' | translate }}</mat-option>
-            <mat-option value="autoevaluacion-ii">{{ 'autoevaluacion_ii.titulo' | translate }}</mat-option>
-            <mat-option value="coevaluacion-ii">{{ 'coevaluacion_ii.titulo' | translate }}</mat-option>
+            <mat-option value="">
+                {{ 'definicion_formularios.seleccione' | translate }}
+            </mat-option>
+            <mat-option value="heteroevaluacion">
+                {{ 'heteroevaluacion.titulo' | translate }}
+            </mat-option>
+            <mat-option value="autoevaluacion-i">
+                {{ 'autoevaluacion_i.titulo' | translate }}
+            </mat-option>
+            <mat-option value="coevaluacion-i">
+                {{ 'coevaluacion_i.titulo' | translate }}
+            </mat-option>
+            <mat-option value="autoevaluacion-ii">
+                {{ 'autoevaluacion_ii.titulo' | translate }}
+            </mat-option>
+            <mat-option value="coevaluacion-ii">
+                {{ 'coevaluacion_ii.titulo' | translate }}
+            </mat-option>
         </mat-select>
     </mat-form-field>
 
@@ -92,15 +104,8 @@
                             {{ 'heteroevaluacion.error_descripcion' | translate }}
                         </mat-error>
                     </mat-form-field>
+
                 </div>
-
-                <!-- Mostrar el formulario dinámico si está habilitado y tiene datos -->
-                <ng-container *ngIf="showDynamicForm && formData">
-                    <ngx-dynamic-form [normalform]="formData" [modeloData]="modeloData"
-                        (result)="handleFormResult($event)">
-                    </ngx-dynamic-form>
-                </ng-container>
-
             </form>
         </div>
     </ng-container>
@@ -190,124 +195,9 @@
                         </mat-error>
                     </mat-form-field>
                 </div>
-
-                <!-- Formulario de Coevaluación II Informativo -->
-                <ng-container *ngIf="selectedEvaluation === 'coevaluacion-ii'">
-                    <div class="form-container">
-                        <h2>{{ 'coevaluacion_ii.titulo' | translate }}</h2>
-
-                        <!-- Sección informativa -->
-                        <table class="informative-table">
-                            <tr>
-                                <td style="background-color: #d9ead3;">FORMATO</td>
-                                <td>Código SIGUD por asignar</td>
-                            </tr>
-                            <tr>
-                                <td style="background-color: #d9ead3;">ACTOR</td>
-                                <td>Consejos Curriculares</td>
-                            </tr>
-                            <tr>
-                                <td style="background-color: #d9ead3;">CRONOGRAMA</td>
-                                <td>Semana 14 a 15</td>
-                            </tr>
-                            <tr>
-                                <td style="background-color: #d9ead3;">RÚBRICAS</td>
-                                <td>Selección múltiple</td>
-                            </tr>
-                            <tr>
-                                <td style="background-color: #d9ead3;">INSTRUCCIÓN</td>
-                                <td>
-                                    Estimado Consejo Curricular: <br />
-                                    Por favor coevalúe con plan de mejoramiento su desempeño docente
-                                    utilizando el formato dispuesto para ello. Los ítems PROMEDIO con
-                                    única respuesta son obligatorios en cada dimensión.
-                                </td>
-                            </tr>
-                            <tr>
-                                <td style="background-color: #d9ead3;">ESCALA</td>
-                                <td>
-                                    <ul>
-                                        <li>INSUFICIENTE = No sucede y no se demuestra el criterio</li>
-                                        <li>NECESITA MEJORAR = Sucede parcialmente pero no se demuestra el criterio</li>
-                                        <li>BUENO = Sucede con frecuencia y se demuestra el criterio en un nivel básico
-                                        </li>
-                                        <li>SOBRESALIENTE = Sucede la mayor parte del tiempo y se demuestra el criterio
-                                            de forma adecuada</li>
-                                        <li>EXCELENTE = Sucede siempre y se demuestra el criterio completamente</li>
-                                    </ul>
-                                </td>
-                            </tr>
-                        </table>
-
-                        <!-- Sección 01: Análisis de la Heteroevaluación -->
-                        <h3>SECCIÓN 01 - ANÁLISIS DE LA HETEROEVALUACIÓN</h3>
-                        <p class="instruction">
-                            De acuerdo con los resultados de la heteroevaluación conceptúen un
-                            promedio y decidan una opción de la escala provista.
-                        </p>
-                        <table class="evaluation-table">
-                            <tr>
-                                <th style="background-color: #c9daf8;">ÁMBITO</th>
-                                <th style="background-color: #c9daf8;">Insuficiente</th>
-                                <th style="background-color: #c9daf8;">Necesita mejorar</th>
-                                <th style="background-color: #c9daf8;">Bueno</th>
-                                <th style="background-color: #c9daf8;">Sobresaliente</th>
-                                <th style="background-color: #c9daf8;">Excelente</th>
-                            </tr>
-                            <tr>
-                                <td style="background-color: #c9daf8;">01. ÁMBITO 01: DOCENCIA</td>
-                                <td style="text-align: center;">✔</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td style="background-color: #f9cb9c;">02. ÁMBITO 02: ENSEÑANZA</td>
-                                <td></td>
-                                <td style="text-align: center;">✔</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td style="background-color: #f4cccc;">03. ÁMBITO 03: PRÁCTICA</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td style="text-align: center;">✔</td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td style="background-color: #d9ead3;">04. AUTOGESTIÓN DEL ESTUDIANTADO</td>
-                                <td></td>
-                                <td></td>
-                                <td style="text-align: center;">✔</td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                        </table>
-
-                        <!-- Promedio asignado -->
-                        <h4>PROMEDIO ASIGNADO POR EL CONSEJO CURRICULAR</h4>
-                        <table class="evaluation-table">
-                            <tr>
-                                <th style="background-color: #f6b26b;">Promedio Asignado</th>
-                                <td style="background-color: #f6b26b; text-align: center;">✔</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                        </table>
-                    </div>
-                </ng-container>
-
-
             </form>
         </div>
     </ng-container>
-
 
     <!-- Formulario de Coevaluación I -->
     <ng-container *ngIf="selectedEvaluation === 'coevaluacion-i'">
@@ -413,14 +303,6 @@
                         </mat-error>
                     </mat-form-field>
                 </div>
-
-                <!-- Mostrar el formulario dinámico si está habilitado y tiene datos -->
-                <ng-container *ngIf="showDynamicForm && formData">
-                    <ngx-dynamic-form [normalform]="formData" [modeloData]="modeloData"
-                        (result)="handleFormResult($event)">
-                    </ngx-dynamic-form>
-                </ng-container>
-
             </form>
         </div>
     </ng-container>
@@ -518,14 +400,6 @@
                         </mat-error>
                     </mat-form-field>
                 </div>
-
-                <!-- Mostrar el formulario dinámico si está habilitado y tiene datos -->
-                <ng-container *ngIf="showDynamicForm && formData">
-                    <ngx-dynamic-form [normalform]="formData" [modeloData]="modeloData"
-                        (result)="handleFormResult($event)">
-                    </ngx-dynamic-form>
-                </ng-container>
-
             </form>
         </div>
     </ng-container>
@@ -625,14 +499,6 @@
                         </mat-error>
                     </mat-form-field>
                 </div>
-
-                <!-- Mostrar el formulario dinámico si está habilitado y tiene datos -->
-                <ng-container *ngIf="showDynamicForm && formData">
-                    <ngx-dynamic-form [normalform]="formData" [modeloData]="modeloData"
-                        (result)="handleFormResult($event)">
-                    </ngx-dynamic-form>
-                </ng-container>
-
             </form>
         </div>
     </ng-container>

@@ -1,505 +1,80 @@
-<div *ngIf="normalform && normalform.tipo_formulario === 'mini'">
-    <form [formGroup]="form" class="form-horizontal">
-        <mat-card>
-            <mat-card-header>
-                <mat-card-title>{{ normalform.titulo }}</mat-card-title>
-            </mat-card-header>
-            <mat-card-content>
-                <div class="form-grid">
-                    <!-- Instrucciones y Escalas -->
-                    <table class="instruction-table">
-                        <tr>
-                            <td style="background-color: #e0f7e0;">FORMATO</td>
-                            <td>{{ normalform.formato }}</td>
-                        </tr>
-                        <tr>
-                            <td style="background-color: #e0f7e0;">ACTOR</td>
-                            <td>{{ normalform.actor }}</td>
-                        </tr>
-                        <tr>
-                            <td style="background-color: #e0f7e0;">CRONOGRAMA</td>
-                            <td>{{ normalform.cronograma }}</td>
-                        </tr>
-                        <tr>
-                            <td style="background-color: #e0f7e0;">RÚBRICAS</td>
-                            <td>{{ normalform.rubricas }}</td>
-                        </tr>
-                        <tr>
-                            <td style="background-color: #e0f7e0;">INSTRUCCIÓN</td>
-                            <td>{{ normalform.instruccion }}</td>
-                        </tr>
-                        <tr>
-                            <td style="background-color: #e0f7e0;">ESCALA</td>
-                            <td>
-                                <div *ngFor="let escala of normalform.escalas">
-                                    {{ escala.label }} = {{ escala.descripcion }}
-                                </div>
-                            </td>
-                        </tr>
-                    </table>
-
-                    <!-- Evaluación: ÁMBITO 01: LA DOCENCIA -->
-                    <table class="evaluation-table">
-                        <tr>
-                            <th style="background-color: #cce7ff;">ÁMBITO 01: LA DOCENCIA</th>
-                            <th style="background-color: #cce7ff;" *ngFor="let escala of normalform.escalas">
-                                {{ escala.label }}
-                            </th>
-                        </tr>
-                        <tr *ngFor="let campo of normalform.campos.slice(0, 5)">
-                            <td class="left-align">{{ campo.label }}</td>
-                            <td *ngFor="let escala of normalform.escalas">
-                                <mat-radio-group [formControlName]="campo.nombre">
-                                    <mat-radio-button [value]="escala.label"></mat-radio-button>
-                                </mat-radio-group>
-                            </td>
-                        </tr>
-                    </table>
-
-                    <!-- Comentarios para la primera tabla -->
-                    <p class="instruction">{{ normalform.comentariosLabel }}</p>
-                    <div *ngFor="let i of [0,1,2,3,4]">
-                        <mat-form-field style="width: 100%">
-                            <textarea matInput placeholder="{{ normalform.comentariosPlaceholder }}"
-                                [formControlName]="'comment_' + i"></textarea>
-                        </mat-form-field>
-                    </div>
-
-                    <!-- Evaluación: ÁMBITO 02: LA ENSEÑANZA -->
-                    <table class="evaluation-table">
-                        <tr>
-                            <th style="background-color: #cce7ff;">ÁMBITO 02: LA ENSEÑANZA</th>
-                            <th style="background-color: #cce7ff;" *ngFor="let escala of normalform.escalas">
-                                {{ escala.label }}
-                            </th>
-                        </tr>
-                        <tr *ngFor="let campo of normalform.campos.slice(5, 10)">
-                            <td class="left-align">{{ campo.label }}</td>
-                            <td *ngFor="let escala of normalform.escalas">
-                                <mat-radio-group [formControlName]="campo.nombre">
-                                    <mat-radio-button [value]="escala.label"></mat-radio-button>
-                                </mat-radio-group>
-                            </td>
-                        </tr>
-                    </table>
-
-                    <!-- Comentarios para la segunda tabla -->
-                    <p class="instruction">
-                        Dado los ítems anteriores, quisiera felicitarlo o sugerirle respetuosamente lo siguiente:
-                    </p>
-                    <div *ngFor="let i of [5,6,7,8,9]">
-                        <mat-form-field style="width: 100%">
-                            <textarea matInput placeholder="{{ normalform.comentariosPlaceholder }}"
-                                [formControlName]="'comment_' + i"></textarea>
-                        </mat-form-field>
-                    </div>
-
-                    <!-- Evaluación: ÁMBITO 03: LA PRÁCTICA -->
-                    <table class="evaluation-table">
-                        <tr>
-                            <th style="background-color: #cce7ff;">ÁMBITO 03: LA PRÁCTICA</th>
-                            <th style="background-color: #cce7ff;" *ngFor="let escala of normalform.escalas">
-                                {{ escala.label }}
-                            </th>
-                        </tr>
-                        <tr *ngFor="let campo of normalform.campos.slice(10, 20)">
-                            <td class="left-align">{{ campo.label }}</td>
-                            <td *ngFor="let escala of normalform.escalas">
-                                <mat-radio-group [formControlName]="campo.nombre">
-                                    <mat-radio-button [value]="escala.label"></mat-radio-button>
-                                </mat-radio-group>
-                            </td>
-                        </tr>
-                    </table>
-
-                    <!-- Comentarios para la tercera tabla -->
-                    <p class="instruction">
-                        Dado los ítems anteriores, quisiera felicitarlo o sugerirle respetuosamente lo siguiente:
-                    </p>
-                    <div *ngFor="let i of [10,11,12,13,14,15,16,17,18,19]">
-                        <mat-form-field style="width: 100%">
-                            <textarea matInput placeholder="{{ normalform.comentariosPlaceholder }}"
-                                [formControlName]="'comment_' + i"></textarea>
-                        </mat-form-field>
-                    </div>
-                </div>
-
-                <!-- Botones de Acción -->
-                <div class="mt-4">
-                    <button mat-flat-button color="warn" (click)="clearForm()" *ngIf="normalform.btnLimpiar">
-                        {{ normalform.btnLimpiar }}
-                    </button>
-                    <button mat-flat-button color="accent" (click)="validarForm()" *ngIf="normalform.btn">
-                        {{ normalform.btn }}
-                    </button>
-                </div>
-            </mat-card-content>
-        </mat-card>
-    </form>
+<div>
+    <!-- Botones para seleccionar el tipo de formulario -->
+    <button mat-button (click)="selectForm('heteroevaluacion')">Heteroevaluación</button>
+    <button mat-button (click)="selectForm('autoevaluacion-i')">Autoevaluación I</button>
+    <button mat-button (click)="selectForm('autoevaluacion-ii')">Autoevaluación II</button>
+    <button mat-button (click)="selectForm('coevaluacion-i')">Coevaluación I</button>
 </div>
 
-<!-- Sección adicional para otros tipos de formularios que no sean 'mini' -->
-<div *ngIf="normalform && normalform.tipo_formulario !== 'mini'">
-    <form [formGroup]="form" class="form-horizontal">
-        <mat-card>
-            <mat-card-header>
-                <mat-card-title>{{ normalform.titulo }}</mat-card-title>
-            </mat-card-header>
-            <mat-card-content>
-                <!-- Aquí iría la estructura de otros formularios según el tipo -->
-            </mat-card-content>
-        </mat-card>
-    </form>
-</div>
+<!-- Stepper Principal para los ámbitos (vertical) -->
+<mat-vertical-stepper [linear]="true" [formGroup]="stepperForm" *ngIf="stepperForm" #mainStepper>
+    <!-- Ámbitos -->
+    <mat-step *ngFor="let ambito of ambitos; let i = index" [formGroupName]="'ambito_' + i">
+        <!-- Muestra el título del ámbito correctamente -->
+        <ng-template matStepLabel>{{ ambito.titulo }}</ng-template>
 
-<div *ngIf="normalform && normalform.tipo_formulario === 'autoevaluacion-i'">
-    <form [formGroup]="form" class="form-horizontal">
-        <mat-card>
-            <mat-card-header>
-                <mat-card-title>{{ normalform.titulo }}</mat-card-title>
-            </mat-card-header>
-            <mat-card-content>
-                <div class="form-grid">
-                    <!-- Instrucciones y Escalas -->
-                    <table class="instruction-table">
-                        <tr>
-                            <td style="background-color: #e0f7e0;">INSTRUCCIÓN</td>
-                            <td>{{ normalform.instruccion }}</td>
-                        </tr>
-                    </table>
+        <!-- Stepper interno para las preguntas (vertical) -->
+        <mat-vertical-stepper linear #innerStepper>
+            <!-- Preguntas -->
+            <mat-step *ngFor="let pregunta of ambito.preguntas; let j = index"
+                [stepControl]="getFormControl(i, 'pregunta_' + generateControlName(pregunta.text))">
+                <ng-template matStepLabel>{{ pregunta.text }}</ng-template>
 
-                    <!-- Tabla de Evaluación (Autoevaluación Estudiantil) -->
-                    <table class="evaluation-table">
-                        <tr>
-                            <th style="background-color: #cce7ff;">AUTOGESTIÓN DEL APRENDIZAJE</th>
-                            <th style="background-color: #cce7ff;" *ngFor="let escala of normalform.campos[0].opciones">
-                                {{ escala.label }}</th>
-                        </tr>
-                        <tr *ngFor="let campo of normalform.campos; let i = index">
-                            <td class="left-align">{{ campo.label }}</td>
-                            <td *ngFor="let opcion of campo.opciones">
-                                <div>
-                                    <p>{{ opcion.descripcion }}</p>
-                                    <mat-radio-group [formControlName]="campo.nombre">
-                                        <mat-radio-button [value]="opcion.label"></mat-radio-button>
-                                    </mat-radio-group>
-                                </div>
-                            </td>
-                        </tr>
-                    </table>
-
-                    <!-- Comentarios -->
-                    <p class="instruction">{{ normalform.comentariosLabel }}</p>
-                    <div *ngFor="let i of [0,1,2]">
-                        <mat-form-field style="width: 100%">
-                            <textarea matInput placeholder="{{ normalform.comentariosPlaceholder }}"
-                                [formControlName]="'comment_' + i"></textarea>
-                        </mat-form-field>
-                    </div>
+                <!-- Opción de única respuesta (radio buttons) -->
+                <div *ngIf="pregunta.tipo === 'radio'">
+                    <mat-radio-group [formControlName]="'pregunta_' + generateControlName(pregunta.text)">
+                        <mat-radio-button *ngFor="let option of pregunta.options" [value]="option.valor">
+                            {{ option.texto }}
+                        </mat-radio-button>
+                    </mat-radio-group>
                 </div>
 
-                <!-- Botones de Acción -->
-                <div class="mt-4">
-                    <button mat-flat-button color="warn" (click)="clearForm()" *ngIf="normalform.btnLimpiar">
-                        {{ normalform.btnLimpiar }}
-                    </button>
-                    <button mat-flat-button color="accent" (click)="validarForm()" *ngIf="normalform.btn">
-                        {{ normalform.btn }}
-                    </button>
+                <!-- Opción de selección múltiple (checkboxes) -->
+                <div *ngIf="pregunta.tipo === 'checkbox'">
+                    <mat-checkbox *ngFor="let option of pregunta.options" [formControlName]="'pregunta_' + generateControlName(pregunta.text)">
+                        {{ option.texto }}
+                    </mat-checkbox>
                 </div>
-            </mat-card-content>
-        </mat-card>
-    </form>
-</div>
 
-<div *ngIf="normalform && normalform.tipo_formulario === 'coevaluacion-i'">
-    <form [formGroup]="form" class="form-horizontal">
-        <mat-card>
-            <mat-card-header>
-                <mat-card-title>{{ normalform.titulo }}</mat-card-title>
-            </mat-card-header>
-            <mat-card-content>
-                <div class="form-grid">
-                    <!-- Información del formato -->
-                    <table class="instruction-table">
-                        <tr>
-                            <td style="background-color: #e0f7e0;">FORMATO</td>
-                            <td>{{ normalform.formato }}</td>
-                        </tr>
-                        <tr>
-                            <td style="background-color: #e0f7e0;">ACTOR</td>
-                            <td>{{ normalform.actor }}</td>
-                        </tr>
-                        <tr>
-                            <td style="background-color: #e0f7e0;">CRONOGRAMA</td>
-                            <td>{{ normalform.cronograma }}</td>
-                        </tr>
-                        <tr>
-                            <td style="background-color: #e0f7e0;">DOCUMENTO</td>
-                            <td>{{ normalform.documento }}</td>
-                        </tr>
-                        <tr>
-                            <td style="background-color: #e0f7e0;">INSTRUCCIÓN</td>
-                            <td>{{ normalform.instruccion }}</td>
-                        </tr>
-                    </table>
-
-                    <!-- Campos de texto -->
-                    <mat-form-field style="width: 100%" *ngFor="let campo of normalform.campos" [ngSwitch]="campo.tipo">
-                        <ng-container *ngSwitchCase="'text'">
-                            <mat-label>{{ campo.label }}</mat-label>
-                            <input matInput [formControlName]="campo.nombre" [placeholder]="campo.placeholder">
-                        </ng-container>
-                        <ng-container *ngSwitchCase="'textarea'">
-                            <mat-label>{{ campo.label }}</mat-label>
-                            <textarea matInput [formControlName]="campo.nombre" [rows]="campo.cantidad"
-                                [placeholder]="campo.placeholder"></textarea>
-                        </ng-container>
-                        <ng-container *ngSwitchCase="'file'">
-                            <mat-label>{{ campo.label }}</mat-label>
-                            <input type="file" matInput (change)="onFileChange($event, campo)">
-                            <button mat-flat-button color="primary">{{ campo.buttonLabel }}</button>
-                        </ng-container>
+                <!-- Opción de respuesta abierta (input/textarea) -->
+                <div *ngIf="pregunta.tipo === 'textarea' || pregunta.tipo === 'input'">
+                    <mat-form-field appearance="fill">
+                        <mat-label>{{ pregunta.text }}</mat-label>
+                        <input matInput [formControlName]="'pregunta_' + generateControlName(pregunta.text)">
                     </mat-form-field>
-
-                    <!-- Botones de Acción -->
-                    <div class="mt-4">
-                        <button mat-flat-button color="warn" (click)="clearForm()" *ngIf="normalform.btnLimpiar">
-                            {{ normalform.btnLimpiar }}
-                        </button>
-                        <button mat-flat-button color="accent" (click)="validarForm()" *ngIf="normalform.btn">
-                            {{ normalform.btn }}
-                        </button>
-                    </div>
                 </div>
-            </mat-card-content>
-        </mat-card>
-    </form>
+
+                <!-- Botones Anterior y Siguiente para avanzar entre preguntas -->
+                <div>
+                    <button mat-button matStepperPrevious>Anterior</button>
+                    <button mat-button (click)="onNext(innerStepper, i, j)" [disabled]="!getFormControl(i, 'pregunta_' + generateControlName(pregunta.text)).valid">Siguiente</button>
+                </div>
+            </mat-step>
+        </mat-vertical-stepper>
+
+        <!-- Botón "Cargar Evidencias" al final de cada ámbito para Autoevaluación II -->
+        <div *ngIf="selectedForm.tipo_formulario === 'autoevaluacion-ii'">
+            <button mat-raised-button color="primary">
+                <mat-icon>upload</mat-icon> Cargar Evidencias
+            </button>
+        </div>
+
+        <!-- Botón Anterior para ámbito -->
+        <div>
+            <button mat-button matStepperPrevious>Anterior</button>
+        </div>
+    </mat-step>
+</mat-vertical-stepper>
+
+<!-- Enunciado y botón "Cargar Evidencias" para Coevaluación I al final del formulario -->
+<div *ngIf="selectedForm.tipo_formulario === 'coevaluacion-i'">
+    <p>El cuerpo docente debe cargar el acta de coevaluación del espacio curricular en este botón:</p>
+    <button mat-raised-button color="primary">
+        <mat-icon>upload</mat-icon> Cargar Evidencias
+    </button>
 </div>
 
-<div *ngIf="normalform && normalform.tipo_formulario === 'autoevaluacion-ii'">
-    <form [formGroup]="form" class="form-horizontal">
-        <mat-card>
-            <mat-card-header>
-                <mat-card-title>{{ normalform.titulo }}</mat-card-title>
-            </mat-card-header>
-            <mat-card-content>
-                <div class="form-grid">
-                    <!-- Información del formato -->
-                    <table class="instruction-table">
-                        <tr>
-                            <td style="background-color: #e0f7e0;">FORMATO</td>
-                            <td>{{ normalform.formato }}</td>
-                        </tr>
-                        <tr>
-                            <td style="background-color: #e0f7e0;">ACTOR</td>
-                            <td>{{ normalform.actor }}</td>
-                        </tr>
-                        <tr>
-                            <td style="background-color: #e0f7e0;">CRONOGRAMA</td>
-                            <td>{{ normalform.cronograma }}</td>
-                        </tr>
-                        <tr>
-                            <td style="background-color: #e0f7e0;">RÚBRICAS</td>
-                            <td>{{ normalform.rubricas }}</td>
-                        </tr>
-                        <tr>
-                            <td style="background-color: #e0f7e0;">INSTRUCCIÓN</td>
-                            <td>{{ normalform.instruccion }}</td>
-                        </tr>
-                        <tr>
-                            <td style="background-color: #e0f7e0;">ESCALA</td>
-                            <td>{{ normalform.escala }}</td>
-                        </tr>
-                    </table>
-
-                    <!-- Primera tabla de preguntas -->
-                    <table class="evaluation-table">
-                        <thead>
-                            <tr>
-                                <th>RÚBRICAS HOLÍSTICAS</th>
-                                <th>ÁMBITO 01: LA DOCENCIA</th>
-                                <th>RESPUESTA ÚNICA</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <ng-container *ngFor="let pregunta of normalform.campos[0].preguntas">
-                                <tr>
-                                    <td>
-                                        <ng-container *ngFor="let opcion of normalform.campos[0].opciones">
-                                            <p>{{ opcion.texto }}</p>
-                                        </ng-container>
-                                    </td>
-                                    <td>{{ pregunta.texto }}</td>
-                                    <td>
-                                        <mat-form-field>
-                                            <mat-select [formControlName]="'docencia_' + pregunta.id"
-                                                placeholder="Menu">
-                                                <mat-option *ngFor="let opcion of normalform.campos[0].opciones"
-                                                    [value]="opcion.valor">
-                                                    {{ opcion.texto }}
-                                                </mat-option>
-                                            </mat-select>
-                                        </mat-form-field>
-                                    </td>
-                                </tr>
-                            </ng-container>
-                        </tbody>
-                    </table>
-
-                    <!-- Segunda tabla de preguntas -->
-                    <table class="evaluation-table">
-                        <thead>
-                            <tr>
-                                <th>RÚBRICAS HOLÍSTICAS</th>
-                                <th>ÁMBITO 02: LA ENSEÑANZA</th>
-                                <th>RESPUESTA ÚNICA</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <ng-container *ngFor="let pregunta of normalform.campos[1].preguntas">
-                                <tr>
-                                    <td>
-                                        <ng-container *ngFor="let opcion of normalform.campos[1].opciones">
-                                            <p>{{ opcion.texto }}</p>
-                                        </ng-container>
-                                    </td>
-                                    <td>{{ pregunta.texto }}</td>
-                                    <td>
-                                        <mat-form-field>
-                                            <mat-select [formControlName]="'ensenanza_' + pregunta.id"
-                                                placeholder="Menu">
-                                                <mat-option *ngFor="let opcion of normalform.campos[1].opciones"
-                                                    [value]="opcion.valor">
-                                                    {{ opcion.texto }}
-                                                </mat-option>
-                                            </mat-select>
-                                        </mat-form-field>
-                                    </td>
-                                </tr>
-                            </ng-container>
-                        </tbody>
-                    </table>
-
-                    <!-- Tercera tabla de preguntas -->
-                    <table class="evaluation-table">
-                        <thead>
-                            <tr>
-                                <th>RÚBRICAS HOLÍSTICAS</th>
-                                <th>ÁMBITO 03: LA PRÁCTICA</th>
-                                <th>RESPUESTA ÚNICA</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <ng-container *ngFor="let pregunta of normalform.campos[2].preguntas">
-                                <tr>
-                                    <td>
-                                        <ng-container *ngFor="let opcion of normalform.campos[2].opciones">
-                                            <p>{{ opcion.texto }}</p>
-                                        </ng-container>
-                                    </td>
-                                    <td>{{ pregunta.texto }}</td>
-                                    <td>
-                                        <mat-form-field>
-                                            <mat-select [formControlName]="'practica_' + pregunta.id"
-                                                placeholder="Menu">
-                                                <mat-option *ngFor="let opcion of normalform.campos[2].opciones"
-                                                    [value]="opcion.valor">
-                                                    {{ opcion.texto }}
-                                                </mat-option>
-                                            </mat-select>
-                                        </mat-form-field>
-                                    </td>
-                                </tr>
-                            </ng-container>
-                        </tbody>
-                    </table>
-
-                    <!-- Campos de texto adicionales -->
-                    <mat-form-field style="width: 100%" *ngFor="let campo of normalform.campos.slice(3)"
-                        [ngSwitch]="campo.tipo">
-                        <ng-container *ngSwitchCase="'textarea'">
-                            <mat-label>{{ campo.label }}</mat-label>
-                            <textarea matInput [formControlName]="campo.nombre" [rows]="campo.cantidad"
-                                [placeholder]="campo.placeholder"></textarea>
-                        </ng-container>
-                        <ng-container *ngSwitchCase="'file'">
-                            <mat-label>{{ campo.label }}</mat-label>
-                            <input type="file" matInput (change)="onFileChange($event, campo)">
-                            <button mat-flat-button color="primary">{{ campo.buttonLabel }}</button>
-                        </ng-container>
-                    </mat-form-field>
-
-                    <!-- Botones de Acción -->
-                    <div class="mt-4">
-                        <button mat-flat-button color="warn" (click)="clearForm()" *ngIf="normalform.btnLimpiar">
-                            {{ normalform.btnLimpiar }}
-                        </button>
-                        <button mat-flat-button color="accent" (click)="validarForm()" *ngIf="normalform.btn">
-                            {{ normalform.btn }}
-                        </button>
-                    </div>
-                </div>
-            </mat-card-content>
-        </mat-card>
-    </form>
-</div>
-
-<!-- Coevaluación II usando dynamic form -->
-<div *ngIf="normalform">
-    <form [formGroup]="form" class="form-horizontal">
-        <mat-card>
-            <mat-card-header>
-                <mat-card-title>{{ normalform.titulo }}</mat-card-title>
-            </mat-card-header>
-            <mat-card-content>
-                <!-- Primera tabla -->
-                <table class="informative-table">
-                    <tr>
-                        <td style="background-color: #d9ead3;">FORMATO</td>
-                        <td>{{ normalform.formato }}</td>
-                    </tr>
-                    <tr>
-                        <td style="background-color: #d9ead3;">ACTOR</td>
-                        <td>{{ normalform.actor }}</td>
-                    </tr>
-                    <tr>
-                        <td style="background-color: #d9ead3;">CRONOGRAMA</td>
-                        <td>{{ normalform.cronograma }}</td>
-                    </tr>
-                    <tr>
-                        <td style="background-color: #d9ead3;">RÚBRICAS</td>
-                        <td>{{ normalform.rubricas }}</td>
-                    </tr>
-                </table>
-
-                <!-- Segunda tabla -->
-                <table class="evaluation-table">
-                    <tr>
-                        <th style="background-color: #c9daf8;">ÁMBITO</th>
-                        <th style="background-color: #c9daf8;">Insuficiente</th>
-                        <th style="background-color: #c9daf8;">Necesita mejorar</th>
-                        <th style="background-color: #c9daf8;">Bueno</th>
-                        <th style="background-color: #c9daf8;">Sobresaliente</th>
-                        <th style="background-color: #c9daf8;">Excelente</th>
-                    </tr>
-                    <tr *ngFor="let campo of normalform.campos">
-                        <td>{{ campo.label }}</td>
-                        <td *ngFor="let escala of campo.opciones">
-                            <mat-radio-group [formControlName]="campo.nombre">
-                                <mat-radio-button [value]="escala.valor"></mat-radio-button>
-                            </mat-radio-group>
-                        </td>
-                    </tr>
-                </table>
-
-                <!-- Botón de guardar -->
-                <div class="mt-4">
-                    <button mat-flat-button color="accent" (click)="validarForm()">
-                        Guardar
-                    </button>
-                </div>
-            </mat-card-content>
-        </mat-card>
-    </form>
+<!-- Botón final para enviar -->
+<div>
+    <button mat-button (click)="submit()">Guardar</button>
 </div>

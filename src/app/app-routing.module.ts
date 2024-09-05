@@ -49,7 +49,7 @@ const routes: Routes = [
   {
     path: 'dynamic-form',
     component: DynamicFormComponent
-  }
+  },
 ];
 
 @NgModule({
