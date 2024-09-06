@@ -158,29 +158,43 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: #000;
+    background-color: #fff; /* Fondo blanco */
     border: 1px solid var(--md-primary-400); /* Borde azul oscuro */
     border-radius: 10px;
     padding: 20px;
-    color: #fff;
+    color: #000; /* Texto negro */
     z-index: 1000;
 
     .confirmation-content {
-      text-align: center;
+        text-align: center;
 
-      h3 {
-        margin-top: 0;
-        background-color: var(--md-primary-400); /* Fondo azul oscuro */
-        color: var(--md-primary-contrast-400); /* Texto blanco */
-        padding: 10px;
-        border-radius: 10px;
-      }
+        h3 {
+            margin-top: 0;
+            background-color: var(--md-primary-400); /* Fondo azul oscuro */
+            color: var(--md-primary-contrast-400); /* Texto blanco */
+            padding: 10px;
+            border-radius: 10px;
+        }
 
-      button {
-        margin-top: 20px;
-      }
+        .icon-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 40px;
+            color: var(--md-warning-500); /* Color amarillo para el ícono de interrogación */
+            margin-bottom: 10px;
+        }
+
+        button {
+            margin-top: 20px;
+            background-color: var(--md-primary-500); /* Fondo del botón */
+            color: var(--md-primary-contrast-500); /* Texto del botón */
+            &:hover {
+                background-color: var(--md-primary-700); /* Fondo del botón al pasar el mouse */
+            }
+        }
     }
-  }
+}
 
   .evaluaciones-guardadas {
     margin-top: 20px;
@@ -208,4 +222,14 @@
     text-align: center;
     margin-top: 20px;
   }
+
+  .punto-verde {
+    width: 10px;
+    height: 10px;
+    background-color: green;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 8px;
+  }
+
 }
