@@ -33,7 +33,7 @@ const routes: Routes = [
   },
   {
     path: 'evaluaciones',
-    canActivate: [AuthGuard],
+    //canActivate: [AuthGuard],
     component: EvaluacionesComponent
   },
   {

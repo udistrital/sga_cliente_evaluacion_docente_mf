@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, Input, SimpleChanges } from "@angular/core";
 import { ROLES } from "src/app/models/diccionario";
 import { UserService } from "src/app/services/user.service";
 import { MatSelectChange } from "@angular/material/select";
@@ -22,6 +22,8 @@ export class EvaluacionesComponent implements OnInit {
   autoevaluacionIIForm: FormGroup;
   autoevaluacionIForm: FormGroup;
 
+  @Input() formtype: string = '';  
+
   constructor(private fb: FormBuilder, private userService: UserService) {
     this.heteroForm = this.fb.group({});
     this.coevaluacionIIForm = this.fb.group({});
@@ -34,12 +36,14 @@ export class EvaluacionesComponent implements OnInit {
     console.log("EvaluacionesComponent initialized");
     this.initializeForms();
 
+    // Obtener roles del usuario
     this.userService.getUserRoles().then((roles) => {
       this.userRoles = roles;
       console.log("User roles loaded:", this.userRoles);
     });
   }
 
+  // Inicializar formularios
   initializeForms(): void {
     this.heteroForm = this.fb.group({
       inicioFecha: ["", Validators.required],
@@ -56,6 +60,7 @@ export class EvaluacionesComponent implements OnInit {
       finFecha: ["", Validators.required],
       proyectoCurricular: ["", Validators.required],
       docenteNombre: ["", Validators.required],
+      espacioAcademico: ["", Validators.required],
       descripcionProceso: ["", Validators.required],
     });
 
@@ -85,12 +90,27 @@ export class EvaluacionesComponent implements OnInit {
       estudianteNombre: ["", Validators.required],
       estudianteIdentificacion: ["", Validators.required],
       proyectoCurricular: ["", Validators.required],
+      proyectoCurricular2: ["", Validators.required],
       descripcionProceso: ["", Validators.required],
     });
   }
 
+  selectForm(formType: string) {
+    this.selectedEvaluation = formType;
+  }
+  
+
+  // Método que maneja la selección del menú desplegable
   onSelectChange(event: MatSelectChange) {
     this.selectedEvaluation = event.value;
+    // invocar la lógica de selección de formularios de ser necesario
+  }
+
+  // Detecta cambios en el valor de formtype y actualiza el formulario mostrado
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['formtype']) {
+      this.selectForm(this.formtype);
+    }
   }
 
   onGuardar(formValues?: any): void {

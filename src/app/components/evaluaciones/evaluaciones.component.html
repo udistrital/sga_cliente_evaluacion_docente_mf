@@ -1,6 +1,7 @@
 <div class="container">
     <h1>{{ 'HOME.TITLE' | translate }}</h1>
 
+    <!-- Menú desplegable para seleccionar el tipo de evaluación -->
     <mat-form-field style="width: 100%" floatLabel="always">
         <mat-label>{{ 'HOME.SELECT' | translate }}</mat-label>
         <mat-select id="tipo-evaluacion" [(value)]="selectedEvaluation" (selectionChange)="onSelectChange($event)">
@@ -13,17 +14,18 @@
             <mat-option value="autoevaluacion-i">
                 {{ 'autoevaluacion_i.titulo' | translate }}
             </mat-option>
-            <mat-option value="coevaluacion-i">
-                {{ 'coevaluacion_i.titulo' | translate }}
-            </mat-option>
             <mat-option value="autoevaluacion-ii">
                 {{ 'autoevaluacion_ii.titulo' | translate }}
+            </mat-option>
+            <mat-option value="coevaluacion-i">
+                {{ 'coevaluacion_i.titulo' | translate }}
             </mat-option>
             <mat-option value="coevaluacion-ii">
                 {{ 'coevaluacion_ii.titulo' | translate }}
             </mat-option>
         </mat-select>
     </mat-form-field>
+
 
     <!-- Formulario de Heteroevaluación -->
     <ng-container *ngIf="selectedEvaluation === 'heteroevaluacion'">
@@ -502,4 +504,26 @@
             </form>
         </div>
     </ng-container>
+
+    <!-- Mostrar el formulario dinámico correspondiente según la evaluación seleccionada -->
+    <ng-container *ngIf="selectedEvaluation === 'heteroevaluacion'">
+        <ngx-dynamic-form [formtype]="'heteroevaluacion'"></ngx-dynamic-form>
+    </ng-container>
+
+    <ng-container *ngIf="selectedEvaluation === 'autoevaluacion-i'">
+        <ngx-dynamic-form [formtype]="'autoevaluacion-i'"></ngx-dynamic-form>
+    </ng-container>
+
+    <ng-container *ngIf="selectedEvaluation === 'autoevaluacion-ii'">
+        <ngx-dynamic-form [formtype]="'autoevaluacion-ii'"></ngx-dynamic-form>
+    </ng-container>
+
+    <ng-container *ngIf="selectedEvaluation === 'coevaluacion-i'">
+        <ngx-dynamic-form [formtype]="'coevaluacion-i'"></ngx-dynamic-form>
+    </ng-container>
+
+    <ng-container *ngIf="selectedEvaluation === 'coevaluacion-ii'">
+        <ngx-dynamic-form [formtype]="'coevaluacion-ii'"></ngx-dynamic-form>
+    </ng-container>
+
 </div>
