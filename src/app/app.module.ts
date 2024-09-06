@@ -14,16 +14,24 @@ import { AppComponent } from './app.component';
 import { DefinicionFormulariosComponent } from './components/definicion-formularios/definicion-formularios.component';
 import { AsignacionFechasComponent } from './components/asignacion-fechas/asignacion-fechas.component';
 import { DefinirEscalasComponent } from './components/definir-escalas/definir-escalas.component';
+import { DynamicFormComponent } from './components/dynamic-form/dynamic-form.component';
+
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatInputModule } from '@angular/material/input';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatStepperModule } from '@angular/material/stepper'; 
 import { EvaluacionesComponent } from './components/evaluaciones/evaluaciones.component';
 import { NgIsGrantedDirective } from './directives/ng-is-granted.directive';
 import { UserService } from './services/user.service';
+import { EventosService } from './services/eventos.service';
+import { ParametrosService } from './services/parametros.service';
+import { AnyService } from './services/any.service';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { MetricasComponent } from './components/metricas/metricas.component';
+import { MatRadioModule } from '@angular/material/radio';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -32,13 +40,9 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
-import { MatStepperModule } from '@angular/material/stepper';
 import { MatTabsModule } from '@angular/material/tabs';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { ResultadosComponent } from './components/resultados/resultados.component';
-import { ParametrosService } from './services/parametros.service';
-import { EventosService } from './services/eventos.service';
-import { AnyService } from './services/any.service';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, environment.apiUrl + 'assets/i18n/', '.json');
@@ -51,7 +55,9 @@ export function createTranslateLoader(http: HttpClient) {
     AsignacionFechasComponent,
     DefinirEscalasComponent,
     EvaluacionesComponent,
-    NgIsGrantedDirective,            
+    NgIsGrantedDirective,
+    DynamicFormComponent,
+    NgIsGrantedDirective,
     MetricasComponent, 
     ResultadosComponent
   ],
@@ -64,6 +70,7 @@ export function createTranslateLoader(http: HttpClient) {
     MATERIAL_MODULES,
     HttpClientModule,
     SpinnerUtilModule,
+    MatRadioModule,
     FormsModule,
     CommonModule,
     BrowserModule,
@@ -88,7 +95,7 @@ export function createTranslateLoader(http: HttpClient) {
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
-        useFactory: (createTranslateLoader),
+        useFactory: createTranslateLoader,
         deps: [HttpClient]
       }
     }),
@@ -98,7 +105,9 @@ export function createTranslateLoader(http: HttpClient) {
     MatNativeDateModule,
     MatButtonModule,
     MatIconModule,
-    MatFormFieldModule
+    MatFormFieldModule,
+    MatExpansionModule,
+    MatStepperModule  
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [
