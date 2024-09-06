@@ -44,7 +44,6 @@ import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { ResultadosComponent } from './components/resultados/resultados.component';
-import { PruebaComponent } from './components/prueba/prueba.component';
 import { NuxeoComponent } from './components/nuxeo/nuxeo.component';
 import { GestorDocumentalService } from './services/gestor-documental.service';
 import { DocumentoService } from './services/documento.service';
@@ -106,7 +105,6 @@ export function createTranslateLoader(http: HttpClient) {
       }
     }),
     FormsModule,
-    ReactiveFormsModule,
     MatDatepickerModule,
     MatInputModule,
     MatNativeDateModule,
@@ -122,7 +120,6 @@ export function createTranslateLoader(http: HttpClient) {
     ParametrosService,
     AnyService,
     UserService,
-    PruebaComponent,
     GestorDocumentalService,
     DocumentoService,
     { provide: HTTP_INTERCEPTORS, useClass: SpinnerUtilInterceptor, multi: true }

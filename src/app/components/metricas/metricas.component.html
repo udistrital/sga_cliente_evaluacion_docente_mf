@@ -1,151 +1,242 @@
-<!-- Primera Tarjeta: Periodo y Tipo de Reporte -->
 <mat-card>
   <mat-card-header>
     <mat-card-title>{{ 'metricas.periodo_y_tipo_reporte' | translate }}</mat-card-title>
+    <mat-card-subtitle>{{ "metricas.sub_titulo" | translate }}</mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
-    <p class="spaced">Seleccione el periodo y el tipo de reporte.</p>
-    <form [formGroup]="firstFormGroup" class="form-container">
-      <!-- Campo Periodo -->
-      <mat-form-field class="form-field">
-        <mat-label>{{ 'GLOBAL.periodo' | translate }}:</mat-label>
-        <mat-select formControlName="periodo" required>
-          <mat-option value="" disabled>{{ 'GLOBAL.seleccionar' | translate }}</mat-option>
-          <mat-option *ngFor="let periodo of periodos" [value]="periodo">{{ periodo }}</mat-option>
-        </mat-select>
-      </mat-form-field>
 
-      <!-- Campo Tipo de Reporte -->
-      <mat-form-field class="form-field">
-        <mat-label>{{ 'metricas.tipo_reporte' | translate }}:</mat-label>
-        <mat-select formControlName="tipoReporte" required (selectionChange)="onTipoReporteChange()">
-          <mat-option value="" disabled>{{ 'GLOBAL.seleccionar' | translate }}</mat-option>
-          <mat-option value="global">{{ 'metricas.global' | translate }}</mat-option>
-          <mat-option value="facultad">{{ 'metricas.facultad' | translate }}</mat-option>
-        </mat-select>
-      </mat-form-field>
-      <button mat-stroked-button class="azulOscuro" (click)="continueToSecondCard()">{{ 'GLOBAL.generar' | translate }}</button>
-    </form>
+    <mat-stepper orientation="vertical" [linear]="isLinear" #stepper>
+      <mat-step [stepControl]="firstFormGroup">
+        <form [formGroup]="firstFormGroup">
+          <ng-template matStepLabel>{{ 'metricas.seleccione_periodo_tipo' | translate }}</ng-template>
+          <div class="form-container">
+            <mat-form-field class="w-100" appearance="outline">
+              <mat-label>{{ "GLOBAL.periodo" | translate }}</mat-label>
+              <mat-icon class="mat-icon-outlined" color="primary" matPrefix>calendar_today</mat-icon>
+              <mat-select formControlName="periodo" required>
+                <mat-option disabled value="">
+                  --{{ 'GLOBAL.seleccionar' | translate }}--
+                </mat-option>
+                <mat-option *ngFor="let periodo of periodos" [value]="periodo">
+                  {{ periodo }}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="secondFormGroupNivel.get('roles')?.hasError('required')">
+                {{ 'definicion_formularios.campo_requerido' | translate }}
+              </mat-error>
+            </mat-form-field>
+            <mat-form-field class="w-100" appearance="outline">
+              <mat-label>{{ "metricas.tipo_reporte" | translate }}</mat-label>
+              <mat-icon class="mat-icon-outlined" color="primary" matPrefix>pie_chart</mat-icon>
+              <mat-select formControlName="tipoReporte" required (selectionChange)="onTipoReporteChange()">
+                <mat-option disabled value="">
+                  --{{ 'GLOBAL.seleccionar' | translate }}--
+                </mat-option>
+                <mat-option value="global">{{ 'metricas.global' | translate }}</mat-option>
+                <mat-option value="facultad">{{ 'metricas.facultad' | translate }}</mat-option>
+              </mat-select>
+              <mat-error *ngIf="secondFormGroupNivel.get('roles')?.hasError('required')">
+                {{ 'definicion_formularios.campo_requerido' | translate }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div>
+            <button mat-button matStepperNext class="azulOscuro fixed-button" (click)="continueToSecondCard()">
+              {{ 'GLOBAL.continuar' | translate }}
+            </button>
+          </div>
+        </form>
+      </mat-step>
+
+      <mat-step [stepControl]="secondFormGroupNivel">
+        <form [formGroup]="secondFormGroupNivel">
+          <ng-template matStepLabel>{{ 'metricas.seleccione_filtro_reporte' | translate }}</ng-template>
+
+            <!-- Global -->
+            <mat-card-content *ngIf="showGlobal showSecondCard">              
+              <p class="spaced">{{ "metricas.mensaje_global" | translate }} </p>
+              <form [formGroup]="secondFormGroupNivel">
+              
+                <mat-checkbox (change)="selectAll($event.checked)">
+                  {{ 'metricas.elegir_todas' | translate }}
+                </mat-checkbox>
+
+                <mat-checkbox formControlName="optionVinculacion">{{ 'metricas.vinculacion' | translate
+                  }}</mat-checkbox>
+                <div *ngIf="showTipoVinculacionSelect">
+                  <mat-form-field class="form-field" appearance="outline">
+                    <mat-label>{{ "metricas.vinculacion" | translate }}</mat-label>
+                    <mat-icon class="mat-icon-outlined" color="primary" matPrefix>link</mat-icon>
+                    <mat-select formControlName="tipoVinculacion" required>
+                      <mat-option disabled value="">
+                        --{{ 'GLOBAL.seleccionar' | translate }}--
+                      </mat-option>
+                      <mat-option *ngFor="let tipo of tiposVinculacion" [value]="tipo">
+                        {{ tipo }}
+                      </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="secondFormGroupNivel.get('roles')?.hasError('required')">
+                      {{ 'definicion_formularios.campo_requerido' | translate }}
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+                <mat-checkbox formControlName="optionComponente">{{ 'metricas.componente' | translate }}</mat-checkbox>
+                <div *ngIf="showTipoComponenteSelect">
+                  <mat-form-field class="form-field" appearance="outline">
+                    <mat-label>{{ "metricas.componente" | translate }}</mat-label>
+                    <mat-icon class="mat-icon-outlined" color="primary" matPrefix>widgets</mat-icon>
+                    <mat-select formControlName="tipoComponente" required>
+                      <mat-option disabled value="">
+                        --{{ 'GLOBAL.seleccionar' | translate }}--
+                      </mat-option>
+                      <mat-option *ngFor="let tipo of tiposComponentes" [value]="tipo">
+                        {{ tipo }}
+                      </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="secondFormGroupNivel.get('roles')?.hasError('required')">
+                      {{ 'definicion_formularios.campo_requerido' | translate }}
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+                <div>
+                  <button mat-button matStepperNext class="azulOscuro fixed-button" (click)="generateChart()">
+                    {{ 'GLOBAL.continuar' | translate }}
+                  </button>
+                </div>
+              </form>
+            </mat-card-content>
+
+            <!-- Facultad -->
+            <mat-card-content *ngIf="showFacultad">
+              <p class="spaced">{{ "metricas.mensaje_facultad" | translate }} </p>
+              <form [formGroup]="secondFormGroupNivel">
+                <mat-form-field class="form-field" appearance="outline">
+                  <mat-label>{{ "metricas.facultad" | translate }}</mat-label>
+                  <mat-icon class="mat-icon-outlined" color="primary" matPrefix>school</mat-icon>
+                  <mat-select formControlName="facultad" required>
+                    <mat-option disabled value="">
+                      --{{ 'GLOBAL.seleccionar' | translate }}--
+                    </mat-option>
+                    <mat-option *ngFor="let facultad of facultades" [value]="facultad">
+                      {{ facultad }}
+                    </mat-option>
+                  </mat-select>
+                  <mat-error *ngIf="secondFormGroupNivel.get('roles')?.hasError('required')">
+                    {{ 'definicion_formularios.campo_requerido' | translate }}
+                  </mat-error>
+                </mat-form-field>
+
+                <mat-checkbox (change)="selectAll($event.checked)">
+                  {{ 'metricas.elegir_todas' | translate }}
+                </mat-checkbox>
+
+                <mat-checkbox formControlName="optionProyecto">{{ 'metricas.proyecto_curricular' | translate
+                  }}</mat-checkbox>
+                <div *ngIf="showTipoProyectoSelect">
+                  <mat-form-field class="form-field" appearance="outline">
+                    <mat-label>{{ "heteroevaluacion.proyecto_curricular" | translate }}</mat-label>
+                    <mat-icon class="mat-icon-outlined" color="primary" matPrefix>assignment</mat-icon>
+                    <mat-select formControlName="tipoProyecto" required>
+                      <mat-option disabled value="">
+                        --{{ 'GLOBAL.seleccionar' | translate }}--
+                      </mat-option>
+                      <mat-option *ngFor="let tipo of tiposProyectos" [value]="tipo">
+                        {{ tipo }}
+                      </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="secondFormGroupNivel.get('roles')?.hasError('required')">
+                      {{ 'definicion_formularios.campo_requerido' | translate }}
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+                <mat-checkbox formControlName="optionVinculacion">{{ 'metricas.vinculacion' | translate
+                  }}</mat-checkbox>
+                <div *ngIf="showTipoVinculacionSelect">
+                  <mat-form-field class="form-field" appearance="outline">
+                    <mat-label>{{ "metricas.vinculacion" | translate }}</mat-label>
+                    <mat-icon class="mat-icon-outlined" color="primary" matPrefix>link</mat-icon>
+                    <mat-select formControlName="tipoVinculacion" required>
+                      <mat-option disabled value="">
+                        --{{ 'GLOBAL.seleccionar' | translate }}--
+                      </mat-option>
+                      <mat-option *ngFor="let tipo of tiposVinculacion" [value]="tipo">
+                        {{ tipo }}
+                      </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="secondFormGroupNivel.get('roles')?.hasError('required')">
+                      {{ 'definicion_formularios.campo_requerido' | translate }}
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+                <mat-checkbox formControlName="optionDocente">{{ 'metricas.docentes' | translate }}</mat-checkbox>
+                <div *ngIf="showTipoDocenteSelect">
+                  <mat-form-field class="form-field" appearance="outline">
+                    <mat-label>{{ "metricas.docentes" | translate }}</mat-label>
+                    <mat-icon class="mat-icon-outlined" color="primary" matPrefix>person</mat-icon>
+                    <mat-select formControlName="tipoDocente" required>
+                      <mat-option disabled value="">
+                        --{{ 'GLOBAL.seleccionar' | translate }}--
+                      </mat-option>
+                      <mat-option *ngFor="let tipo of tiposDocentes" [value]="tipo">
+                        {{ tipo }}
+                      </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="secondFormGroupNivel.get('roles')?.hasError('required')">
+                      {{ 'definicion_formularios.campo_requerido' | translate }}
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+                <mat-checkbox formControlName="optionComponente">{{ 'metricas.componente' | translate }}</mat-checkbox>
+                <div *ngIf="showTipoComponenteSelect">
+                  <mat-form-field class="form-field" appearance="outline">
+                    <mat-label>{{ "metricas.componente" | translate }}</mat-label>
+                    <mat-icon class="mat-icon-outlined" color="primary" matPrefix>widgets</mat-icon>
+                    <mat-select formControlName="tipoComponente" required>
+                      <mat-option disabled value="">
+                        --{{ 'GLOBAL.seleccionar' | translate }}--
+                      </mat-option>
+                      <mat-option *ngFor="let tipo of tiposComponentes" [value]="tipo">
+                        {{ tipo }}
+                      </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="secondFormGroupNivel.get('roles')?.hasError('required')">
+                      {{ 'definicion_formularios.campo_requerido' | translate }}
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+                <div>
+                  <button mat-button matStepperNext class="azulOscuro fixed-button" (click)="generateChart()">
+                    {{ 'GLOBAL.continuar' | translate }}
+                  </button>
+                </div>
+              </form>
+            </mat-card-content>
+        </form>
+      </mat-step>
+      <mat-step>
+        <ng-template matStepLabel>{{ 'Resultados de Evaluación Docente' }}</ng-template>
+        <mat-card-content *ngIf="showChartCard">
+          <p class="spaced">A continuación se muestra el gráfico generado con los datos de la evaluación docente.</p>
+          <ngx-charts-advanced-pie-chart 
+            [view]="view" 
+            [scheme]="colorScheme" 
+            [results]="single" 
+            [gradient]="gradient"
+            [legend]="showLegend" 
+            [labels]="showLabels" 
+            [doughnut]="isDoughnut" 
+            (select)="onSelect($event)"
+            (activate)="onActivate($event)" 
+            (deactivate)="onDeactivate($event)">
+          </ngx-charts-advanced-pie-chart>
+        </mat-card-content>
+      </mat-step>
+      
+    </mat-stepper>
+
   </mat-card-content>
 </mat-card>
-
-<!-- Segunda Tarjeta: Global o Facultad -->
-<mat-card *ngIf="showSecondCard">
-  <mat-card-header>
-    <mat-card-title>{{ 'metricas.filtros' | translate }}</mat-card-title>
-  </mat-card-header>
-  <!-- Global -->
-  <mat-card-content *ngIf="showGlobal">
-    <p class="spaced">Seleccione las opciones de filtrado que desea para el reporte global</p>
-    <form [formGroup]="secondFormGroupNivel">
-
-      <mat-checkbox (change)="selectAll($event.checked)">
-        {{ 'metricas.elegir_todas' | translate }}
-      </mat-checkbox>
-
-      <mat-checkbox formControlName="optionVinculacion">{{ 'metricas.vinculacion' | translate }}</mat-checkbox>
-      <div *ngIf="showTipoVinculacionSelect">
-        <mat-form-field class="form-field">
-          <mat-label>{{ 'metricas.tipo_vinculacion' | translate }}:</mat-label>
-          <mat-select formControlName="tipoVinculacion">
-            <mat-option value="" disabled>{{ 'metricas.seleccionar' | translate }}</mat-option>
-            <mat-option *ngFor="let tipo of tiposVinculacion" [value]="tipo">{{ tipo }}</mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
-
-      <mat-checkbox formControlName="optionComponente">{{ 'metricas.componente' | translate }}</mat-checkbox>
-      <div *ngIf="showTipoComponenteSelect">
-        <mat-form-field class="form-field">
-          <mat-label>{{ 'metricas.tipo_componente' | translate }}:</mat-label>
-          <mat-select formControlName="tipoComponente">
-            <mat-option value="" disabled>{{ 'metricas.seleccionar' | translate }}</mat-option>
-            <mat-option *ngFor="let tipo of tiposComponentes" [value]="tipo">{{ tipo }}</mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
-
-      <button mat-stroked-button class="azulOscuro" (click)="generateChart()">{{ 'GLOBAL.generar' | translate }}</button>
-    </form>
-  </mat-card-content>
-
-  <!-- Facultad -->
-  <mat-card-content *ngIf="showFacultad">
-    <p class="spaced">Seleccione el nivel para el cual desea generar el reporte y las opciones de filtrado por facultad.</p>
-    <form [formGroup]="secondFormGroupNivel">
-      <mat-form-field class="form-field">
-        <mat-label>{{ 'metricas.facultad' | translate }}:</mat-label>
-        <mat-select formControlName="facultad" required>
-          <mat-option value="" disabled>{{ 'metricas.seleccionar' | translate }}</mat-option>
-          <mat-option *ngFor="let facultad of facultades" [value]="facultad">{{ facultad }}</mat-option>
-        </mat-select>
-      </mat-form-field>      
-
-      <mat-checkbox (change)="selectAll($event.checked)">
-        {{ 'metricas.elegir_todas' | translate }}
-      </mat-checkbox>
-
-      <mat-checkbox formControlName="optionProyecto">{{ 'metricas.proyecto_curricular' | translate }}</mat-checkbox>
-      <div *ngIf="showTipoProyectoSelect">
-        <mat-form-field class="form-field">
-          <mat-label>{{ 'metricas.tipo_proyecto' | translate }}:</mat-label>
-          <mat-select formControlName="tipoProyecto">
-            <mat-option value="" disabled>{{ 'metricas.seleccionar' | translate }}</mat-option>
-            <mat-option *ngFor="let tipo of tiposProyectos" [value]="tipo">{{ tipo }}</mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
-
-      <mat-checkbox formControlName="optionVinculacion">{{ 'metricas.vinculacion' | translate }}</mat-checkbox>
-      <div *ngIf="showTipoVinculacionSelect">
-        <mat-form-field class="form-field">
-          <mat-label>{{ 'metricas.tipo_vinculacion' | translate }}:</mat-label>
-          <mat-select formControlName="tipoVinculacion">
-            <mat-option value="" disabled>{{ 'GLOBAL.seleccionar' | translate }}</mat-option>
-            <mat-option *ngFor="let tipo of tiposVinculacion" [value]="tipo">{{ tipo }}</mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
-
-      <mat-checkbox formControlName="optionDocente">{{ 'metricas.docentes' | translate }}</mat-checkbox>
-      <div *ngIf="showTipoDocenteSelect">
-        <mat-form-field class="form-field">
-          <mat-label>{{ 'metricas.tipo_docente' | translate }}:</mat-label>
-          <mat-select formControlName="tipoDocente">
-            <mat-option value="" disabled>{{ 'metricas.seleccionar' | translate }}</mat-option>
-            <mat-option *ngFor="let tipo of tiposDocentes" [value]="tipo">{{ tipo }}</mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
-
-      <mat-checkbox formControlName="optionComponente">{{ 'metricas.componente' | translate }}</mat-checkbox>
-      <div *ngIf="showTipoComponenteSelect">
-        <mat-form-field class="form-field">
-          <mat-label>{{ 'metricas.tipo_componente' | translate }}:</mat-label>
-          <mat-select formControlName="tipoComponente">
-            <mat-option value="" disabled>{{ 'metricas.seleccionar' | translate }}</mat-option>
-            <mat-option *ngFor="let tipo of tiposComponentes" [value]="tipo">{{ tipo }}</mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
-
-      <button mat-stroked-button class="azulOscuro fixed-button" (click)="generateChart()">{{ 'GLOBAL.generar' | translate }}</button>
-    </form>
-
-  </mat-card-content>
-</mat-card>
-
-<!-- Tercera Tarjeta: Gráfico -->
-<mat-card *ngIf="showChartCard">
-  <mat-card-header>
-    <mat-card-title>{{ 'metricas.resultados' | translate }}</mat-card-title>
-  </mat-card-header>
-  <mat-card-content>
-    <p class="spaced">A continuación se muestra el gráfico generado con los datos seleccionados.</p>
-    <ngx-charts-advanced-pie-chart [view]="view" [scheme]="colorScheme" [results]="single" [gradient]="gradient"
-      [legend]="showLegend" [labels]="showLabels" [doughnut]="isDoughnut" (select)="onSelect($event)"
-      (activate)="onActivate($event)" (deactivate)="onDeactivate($event)">
-    </ngx-charts-advanced-pie-chart>
-  </mat-card-content>
-</mat-card>
-
