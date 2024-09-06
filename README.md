@@ -26,7 +26,7 @@ Cliente para la gestión de plan trabajo docente, parte del Sistema de Gestión 
 ```javascript
 export const environment = {
   production: false,
-  apiUrl:"http://localhost:4216/",
+  apiUrl:"http://localhost:4218/",
   PARAMETROS_SERVICE: '',
   assets: '',
 };

@@ -1,0 +1,56 @@
+<mat-card *ngIsGranted="userRoles">
+  <mat-card-header>
+    <mat-card-title>{{ "definicion_formularios.titulo" | translate }}</mat-card-title>
+    <mat-card-subtitle>{{ "definicion_formularios.sub_titulo" | translate }}</mat-card-subtitle>
+  </mat-card-header><br>
+  <mat-card-content>
+    <div class="row mt-4">
+      <div class="col-12">
+        <div class="alert info">
+          <mat-icon class="icon">info</mat-icon>
+          <span>{{ 'definicion_formularios.alerta' | translate }}</span>
+        </div>
+        <div *ngFor="let item of titles">
+          <mat-card-title>{{ item.title | translate }}</mat-card-title>
+          <mat-card-subtitle>{{ item.subtitle | translate }}</mat-card-subtitle><br>
+        </div>
+        <mat-form-field class="w-100" appearance="outline" [formGroup]="form">
+          <mat-label>{{ "definicion_formularios.seleccione" | translate }}</mat-label>
+          <mat-icon class="mat-icon-outlined" color="primary" matPrefix>select_all</mat-icon>
+          <mat-select formControlName="roles" id="roles" required>
+            <mat-option disabled value="">
+              --{{ 'GLOBAL.seleccionar' | translate }}--
+            </mat-option>
+            <mat-option *ngFor="let role of roleOptions" [value]="role.value">
+              {{ role.label | translate }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="form.get('roles')?.hasError('required')">
+            {{ 'definicion_formularios.campo_requerido' | translate }}
+          </mat-error>
+        </mat-form-field>
+        <div class="form-viewer">
+          {{ "definicion_formularios.visualizador_formulario" | translate }}
+        </div>
+        <div class="form-group">
+          <mat-card-title>{{ "definicion_formularios.procesos_seleccionar" | translate }}</mat-card-title>
+          <mat-card-subtitle>{{ "definicion_formularios.sub_titulo_proceso" | translate }}</mat-card-subtitle><br>
+          <div class="processes-grid">
+            <div class="process-card" *ngFor="let proceso of procesos"
+              [ngClass]="{ 'selected': selectedProcess === proceso.nombre }"
+              (click)="selectProcess(proceso.nombre)">
+              <mat-icon>{{ proceso.icon }}</mat-icon>
+              <span>{{ proceso.nombre }}</span>
+              <mat-icon *ngIf="selectedProcess === proceso.nombre" class="check-icon">check_circle</mat-icon>
+            </div>
+          </div>
+        </div>
+        <div class="center-h">
+          <button (click)="guardar()" mat-flat-button color="primary">
+            {{ 'definicion_formularios.guardar' | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
