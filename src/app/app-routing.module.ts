@@ -8,7 +8,6 @@ import { DefinicionFormulariosComponent } from './components/definicion-formular
 import { AsignacionFechasComponent } from './components/asignacion-fechas/asignacion-fechas.component';
 import { DefinirEscalasComponent } from './components/definir-escalas/definir-escalas.component';
 import { EvaluacionesComponent } from './components/evaluaciones/evaluaciones.component';
-import { PruebaComponent } from './components/prueba/prueba.component';
 import { MetricasComponent } from './components/metricas/metricas.component';
 import { ResultadosComponent } from './components/resultados/resultados.component';
 import { DynamicFormComponent } from './components/dynamic-form/dynamic-form.component'; // Importa el nuevo componente
@@ -29,10 +28,6 @@ const routes: Routes = [
   {
     path: 'evaluaciones',
     component: EvaluacionesComponent
-  },
-  {
-    path: 'prueba',
-    component: PruebaComponent
   },
   {
     path: 'metricas',

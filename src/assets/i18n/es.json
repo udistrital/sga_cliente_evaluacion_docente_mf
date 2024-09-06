@@ -30,6 +30,8 @@
 
     "asignacion_fechas": {
         "titulo": "Asignación de fechas para los procesos",
+        "sub_titulo": "Módulo para la asignación de fechas de los siguientes procesos",
+        "alerta": "A continuación, deberá seleccionar el nivel educativo e ingresar la información requerida sobre las fechas.",
         "seleccionar_nivel_formacion": "Seleccionar el nivel de formación a asignar",
         "seleccionar": "Seleccionar",
         "pregrado": "Pregrado",
@@ -45,15 +47,23 @@
 
     "definicion_formularios": {
         "titulo": "Definir formularios",
+        "titulo_roles": "Roles",
+        "titulo_visualizador": "Visualizador de Formulario",        
+        "sub_titulo_visualizador": "Sección para la visualización del Formaulario",                
+        "sub_titulo_proceso": "Sección para la selección del Proceso",                
+        "sub_titulo": "Módulo para la definición de los siguientes formularios",
+        "sub_titulo_roles": "Sección para la asignación de Roles",
+        "alerta": "A continuación, deberá seleccionar los roles que intervienen y el proceso, que puede ser Heteroevaluación, Autoevaluación de estudiantes, Coevaluación I, Autoevaluación docente, o Coevaluación II.",
         "seleccionar_roles": "Seleccionar roles que intervienen",
-        "seleccione": "Seleccione",
+        "seleccione": "Seleccionar ROL",
         "administradores": "Administradores",
         "docentes": "Docentes",
         "estudiantes": "Estudiantes",
         "concejos_curriculares": "Concejos Curriculares",
         "visualizador_formulario": "Visualizador del formulario",
         "procesos_seleccionar": "Procesos a seleccionar",
-        "guardar": "Guardar"
+        "guardar": "Guardar",
+        "campo_requerido": "Campo requerido"
     },
 
     "definir_escalas": {
@@ -184,6 +194,13 @@
         "facultad": "Facultad",
         "proyecto_curricular": "Proyecto Curricular",
         "docentes": "Docentes",
-        "periodo_y_tipo_reporte": "Periodo y tipo de reporte"
+        "periodo_y_tipo_reporte": "Periodo y tipo de reporte",
+        "sub_titulo": "  Seleccione el periodo y el tipo de reporte para obtener la información deseada",
+        "seleccione_periodo_tipo": "Seleccione el periodo y el tipo de reporte",
+        "resultados": "Gráficas",
+        "seleccione_filtro_reporte": "Seleccione las opciones de filtrado que desea para el reporte",
+        "global": "Global",
+        "mensaje_facultad": "Seleccione el nivel para el cual desea generar el reporte y las opciones de filtrado por Facultad",
+        "mensaje_global": "Seleccione el nivel para el cual desea generar el reporte y las opciones de filtrado Global"        
     }
 }
