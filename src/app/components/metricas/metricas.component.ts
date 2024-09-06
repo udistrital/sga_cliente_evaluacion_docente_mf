@@ -8,6 +8,9 @@ import {
   MatSnackBarHorizontalPosition,
   MatSnackBarVerticalPosition,
 } from '@angular/material/snack-bar';
+import { MatSelectChange } from '@angular/material/select';
+import { ProyectoAcademicoService } from '../../services/proyecto_academico.service';
+import { checkContent } from 'src/app/utils/verify-response';
 
 
 @Component({
@@ -16,6 +19,7 @@ import {
   styleUrls: ['./metricas.component.scss'],
 })
 export class MetricasComponent implements OnInit {
+
 
   // Formularios
   firstFormGroup: FormGroup;
@@ -37,6 +41,10 @@ export class MetricasComponent implements OnInit {
   periodos: Periodo[] = []; // Inicializado como un array vacío
   periodo: Periodo = new Periodo({}); // Inicializar el objeto periodo
   periodosAnteriores: Periodo[] = [];
+  mostrarSelectsAdicionales: boolean = false;
+  proyectos: any = {};
+  
+
 
   // Opciones del gráfico
   gradient: boolean = true;
@@ -64,7 +72,11 @@ export class MetricasComponent implements OnInit {
   horizontalPosition: MatSnackBarHorizontalPosition = 'right';
   verticalPosition: MatSnackBarVerticalPosition = 'top';
 
-  constructor(private _formBuilder: FormBuilder, private parametrosService: ParametrosService, private _snackBar: MatSnackBar) {
+  constructor(
+    private _formBuilder: FormBuilder, 
+    private parametrosService: ParametrosService,
+    private _snackBar: MatSnackBar,
+    private proyectoAcademicoService: ProyectoAcademicoService) {
     // Datos de ejemplo para una evaluación docente
     this.single = [
       { name: 'Satisfacción general', value: 85 },
@@ -128,6 +140,13 @@ export class MetricasComponent implements OnInit {
         this.secondFormGroupNivel.get('tipoComponente')!.disable();
       }
     });
+
+        // Suscripciones a cambios en los campos
+        this.secondFormGroupNivel.get('facultad')!.valueChanges.subscribe((facultad) => {
+          if (facultad) {
+            this.loadProyectos();  // Carga proyectos cuando se selecciona una facultad
+          }
+        });
   }
 
   ngOnInit() {
@@ -137,6 +156,18 @@ export class MetricasComponent implements OnInit {
         console.error("Error al cargar periodos:", err);
         this.periodos = [];
       });
+  
+    this.setupDynamicSelectors();  // Agregamos la configuración de los selectores dinámicos
+  }
+  setupDynamicSelectors() {
+    // Aquí suscribimos a los cambios de selección de facultad o algún otro campo relevante
+    this.secondFormGroupNivel.get('facultad')!.valueChanges.subscribe((facultad) => {
+      if (facultad) {
+        this.mostrarSelectsAdicionales = true;  // Muestra los selectores adicionales si hay una facultad seleccionada
+      } else {
+        this.mostrarSelectsAdicionales = false; // Oculta los selectores adicionales si no hay facultad
+      }
+    });
   }
 
   onSelect(data: any): void {
@@ -226,8 +257,32 @@ export class MetricasComponent implements OnInit {
     });
   }
 
-
   
+
+  onTipoReporteChange2(event: MatSelectChange) {
+    if (event.value === 'facultad') {
+      this.mostrarSelectsAdicionales = true;
+    } else {
+      this.mostrarSelectsAdicionales = false;
+    }
+  }
+
+  loadProyectos(): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      this.proyectoAcademicoService.get('proyecto_academico_institucion?query=Activo:true&sortby=Nombre&order=asc&limit=0').subscribe({
+        next: (resp: any) => {
+          if (checkContent(resp)) {
+            resolve(resp as any[]);
+          } else {
+            reject(new Error('No se encontraron proyectos'));
+          }
+        },
+        error: (err) => {
+          reject(err);
+        }
+      });
+    });
+  }
   
   
   

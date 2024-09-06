@@ -9,6 +9,7 @@ import { DefinirEscalasComponent } from './components/definir-escalas/definir-es
 import { EvaluacionesComponent } from './components/evaluaciones/evaluaciones.component';
 import { MetricasComponent } from './components/metricas/metricas.component';
 import { ResultadosComponent } from './components/resultados/resultados.component';
+import { VerificarPtdComponent } from './components/verificar-ptd/verificar-ptd.component';
 
 const routes: Routes = [
   {
@@ -34,6 +35,10 @@ const routes: Routes = [
   {
     path: 'resultados',
     component: ResultadosComponent
+  },
+  {
+    path: 'prueba',
+    component: VerificarPtdComponent
   }
 ];
 

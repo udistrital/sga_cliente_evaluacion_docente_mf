@@ -4,6 +4,10 @@
   gap: 10px;
 }
 
+.w-100{
+  width: 99%;
+}
+
 .border-right {
   border-right: 1px solid black;
 }
@@ -108,11 +112,11 @@ table {
   width: 100%; /* Ajusta el ancho según tus necesidades */
 }
 
-.form-container {
+/* .form-container {
   display: grid;
   flex-direction: column;
   width: 100%;
-}
+} */
 
 .form-field {
   width: 100%;

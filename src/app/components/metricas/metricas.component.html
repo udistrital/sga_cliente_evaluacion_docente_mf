@@ -6,13 +6,12 @@
   <mat-card-content>
 
     <mat-stepper orientation="vertical" [linear]="isLinear" #stepper>
+
       <mat-step [stepControl]="firstFormGroup">
         <form [formGroup]="firstFormGroup">
           <ng-template matStepLabel>{{ 'metricas.seleccione_periodo_tipo' | translate }}</ng-template>
           <div class="form-container">
-
-
-            <mat-form-field class="w-100" appearance="outline">
+            <mat-form-field appearance="outline">
               <mat-label>{{ "metricas.periodo_academico" | translate }}</mat-label>
               <mat-icon class="mat-icon-outlined" color="primary" matPrefix>calendar_today</mat-icon>
               <mat-select formControlName="periodos" required (selectionChange)="selectPeriodo($event)">
@@ -42,14 +41,10 @@
             </mat-form-field>
 
             
-
-
-
-            
-            <mat-form-field class="w-100" appearance="outline">
+            <mat-form-field appearance="outline">
               <mat-label>{{ "metricas.tipo_reporte" | translate }}</mat-label>
               <mat-icon class="mat-icon-outlined" color="primary" matPrefix>pie_chart</mat-icon>
-              <mat-select formControlName="tipoReporte" required (selectionChange)="onTipoReporteChange()">
+              <mat-select formControlName="tipoReporte" required (selectionChange)="onTipoReporteChange2($event)">
                 <mat-option disabled value="">
                   --{{ 'GLOBAL.seleccionar' | translate }}--
                 </mat-option>
@@ -60,6 +55,55 @@
                 {{ 'definicion_formularios.campo_requerido' | translate }}
               </mat-error>
             </mat-form-field>
+            
+            <!-- Selects adicionales que aparecen al seleccionar "facultad" -->
+            <div *ngIf="mostrarSelectsAdicionales">
+              <mat-form-field class="w-100" appearance="outline">
+                <mat-label>{{ "metricas.seleccionar_facultad" | translate }}</mat-label>
+                <mat-icon class="mat-icon-outlined" color="primary" matPrefix>pie_chart</mat-icon>
+                <mat-select formControlName="tipoReporte" required (selectionChange)="onTipoReporteChange2($event)">
+                  <mat-option disabled value="">
+                    --{{ 'GLOBAL.seleccionar' | translate }}--
+                  </mat-option>
+                  <mat-option value="global">{{ 'metricas.global' | translate }}</mat-option>
+                  <mat-option value="facultad">{{ 'metricas.facultad' | translate }}</mat-option>
+                </mat-select>
+                <mat-error *ngIf="secondFormGroupNivel.get('roles')?.hasError('required')">
+                  {{ 'definicion_formularios.campo_requerido' | translate }}
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <div *ngIf="mostrarSelectsAdicionales">
+
+
+              <mat-form-field class="w-100" appearance="outline">
+                <mat-label>{{ "metricas.seleccionar_proyecto_curricular" | translate }}</mat-label>
+                <mat-icon class="mat-icon-outlined" color="primary" matPrefix>pie_chart</mat-icon>
+                <mat-select 
+                  formControlName="facultad"  
+                  (selectionChange)="loadProyectos(); onTipoReporteChange2($event)" 
+                  required>
+                  <mat-option disabled value="">
+                    --{{ 'GLOBAL.seleccionar' | translate }}--
+                  </mat-option>
+                  <mat-option *ngFor="let item of proyectos?.opciones" [value]="item">
+                    {{ item.Nombre }}
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="secondFormGroupNivel.get('facultad')?.hasError('required')">
+                  {{ 'definicion_formularios.campo_requerido' | translate }}
+                </mat-error>
+              </mat-form-field>
+              
+              
+              
+
+
+
+            </div>
+
+
           </div>
           <div>
             <button mat-stroked-button (click)="openSnackBar()" mat-button matStepperNext class="azulOscuro fixed-button" (click)="continueToSecondCard()">
@@ -68,6 +112,8 @@
           </div>
         </form>
       </mat-step>
+
+
 
       <mat-step [stepControl]="secondFormGroupNivel">
         <form [formGroup]="secondFormGroupNivel">

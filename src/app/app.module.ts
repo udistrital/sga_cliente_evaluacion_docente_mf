@@ -40,6 +40,8 @@ import { ResultadosComponent } from './components/resultados/resultados.componen
 import { ParametrosService } from './services/parametros.service';
 import { EventosService } from './services/eventos.service';
 import { AnyService } from './services/any.service';
+import { ProyectoAcademicoService } from './services/proyecto_academico.service';
+import { VerificarPtdComponent } from './components/verificar-ptd/verificar-ptd.component';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, environment.apiUrl + 'assets/i18n/', '.json');
@@ -54,7 +56,8 @@ export function createTranslateLoader(http: HttpClient) {
     EvaluacionesComponent,
     NgIsGrantedDirective,
     MetricasComponent,
-    ResultadosComponent
+    ResultadosComponent,
+    VerificarPtdComponent
   ],
   imports: [
     BrowserModule,
@@ -107,6 +110,7 @@ export function createTranslateLoader(http: HttpClient) {
     EventosService, 
     ParametrosService,
     AnyService,
+    ProyectoAcademicoService,
     UserService,
     { provide: HTTP_INTERCEPTORS, useClass: SpinnerUtilInterceptor, multi: true }
   ],
