@@ -444,140 +444,119 @@ export const AUTOEVALUACION_II = {
 
 // Formulario de coevaluación II - Ámbito 01
 export const COEVALUACION_II_AMBITO_01 = {
-    titulo: "ÁMBITO 01: LA DOCENCIA",
+    titulo: "SECCIÓN 01 - ANÁLISIS DE LA HETEROEVALUACIÓN",
     preguntas: [
         {
-        text: "01. El docente demuestra conocimiento profundo de los contenidos que enseña y adapta sus enseñanzas a las necesidades del grupo",
-        tipo: "select",
-        options: EVALUACION_OPTIONS,
+            text: "De acuerdo con los resultados de la heteroevaluación conceptúen un promedio y decidan una opción de la escala provista.",
+            tipo: "texto",
         },
         {
-        text: "02. El docente estructura y organiza el contenido de manera clara, facilitando el aprendizaje",
-        tipo: "select",
-        options: EVALUACION_OPTIONS,
+            text: "01. ÁMBITO 01: DOCENCIA",
+            tipo: "texto",
+            options: EVALUACION_OPTIONS,  
         },
         {
-        text: "03. El docente utiliza estrategias didácticas innovadoras para involucrar a los estudiantes",
-        tipo: "select",
-        options: EVALUACION_OPTIONS,
+            text: "02. ÁMBITO 02: ENSEÑANZA",
+            tipo: "texto",
+            options: EVALUACION_OPTIONS,  
         },
         {
-        text: "04. El docente fomenta la participación activa de los estudiantes en el aula",
-        tipo: "select",
-        options: EVALUACION_OPTIONS,
+            text: "03. ÁMBITO 03: PRÁCTICA",
+            tipo: "texto",
+            options: EVALUACION_OPTIONS,
         },
         {
-        text: "05. El docente demuestra una actitud reflexiva sobre su práctica pedagógica",
-        tipo: "select",
-        options: EVALUACION_OPTIONS,
+            text: "PROMEDIO ASIGNADO POR EL CONCEJO CURRICULAR",
+            tipo: "texto",
+            options: EVALUACION_OPTIONS, 
         },
     ],
-    comentarios: {
-        label:
-        "Escriba las acciones que recomendaría al docente para mejorar su desempeño en la docencia:",
-        cantidad: 3,
-    },
-    evidencias: {
-        label:
-        "Escriba las evidencias que utilizará para respaldar sus recomendaciones:",
-        cantidad: 3,
-        botonCargar: "CARGUE EVIDENCIAS",
-    },
 };
 
-// Formulario de coevaluación II - Ámbito 02
+
 export const COEVALUACION_II_AMBITO_02 = {
-    titulo: "ÁMBITO 02: LA ENSEÑANZA",
+    titulo: "SECCIÓN 02 - ANÁLISIS DE LA COEVALUACIÓN I",
     preguntas: [
         {
-        text: "06. El docente facilita la comprensión de los temas a través de ejemplos y aplicaciones prácticas",
-        tipo: "select",
-        options: EVALUACION_OPTIONS,
-        },
-        {
-        text: "07. El docente se asegura de que los estudiantes comprendan los objetivos de aprendizaje",
-        tipo: "select",
-        options: EVALUACION_OPTIONS,
-        },
-        {
-        text: "08. El docente promueve el pensamiento crítico y la resolución de problemas",
-        tipo: "select",
-        options: EVALUACION_OPTIONS,
-        },
-        {
-        text: "09. El docente motiva a los estudiantes a aplicar los conocimientos en situaciones reales",
-        tipo: "select",
-        options: EVALUACION_OPTIONS,
-        },
-        {
-        text: "10. El docente proporciona retroalimentación constructiva a los estudiantes",
-        tipo: "select",
-        options: EVALUACION_OPTIONS,
+            text: "Lea el acta de coevaluación I para tener elementos cultivados de coevaluación del cuerpo docente.",
+            tipo: "texto", 
         },
     ],
-    comentarios: {
-        label:
-        "Escriba las acciones que recomendaría al docente para mejorar su enseñanza:",
-        cantidad: 3,
-    },
-    evidencias: {
-        label:
-        "Escriba las evidencias que utilizará para respaldar sus recomendaciones:",
-        cantidad: 3,
-        botonCargar: "CARGUE EVIDENCIAS",
-    },
 };
 
-// Formulario de coevaluación II - Ámbito 03
 export const COEVALUACION_II_AMBITO_03 = {
-    titulo: "ÁMBITO 03: LA PRÁCTICA",
+    titulo: "SECCIÓN 03 - ANÁLISIS DE LA AUTOEVALUACIÓN",
     preguntas: [
         {
-        text: "11. El docente demuestra compromiso con la mejora continua de su práctica educativa",
-        tipo: "select",
-        options: EVALUACION_OPTIONS,
+            text: "De acuerdo con los resultados de la autoevaluación, las acciones y las evidencias, conceptúen un promedio y decidan una opción de la escala provista.",
+            tipo: "texto",
+
         },
         {
-        text: "12. El docente busca implementar nuevas metodologías para mejorar la enseñanza",
-        tipo: "select",
-        options: EVALUACION_OPTIONS,
+            text: "01. ÁMBITO 01: DOCENCIA",
+            tipo: "texto",
+            options: EVALUACION_OPTIONS,
+
         },
         {
-        text: "13. El docente demuestra interés por la formación continua y el aprendizaje profesional",
-        tipo: "select",
-        options: EVALUACION_OPTIONS,
+            text: "Descarga archivo aquí",
+            tipo: "download", 
         },
         {
-        text: "14. El docente promueve un ambiente de respeto y colaboración en el aula",
-        tipo: "select",
-        options: EVALUACION_OPTIONS,
+            text: "02. ÁMBITO 02: ENSEÑANZA",
+            tipo: "texto",
+            options: EVALUACION_OPTIONS,
         },
         {
-        text: "15. El docente está dispuesto a recibir retroalimentación para mejorar su práctica",
-        tipo: "select",
-        options: EVALUACION_OPTIONS,
+            text: "Descarga archivo aquí",
+            tipo: "download", 
+        },
+        {
+            text: "03. ÁMBITO 03: PRÁCTICA",
+            tipo: "texto",
+            options: EVALUACION_OPTIONS,
+        },
+        {
+            text: "Descarga archivo aquí",
+            tipo: "download", 
+        },
+        {
+            text: "PROMEDIO ASIGNADO POR EL CONCEJO CURRICULAR",
+            tipo: "texto",
+            options: EVALUACION_OPTIONS,
         },
     ],
-    comentarios: {
-        label:
-        "Escriba las acciones que recomendaría al docente para fortalecer su práctica educativa:",
-        cantidad: 3,
-    },
-    evidencias: {
-        label:
-        "Escriba las evidencias que utilizará para respaldar sus recomendaciones:",
-        cantidad: 3,
-        botonCargar: "CARGUE EVIDENCIAS",
-    },
 };
 
-// Estructura de Coevaluación II
+export const COEVALUACION_II_AMBITO_04 = {
+    titulo: "SECCIÓN 04 - PROMEDIO",
+    preguntas: [
+        {
+            text: "De acuerdo con los resultados de las secciones anteriores, establezcan un promedio final y escriban observaciones para el cuerpo docente.",
+            tipo: "texto",
+            options: EVALUACION_OPTIONS,
+        },
+        {
+            text: "PROMEDIO ASIGNADO POR EL CONCEJO CURRICULAR",
+            tipo: "texto",
+            options: EVALUACION_OPTIONS,
+        },
+        {
+            text: "01. comentario:",
+            tipo: "input", 
+            options: [],
+        },
+    ],
+};
+
+// Estructura completa del formulario Coevaluación II
 export const COEVALUACION_II = {
     tipo_formulario: "coevaluacion-ii",
     ambitos: [
         COEVALUACION_II_AMBITO_01,
         COEVALUACION_II_AMBITO_02,
         COEVALUACION_II_AMBITO_03,
+        COEVALUACION_II_AMBITO_04,
     ],
 };
 
@@ -643,48 +622,16 @@ export const COEVALUACION_I = {
             tipo: "textarea",
             options: [],
             },
+            {
+                text: "El cuerpo docente debe cargar el acta de co-evalaucion curricularen enste boton: ",
+                tipo: "texto",
+            },
+
         ],
         },
     ],
     botonCargarEvidencias: "CARGUE EVIDENCIAS",
 };
 
-//Datos quemados para pruebas
-export const FORM_DATA_PRUEBAS = {
-    tipoEvaluacion: "1",
-    docente: "1",
-    espacioAcademico: "1",
-    seccion: [
-        {
-            orden: 1,
-            nombreSeccion: "Sección 1",
-            items: {
-            descripcion: [
-                {
-                orden: 1,
-                nombreItem: "Descripción 1",
-                campo: {
-                    tipoCampo: 1,
-                    escala: [{ valor1: "Insuficiente" }, { valor2: "Excelente" }],
-                },
-                },
-            ],
-            cuantitativo: [
-                {
-                orden: 1,
-                nombreItem: "Cuantitativo 1",
-                campo: {
-                    tipoCampo: 2,
-                    valor: 0,
-                    escala: [
-                    { valor1: "Insuficiente", peso1: 1 },
-                    { valor2: "Excelente", peso2: 5 },
-                    ],
-                },
-                },
-            ],
-            },
-        },
-    ],
-};
+
 

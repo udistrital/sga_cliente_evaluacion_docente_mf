@@ -32,3 +32,17 @@ mat-radio-button {
     display: block;
     margin-bottom: 8px;
 }
+
+.custom-expansion-panel::ng-deep .mat-expansion-panel-header {
+    border-bottom: 2px solid transparent;
+    transition: border-color 0.3s;
+}
+
+.custom-expansion-panel::ng-deep .mat-expansion-panel-header.mat-expanded {
+    border-bottom: 2px solid #2196F3; /* Azul estilo Material */
+}
+
+.mat-expansion-panel-header mat-icon {
+    margin-right: 8px;
+}
+
