@@ -1,11 +1,4 @@
-{
-    
-    "GLOBAL": {
-        "atencion": "Atención",
-        "aceptar": "Aceptar",
-        "cancelar": "Cancelar"
-    },
-    
+{    
     "HOME": {
         "TITLE": "SGA",
         "SELECT": "Seleccionar tipo de evaluación",
@@ -25,7 +18,10 @@
         "periodo": "Periodo",
         "continuar": "Continuar",
         "atras": "Atrás",
-        "generar": "Generar"
+        "generar": "Generar",
+        "atencion": "Atención",
+        "aceptar": "Aceptar",
+        "cancelar": "Cancelar"
     },
 
     "asignacion_fechas": {
@@ -67,7 +63,8 @@
     },
 
     "definir_escalas": {
-        "titulo": "Definir Escala",
+        "titulo_cualitativa": "Definición de escala cualitativa",
+        "titulo_cuantitativo": "Definición de escala cuantitativa",
         "seleccionar_tipo_escala": "Seleccionar tipo de escala",
         "seleccione": "Seleccione",
         "cualitativa": "Cualitativa",
@@ -75,10 +72,19 @@
         "escala": "Escala",
         "del_seud": "del SEUD",
         "descripcion": "Define descripción u objetivos del mismo",
-        "agregar_elemento_escala": "Agregar elemento de escala",
+        "agregar_elemento_escala": "Agregar elemento",
         "estado": "Estado",
         "descripcion_columna": "Descripción",
-        "visualizar": "visualizar"
+        "visualizar": "visualizar",
+        "sub_titulo_cualitativa": "Permite clasificar el desempeño del docente usando categorías como 'Insuficiente', 'Necesita Mejorar', 'Bueno', etc.",
+        "sub_titulo_cuantitativo": "Permite calificar el desempeño del docente con valores numéricos, como del 1 al 5.",
+        "alerta_cualitativa": "A continuación, deberá diligenciar el formulario utilizando la escala cualitativa, seleccionando una categoría que mejor describa el desempeño del docente, como 'Excelente', 'Bueno', 'Aceptable', etc.",
+        "alerta_cuantitativa": "A continuación, deberá diligenciar el formulario utilizando la escala cuantitativa, asignando una calificación numérica al desempeño del docente, basada en su experiencia, con valores que pueden ir del 1 al 5.",
+        "titulo_cualitativa_seud": "Escala cualitativa del SEUD",
+        "titulo_cuantitativa_seud": "Escala cuantitativa del SEUD",
+        "acciones": "Acciones",
+        "tipo": "Tipo de escala",
+        "valor": "Valor"
     },
     
     "heteroevaluacion": {

@@ -9,6 +9,9 @@ import { UserService } from 'src/app/services/user.service';
   styleUrls: ['./definir-escalas.component.scss']
 })
 export class DefinirEscalasComponent implements OnInit {
+isGranted(arg0: ("ADMIN_SGA"|"VICERRECTOR"|"ASESOR_VICE"|"COORDINADOR"|"COORDINADOR_PREGADO"|"COORDINADOR_POSGRADO"|"ASISTENTE_ADMISIONES"|"ADMIN_DOCENCIA"|"ASIS_PROYECTO"|"SEC_DECANATURA"|"DECANO")[]): any {
+throw new Error('Method not implemented.');
+}
   tipoEscala: string = '';
   descripcion: string = '';
   tipoEscalaTitulo: string = '';
@@ -54,28 +57,44 @@ export class DefinirEscalasComponent implements OnInit {
     }
   }
 
-  agregarEscala() {
-    if (this.tipoEscala === 'cualitativa') {
-      this.escalas.push({ label: '', descripcion: 'Escribe una descripcion aqui' });
-    } else if (this.tipoEscala === 'cuantitativa') {
-      this.escalas.push({ label: '', descripcion: '' });
+  agregarEscala(tipo: string) {
+    if (tipo === 'cualitativa') {
+      this.cualitativaEscalas.push({ label: '', descripcion: 'Escribe una descripcion aqui' });
+    } else if (tipo === 'cuantitativa') {
+      this.cuantitativaEscalas.push({ label: '', descripcion: '' });
     }
   }
 
-  visualizarEscalas() {
+  visualizarEscalas(tipo: string) {
     const visualizacion = {
-      tipoEscala: this.tipoEscalaTitulo,
-      descripcion: this.descripcion,
-      escalas: [...this.escalas],
+      tipoEscala: tipo === 'cualitativa' ? 'Escala cualitativa' : 'Escala cuantitativa',
+      escalas: tipo === 'cualitativa' ? [...this.cualitativaEscalas] : [...this.cuantitativaEscalas],
       selected: false
     };
-
-    if (this.tipoEscala === 'cualitativa') {
+  
+    if (tipo === 'cualitativa') {
       this.visualizacionesCualitativas.push(visualizacion);
-    } else if (this.tipoEscala === 'cuantitativa') {
+    } else if (tipo === 'cuantitativa') {
       this.visualizacionesCuantitativas.push(visualizacion);
     }
   }
+
+  eliminarEscala(tipo: string, index: number) {
+    if (tipo === 'cualitativa') {
+      this.cualitativaEscalas.splice(index, 1);
+    } else if (tipo === 'cuantitativa') {
+      this.cuantitativaEscalas.splice(index, 1);
+    }
+  }
+
+  editarEscala(escala: any, index: number) {
+    // Implementa la lógica para editar una escala si es necesario.
+    console.log(`Editando escala en la posición ${index}`, escala);
+  }
+
+
+
+
 
   seleccionarTabla(visualizacion: any) {
     visualizacion.selected = !visualizacion.selected;
