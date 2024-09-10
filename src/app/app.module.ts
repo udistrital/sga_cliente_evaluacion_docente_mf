@@ -26,6 +26,7 @@ import { MatStepperModule } from '@angular/material/stepper';
 import { EvaluacionesComponent } from './components/evaluaciones/evaluaciones.component';
 import { NgIsGrantedDirective } from './directives/ng-is-granted.directive';
 import { UserService } from './services/user.service';
+
 import { EventosService } from './services/eventos.service';
 import { ParametrosService } from './services/parametros.service';
 import { AnyService } from './services/any.service';
@@ -43,6 +44,9 @@ import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { ResultadosComponent } from './components/resultados/resultados.component';
+import { NuxeoComponent } from './components/nuxeo/nuxeo.component';
+import { GestorDocumentalService } from './services/gestor-documental.service';
+import { DocumentoService } from './services/documento.service';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, environment.apiUrl + 'assets/i18n/', '.json');
@@ -58,7 +62,8 @@ export function createTranslateLoader(http: HttpClient) {
     NgIsGrantedDirective,
     DynamicFormComponent,
     NgIsGrantedDirective,
-    MetricasComponent, 
+    MetricasComponent,
+    NuxeoComponent,
     ResultadosComponent
   ],
   imports: [
@@ -115,6 +120,8 @@ export function createTranslateLoader(http: HttpClient) {
     ParametrosService,
     AnyService,
     UserService,
+    GestorDocumentalService,
+    DocumentoService,
     { provide: HTTP_INTERCEPTORS, useClass: SpinnerUtilInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]

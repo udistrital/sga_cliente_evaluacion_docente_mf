@@ -13,6 +13,7 @@ import { ResultadosComponent } from './components/resultados/resultados.componen
 import { DynamicFormComponent } from './components/dynamic-form/dynamic-form.component'; // Importa el nuevo componente
 import { AuthGuard } from 'src/_guards/auth.guard';
 // Importar el componente EmptyRouteComponent
+import { NuxeoComponent } from './components/nuxeo/nuxeo.component';
 
 const routes: Routes = [
   {
@@ -32,7 +33,7 @@ const routes: Routes = [
   },
   {
     path: 'evaluaciones',
-    canActivate: [AuthGuard],
+    //canActivate: [AuthGuard],
     component: EvaluacionesComponent
   },
   {
@@ -45,11 +46,14 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     component: ResultadosComponent
   },
+  { 
+    path: 'nuxeo', 
+    component: NuxeoComponent },
   {
     path: 'dynamic-form',
     canActivate: [AuthGuard],
     component: DynamicFormComponent
-  }
+  },
 ];
 
 @NgModule({
