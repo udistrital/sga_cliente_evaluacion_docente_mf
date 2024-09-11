@@ -26,6 +26,7 @@ import { MatStepperModule } from '@angular/material/stepper';
 import { EvaluacionesComponent } from './components/evaluaciones/evaluaciones.component';
 import { NgIsGrantedDirective } from './directives/ng-is-granted.directive';
 import { UserService } from './services/user.service';
+
 import { EventosService } from './services/eventos.service';
 import { ParametrosService } from './services/parametros.service';
 import { AnyService } from './services/any.service';
@@ -44,6 +45,9 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatSnackBarModule } from '@angular/material/snack-bar'; // Importar MatSnackBarModule
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { ResultadosComponent } from './components/resultados/resultados.component';
+import { NuxeoComponent } from './components/nuxeo/nuxeo.component';
+import { GestorDocumentalService } from './services/gestor-documental.service';
+import { DocumentoService } from './services/documento.service';
 import { ProyectoAcademicoService } from './services/proyecto_academico.service';
 import { OikosService } from 'src/app/services/oikos.service';
 
@@ -60,6 +64,9 @@ export function createTranslateLoader(http: HttpClient) {
     DefinirEscalasComponent,
     EvaluacionesComponent,
     NgIsGrantedDirective,
+    MetricasComponent,
+    NuxeoComponent,
+    ResultadosComponent,
     MetricasComponent,
     ResultadosComponent,
     DynamicFormComponent
@@ -119,6 +126,8 @@ export function createTranslateLoader(http: HttpClient) {
     AnyService,
     ProyectoAcademicoService,
     UserService,
+    GestorDocumentalService,
+    DocumentoService,
     OikosService,
     { provide: HTTP_INTERCEPTORS, useClass: SpinnerUtilInterceptor, multi: true }
   ],
