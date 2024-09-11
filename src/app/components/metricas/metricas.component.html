@@ -55,18 +55,18 @@
                 {{ 'definicion_formularios.campo_requerido' | translate }}
               </mat-error>
             </mat-form-field>
-            
-            <!-- Selects adicionales que aparecen al seleccionar "facultad" -->
-            <div *ngIf="mostrarSelectsAdicionales">
+                        
+            <div *ngIf="mostrarSelectsAdicionales">              
               <mat-form-field class="w-100" appearance="outline">
                 <mat-label>{{ "metricas.seleccionar_facultad" | translate }}</mat-label>
                 <mat-icon class="mat-icon-outlined" color="primary" matPrefix>pie_chart</mat-icon>
-                <mat-select formControlName="tipoReporte" required (selectionChange)="onTipoReporteChange2($event)">
+                <mat-select formControlName="tipoReporte" required (selectionChange)="onFacultadSelection($event)">
                   <mat-option disabled value="">
                     --{{ 'GLOBAL.seleccionar' | translate }}--
                   </mat-option>
-                  <mat-option value="global">{{ 'metricas.global' | translate }}</mat-option>
-                  <mat-option value="facultad">{{ 'metricas.facultad' | translate }}</mat-option>
+                  <mat-option *ngFor="let nombrefacultad of facultad" [value]="nombrefacultad">
+                    {{ nombrefacultad["Nombre"] }}
+                  </mat-option>
                 </mat-select>
                 <mat-error *ngIf="secondFormGroupNivel.get('roles')?.hasError('required')">
                   {{ 'definicion_formularios.campo_requerido' | translate }}
@@ -74,15 +74,15 @@
               </mat-form-field>
             </div>
 
+
+
             <div *ngIf="mostrarSelectsAdicionales">
-
-
               <mat-form-field class="w-100" appearance="outline">
                 <mat-label>{{ "metricas.seleccionar_proyecto_curricular" | translate }}</mat-label>
                 <mat-icon class="mat-icon-outlined" color="primary" matPrefix>pie_chart</mat-icon>
                 <mat-select 
                   formControlName="facultad"  
-                  (selectionChange)="loadProyectos(); onTipoReporteChange2($event)" 
+                  (selectionChange)="onProyectoSelection($event)" 
                   required>
                   <mat-option disabled value="">
                     --{{ 'GLOBAL.seleccionar' | translate }}--
@@ -94,22 +94,16 @@
                 <mat-error *ngIf="secondFormGroupNivel.get('facultad')?.hasError('required')">
                   {{ 'definicion_formularios.campo_requerido' | translate }}
                 </mat-error>
-              </mat-form-field>
-              
-              
-              
-
-
-
+              </mat-form-field>              
             </div>
 
-
+            
           </div>
           <div>
-            <button mat-stroked-button (click)="openSnackBar()" mat-button matStepperNext class="azulOscuro fixed-button" (click)="continueToSecondCard()">
+            <button mat-stroked-button  mat-button matStepperNext class="azulOscuro fixed-button" (click)="continueToSecondCard()">
               {{ 'GLOBAL.continuar' | translate }}
             </button>
-          </div>
+          </div>          
         </form>
       </mat-step>
 
@@ -167,7 +161,7 @@
                   </mat-form-field>
                 </div>
                 <div>
-                  <button mat-stroked-button (click)="openSnackBar()" mat-button matStepperNext class="azulOscuro fixed-button" (click)="generateChart()">
+                  <button mat-stroked-button  mat-button matStepperNext class="azulOscuro fixed-button" (click)="generateChart()">
                     {{ 'GLOBAL.continuar' | translate }}
                   </button>
                 </div>
@@ -276,7 +270,7 @@
                   </mat-form-field>
                 </div>
                 <div>
-                  <button mat-stroked-button (click)="openSnackBar()" mat-button matStepperNext class="azulOscuro fixed-button" (click)="generateChart()">
+                  <button mat-stroked-button  mat-button matStepperNext class="azulOscuro fixed-button" (click)="generateChart()">
                     {{ 'GLOBAL.continuar' | translate }}
                   </button>
                 </div>

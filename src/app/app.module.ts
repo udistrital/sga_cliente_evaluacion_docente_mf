@@ -44,14 +44,9 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatSnackBarModule } from '@angular/material/snack-bar'; // Importar MatSnackBarModule
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { ResultadosComponent } from './components/resultados/resultados.component';
-<<<<<<< HEAD
-import { ParametrosService } from './services/parametros.service';
-import { EventosService } from './services/eventos.service';
-import { AnyService } from './services/any.service';
 import { ProyectoAcademicoService } from './services/proyecto_academico.service';
-import { VerificarPtdComponent } from './components/verificar-ptd/verificar-ptd.component';
-=======
->>>>>>> origin/develop
+import { OikosService } from 'src/app/services/oikos.service';
+
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, environment.apiUrl + 'assets/i18n/', '.json');
@@ -65,16 +60,9 @@ export function createTranslateLoader(http: HttpClient) {
     DefinirEscalasComponent,
     EvaluacionesComponent,
     NgIsGrantedDirective,
-<<<<<<< HEAD
     MetricasComponent,
     ResultadosComponent,
-    VerificarPtdComponent
-=======
-    DynamicFormComponent,
-    NgIsGrantedDirective,
-    MetricasComponent, 
-    ResultadosComponent
->>>>>>> origin/develop
+    DynamicFormComponent
   ],
   imports: [
     BrowserModule,
@@ -86,8 +74,7 @@ export function createTranslateLoader(http: HttpClient) {
     HttpClientModule,
     SpinnerUtilModule,
     MatRadioModule,
-    FormsModule,
-    CommonModule,
+    FormsModule,    
     BrowserModule,
     MatTabsModule,
     MatIconModule,
@@ -97,7 +84,7 @@ export function createTranslateLoader(http: HttpClient) {
     MatTableModule,
     MatDialogModule,
     MatSelectModule,
-    MatSnackBarModule, // Añadir MatSnackBarModule
+    MatSnackBarModule,
     AppRoutingModule,
     MatCheckboxModule,
     MatFormFieldModule,
@@ -132,6 +119,7 @@ export function createTranslateLoader(http: HttpClient) {
     AnyService,
     ProyectoAcademicoService,
     UserService,
+    OikosService,
     { provide: HTTP_INTERCEPTORS, useClass: SpinnerUtilInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]

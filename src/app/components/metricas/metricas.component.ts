@@ -11,7 +11,9 @@ import {
 import { MatSelectChange } from '@angular/material/select';
 import { ProyectoAcademicoService } from '../../services/proyecto_academico.service';
 import { checkContent } from 'src/app/utils/verify-response';
-
+import { OikosService } from 'src/app/services/oikos.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-metricas',
@@ -19,7 +21,6 @@ import { checkContent } from 'src/app/utils/verify-response';
   styleUrls: ['./metricas.component.scss'],
 })
 export class MetricasComponent implements OnInit {
-
 
   // Formularios
   firstFormGroup: FormGroup;
@@ -42,9 +43,11 @@ export class MetricasComponent implements OnInit {
   periodo: Periodo = new Periodo({}); // Inicializar el objeto periodo
   periodosAnteriores: Periodo[] = [];
   mostrarSelectsAdicionales: boolean = false;
-  proyectos: any = {};
+  facultad = [];
+  /* opcionSeleccionadoFacultad: any; */
   
-
+  // Ajuste aquí: proyectos con select y opciones
+  proyectos: { select: any, opciones: any[] } = { select: undefined, opciones: [] };
 
   // Opciones del gráfico
   gradient: boolean = true;
@@ -65,17 +68,19 @@ export class MetricasComponent implements OnInit {
     { value: 'administradores', label: 'definicion_formularios.administradores' },
     { value: 'docentes', label: 'definicion_formularios.docentes' },
     { value: 'estudiantes', label: 'definicion_formularios.estudiantes' },
-    { value: 'docconcejos_curricularesentes', label: 'definicion_formularios.concejos_curriculares' }
+    { value: 'concejos_curriculares', label: 'definicion_formularios.concejos_curriculares' }
   ];
 
   // Snack-bar Position Variables
   horizontalPosition: MatSnackBarHorizontalPosition = 'right';
   verticalPosition: MatSnackBarVerticalPosition = 'top';
+  translate: any;
 
   constructor(
-    private _formBuilder: FormBuilder, 
+    private _formBuilder: FormBuilder,
     private parametrosService: ParametrosService,
     private _snackBar: MatSnackBar,
+    private oikosService: OikosService,
     private proyectoAcademicoService: ProyectoAcademicoService) {
     // Datos de ejemplo para una evaluación docente
     this.single = [
@@ -92,7 +97,7 @@ export class MetricasComponent implements OnInit {
     });
 
     this.secondFormGroupNivel = this._formBuilder.group({
-      facultad: [''],
+      facultad: ['', Validators.required],
       optionProyecto: [false],
       optionVinculacion: [false],
       optionDocente: [false],
@@ -101,7 +106,7 @@ export class MetricasComponent implements OnInit {
       tipoVinculacion: [{ value: '', disabled: true }],
       tipoDocente: [{ value: '', disabled: true }],
       tipoComponente: [{ value: '', disabled: true }],
-      roles: ['', Validators.required] 
+      roles: ['', Validators.required]
     });
 
     // Suscripciones a cambios en los campos
@@ -141,24 +146,30 @@ export class MetricasComponent implements OnInit {
       }
     });
 
-        // Suscripciones a cambios en los campos
-        this.secondFormGroupNivel.get('facultad')!.valueChanges.subscribe((facultad) => {
-          if (facultad) {
-            this.loadProyectos();  // Carga proyectos cuando se selecciona una facultad
-          }
-        });
+    // Suscripciones a cambios en los campos
+    this.secondFormGroupNivel.get('facultad')!.valueChanges.subscribe((facultad) => {
+      if (facultad) {
+        this.loadProyectos();  // Carga proyectos cuando se selecciona una facultad
+        this.mostrarSelectsAdicionales = true;
+      } else {
+        this.mostrarSelectsAdicionales = false;
+      }
+    });
   }
 
   ngOnInit() {
+    this.loadProyectos(); // Carga inicial de proyectos
+    this.loadfacultad();
     this.cargarPeriodos()
       .then((resp) => (this.periodos = resp))
       .catch((err) => {
         console.error("Error al cargar periodos:", err);
         this.periodos = [];
       });
-  
+
     this.setupDynamicSelectors();  // Agregamos la configuración de los selectores dinámicos
   }
+
   setupDynamicSelectors() {
     // Aquí suscribimos a los cambios de selección de facultad o algún otro campo relevante
     this.secondFormGroupNivel.get('facultad')!.valueChanges.subscribe((facultad) => {
@@ -213,8 +224,8 @@ export class MetricasComponent implements OnInit {
   cargarPeriodosAnteriores(periodo: Periodo) {
     this.periodosAnteriores = this.periodos.filter((porPeriodo) => {
       return porPeriodo.Year <= periodo.Year &&
-             porPeriodo.Id < periodo.Id &&
-             porPeriodo.Nombre < periodo.Nombre;
+        porPeriodo.Id < periodo.Id &&
+        porPeriodo.Nombre < periodo.Nombre;
     });
   }
 
@@ -248,16 +259,14 @@ export class MetricasComponent implements OnInit {
     });
   }
 
-  openSnackBar() {
-    this._snackBar.open('¡Los datos se han guardado correctamente! 😊', '', {
+  openSnackBar(message: string) {
+    this._snackBar.open(message, '', {
       horizontalPosition: this.horizontalPosition,
       verticalPosition: this.verticalPosition,
       panelClass: ['custom-snackbar'],
       duration: 2000
     });
   }
-
-  
 
   onTipoReporteChange2(event: MatSelectChange) {
     if (event.value === 'facultad') {
@@ -266,24 +275,56 @@ export class MetricasComponent implements OnInit {
       this.mostrarSelectsAdicionales = false;
     }
   }
-
-  loadProyectos(): Promise<any[]> {
-    return new Promise((resolve, reject) => {
-      this.proyectoAcademicoService.get('proyecto_academico_institucion?query=Activo:true&sortby=Nombre&order=asc&limit=0').subscribe({
-        next: (resp: any) => {
+  
+  loadProyectos(): void {
+    this.proyectoAcademicoService.get('proyecto_academico_institucion?query=Activo:true&sortby=Nombre&order=asc&limit=0')
+      .subscribe({
+        next: (resp) => {
           if (checkContent(resp)) {
-            resolve(resp as any[]);
+            this.proyectos.opciones = resp;
           } else {
-            reject(new Error('No se encontraron proyectos'));
+            console.error('No se encontraron proyectos');
           }
         },
         error: (err) => {
-          reject(err);
+          console.error('Error al cargar proyectos:', err);
         }
       });
-    });
   }
-  
-  
-  
+
+  onProyectoSelection(event: MatSelectChange): void {
+    const facultadSeleccionada = event.value;
+    if (facultadSeleccionada) {
+      this.openSnackBar(`Proyecto seleccionado: ${facultadSeleccionada.Nombre}`);
+    }
+  }
+
+  onFacultadSelection(event: MatSelectChange): void {
+    const proyectoSeleccionado = event.value;
+    if (proyectoSeleccionado) {
+      this.openSnackBar(`Facultad seleccionada: ${proyectoSeleccionado.Nombre}`);
+    }
+  }
+
+  loadfacultad() {
+    this.oikosService.get('dependencia_tipo_dependencia/?query=TipoDependenciaId:2')
+      .subscribe((res: any) => {
+        const r = <any>res;
+        if (res !== null && r.Type !== 'error') {
+          this.facultad = res.map((data: any) => (data.DependenciaId));
+        }
+      },
+        (error: HttpErrorResponse) => {
+          Swal.fire({
+            icon: 'error',
+            title: error.status + '',
+            text: this.translate.instant('ERROR.' + error.status),
+            confirmButtonText: this.translate.instant('GLOBAL.aceptar'),
+          });
+        });
+  }
+
+
+
+
 }
