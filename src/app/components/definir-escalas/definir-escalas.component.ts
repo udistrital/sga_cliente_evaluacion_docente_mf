@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ROLES } from 'src/app/models/diccionario';
 import { UserService } from 'src/app/services/user.service';
+import { DateService } from 'src/app/services/date.service';
 
 
 @Component({
@@ -17,6 +18,7 @@ export class DefinirEscalasComponent implements OnInit {
   visualizacionesCuantitativas: any[] = [];
   userRoles: string[] = [];
   ROLES = ROLES;
+  dateHeader: string | undefined;
 
   cualitativaEscalas = [
     { label: 'INSUFICIENTE', descripcion: 'No sucede y no se demuestra el criterio' },
@@ -34,12 +36,19 @@ export class DefinirEscalasComponent implements OnInit {
     { label: 'EXCELENTE', descripcion: '5' }
   ];
 
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService, private dateService: DateService) {}
 
   ngOnInit(): void {
     this.userService.getUserRoles().then(roles => {
       this.userRoles = roles;
-    });
+      this.dateService.getDateHeader().subscribe(
+        (date: string) => {
+          this.dateHeader = date;
+          console.log('DateHeader:', this.dateHeader);
+        },
+        (error: any) => console.error('Error al obtener el encabezado de fecha:', error)
+      );              
+    }).catch(error => console.error('Error al obtener los roles de usuario:', error));
   }
 
   onChangeTipoEscala() {

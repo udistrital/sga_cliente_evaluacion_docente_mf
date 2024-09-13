@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ROLES } from 'src/app/models/diccionario';
 import { UserService } from 'src/app/services/user.service';
+import { DateService } from 'src/app/services/date.service';
 
 @Component({
   selector: 'app-definicion-formularios',
@@ -19,6 +20,7 @@ export class DefinicionFormulariosComponent implements OnInit {
     { nombre: 'Coevaluación II', icon: 'group' }
   ];
   userRoles: string[] = [];
+  dateHeader: string | undefined;
   ROLES = ROLES;
   titles = [
     { title: 'definicion_formularios.titulo_roles', subtitle: 'definicion_formularios.sub_titulo_roles' },
@@ -31,7 +33,7 @@ export class DefinicionFormulariosComponent implements OnInit {
     { value: 'docconcejos_curricularesentes', label: 'definicion_formularios.concejos_curriculares' }
   ];
 
-  constructor(private userService: UserService, private fb: FormBuilder) {
+  constructor(private userService: UserService, private fb: FormBuilder, private dateService: DateService) {
     this.form = this.fb.group({
       roles: ['', Validators.required],
     });
@@ -40,7 +42,14 @@ export class DefinicionFormulariosComponent implements OnInit {
   ngOnInit(): void {
     this.userService.getUserRoles().then(roles => {
       this.userRoles = roles;
-    });
+      this.dateService.getDateHeader().subscribe(
+        (date: string) => {
+          this.dateHeader = date;
+          console.log('DateHeader:', this.dateHeader);
+        },
+        (error: any) => console.error('Error al obtener el encabezado de fecha:', error)
+      );               
+    }).catch(error => console.error('Error al obtener los roles de usuario:', error));
   }
 
   selectProcess(proceso: string) {

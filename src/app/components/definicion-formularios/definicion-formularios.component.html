@@ -1,4 +1,4 @@
-<mat-card *ngIsGranted="userRoles">
+<mat-card *ngIf="hasRole([ROLES.ADMIN_SGA, ROLES.DOCENTE, ROLES.ESTUDIANTE, ROLES.CONSEJO_CURRICULAR]); else noPermission">
   <mat-card-header>
     <mat-card-title>{{ "definicion_formularios.titulo" | translate }}</mat-card-title>
     <mat-card-subtitle>{{ "definicion_formularios.sub_titulo" | translate }}</mat-card-subtitle>
@@ -54,3 +54,17 @@
     </div>
   </mat-card-content>
 </mat-card>
+
+<!-- Modal para mostrar cuando el usuario no tiene permisos -->
+<ng-template #noPermission>
+  <div class="modal-overlay" *ngIf="!hasRole([ROLES.ADMIN_SGA, ROLES.DOCENTE, ROLES.ESTUDIANTE, ROLES.CONSEJO_CURRICULAR])">
+    <div class="modal-content">
+      <h2>{{ "definicion_formularios.sin_permisos_titulo" | translate }}</h2>
+      <p>{{ "definicion_formularios.sin_permisos_mensaje" | translate }}</p>
+      <!-- Icono grande de carita triste -->
+      <div class="sad-face-icon">
+        <mat-icon class="sad-icon">sentiment_dissatisfied</mat-icon>
+      </div>
+    </div>
+  </div>
+</ng-template>

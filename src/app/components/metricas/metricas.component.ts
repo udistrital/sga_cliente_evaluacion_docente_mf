@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { Color, ScaleType } from '@swimlane/ngx-charts';
+import { ROLES } from "src/app/models/diccionario";
+import { DateService } from 'src/app/services/date.service';
+import { UserService } from "src/app/services/user.service";
 
 @Component({
   selector: 'app-metricas',
@@ -26,6 +29,9 @@ export class MetricasComponent implements OnInit {
   showTipoComponenteSelect: boolean = false;
   showTipoProyectoSelect: boolean = false;
   showTipoDocenteSelect: boolean = false;
+  userRoles: string[] = [];
+  ROLES = ROLES;
+  dateHeader: string | undefined;
 
   // Opciones del gráfico
   gradient: boolean = true;
@@ -50,7 +56,7 @@ export class MetricasComponent implements OnInit {
     { value: 'docconcejos_curricularesentes', label: 'definicion_formularios.concejos_curriculares' }
   ];
 
-  constructor(private _formBuilder: FormBuilder) {
+  constructor(private _formBuilder: FormBuilder, private dateService: DateService, private userService: UserService,) {
     // Datos de ejemplo para una evaluación docente
     this.single = [
       { name: 'Satisfacción general', value: 85 },
@@ -116,7 +122,18 @@ export class MetricasComponent implements OnInit {
     });
   }
 
-  ngOnInit() {}
+  ngOnInit(): void {
+    this.userService.getUserRoles().then(roles => {
+      this.userRoles = roles;
+      this.dateService.getDateHeader().subscribe(
+        (date: string) => {
+          this.dateHeader = date;
+          console.log('DateHeader:', this.dateHeader);
+        },
+        (error: any) => console.error('Error al obtener el encabezado de fecha:', error)
+      );        
+    }).catch(error => console.error('Error al obtener los roles de usuario:', error));
+  }
 
   onSelect(data: any): void {
     console.log('Item clicked', JSON.parse(JSON.stringify(data)));
