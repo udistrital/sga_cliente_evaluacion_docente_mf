@@ -8,7 +8,7 @@
 </div>
 
 <!-- Vista por pasos usando mat-stepper para los Ámbitos -->
-<mat-vertical-stepper *ngIf="!isFormView" [linear]="true" [formGroup]="stepperForm" #mainStepper>
+<mat-vertical-stepper  [linear]="true" [formGroup]="stepperForm" #mainStepper>
     <!-- Ámbitos -->
     <mat-step *ngFor="let ambito of ambitos; let i = index" [formGroupName]="'ambito_' + i">
         <ng-template matStepLabel>{{ ambito.titulo }}</ng-template>
@@ -74,7 +74,7 @@
                     *ngIf="pregunta.text === 'El cuerpo docente debe cargar el acta de co-evalaucion curricularen enste boton: '">
                     <input type="file" (change)="handleFileInputChange($event)" />
                     <button mat-raised-button color="primary" (click)="cargarEvidencias()">
-                        <mat-icon>upload</mat-icon> {{ coevaluacionI.botonCargarEvidencias }}
+                        <!-- <mat-icon>upload</mat-icon> {{ coevaluacionI.botonCargarEvidencias }} -->
                     </button>
                 </div>
 
@@ -98,7 +98,7 @@
 </mat-vertical-stepper>
 
 <!-- Vista en formato de formulario común (sin stepper) -->
-<div *ngIf="isFormView" [formGroup]="stepperForm">
+<div  [formGroup]="stepperForm">
     <div *ngFor="let ambito of ambitos; let i = index" [formGroupName]="'ambito_' + i">
         <h3>{{ ambito.titulo }}</h3>
         <mat-accordion [multi]="true">
@@ -155,5 +155,5 @@
 
 <!-- Botón final para enviar -->
 <div>
-    <button mat-button (click)="submit()">Guardar</button>
+    <!-- <button mat-button (click)="submit()">Guardar</button> -->
 </div>

@@ -85,7 +85,7 @@ export class DynamicFormComponent implements OnInit {
   // Método para inicializar el formulario seleccionado
   selectForm(tipo_formulario: string) {
    const data = response.Data.Data;
-   
+   console.log(data)
   }
 
   handleFileInputChange(event: any): void {
