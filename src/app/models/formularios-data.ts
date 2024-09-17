@@ -633,5 +633,66 @@ export const COEVALUACION_I = {
     botonCargarEvidencias: "CARGUE EVIDENCIAS",
 };
 
+export const response = {
+    Success: true,
+    Status: 200,
+    Message: "Consulta exitosa",
+    Data: {
+      Data: {
+        docente: "11",
+        espacioAcademico: "1",
+        seccion: {
+          cuantitativa: {
+            items: [
+              {
+                campos: [
+                  {
+                    escala: [
+                      {
+                        nombre: "Insuficiente",
+                        tipo_campo: 2,
+                        valor: 200
+                      },
+                      {
+                        nombre: "Aceptable",
+                        tipo_campo: 2,
+                        valor: 200
+                      },
+                      {
+                        nombre: "Excelente",
+                        tipo_campo: 2,
+                        valor: 200
+                      }
+                    ],
+                    nombre: "Escala definida",
+                    porcentaje: 50,
+                    tipo_campo: 2,
+                    valor: 0
+                  }
+                ],
+                id: 1,
+                nombre: "Item 1",
+                orden: 1
+              },
+              {
+                campos: null,
+                id: 3,
+                nombre: "Item 2",
+                orden: 2
+              }
+            ],
+            nombre: "Sección 1",
+            orden: 1
+          }
+        },
+        tipoEvaluacion: "1"
+      },
+      Message: "Consulta exitosa",
+      Status: 200,
+      Success: true
+    }
+  };
+  
+
 
 

@@ -506,24 +506,8 @@
     </ng-container>
 
     <!-- Mostrar el formulario dinámico correspondiente según la evaluación seleccionada -->
-    <ng-container *ngIf="selectedEvaluation === 'heteroevaluacion'">
-        <ngx-dynamic-form [formtype]="'heteroevaluacion'"></ngx-dynamic-form>
-    </ng-container>
-
-    <ng-container *ngIf="selectedEvaluation === 'autoevaluacion-i'">
-        <ngx-dynamic-form [formtype]="'autoevaluacion-i'"></ngx-dynamic-form>
-    </ng-container>
-
-    <ng-container *ngIf="selectedEvaluation === 'autoevaluacion-ii'">
-        <ngx-dynamic-form [formtype]="'autoevaluacion-ii'"></ngx-dynamic-form>
-    </ng-container>
-
-    <ng-container *ngIf="selectedEvaluation === 'coevaluacion-i'">
-        <ngx-dynamic-form [formtype]="'coevaluacion-i'"></ngx-dynamic-form>
-    </ng-container>
-
-    <ng-container *ngIf="selectedEvaluation === 'coevaluacion-ii'">
-        <ngx-dynamic-form [formtype]="'coevaluacion-ii'"></ngx-dynamic-form>
+    <ng-container *ngIf="selectedEvaluation">
+        <ngx-dynamic-form [inputData]="selectedEvaluation"></ngx-dynamic-form>
     </ng-container>
 
 </div>

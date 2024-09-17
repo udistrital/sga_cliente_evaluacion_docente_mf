@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
+import { Component, Input, OnInit, ViewChild } from "@angular/core";
 import {
   AbstractControl,
   FormBuilder,
@@ -15,6 +15,7 @@ import {
   AUTOEVALUACION_II,
   COEVALUACION_I,
   COEVALUACION_II,
+  response,
 } from "src/app/models/formularios-data";
 import { GestorDocumentalService } from "src/app/services/gestor-documental.service";
 import Swal from "sweetalert2";
@@ -46,6 +47,7 @@ interface Respuesta {
 export class DynamicFormComponent implements OnInit {
   stepperForm!: FormGroup; // Inicializa el FormGroup correctamente
   formularios = [
+    response,
     HETEROEVALUACION,
     AUTOEVALUACION_I,
     AUTOEVALUACION_II,
@@ -63,6 +65,7 @@ export class DynamicFormComponent implements OnInit {
   documentId: string | null = null;  
 
   @ViewChild("mainStepper") mainStepper!: MatStepper;
+  @Input() inputData: any; // Define el @Input
 
   constructor(
     private fb: FormBuilder,
@@ -76,144 +79,13 @@ export class DynamicFormComponent implements OnInit {
     this.stepperForm = this.fb.group({});
     this.documentId = '74';
     // Seleccionar el formulario por defecto para la vista inicial
-    this.selectForm("heteroevaluacion"); // Se puede cambiar según las necesidades
+    this.selectForm(this.inputData); // Se puede cambiar según las necesidades
   }
 
   // Método para inicializar el formulario seleccionado
   selectForm(tipo_formulario: string) {
-    this.stepperForm = this.fb.group({});
-    this.selectedForm = this.formularios.find(
-      (f) => f.tipo_formulario === tipo_formulario
-    );
-
-    if (this.selectedForm) {
-      this.ambitos = this.selectedForm.ambitos;
-
-      // Inicializamos el estado de expansión para cada ámbito
-      this.expandAllState = this.ambitos.map(() => false);
-
-      // Convertir preguntas de tipo 'select' a 'radio' para los formularios de Heteroevaluación y Autoevaluación I
-      if (
-        tipo_formulario === "heteroevaluacion" ||
-        tipo_formulario === "autoevaluacion-i"
-      ) {
-        this.ambitos.forEach((ambito) => {
-          ambito.preguntas.forEach((pregunta) => {
-            if (pregunta.tipo === "select") {
-              pregunta.tipo = "radio"; // Convertimos 'select' a 'radio'
-            }
-          });
-        });
-      }
-
-      // Mostrar el botón "Cargar Evidencias" al final de los ámbitos 1, 2 y 3 del formulario "Autoevaluación II"
-      if (tipo_formulario === "autoevaluacion-ii") {
-        this.ambitos.forEach((ambito, index) => {
-          // Mostrar el botón solo en los ámbitos 1, 2 y 3
-          if (index === 0 || index === 1 || index === 2) {
-            ambito.preguntas.push({
-              text: "El cuerpo docente debe cargar las evidencias correspondientes:",
-              tipo: "boton",
-              options: [],
-            });
-          }
-        });
-      }
-
-      // Inicializar el formulario específico de Coevaluación II si se selecciona ese formulario
-      if (tipo_formulario === "coevaluacion-ii") {
-        this.initializeCoevaluacionIIForm();
-      }
-
-      // Inicializar el formulario dinámico
-      this.initializeForm();
-
-      // Inicializamos el estado expandido de las preguntas
-      this.expandAllState = this.ambitos.map(() => false); // Inicialmente, todas las preguntas están colapsadas
-    }
-  }
-
-  // Método para inicializar el formulario específico de Coevaluación II
-  initializeCoevaluacionIIForm() {
-    this.ambitos.forEach((ambito: Ambito, index: number) => {
-      const group = this.fb.group({});
-
-      ambito.preguntas.forEach((pregunta: Pregunta) => {
-        // Si no hay texto o es un tipo de pregunta que no requiere input, no creamos el control
-        if (!pregunta.text || pregunta.tipo === "download") {
-          console.warn(
-            `Pregunta sin texto o de tipo ${pregunta.tipo} no necesita control.`
-          );
-          return;
-        }
-
-        const controlName = this.generateControlName(pregunta.text);
-        group.addControl(`pregunta_${controlName}`, this.fb.control(""));
-      });
-
-      this.stepperForm.addControl(`ambito_${index}`, group);
-    });
-  }
-
-  // Método para insertar inputs numerados después de las preguntas en Heteroevaluación
-  insertNumericalInputs(ambitoIndex: number): void {
-    const inputStart = ambitoIndex === 0 ? 1 : ambitoIndex === 1 ? 6 : 11;
-    const inputEnd = inputStart + 4;
-    const inputsArray = [];
-
-    for (let i = inputStart; i <= inputEnd; i++) {
-      inputsArray.push(this.fb.control(""));
-    }
-
-    const ambitoControl = this.stepperForm.get(
-      `ambito_${ambitoIndex}`
-    ) as FormGroup;
-    if (ambitoControl) {
-      inputsArray.forEach((control, index) => {
-        ambitoControl.addControl(`input_${inputStart + index}`, control);
-      });
-    }
-  }
-
-  // Inicializa el formulario dinámico creando los controles para cada pregunta
-  initializeForm() {
-    this.ambitos.forEach((ambito: Ambito, index: number) => {
-      const group = this.fb.group({});
-
-      ambito.preguntas.forEach((pregunta: Pregunta) => {
-        // Si la pregunta no tiene texto o es de tipo 'download', lo ignoramos
-        if (!pregunta.text || pregunta.tipo === "download") {
-          console.log(
-            `Pregunta sin texto o de tipo download encontrada en ámbito: ${ambito.titulo}`
-          );
-          return; // No creamos un control para estas preguntas
-        }
-
-        const controlName = this.generateControlName(pregunta.text);
-
-        // Si es una pregunta de tipo 'radio', agregamos el control con validación requerida
-        if (pregunta.tipo === "radio") {
-          group.addControl(
-            `pregunta_${controlName}`,
-            this.fb.control("", Validators.required)
-          );
-        }
-        // Si es una pregunta de tipo 'input' o 'textarea', simplemente agregamos el control
-        else if (pregunta.tipo === "input" || pregunta.tipo === "textarea") {
-          group.addControl(`pregunta_${controlName}`, this.fb.control(""));
-        }
-        // Para otros tipos, como 'checkbox' u 'options', también se pueden agregar controles aquí
-        else if (pregunta.tipo === "checkbox") {
-          group.addControl(`pregunta_${controlName}`, this.fb.control(false));
-        } else {
-          // En caso de un tipo no especificado, agregar un control por defecto
-          group.addControl(`pregunta_${controlName}`, this.fb.control(""));
-        }
-      });
-
-      // Agregamos el conjunto de preguntas para el ámbito actual al formulario
-      this.stepperForm.addControl(`ambito_${index}`, group);
-    });
+   const data = response.Data.Data;
+   
   }
 
   handleFileInputChange(event: any): void {
