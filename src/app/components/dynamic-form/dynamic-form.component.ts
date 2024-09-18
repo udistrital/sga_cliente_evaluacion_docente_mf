@@ -56,13 +56,14 @@ export class DynamicFormComponent implements OnInit {
   ]; // Lista de formularios disponibles
   selectedForm: any; // Variable para almacenar el formulario seleccionado
   ambitos: Ambito[] = []; // Tipar los ámbitos correctamente
+  todasSecciones: any[] = [];
   comentarioCounter = 1; // Contador para numerar los comentarios de forma continua
   actaFile: File | null = null;
   isFormView: boolean = false;
   coevaluacionI = COEVALUACION_I;
   expandAllState: boolean[] = [];
   uploadedFileUid: string | null = null;
-  documentId: string | null = null;  
+  documentId: string | null = null;
 
   @ViewChild("mainStepper") mainStepper!: MatStepper;
   @Input() inputData: any; // Define el @Input
@@ -72,7 +73,7 @@ export class DynamicFormComponent implements OnInit {
     private gestorService: GestorDocumentalService,
     private gestorDocumentalService: GestorDocumentalService,
     private sanitizer: DomSanitizer
-  ) {}
+  ) { }
 
   ngOnInit() {
     // Inicializar el formulario principal
@@ -84,8 +85,32 @@ export class DynamicFormComponent implements OnInit {
 
   // Método para inicializar el formulario seleccionado
   selectForm(tipo_formulario: string) {
-   const data = response.Data.Data;
-   console.log(data)
+    const docenteId = response.Data.Data.docente;
+    const espacioAcademico = response.Data.Data.espacioAcademico;
+    const cualitativa = response.Data.Data.seccion.cualitativa.map(seccion => ({ tipo: 'cualitativa', ...seccion }));
+    const cuantitativa = response.Data.Data.seccion.cuantitativa.map(seccion => ({ tipo: 'cuantitativa', ...seccion }));
+    // const descripcion = [{ tipo: 'descripcion', orden: 3, nombre: "Descripción" }];
+    // const cargarArchivo = [{ tipo: 'cargar archivo', orden: 1, nombre: "Cargar Archivo" }];
+    // const descargaArchivos = [{ tipo: 'descarga de archivos', orden: 4, nombre: "Descarga de Archivos" }];
+    // Combinar todas las secciones en un solo array
+    this.todasSecciones = [
+      ...cualitativa,
+      ...cuantitativa,
+      // ...descripcion,
+      // ...cargarArchivo,
+      // ...descargaArchivos
+    ];
+    this.todasSecciones = this.todasSecciones.filter((seccion, index, self) => 
+      index === self.findIndex((s) => s.orden === seccion.orden)
+    );
+    
+    // Ordenar todas las secciones de menor a mayor por 'orden'
+    this.todasSecciones.sort((a, b) => a.orden - b.orden);
+
+    // Imprimir las secciones ordenadas
+    console.log("Secciones ordenadas de menor a mayor:", this.todasSecciones);
+
+
   }
 
   handleFileInputChange(event: any): void {
@@ -295,9 +320,9 @@ export class DynamicFormComponent implements OnInit {
     const control = this.getFormControl(
       ambitoIndex,
       "pregunta_" +
-        this.generateControlName(
-          this.ambitos[ambitoIndex].preguntas[preguntaIndex].text
-        )
+      this.generateControlName(
+        this.ambitos[ambitoIndex].preguntas[preguntaIndex].text
+      )
     );
 
     if (control.valid) {

@@ -1,17 +1,13 @@
 <div>
     <!-- Botones para seleccionar el tipo de formulario -->
-    <button mat-button (click)="selectForm('heteroevaluacion')">Heteroevaluación</button>
-    <button mat-button (click)="selectForm('autoevaluacion-i')">Autoevaluación I</button>
-    <button mat-button (click)="selectForm('autoevaluacion-ii')">Autoevaluación II</button>
-    <button mat-button (click)="selectForm('coevaluacion-i')">Coevaluación I</button>
-    <button mat-button (click)="selectForm('coevaluacion-ii')">Coevaluación II</button>
+    <button mat-button (click)="selectForm('heteroevaluacion')">{{inputData}}</button>
 </div>
 
 <!-- Vista por pasos usando mat-stepper para los Ámbitos -->
 <mat-vertical-stepper  [linear]="true" [formGroup]="stepperForm" #mainStepper>
     <!-- Ámbitos -->
-    <mat-step *ngFor="let ambito of ambitos; let i = index" [formGroupName]="'ambito_' + i">
-        <ng-template matStepLabel>{{ ambito.titulo }}</ng-template>
+    <mat-step *ngFor="let seccion of todasSecciones; let i = index" [formGroupName]="'seccion' + i">
+        <ng-template matStepLabel>{{ seccion.nombre }}</ng-template>
 
         <!-- Botón para colapsar/expandir todas las preguntas con ícono de ojo -->
         <button mat-raised-button color="primary" (click)="toggleAll(i)">
@@ -20,34 +16,36 @@
 
         <!-- Preguntas dentro de los ámbitos usando mat-accordion -->
         <mat-accordion [multi]="true">
-            <mat-expansion-panel *ngFor="let pregunta of ambito.preguntas; let j = index" [expanded]="expandAllState[i]"
+            <mat-expansion-panel *ngFor="let pregunta of seccion.items; let j = index" [expanded]="expandAllState[i]"
                 class="custom-expansion-panel">
                 <mat-expansion-panel-header>
                     <mat-panel-title>
-                        <!-- Ícono para hacer más llamativo el encabezado de la pregunta -->
-                        <mat-icon color="accent">help_outline</mat-icon> {{ pregunta.text }}
+
+                        <mat-icon color="accent">help_outline</mat-icon> {{ pregunta.nombre }}
                     </mat-panel-title>
                 </mat-expansion-panel-header>
 
                 <!-- Opción de única respuesta (radio buttons) -->
-                <div *ngIf="pregunta.tipo === 'radio'">
+                <div *ngIf="pregunta.campos[0].nombre === 'Escala definida'">
                     <mat-radio-group [formControlName]="'pregunta_' + generateControlName(pregunta.text)">
-                        <mat-radio-button *ngFor="let option of pregunta.options" [value]="option.valor">
-                            {{ option.texto }}
+                        <mat-radio-button *ngFor="let option of pregunta.campos[0].escala" [value]="option.valor">
+                            {{ option.nombre }}
                         </mat-radio-button>
                     </mat-radio-group>
                 </div>
 
+             
+
                 <!-- Opción de selección múltiple (checkboxes) -->
-                <div *ngIf="pregunta.tipo === 'checkbox'">
-                    <mat-checkbox *ngFor="let option of pregunta.options"
+                <div *ngIf="pregunta.campos[0].nombre === ''">
+                    <mat-checkbox *ngFor="let option of pregunta.campos[0].escala"
                         [formControlName]="'pregunta_' + generateControlName(pregunta.text)">
-                        {{ option.texto }}
+                        {{ option.nombre}}
                     </mat-checkbox>
                 </div>
 
                 <!-- Opción de respuesta abierta (input/textarea) -->
-                <div *ngIf="pregunta.tipo === 'textarea' || pregunta.tipo === 'input'">
+                <div *ngIf="pregunta.campos[0].nombre === 'Comentario' || pregunta.tipo === 'input'">
                     <mat-form-field appearance="fill">
                         <mat-label>{{ pregunta.text }}</mat-label>
                         <input matInput [formControlName]="'pregunta_' + generateControlName(pregunta.text)">
@@ -99,15 +97,15 @@
 
 <!-- Vista en formato de formulario común (sin stepper) -->
 <div  [formGroup]="stepperForm">
-    <div *ngFor="let ambito of ambitos; let i = index" [formGroupName]="'ambito_' + i">
-        <h3>{{ ambito.titulo }}</h3>
+    <div *ngFor="let seccion of todasSecciones; let i = index" [formGroupName]="'seccion' + i">
+        <h3>{{ seccion.nombre }}</h3>
         <mat-accordion [multi]="true">
-            <mat-expansion-panel *ngFor="let pregunta of ambito.preguntas; let j = index"
+            <mat-expansion-panel *ngFor="let pregunta of seccion.items; let j = index"
                 class="custom-expansion-panel">
                 <mat-expansion-panel-header>
                     <mat-panel-title>
                         <!-- Ícono para hacer más llamativo el encabezado de la pregunta -->
-                        <mat-icon color="accent">help_outline</mat-icon> {{ pregunta.text }}
+                        <mat-icon color="accent">help_outline</mat-icon> {{ pregunta.nombre }}
                     </mat-panel-title>
                 </mat-expansion-panel-header>
 
