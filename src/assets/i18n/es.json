@@ -203,6 +203,9 @@
         "seleccione_filtro_reporte": "Seleccione las opciones de filtrado que desea para el reporte",
         "global": "Global",
         "mensaje_facultad": "Seleccione el nivel para el cual desea generar el reporte y las opciones de filtrado por Facultad",
-        "mensaje_global": "Seleccione el nivel para el cual desea generar el reporte y las opciones de filtrado Global"        
+        "mensaje_global": "Seleccione el nivel para el cual desea generar el reporte y las opciones de filtrado Global",
+        "periodo_academico": "Seleccione el periodo académico",     
+        "seleccionar_facultad": "Seleccione la facultad",
+        "seleccionar_proyecto_curricular": "Seleccione el proyecto curricular"
     }
 }

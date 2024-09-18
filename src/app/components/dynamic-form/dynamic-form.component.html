@@ -20,8 +20,8 @@
 
         <!-- Preguntas dentro de los ámbitos usando mat-accordion -->
         <mat-accordion [multi]="true">
-            <mat-expansion-panel *ngFor="let pregunta of ambito.preguntas; let j = index"
-                [expanded]="expandAllState[i]" class="custom-expansion-panel">
+            <mat-expansion-panel *ngFor="let pregunta of ambito.preguntas; let j = index" [expanded]="expandAllState[i]"
+                class="custom-expansion-panel">
                 <mat-expansion-panel-header>
                     <mat-panel-title>
                         <!-- Ícono para hacer más llamativo el encabezado de la pregunta -->
@@ -62,16 +62,17 @@
                     </mat-form-field>
                 </div>
 
-                <!-- Botón de descarga para preguntas de tipo "download" -->
+                <!-- Botón para descargar evidencias  -->
                 <div *ngIf="pregunta.tipo === 'download'">
-                    <button mat-raised-button color="primary" (click)="onDownload(pregunta.text)">
-                        <mat-icon>cloud_download</mat-icon> {{ pregunta.text }}
+                    <button mat-raised-button color="primary" (click)="downloadDocument()">
+                        <mat-icon>cloud_download</mat-icon> Descargar Evidencia
                     </button>
                 </div>
 
                 <!-- Botón para cargar evidencias justo después del enunciado -->
                 <div
                     *ngIf="pregunta.text === 'El cuerpo docente debe cargar el acta de co-evalaucion curricularen enste boton: '">
+                    <input type="file" (change)="handleFileInputChange($event)" />
                     <button mat-raised-button color="primary" (click)="cargarEvidencias()">
                         <mat-icon>upload</mat-icon> {{ coevaluacionI.botonCargarEvidencias }}
                     </button>
@@ -79,6 +80,7 @@
 
                 <!-- Botón para cargar evidencias en Autoevaluación II debajo del enunciado específico -->
                 <div *ngIf="pregunta.text === 'El cuerpo docente debe cargar las evidencias correspondientes:'">
+                    <input type="file" (change)="handleFileInputChange($event)" />
                     <button mat-raised-button color="primary" (click)="cargarEvidencias()">
                         <mat-icon>upload</mat-icon> Cargar Evidencias
                     </button>
@@ -100,7 +102,8 @@
     <div *ngFor="let ambito of ambitos; let i = index" [formGroupName]="'ambito_' + i">
         <h3>{{ ambito.titulo }}</h3>
         <mat-accordion [multi]="true">
-            <mat-expansion-panel *ngFor="let pregunta of ambito.preguntas; let j = index" class="custom-expansion-panel">
+            <mat-expansion-panel *ngFor="let pregunta of ambito.preguntas; let j = index"
+                class="custom-expansion-panel">
                 <mat-expansion-panel-header>
                     <mat-panel-title>
                         <!-- Ícono para hacer más llamativo el encabezado de la pregunta -->
@@ -138,9 +141,10 @@
                     </mat-form-field>
                 </div>
 
+                <!-- Botón para descargar evidencias  -->
                 <div *ngIf="pregunta.tipo === 'download'">
-                    <button mat-raised-button color="primary" (click)="onDownload(pregunta.text)">
-                        <mat-icon>cloud_download</mat-icon> {{ pregunta.text }}
+                    <button mat-raised-button color="primary" (click)="downloadDocument()">Descargar Documento
+                        <mat-icon>cloud_download</mat-icon> Descargar Evidencia
                     </button>
                 </div>
 

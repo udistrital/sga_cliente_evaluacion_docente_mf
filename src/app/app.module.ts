@@ -42,11 +42,15 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatSnackBarModule } from '@angular/material/snack-bar'; // Importar MatSnackBarModule
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { ResultadosComponent } from './components/resultados/resultados.component';
 import { NuxeoComponent } from './components/nuxeo/nuxeo.component';
 import { GestorDocumentalService } from './services/gestor-documental.service';
 import { DocumentoService } from './services/documento.service';
+import { ProyectoAcademicoService } from './services/proyecto_academico.service';
+import { OikosService } from 'src/app/services/oikos.service';
+
 import { DateService } from './services/date.service';
 
 export function createTranslateLoader(http: HttpClient) {
@@ -61,11 +65,12 @@ export function createTranslateLoader(http: HttpClient) {
     DefinirEscalasComponent,
     EvaluacionesComponent,
     NgIsGrantedDirective,
-    DynamicFormComponent,
-    NgIsGrantedDirective,
     MetricasComponent,
     NuxeoComponent,
-    ResultadosComponent
+    ResultadosComponent,
+    MetricasComponent,
+    ResultadosComponent,
+    DynamicFormComponent
   ],
   imports: [
     BrowserModule,
@@ -77,8 +82,7 @@ export function createTranslateLoader(http: HttpClient) {
     HttpClientModule,
     SpinnerUtilModule,
     MatRadioModule,
-    FormsModule,
-    CommonModule,
+    FormsModule,    
     BrowserModule,
     MatTabsModule,
     MatIconModule,
@@ -88,6 +92,7 @@ export function createTranslateLoader(http: HttpClient) {
     MatTableModule,
     MatDialogModule,
     MatSelectModule,
+    MatSnackBarModule,
     AppRoutingModule,
     MatCheckboxModule,
     MatFormFieldModule,
@@ -120,9 +125,11 @@ export function createTranslateLoader(http: HttpClient) {
     EventosService, 
     ParametrosService,
     AnyService,
+    ProyectoAcademicoService,
     UserService,
     GestorDocumentalService,
     DocumentoService,
+    OikosService,
     DateService,
     { provide: HTTP_INTERCEPTORS, useClass: SpinnerUtilInterceptor, multi: true }
   ],

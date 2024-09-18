@@ -7,6 +7,8 @@ import {
   Validators,
 } from "@angular/forms";
 import { MatStepper } from "@angular/material/stepper";
+import { DomSanitizer } from "@angular/platform-browser";
+import { Subject } from "rxjs/internal/Subject";
 import {
   HETEROEVALUACION,
   AUTOEVALUACION_I,
@@ -57,18 +59,22 @@ export class DynamicFormComponent implements OnInit {
   isFormView: boolean = false;
   coevaluacionI = COEVALUACION_I;
   expandAllState: boolean[] = [];
+  uploadedFileUid: string | null = null;
+  documentId: string | null = null;  
 
   @ViewChild("mainStepper") mainStepper!: MatStepper;
 
   constructor(
     private fb: FormBuilder,
-    private gestorService: GestorDocumentalService
+    private gestorService: GestorDocumentalService,
+    private gestorDocumentalService: GestorDocumentalService,
+    private sanitizer: DomSanitizer
   ) {}
 
   ngOnInit() {
     // Inicializar el formulario principal
     this.stepperForm = this.fb.group({});
-
+    this.documentId = '74';
     // Seleccionar el formulario por defecto para la vista inicial
     this.selectForm("heteroevaluacion"); // Se puede cambiar según las necesidades
   }
@@ -361,8 +367,45 @@ export class DynamicFormComponent implements OnInit {
       .toLowerCase();
   }
 
+  // Método para subir el archivo
   cargarEvidencias(): void {
-    this.uploadActa();
+    if (!this.actaFile) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Por favor selecciona un archivo para cargar.",
+      });
+      return;
+    }
+
+    const sendActa = {
+      IdDocumento: 74, // Este ID puede cambiar según el contexto
+      nombre: this.actaFile.name.split(".")[0],
+      metadatos: {
+        proyecto: "123", // Ajusta estos valores según los metadatos del sistema
+        plan_estudio: "12",
+        espacio_academico: "Espacio académico",
+      },
+      descripcion: "Acta de coevaluación",
+      file: this.actaFile,
+    };
+
+    this.gestorService.uploadFiles([sendActa]).subscribe({
+      next: () => {
+        Swal.fire({
+          icon: "success",
+          title: "Éxito",
+          text: "Archivo cargado correctamente.",
+        });
+      },
+      error: () => {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Ocurrió un error al cargar el archivo.",
+        });
+      },
+    });
   }
 
   getDropdownOptions(campo: string): string[] {
@@ -410,5 +453,30 @@ export class DynamicFormComponent implements OnInit {
   // Método para alternar la expansión de todas las preguntas de un ámbito
   toggleAll(index: number) {
     this.expandAllState[index] = !this.expandAllState[index];
+  }
+
+  // Método para manejar la descarga 
+  downloadDocument() {
+    if (this.documentId) {
+      this.gestorDocumentalService.getByUUID(this.documentId).subscribe(
+        (fileUrl: string) => {
+          const sanitizedUrl = this.sanitizer.bypassSecurityTrustUrl(fileUrl);
+          this.triggerDownload(sanitizedUrl as string);
+        },
+        (error: any) => {
+          console.error('Error downloading the document:', error);
+        }
+      );
+    } else {
+      console.error('Document ID not found');
+    }
+  }
+
+  triggerDownload(url: string) {
+    const link = document.createElement('a');
+    link.href = url;
+    link.target = '_blank';
+    link.download = 'documento.pdf';
+    link.click();
   }
 }
