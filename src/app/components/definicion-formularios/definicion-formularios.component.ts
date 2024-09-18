@@ -21,6 +21,7 @@ export class DefinicionFormulariosComponent implements OnInit {
   ];
   userRoles: string[] = [];
   dateHeader: string | undefined;
+  currentPcDate: string | undefined; // Nueva variable para la fecha del PC
   ROLES = ROLES;
   titles = [
     { title: 'definicion_formularios.titulo_roles', subtitle: 'definicion_formularios.sub_titulo_roles' },
@@ -39,13 +40,15 @@ export class DefinicionFormulariosComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {
+  ngOnInit(): void {    
+    this.currentPcDate = new Date().toLocaleString(); 
     this.userService.getUserRoles().then(roles => {
       this.userRoles = roles;
       this.dateService.getDateHeader().subscribe(
         (date: string) => {
           this.dateHeader = date;
-          console.log('DateHeader:', this.dateHeader);
+          console.log('Fecha del encabezado de la API:', this.dateHeader);
+          console.log('Fecha actual del PC:', this.currentPcDate);
         },
         (error: any) => console.error('Error al obtener el encabezado de fecha:', error)
       );               
