@@ -51,7 +51,7 @@ const routes: Routes = [
     component: NuxeoComponent },
   {
     path: 'dynamic-form',
-    canActivate: [AuthGuard],
+    //canActivate: [AuthGuard],
     component: DynamicFormComponent
   },
 ];

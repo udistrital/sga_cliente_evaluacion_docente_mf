@@ -47,6 +47,8 @@ import { ResultadosComponent } from './components/resultados/resultados.componen
 import { NuxeoComponent } from './components/nuxeo/nuxeo.component';
 import { GestorDocumentalService } from './services/gestor-documental.service';
 import { DocumentoService } from './services/documento.service';
+import { DocenteCrudService } from './services/docente-crud.service';
+import { DocenteMidService } from './services/docente-mid.service';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, environment.apiUrl + 'assets/i18n/', '.json');
@@ -122,6 +124,8 @@ export function createTranslateLoader(http: HttpClient) {
     UserService,
     GestorDocumentalService,
     DocumentoService,
+    DocenteMidService,
+    DocenteCrudService,
     { provide: HTTP_INTERCEPTORS, useClass: SpinnerUtilInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]

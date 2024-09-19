@@ -1,4 +1,10 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
+import {
+  Component,
+  Input,
+  OnInit,
+  SimpleChanges,
+  ViewChild,
+} from "@angular/core";
 import {
   AbstractControl,
   FormBuilder,
@@ -8,14 +14,8 @@ import {
 } from "@angular/forms";
 import { MatStepper } from "@angular/material/stepper";
 import { DomSanitizer } from "@angular/platform-browser";
-import { Subject } from "rxjs/internal/Subject";
-import {
-  HETEROEVALUACION,
-  AUTOEVALUACION_I,
-  AUTOEVALUACION_II,
-  COEVALUACION_I,
-  COEVALUACION_II,
-} from "src/app/models/formularios-data";
+
+import { DocenteMidService } from "src/app/services/docente-mid.service";
 import { GestorDocumentalService } from "src/app/services/gestor-documental.service";
 import Swal from "sweetalert2";
 
@@ -23,13 +23,17 @@ import Swal from "sweetalert2";
 interface Pregunta {
   text: string;
   tipo: string;
-  options: { valor: string; texto: string }[];
+  campos?: Array<{
+    tipo_campo: number;
+    escala: Array<{ valor: string; nombre: string }>;
+  }>;
 }
 
 interface Ambito {
   nombre: string;
   titulo: string;
   preguntas: Pregunta[];
+  items: Pregunta[];
 }
 
 interface Respuesta {
@@ -45,92 +49,153 @@ interface Respuesta {
 })
 export class DynamicFormComponent implements OnInit {
   stepperForm!: FormGroup; // Inicializa el FormGroup correctamente
-  formularios = [
-    HETEROEVALUACION,
-    AUTOEVALUACION_I,
-    AUTOEVALUACION_II,
-    COEVALUACION_I,
-    COEVALUACION_II,
-  ]; // Lista de formularios disponibles
-  selectedForm: any; // Variable para almacenar el formulario seleccionado
-  ambitos: Ambito[] = []; // Tipar los ámbitos correctamente
-  comentarioCounter = 1; // Contador para numerar los comentarios de forma continua
+  selectedForm: any;
+  ambitos: Ambito[] = [];
+  comentarioCounter = 1;
   actaFile: File | null = null;
   isFormView: boolean = false;
-  coevaluacionI = COEVALUACION_I;
+  //coevaluacionI = COEVALUACION_I;
   expandAllState: boolean[] = [];
   uploadedFileUid: string | null = null;
-  documentId: string | null = null;  
+  documentId: string | null = null;
 
   @ViewChild("mainStepper") mainStepper!: MatStepper;
+
+  @Input() formtype!: string;
 
   constructor(
     private fb: FormBuilder,
     private gestorService: GestorDocumentalService,
     private gestorDocumentalService: GestorDocumentalService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private docentemidservice: DocenteMidService
   ) {}
 
   ngOnInit() {
-    // Inicializar el formulario principal
     this.stepperForm = this.fb.group({});
-    this.documentId = '74';
-    // Seleccionar el formulario por defecto para la vista inicial
-    this.selectForm("heteroevaluacion"); // Se puede cambiar según las necesidades
+    if (this.formtype) {
+      this.loadFormulario(this.formtype);
+    }
   }
 
-  // Método para inicializar el formulario seleccionado
-  selectForm(tipo_formulario: string) {
-    this.stepperForm = this.fb.group({});
-    this.selectedForm = this.formularios.find(
-      (f) => f.tipo_formulario === tipo_formulario
-    );
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes["formtype"] && changes["formtype"].currentValue) {
+      this.loadFormulario(changes["formtype"].currentValue);
+    }
+  }
 
-    if (this.selectedForm) {
-      this.ambitos = this.selectedForm.ambitos;
+  private getFormTypeId(formtype: string): number {
+    switch (formtype) {
+      case "autoevaluacion-ii":
+        return 5;
+      case "autoevaluacion-i":
+        return 4;
+      case "heteroevaluacion":
+        return 3;
+      case "coevaluacion-ii":
+        return 2;
+      case "coevaluacion-i":
+        return 1;
+      default:
+        return 0; // Caso por defecto, puede ajustarse
+    }
+  }
 
-      // Inicializamos el estado de expansión para cada ámbito
-      this.expandAllState = this.ambitos.map(() => false);
+  loadFormulario(tipo_formulario: string) {
+    const id_tipo_formulario = this.getFormTypeId(tipo_formulario);
 
-      // Convertir preguntas de tipo 'select' a 'radio' para los formularios de Heteroevaluación y Autoevaluación I
-      if (
-        tipo_formulario === "heteroevaluacion" ||
-        tipo_formulario === "autoevaluacion-i"
-      ) {
-        this.ambitos.forEach((ambito) => {
-          ambito.preguntas.forEach((pregunta) => {
-            if (pregunta.tipo === "select") {
-              pregunta.tipo = "radio"; // Convertimos 'select' a 'radio'
-            }
-          });
-        });
-      }
+    if (id_tipo_formulario === 0) {
+      console.warn("Tipo de formulario no válido");
+      return;
+    }
 
-      // Mostrar el botón "Cargar Evidencias" al final de los ámbitos 1, 2 y 3 del formulario "Autoevaluación II"
-      if (tipo_formulario === "autoevaluacion-ii") {
-        this.ambitos.forEach((ambito, index) => {
-          // Mostrar el botón solo en los ámbitos 1, 2 y 3
-          if (index === 0 || index === 1 || index === 2) {
-            ambito.preguntas.push({
-              text: "El cuerpo docente debe cargar las evidencias correspondientes:",
-              tipo: "boton",
-              options: [],
+    this.docentemidservice
+      .obtenerFormulario(id_tipo_formulario)
+      .subscribe((data) => {
+        if (data && data.seccion) {
+          console.log("Datos recibidos del servicio:", data);
+
+          // Procesar las secciones y generar los ámbitos (cualitativa, cuantitativa, descripcion)
+          const secciones = data.seccion;
+          this.ambitos = [];
+
+          if (secciones.cualitativa) {
+            this.ambitos.push(secciones.cualitativa);
+          }
+          if (secciones.cuantitativa) {
+            this.ambitos.push(secciones.cuantitativa);
+          }
+          if (secciones.descripcion) {
+            this.ambitos.push(secciones.descripcion);
+          }
+
+          // Validar que cada ítem tenga las propiedades correctas antes de construir el formulario
+          this.ambitos.forEach((ambito) => {
+            ambito.items.forEach((item) => {
+              console.log(`Verificando item: ${item.text}`, item);
             });
+          });
+
+          this.buildForm(); // Construir el formulario
+        } else {
+          console.log(
+            "No se recibieron datos del backend o los datos no tienen el formato esperado"
+          );
+        }
+      });
+  }
+
+  buildForm() {
+    this.stepperForm = this.fb.group({}); // Crear un nuevo FormGroup
+
+    this.ambitos.forEach((ambito, index) => {
+      const group = this.fb.group({}); // Crear un FormGroup por cada ámbito
+
+      if (ambito.items) {
+        ambito.items.forEach((item: any) => {
+          const controlName = this.generateControlName(
+            item.nombre || item.text
+          ); // Generar el nombre del control, usando 'text' o 'nombre'
+
+          // Verificar si el nombre del control es válido
+          if (controlName.startsWith("control_sin_nombre")) {
+            console.warn(
+              "No se puede generar un control válido para la pregunta:",
+              item
+            );
+            return; // Saltar este ítem si no tiene un nombre válido
+          }
+
+          // Crear controles según el tipo de campo
+          if (
+            item.campos &&
+            item.campos.length > 0 &&
+            item.campos[0].tipo_campo === 1
+          ) {
+            // Escalas (tipo_campo === 1)
+            group.addControl(
+              `pregunta_${controlName}`,
+              this.fb.control("", Validators.required)
+            );
+          } else {
+            // Para otros tipos de campos (si aplica)
+            group.addControl(`pregunta_${controlName}`, this.fb.control(""));
           }
         });
       }
 
-      // Inicializar el formulario específico de Coevaluación II si se selecciona ese formulario
-      if (tipo_formulario === "coevaluacion-ii") {
-        this.initializeCoevaluacionIIForm();
-      }
+      this.stepperForm.addControl(`ambito_${index}`, group); // Añadir el grupo de ámbito al formulario principal
+    });
+  }
 
-      // Inicializar el formulario dinámico
-      this.initializeForm();
+  // Método para inicializar el formulario seleccionado
+  selectForm(tipo_formulario: string) {
+    // Limpiar el formulario antes de cargar uno nuevo
+    this.stepperForm = this.fb.group({});
+    this.ambitos = []; // Reinicia los ámbitos para evitar mostrar datos anteriores
 
-      // Inicializamos el estado expandido de las preguntas
-      this.expandAllState = this.ambitos.map(() => false); // Inicialmente, todas las preguntas están colapsadas
-    }
+    // Cargar el formulario desde el backend utilizando el servicio
+    this.loadFormulario(tipo_formulario);
   }
 
   // Método para inicializar el formulario específico de Coevaluación II
@@ -138,16 +203,16 @@ export class DynamicFormComponent implements OnInit {
     this.ambitos.forEach((ambito: Ambito, index: number) => {
       const group = this.fb.group({});
 
-      ambito.preguntas.forEach((pregunta: Pregunta) => {
-        // Si no hay texto o es un tipo de pregunta que no requiere input, no creamos el control
-        if (!pregunta.text || pregunta.tipo === "download") {
+      ambito.items.forEach((item: Pregunta) => {
+        // Usar 'items'
+        if (!item.text || item.tipo === "download") {
           console.warn(
-            `Pregunta sin texto o de tipo ${pregunta.tipo} no necesita control.`
+            `Item sin texto o de tipo ${item.tipo} no necesita control.`
           );
           return;
         }
 
-        const controlName = this.generateControlName(pregunta.text);
+        const controlName = this.generateControlName(item.text);
         group.addControl(`pregunta_${controlName}`, this.fb.control(""));
       });
 
@@ -178,41 +243,46 @@ export class DynamicFormComponent implements OnInit {
   // Inicializa el formulario dinámico creando los controles para cada pregunta
   initializeForm() {
     this.ambitos.forEach((ambito: Ambito, index: number) => {
-      const group = this.fb.group({});
+      const group = this.fb.group({}); // Crear un grupo de control para el ámbito
 
-      ambito.preguntas.forEach((pregunta: Pregunta) => {
-        // Si la pregunta no tiene texto o es de tipo 'download', lo ignoramos
-        if (!pregunta.text || pregunta.tipo === "download") {
+      ambito.items.forEach((item: Pregunta) => {
+        if (!item.text || item.tipo === "download") {
           console.log(
-            `Pregunta sin texto o de tipo download encontrada en ámbito: ${ambito.titulo}`
+            `Item sin texto o de tipo download encontrado en ámbito: ${ambito.nombre}`
           );
-          return; // No creamos un control para estas preguntas
+          return; // No se crean controles para ítems de tipo descarga o sin texto
         }
 
-        const controlName = this.generateControlName(pregunta.text);
+        const controlName = this.generateControlName(item.text);
 
-        // Si es una pregunta de tipo 'radio', agregamos el control con validación requerida
-        if (pregunta.tipo === "radio") {
-          group.addControl(
-            `pregunta_${controlName}`,
-            this.fb.control("", Validators.required)
-          );
-        }
-        // Si es una pregunta de tipo 'input' o 'textarea', simplemente agregamos el control
-        else if (pregunta.tipo === "input" || pregunta.tipo === "textarea") {
-          group.addControl(`pregunta_${controlName}`, this.fb.control(""));
-        }
-        // Para otros tipos, como 'checkbox' u 'options', también se pueden agregar controles aquí
-        else if (pregunta.tipo === "checkbox") {
-          group.addControl(`pregunta_${controlName}`, this.fb.control(false));
-        } else {
-          // En caso de un tipo no especificado, agregar un control por defecto
-          group.addControl(`pregunta_${controlName}`, this.fb.control(""));
+        // Crear controles según el tipo de pregunta
+        switch (item.tipo) {
+          case "radio":
+            group.addControl(
+              `pregunta_${controlName}`,
+              this.fb.control("", Validators.required)
+            );
+            break;
+          case "input":
+          case "textarea":
+            group.addControl(
+              `pregunta_${controlName}`,
+              this.fb.control("", Validators.required)
+            );
+            break;
+          case "checkbox":
+            group.addControl(`pregunta_${controlName}`, this.fb.control(false));
+            break;
+          case "file":
+            group.addControl(`pregunta_${controlName}`, this.fb.control(null)); // Para archivos, si es necesario
+            break;
+          default:
+            group.addControl(`pregunta_${controlName}`, this.fb.control("")); // Control por defecto
+            break;
         }
       });
 
-      // Agregamos el conjunto de preguntas para el ámbito actual al formulario
-      this.stepperForm.addControl(`ambito_${index}`, group);
+      this.stepperForm.addControl(`ambito_${index}`, group); // Añadir el grupo de ámbito al formulario principal
     });
   }
 
@@ -234,15 +304,16 @@ export class DynamicFormComponent implements OnInit {
       Swal.fire({
         icon: "error",
         title: "Error",
-        text: "Por favor seleccione un archivo para cargar.",
+        text: "Por favor selecciona un archivo para cargar.",
       });
       return;
     }
+
     const sendActa = {
-      IdDocumento: 74,
+      IdDocumento: 74, // Este ID puede cambiar según sea necesario en tu contexto
       nombre: this.actaFile.name.split(".")[0],
       metadatos: {
-        proyecto: "123",
+        proyecto: "123", // Debes ajustar estos valores según tu lógica de negocio
         plan_estudio: "12",
         espacio_academico: "Espacio académico",
       },
@@ -299,7 +370,7 @@ export class DynamicFormComponent implements OnInit {
   ) {
     const control = this.getFormControl(
       ambitoIndex,
-      `pregunta_${this.ambitos[ambitoIndex].preguntas[preguntaIndex].text}`
+      `pregunta_${this.ambitos[ambitoIndex].items[preguntaIndex].text}` // Cambia preguntas por items
     );
 
     // Si la respuesta es válida (se ha seleccionado una opción)
@@ -340,9 +411,9 @@ export class DynamicFormComponent implements OnInit {
   }
 
   generateResponseData(): Respuesta[] {
-    const respuestas: Respuesta[] = []; // Tipado explícito de la variable respuestas
+    const respuestas: Respuesta[] = [];
     this.ambitos.forEach((ambito, i) => {
-      ambito.preguntas.forEach((pregunta, j) => {
+      ambito.items.forEach((pregunta, j) => {
         const controlName = this.generateControlName(pregunta.text);
         const control = this.stepperForm.get(
           `ambito_${i}.pregunta_${controlName}`
@@ -360,11 +431,62 @@ export class DynamicFormComponent implements OnInit {
   }
 
   // Función para transformar un texto en una clave válida (remueve espacios y caracteres especiales)
-  generateControlName(text: string): string {
-    // Verificamos si el texto es undefined o null, en ese caso devolvemos un valor por defecto
-    return (text || "pregunta_sin_texto")
-      .replace(/[^a-zA-Z0-9]/g, "_")
-      .toLowerCase();
+  /**
+   * Generar un nombre de control basado en el texto (remueve espacios y caracteres especiales).
+   */
+  generateControlName(text: string | null): string {
+    if (!text || text.trim() === "") {
+      console.warn(
+        "El texto proporcionado para generar el control está vacío o no es válido"
+      );
+      return "control_sin_nombre_" + Math.random().toString(36).substring(2, 7); // Generar un nombre aleatorio
+    }
+    return text.replace(/[^a-zA-Z0-9]/g, "_").toLowerCase();
+  }
+
+  // Método para renderizar las preguntas dependiendo de su tipo
+  renderQuestion(question: Pregunta, form: FormGroup, controlName: string) {
+    switch (question.tipo) {
+      case "radio":
+        return this.renderRadioQuestion(question, form, controlName);
+      case "input":
+        return this.renderInputQuestion(question, form, controlName);
+      case "checkbox":
+        return this.renderCheckboxQuestion(question, form, controlName);
+      default:
+        return null;
+    }
+  }
+
+  // Métodos para manejar las preguntas de tipo radio, input y checkbox
+  renderRadioQuestion(question: any, form: FormGroup, controlName: string) {
+    return `
+      <mat-radio-group [formControlName]="${controlName}">
+        ${question.options
+          .map(
+            (option: any) =>
+              `<mat-radio-button [value]="${option.valor}">${option.texto}</mat-radio-button>`
+          )
+          .join("")}
+      </mat-radio-group>
+    `;
+  }
+
+  renderInputQuestion(question: any, form: FormGroup, controlName: string) {
+    return `
+      <mat-form-field appearance="fill">
+        <mat-label>${question.text}</mat-label>
+        <input matInput [formControlName]="${controlName}">
+      </mat-form-field>
+    `;
+  }
+
+  renderCheckboxQuestion(question: any, form: FormGroup, controlName: string) {
+    return `
+      <mat-checkbox [formControlName]="${controlName}">
+        ${question.text}
+      </mat-checkbox>
+    `;
   }
 
   // Método para subir el archivo
@@ -455,7 +577,7 @@ export class DynamicFormComponent implements OnInit {
     this.expandAllState[index] = !this.expandAllState[index];
   }
 
-  // Método para manejar la descarga 
+  // Método para manejar la descarga
   downloadDocument() {
     if (this.documentId) {
       this.gestorDocumentalService.getByUUID(this.documentId).subscribe(
@@ -464,19 +586,19 @@ export class DynamicFormComponent implements OnInit {
           this.triggerDownload(sanitizedUrl as string);
         },
         (error: any) => {
-          console.error('Error downloading the document:', error);
+          console.error("Error downloading the document:", error);
         }
       );
     } else {
-      console.error('Document ID not found');
+      console.error("Document ID not found");
     }
   }
 
   triggerDownload(url: string) {
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = url;
-    link.target = '_blank';
-    link.download = 'documento.pdf';
+    link.target = "_blank";
+    link.download = "documento.pdf";
     link.click();
   }
 }

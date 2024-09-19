@@ -12,6 +12,11 @@ export class DocenteCrudService {
         return this.requestManager.get(endpoint);
     }
 
+    getItemsFormulario(idFormulario: string) {
+        const endpoint = `item?formularioId=${idFormulario}`;
+        return this.get(endpoint);
+    }    
+
     post(endpoint: string, element: any) {
         this.requestManager.setPath('EVALUACION_DOCENTE_CRUD');
         return this.requestManager.post(endpoint, element);
@@ -26,4 +31,7 @@ export class DocenteCrudService {
         this.requestManager.setPath('EVALUACION_DOCENTE_CRUD');
         return this.requestManager.delete(endpoint, element.Id);
     }
+
+    //put para actualizar la fehca de modificacion
+    
 }

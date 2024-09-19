@@ -5,54 +5,51 @@
     <mat-form-field style="width: 100%" floatLabel="always">
         <mat-label>{{ 'HOME.SELECT' | translate }}</mat-label>
         <mat-select id="tipo-evaluacion" [(value)]="selectedEvaluation" (selectionChange)="onSelectChange($event)">
-            <mat-option value="">
-                {{ 'definicion_formularios.seleccione' | translate }}
-            </mat-option>
-            <mat-option value="heteroevaluacion">
-                {{ 'heteroevaluacion.titulo' | translate }}
-            </mat-option>
-            <mat-option value="autoevaluacion-i">
-                {{ 'autoevaluacion_i.titulo' | translate }}
-            </mat-option>
-            <mat-option value="autoevaluacion-ii">
-                {{ 'autoevaluacion_ii.titulo' | translate }}
-            </mat-option>
-            <mat-option value="coevaluacion-i">
-                {{ 'coevaluacion_i.titulo' | translate }}
-            </mat-option>
-            <mat-option value="coevaluacion-ii">
-                {{ 'coevaluacion_ii.titulo' | translate }}
-            </mat-option>
+            <mat-option value="">{{ 'definicion_formularios.seleccione' | translate }}</mat-option>
+
+            <!-- Admin SGA puede ver todas las evaluaciones -->
+            <mat-option *ngIf="hasRole([ROLES.ADMIN_SGA, ROLES.ESTUDIANTE])" value="heteroevaluacion">{{
+                'heteroevaluacion.titulo' | translate }}</mat-option>
+            <mat-option *ngIf="hasRole([ROLES.ADMIN_SGA, ROLES.ESTUDIANTE])" value="autoevaluacion-i">{{
+                'autoevaluacion_i.titulo' | translate }}</mat-option>
+            <mat-option *ngIf="hasRole([ROLES.ADMIN_SGA, ROLES.DOCENTE])" value="autoevaluacion-ii">{{
+                'autoevaluacion_ii.titulo' | translate }}</mat-option>
+            <mat-option *ngIf="hasRole([ROLES.ADMIN_SGA, ROLES.DOCENTE])" value="coevaluacion-i">{{
+                'coevaluacion_i.titulo' | translate }}</mat-option>
+            <mat-option *ngIf="hasRole([ROLES.ADMIN_SGA])" value="coevaluacion-ii">{{
+                'coevaluacion_ii.titulo' | translate }}</mat-option>
         </mat-select>
     </mat-form-field>
 
-
-    <!-- Formulario de Heteroevaluación -->
-    <ng-container *ngIf="selectedEvaluation === 'heteroevaluacion'">
-        <div *ngIf="hasRole([ROLES.ESTUDIANTE, ROLES.ADMIN_SGA, ROLES.ADMIN_DOCENCIA])" class="form-container">
+    <!-- Formulario estático de Heteroevaluación -->
+    <ng-container *ngIf="selectedEvaluation === 'heteroevaluacion' && hasRole([ROLES.ESTUDIANTE, ROLES.ADMIN_SGA])">
+        <div class="form-container">
             <h2>{{ 'heteroevaluacion.titulo' | translate }}</h2>
             <form [formGroup]="heteroForm" (ngSubmit)="onGuardar()" class="evaluation-form">
                 <div class="form-grid2">
+                    <!-- Campo de fecha de inicio -->
                     <div class="form-col1">
                         <mat-form-field style="width: 100%" floatLabel="always" appearance="fill">
                             <mat-label>{{ 'heteroevaluacion.fechas' | translate }}</mat-label>
-                            <input matInput [matDatepicker]="pickerInicio" formControlName="inicioFecha"
+                            <input matInput [matDatepicker]="pickerInicio1" formControlName="inicioFecha"
                                 placeholder="dd/MM/yyyy">
-                            <mat-datepicker-toggle matSuffix [for]="pickerInicio"></mat-datepicker-toggle>
-                            <mat-datepicker #pickerInicio></mat-datepicker>
+                            <mat-datepicker-toggle matSuffix [for]="pickerInicio1"></mat-datepicker-toggle>
+                            <mat-datepicker #pickerInicio1></mat-datepicker>
                             <mat-error
                                 *ngIf="heteroForm.get('inicioFecha')?.hasError('required') && heteroForm.get('inicioFecha')?.touched">
                                 {{ 'heteroevaluacion.error_fecha_inicio' | translate }}
                             </mat-error>
                         </mat-form-field>
                     </div>
+
+                    <!-- Campo de fecha de fin -->
                     <div class="form-col1">
                         <mat-form-field style="width: 100%" floatLabel="always" appearance="fill">
                             <mat-label>{{ 'heteroevaluacion.fechas' | translate }}</mat-label>
-                            <input matInput [matDatepicker]="pickerFin" formControlName="finFecha"
+                            <input matInput [matDatepicker]="pickerFin1" formControlName="finFecha"
                                 placeholder="dd/MM/yyyy">
-                            <mat-datepicker-toggle matSuffix [for]="pickerFin"></mat-datepicker-toggle>
-                            <mat-datepicker #pickerFin></mat-datepicker>
+                            <mat-datepicker-toggle matSuffix [for]="pickerFin1"></mat-datepicker-toggle>
+                            <mat-datepicker #pickerFin1></mat-datepicker>
                             <mat-error
                                 *ngIf="heteroForm.get('finFecha')?.hasError('required') && heteroForm.get('finFecha')?.touched">
                                 {{ 'heteroevaluacion.error_fecha_fin' | translate }}
@@ -61,6 +58,7 @@
                     </div>
                 </div>
 
+                <!-- Otros campos específicos -->
                 <div class="form-grid2">
                     <div class="form-col1">
                         <mat-form-field style="width: 100%" floatLabel="always">
@@ -78,19 +76,18 @@
                             </mat-error>
                         </mat-form-field>
                     </div>
+
                     <div class="form-col1">
                         <mat-form-field style="width: 100%" floatLabel="always">
-                            <mat-label>{{ 'coevaluacion_ii.docente' | translate }}</mat-label>
+                            <mat-label>{{ 'heteroevaluacion.docente' | translate }}</mat-label>
                             <mat-select formControlName="docenteNombre">
                                 <mat-option value="" disabled>Seleccione un docente</mat-option>
-                                <mat-option value="docente1">{{ 'coevaluacion_ii.nombre_docente' | translate }}
-                                    1</mat-option>
-                                <mat-option value="docente2">{{ 'coevaluacion_ii.nombre_docente' | translate }}
-                                    2</mat-option>
+                                <mat-option value="docente1">{{ 'heteroevaluacion.docente1' | translate }}</mat-option>
+                                <mat-option value="docente2">{{ 'heteroevaluacion.docente2' | translate }}</mat-option>
                             </mat-select>
                             <mat-error
                                 *ngIf="heteroForm.get('docenteNombre')?.hasError('required') && heteroForm.get('docenteNombre')?.touched">
-                                {{ 'coevaluacion_ii.error_docente' | translate }}
+                                {{ 'heteroevaluacion.error_docente' | translate }}
                             </mat-error>
                         </mat-form-field>
                     </div>
@@ -106,15 +103,15 @@
                             {{ 'heteroevaluacion.error_descripcion' | translate }}
                         </mat-error>
                     </mat-form-field>
-
                 </div>
+
             </form>
         </div>
     </ng-container>
 
     <!-- Formulario de Coevaluación II -->
-    <ng-container *ngIf="selectedEvaluation === 'coevaluacion-ii'">
-        <div *ngIf="hasRole([ROLES.DOCENTE, ROLES.ADMIN_SGA, ROLES.ADMIN_DOCENCIA])" class="form-container">
+    <ng-container *ngIf="selectedEvaluation === 'coevaluacion-ii' && hasRole([ROLES.ADMIN_SGA])">
+        <div class="form-container">
             <h2>{{ 'coevaluacion_ii.titulo' | translate }}</h2>
             <form [formGroup]="coevaluacionIIForm" (ngSubmit)="onGuardar()" class="evaluation-form">
                 <div class="form-grid2">
@@ -202,8 +199,8 @@
     </ng-container>
 
     <!-- Formulario de Coevaluación I -->
-    <ng-container *ngIf="selectedEvaluation === 'coevaluacion-i'">
-        <div *ngIf="hasRole([ROLES.ADMIN_SGA, ROLES.ADMIN_DOCENCIA])" class="form-container">
+    <ng-container *ngIf="selectedEvaluation === 'coevaluacion-i' && hasRole([ROLES.DOCENTE, ROLES.ADMIN_SGA])">
+        <div class="form-container">
             <h2>{{ 'coevaluacion_i.titulo' | translate }}</h2>
             <form [formGroup]="coevaluacionIForm" (ngSubmit)="onGuardar()" class="evaluation-form">
                 <div class="form-grid2">
@@ -310,8 +307,8 @@
     </ng-container>
 
     <!-- Formulario de Autoevaluación II -->
-    <ng-container *ngIf="selectedEvaluation === 'autoevaluacion-ii'">
-        <div *ngIf="hasRole([ROLES.DOCENTE, ROLES.ADMIN_SGA, ROLES.ADMIN_DOCENCIA])" class="form-container">
+    <ng-container *ngIf="selectedEvaluation === 'autoevaluacion-ii' && hasRole([ROLES.DOCENTE, ROLES.ADMIN_SGA])">
+        <div class="form-container">
             <h2>{{ 'autoevaluacion_ii.titulo' | translate }}</h2>
             <form [formGroup]="autoevaluacionIIForm" (ngSubmit)="onGuardar()" class="evaluation-form">
                 <div class="form-grid2">
@@ -407,8 +404,8 @@
     </ng-container>
 
     <!-- Formulario de Autoevaluación I -->
-    <ng-container *ngIf="selectedEvaluation === 'autoevaluacion-i'">
-        <div *ngIf="hasRole([ROLES.ESTUDIANTE, ROLES.ADMIN_SGA, ROLES.ADMIN_DOCENCIA])" class="form-container">
+    <ng-container *ngIf="selectedEvaluation === 'autoevaluacion-i' && hasRole([ROLES.ESTUDIANTE, ROLES.ADMIN_SGA])">
+        <div class="form-container">
             <h2>{{ 'autoevaluacion_i.titulo' | translate }}</h2>
             <form [formGroup]="autoevaluacionIForm" (ngSubmit)="onGuardar()" class="evaluation-form">
                 <div class="form-grid2">
@@ -504,26 +501,4 @@
             </form>
         </div>
     </ng-container>
-
-    <!-- Mostrar el formulario dinámico correspondiente según la evaluación seleccionada -->
-    <ng-container *ngIf="selectedEvaluation === 'heteroevaluacion'">
-        <ngx-dynamic-form [formtype]="'heteroevaluacion'"></ngx-dynamic-form>
-    </ng-container>
-
-    <ng-container *ngIf="selectedEvaluation === 'autoevaluacion-i'">
-        <ngx-dynamic-form [formtype]="'autoevaluacion-i'"></ngx-dynamic-form>
-    </ng-container>
-
-    <ng-container *ngIf="selectedEvaluation === 'autoevaluacion-ii'">
-        <ngx-dynamic-form [formtype]="'autoevaluacion-ii'"></ngx-dynamic-form>
-    </ng-container>
-
-    <ng-container *ngIf="selectedEvaluation === 'coevaluacion-i'">
-        <ngx-dynamic-form [formtype]="'coevaluacion-i'"></ngx-dynamic-form>
-    </ng-container>
-
-    <ng-container *ngIf="selectedEvaluation === 'coevaluacion-ii'">
-        <ngx-dynamic-form [formtype]="'coevaluacion-ii'"></ngx-dynamic-form>
-    </ng-container>
-
 </div>
