@@ -65,18 +65,15 @@
                     <div class="form-col1">
                         <mat-form-field style="width: 100%" floatLabel="always">
                             <mat-label>{{ 'heteroevaluacion.proyecto_curricular' | translate }}</mat-label>
-                            <mat-select formControlName="proyectoCurricular">
-                                <mat-option value="" disabled>Seleccione un proyecto</mat-option>
-                                <mat-option value="proyecto1">{{ 'heteroevaluacion.proyecto1' | translate
-                                    }}</mat-option>
-                                <mat-option value="proyecto2">{{ 'heteroevaluacion.proyecto2' | translate
-                                    }}</mat-option>
+                            <mat-select (selectionChange)="onProyectoSelection($event)" required>                                
+                              <mat-option *ngFor="let item of proyectos?.opciones" [value]="item">
+                                {{ item.Nombre }}
+                              </mat-option>
                             </mat-select>
-                            <mat-error
-                                *ngIf="heteroForm.get('proyectoCurricular')?.hasError('required') && heteroForm.get('proyectoCurricular')?.touched">
-                                {{ 'heteroevaluacion.error_proyecto' | translate }}
+                            <mat-error *ngIf="heteroForm.get('facultad')?.hasError('required') && heteroForm.get('facultad')?.touched">
+                              {{ 'heteroevaluacion.error_proyecto' | translate }}
                             </mat-error>
-                        </mat-form-field>
+                          </mat-form-field>                                                   
                     </div>
                     <div class="form-col1">
                         <mat-form-field style="width: 100%" floatLabel="always">
@@ -148,14 +145,16 @@
 
                 <div class="form-col1">
                     <mat-form-field style="width: 100%" floatLabel="always">
-                        <mat-label>{{ 'coevaluacion_ii.proyecto_curricular' | translate }}</mat-label>
-                        <input matInput type="text" formControlName="proyectoCurricular"
-                            placeholder="Proyecto Curricular">
-                        <mat-error
-                            *ngIf="coevaluacionIIForm.get('proyectoCurricular')?.hasError('required') && coevaluacionIIForm.get('proyectoCurricular')?.touched">
-                            {{ 'coevaluacion_ii.error_proyecto' | translate }}
+                        <mat-label>{{ 'heteroevaluacion.proyecto_curricular' | translate }}</mat-label>
+                        <mat-select (selectionChange)="onProyectoSelection($event)" required>                                
+                          <mat-option *ngFor="let item of proyectos?.opciones" [value]="item">
+                            {{ item.Nombre }}
+                          </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="heteroForm.get('facultad')?.hasError('required') && heteroForm.get('facultad')?.touched">
+                          {{ 'heteroevaluacion.error_proyecto' | translate }}
                         </mat-error>
-                    </mat-form-field>
+                      </mat-form-field>
                 </div>
 
                 <div class="form-col1">
@@ -177,13 +176,16 @@
 
                 <div class="form-col1">
                     <mat-form-field style="width: 100%" floatLabel="always">
-                        <mat-label>{{ 'coevaluacion_ii.espacio_academico' | translate }}</mat-label>
-                        <input matInput type="text" formControlName="espacioAcademico" placeholder="Espacio Académico">
-                        <mat-error
-                            *ngIf="coevaluacionIIForm.get('espacioAcademico')?.hasError('required') && coevaluacionIIForm.get('espacioAcademico')?.touched">
-                            {{ 'coevaluacion_ii.error_espacio_academico' | translate }}
+                        <mat-label>{{ 'autoevaluacion_ii.espacio1' | translate }}</mat-label>
+                        <mat-select formControlName="espacioAcademico" required>
+                          <mat-option *ngFor="let espacio of espacios_academicos" [value]="espacio.nombre">
+                            {{ espacio.nombre }}
+                          </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="autoevaluacionIIForm.get('espacioAcademico')?.hasError('required') && autoevaluacionIIForm.get('espacioAcademico')?.touched">
+                          {{ 'autoevaluacion_ii.error_espacio1' | translate }}
                         </mat-error>
-                    </mat-form-field>
+                      </mat-form-field>
                 </div>
 
                 <div class="form-col1">
@@ -238,31 +240,29 @@
                 <div class="form-grid2">
                     <div class="form-col1">
                         <mat-form-field style="width: 100%" floatLabel="always">
-                            <mat-label>{{ 'coevaluacion_i.proyecto_curricular' | translate }}</mat-label>
-                            <mat-select formControlName="proyectoCurricular">
-                                <mat-option value="" disabled>Seleccione un proyecto</mat-option>
-                                <mat-option value="proyecto1">{{ 'coevaluacion_i.proyecto' | translate }} 1</mat-option>
-                                <mat-option value="proyecto2">{{ 'coevaluacion_i.proyecto' | translate }} 2</mat-option>
+                            <mat-label>{{ 'heteroevaluacion.proyecto_curricular' | translate }}</mat-label>
+                            <mat-select (selectionChange)="onProyectoSelection($event)" required>                                
+                              <mat-option *ngFor="let item of proyectos?.opciones" [value]="item">
+                                {{ item.Nombre }}
+                              </mat-option>
                             </mat-select>
-                            <mat-error
-                                *ngIf="coevaluacionIForm.get('proyectoCurricular')?.hasError('required') && coevaluacionIForm.get('proyectoCurricular')?.touched">
-                                {{ 'coevaluacion_i.error_proyecto' | translate }}
+                            <mat-error *ngIf="heteroForm.get('facultad')?.hasError('required') && heteroForm.get('facultad')?.touched">
+                              {{ 'heteroevaluacion.error_proyecto' | translate }}
                             </mat-error>
-                        </mat-form-field>
+                          </mat-form-field> 
                     </div>
                     <div class="form-col1">
                         <mat-form-field style="width: 100%" floatLabel="always">
-                            <mat-label>{{ 'coevaluacion_i.espacio_academico' | translate }}</mat-label>
-                            <mat-select formControlName="espacioAcademico">
-                                <mat-option value="" disabled>Seleccione un espacio académico</mat-option>
-                                <mat-option value="espacio1">{{ 'coevaluacion_i.espacio' | translate }} 1</mat-option>
-                                <mat-option value="espacio2">{{ 'coevaluacion_i.espacio' | translate }} 2</mat-option>
+                            <mat-label>{{ 'autoevaluacion_ii.espacio1' | translate }}</mat-label>
+                            <mat-select formControlName="espacioAcademico" required>
+                              <mat-option *ngFor="let espacio of espacios_academicos" [value]="espacio.nombre">
+                                {{ espacio.nombre }}
+                              </mat-option>
                             </mat-select>
-                            <mat-error
-                                *ngIf="coevaluacionIForm.get('espacioAcademico')?.hasError('required') && coevaluacionIForm.get('espacioAcademico')?.touched">
-                                {{ 'coevaluacion_i.error_espacio' | translate }}
+                            <mat-error *ngIf="autoevaluacionIIForm.get('espacioAcademico')?.hasError('required') && autoevaluacionIIForm.get('espacioAcademico')?.touched">
+                              {{ 'autoevaluacion_ii.error_espacio1' | translate }}
                             </mat-error>
-                        </mat-form-field>
+                          </mat-form-field>
                     </div>
                 </div>
 
@@ -371,23 +371,28 @@
                 <div class="form-grid2">
                     <div class="form-col1">
                         <mat-form-field style="width: 100%" floatLabel="always">
-                            <mat-label>{{ 'autoevaluacion_ii.proyecto1' | translate }}</mat-label>
-                            <input matInput type="text" formControlName="proyectoCurricular"
-                                placeholder="Proyecto Curricular">
-                            <mat-error
-                                *ngIf="autoevaluacionIIForm.get('proyectoCurricular')?.hasError('required') && autoevaluacionIIForm.get('proyectoCurricular')?.touched">
-                                {{ 'autoevaluacion_ii.error_proyecto1' | translate }}
+                            <mat-label>{{ 'heteroevaluacion.proyecto_curricular' | translate }}</mat-label>
+                            <mat-select (selectionChange)="onProyectoSelection($event)" required>                                
+                              <mat-option *ngFor="let item of proyectos?.opciones" [value]="item">
+                                {{ item.Nombre }}
+                              </mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="heteroForm.get('facultad')?.hasError('required') && heteroForm.get('facultad')?.touched">
+                              {{ 'heteroevaluacion.error_proyecto' | translate }}
                             </mat-error>
-                        </mat-form-field>
-                        <mat-form-field style="width: 100%" floatLabel="always">
+                          </mat-form-field>  
+                          <mat-form-field style="width: 100%" floatLabel="always">
                             <mat-label>{{ 'autoevaluacion_ii.espacio1' | translate }}</mat-label>
-                            <textarea matInput formControlName="espacioAcademico"
-                                placeholder="Espacio Académico"></textarea>
-                            <mat-error
-                                *ngIf="autoevaluacionIIForm.get('espacioAcademico')?.hasError('required') && autoevaluacionIIForm.get('espacioAcademico')?.touched">
-                                {{ 'autoevaluacion_ii.error_espacio1' | translate }}
+                            <mat-select formControlName="espacioAcademico" required>
+                              <mat-option *ngFor="let espacio of espacios_academicos" [value]="espacio.nombre">
+                                {{ espacio.nombre }}
+                              </mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="autoevaluacionIIForm.get('espacioAcademico')?.hasError('required') && autoevaluacionIIForm.get('espacioAcademico')?.touched">
+                              {{ 'autoevaluacion_ii.error_espacio1' | translate }}
                             </mat-error>
-                        </mat-form-field>
+                          </mat-form-field>
+                          
                     </div>
                 </div>
 
@@ -468,25 +473,29 @@
                 <div class="form-grid2">
                     <div class="form-col1">
                         <mat-form-field style="width: 100%" floatLabel="always">
-                            <mat-label>{{ 'autoevaluacion_i.proyecto1' | translate }}</mat-label>
-                            <input matInput type="text" formControlName="proyectoCurricular"
-                                placeholder="Proyecto Curricular">
-                            <mat-error
-                                *ngIf="autoevaluacionIForm.get('proyectoCurricular')?.hasError('required') && autoevaluacionIForm.get('proyectoCurricular')?.touched">
-                                {{ 'autoevaluacion_i.error_proyecto1' | translate }}
+                            <mat-label>{{ 'heteroevaluacion.proyecto_curricular' | translate }}</mat-label>
+                            <mat-select (selectionChange)="onProyectoSelection($event)" required>                                
+                              <mat-option *ngFor="let item of proyectos?.opciones" [value]="item">
+                                {{ item.Nombre }}
+                              </mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="heteroForm.get('facultad')?.hasError('required') && heteroForm.get('facultad')?.touched">
+                              {{ 'heteroevaluacion.error_proyecto' | translate }}
                             </mat-error>
-                        </mat-form-field>
+                          </mat-form-field> 
                     </div>
                     <div class="form-col1">
                         <mat-form-field style="width: 100%" floatLabel="always">
-                            <mat-label>{{ 'autoevaluacion_i.proyecto2' | translate }}</mat-label>
-                            <input matInput type="text" formControlName="proyectoCurricular2"
-                                placeholder="Proyecto Curricular 2">
-                            <mat-error
-                                *ngIf="autoevaluacionIForm.get('proyectoCurricular2')?.hasError('required') && autoevaluacionIForm.get('proyectoCurricular2')?.touched">
-                                {{ 'autoevaluacion_i.error_proyecto2' | translate }}
+                            <mat-label>{{ 'heteroevaluacion.proyecto_curricular' | translate }}</mat-label>
+                            <mat-select (selectionChange)="onProyectoSelection($event)" required>                                
+                              <mat-option *ngFor="let item of proyectos?.opciones" [value]="item">
+                                {{ item.Nombre }}
+                              </mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="heteroForm.get('facultad')?.hasError('required') && heteroForm.get('facultad')?.touched">
+                              {{ 'heteroevaluacion.error_proyecto' | translate }}
                             </mat-error>
-                        </mat-form-field>
+                          </mat-form-field> 
                     </div>
                 </div>
 

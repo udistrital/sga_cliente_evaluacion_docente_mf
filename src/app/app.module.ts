@@ -50,6 +50,7 @@ import { GestorDocumentalService } from './services/gestor-documental.service';
 import { DocumentoService } from './services/documento.service';
 import { ProyectoAcademicoService } from './services/proyecto_academico.service';
 import { OikosService } from 'src/app/services/oikos.service';
+import { EspaciosAcademicosService } from './services/espacios_academicos.service';
 
 
 export function createTranslateLoader(http: HttpClient) {
@@ -129,6 +130,7 @@ export function createTranslateLoader(http: HttpClient) {
     GestorDocumentalService,
     DocumentoService,
     OikosService,
+    EspaciosAcademicosService,
     { provide: HTTP_INTERCEPTORS, useClass: SpinnerUtilInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
