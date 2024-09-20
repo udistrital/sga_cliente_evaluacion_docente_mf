@@ -18,7 +18,7 @@ export class EvaluacionesComponent implements OnInit {
   selectedEvaluation: string = "";
   showModal = false;
   userRoles: string[] = [];
-  isFieldDisabled: boolean = true;  // o false, dependiendo de la lógica
+  isFieldDisabled: boolean = true; // o false, dependiendo de la lógica
   ROLES = ROLES;
   heteroForm: FormGroup;
   coevaluacionIIForm: FormGroup;
@@ -42,10 +42,9 @@ export class EvaluacionesComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Verificar si el persona_id existe en el localStorage
+    
     let storedPersonaId = localStorage.getItem("persona_id");
 
-    // Si no existe persona_id en el localStorage, lo configuramos con un valor por defecto (94)
     if (!storedPersonaId) {
       console.warn(
         "No se encontró persona_id, estableciendo 94 como valor por defecto."
@@ -61,7 +60,6 @@ export class EvaluacionesComponent implements OnInit {
 
     console.log("EvaluacionesComponent initialized");
 
-    // Verificar si el persona_id existe en el localStorage
     if (!storedPersonaId) {
       console.error("Persona ID no encontrado en localStorage.");
       Swal.fire({
@@ -69,7 +67,7 @@ export class EvaluacionesComponent implements OnInit {
         title: "Error",
         text: "No se ha encontrado el ID de persona. Por favor, inicia sesión de nuevo.",
       });
-      return; // Si no hay persona_id, terminamos la ejecución
+      return;
     }
 
     // Obtener roles del usuario
@@ -80,6 +78,16 @@ export class EvaluacionesComponent implements OnInit {
 
     // Cargar datos de identificación del usuario
     this.loadUserData();
+
+    // Obtener el código del estudiante y mostrarlo en la consola
+    this.userService
+      .getCodigoEstudiante()
+      .then((codigo) => {
+        console.log("Código del estudiante:", codigo);
+      })
+      .catch((error) => {
+        console.error("Error al obtener el código del estudiante:", error);
+      });
   }
 
   // Cargar datos de identificación del usuario actual

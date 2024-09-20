@@ -18,6 +18,19 @@ export class UserService {
         });
     }
 
+    // Nueva función para obtener el código del estudiante
+    public getCodigoEstudiante(): Promise<string> {
+        return new Promise((resolve, reject) => {
+            const encryptedCodigo = localStorage.getItem('codigo');
+            const codigo = decrypt(encryptedCodigo);
+            if (codigo) {
+                resolve(codigo);
+            } else {
+                reject(new Error('No student code found'));
+            }
+        });
+    }
+
     private decodeUser(): any {
         const strUser = localStorage.getItem("user");
         if (strUser === null || strUser === "") {

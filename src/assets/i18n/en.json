@@ -1,17 +1,15 @@
 {
     
-    "GLOBAL": {
-        "atencion": "Attention",
-        "aceptar": "Accept",
-        "cancelar": "Cancel"
-    },
-    
     "HOME": {
         "TITLE": "SGA",
         "SELECT": "Select evaluation type",
         "LOGIN": "Login",
         "LOGOUT": "Logout",
-        "THEME": "Theme"
+        "THEME": "Theme",
+        "seleccione": "Select",
+        "atencion": "Attention",
+        "aceptar": "Accept",
+        "cancelar": "Cancel"
     },
 
     "GLOBAL":{
@@ -83,11 +81,13 @@
         "proyecto_curricular": "Curricular Project",
         "proyecto1": "Curricular project name 1",
         "proyecto2": "Curricular project name 2",
-        "descripcion_proceso": "Process description and user guidance",
+        "descripcion_proceso": "Process description",
         "descripcion": "Description",
-        "formulario": "Corresponding form",
-        "formulario_placeholder": "Corresponding form",
-        "guardar": "Save"
+        "error_fecha_inicio": "Please enter the start date.",
+        "error_fecha_fin": "Please enter the end date.",
+        "error_proyecto": "Please select a project.",
+        "error_docente": "Please select a teacher.",
+        "error_descripcion": "Please enter a description."
     },
 
     "autoevaluacion_i": {
@@ -95,18 +95,18 @@
         "fechas": "Dates",
         "inicio": "Start",
         "fin": "End",
-        "estudiante": "Student",
         "nombre_estudiante": "Student's Name",
         "identificacion_estudiante": "Student Identification",
         "identificacion": "Identification",
         "proyecto_curricular": "Curricular Project",
         "proyecto1": "Curricular project name 1",
         "proyecto2": "Curricular project name 2",
-        "descripcion_proceso": "Process description and user guidance",
+        "descripcion_proceso": "Process description",
         "descripcion": "Description",
-        "formulario": "Corresponding form",
-        "formulario_placeholder": "Corresponding form",
-        "guardar": "Save"
+        "error_fecha_inicio": "Please enter the start date.",
+        "error_fecha_fin": "Please enter the end date.",
+        "error_proyecto": "Please select a project.",
+        "error_descripcion": "Please enter a description."
     },
 
     "coevaluacion_i": {
@@ -115,15 +115,15 @@
         "inicio": "Start",
         "fin": "End",
         "proyecto_curricular": "Curricular Project",
-        "proyecto": "Project",
+        "error_proyecto": "Please select a curricular project.",
         "espacio_academico": "Academic Space",
-        "espacio": "Academic space",
-        "descripcion_proceso": "Process description and user guidance",
-        "descripcion": "Description",
-        "formulario": "Corresponding form",
-        "formulario_placeholder": "Corresponding form",
-        "guardar": "Save",
-        "grupo": "Student Group"
+        "error_espacio": "Please select an academic space.",
+        "docente": "Teacher's Name",
+        "error_docente": "Please enter the teacher's name.",
+        "grupo": "Group",
+        "error_grupo": "Please select a group.",
+        "descripcion_proceso": "Process description",
+        "error_descripcion": "Please enter a process description."
     },
 
     "autoevaluacion_ii": {
@@ -132,22 +132,17 @@
         "inicio": "Start",
         "fin": "End",
         "nombre_docente": "Teacher's Name",
-        "nombre": "Teacher's Name",
         "identificacion_docente": "Teacher Identification",
         "identificacion": "Identification",
         "proyecto_curricular": "Curricular Project",
-        "proyecto1": "Curricular project name 1",
-        "proyecto2": "Curricular project name 2",
-        "proyectoN": "Curricular project name n",
-        "espacios_academicos": "Academic Spaces",
-        "espacio1": "List of academic spaces associated with the teacher and the curricular project",
-        "espacio2": "List of academic spaces associated with the teacher and the curricular project",
-        "espacioN": "List of n academic spaces associated with the teacher and the curricular project",
-        "descripcion_proceso": "Process description and user guidance",
+        "espacio_academico": "Academic Space",
+        "descripcion_proceso": "Process description",
         "descripcion": "Description",
-        "formulario": "Corresponding form",
-        "formulario_placeholder": "Corresponding form",
-        "guardar": "Save"
+        "error_fecha_inicio": "Please enter the start date.",
+        "error_fecha_fin": "Please enter the end date.",
+        "error_proyecto": "Please select a project.",
+        "error_espacio_academico": "Please select an academic space.",
+        "error_descripcion": "Please enter a description."
     },
     
     "coevaluacion_ii": {
@@ -156,17 +151,17 @@
         "inicio": "Start",
         "fin": "End",
         "proyecto_curricular": "Curricular Project",
-        "proyecto": "Project",
-        "docente": "Teacher",
-        "nombre_docente": "Teacher's Name",
+        "proyecto": "Indicate your curricular project",
+        "error_proyecto": "Please select a curricular project.",
         "espacio_academico": "Academic Space",
-        "espacio": "Academic space",
-        "descripcion_proceso": "Process description and user guidance",
-        "descripcion": "Description",
-        "formulario": "Corresponding form",
-        "formulario_placeholder": "Corresponding form",
-        "guardar": "Save"
+        "espacio": "Indicate your curricular area",
+        "error_espacio_academico": "Please select an academic space.",
+        "docente": "Teacher's Name",
+        "error_docente": "Please enter the teacher's name.",
+        "descripcion_proceso": "Process description",
+        "error_descripcion": "Please enter a process description."
     },
+
     "metricas":{
         "metricas": "Metrics",
         "tipo_reporte": "Report type",
