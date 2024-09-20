@@ -58,6 +58,27 @@
                     </div>
                 </div>
 
+                <!-- Campos estáticos de Nombre e Identificación -->
+                <div class="form-grid2">
+                    <div class="form-col1">
+                        <mat-form-field style="width: 100%" floatLabel="always">
+                            <mat-label>{{ 'autoevaluacion_i.estudiante' | translate }}</mat-label>
+                            <input matInput type="text" formControlName="estudianteNombre"
+                                placeholder="Nombre del estudiante" matInput [disabled]="isFieldDisabled">
+
+                        </mat-form-field>
+                    </div>
+
+                    <div class="form-col1">
+                        <mat-form-field style="width: 100%" floatLabel="always">
+                            <mat-label>{{ 'autoevaluacion_i.identificacion_estudiante' | translate }}</mat-label>
+                            <input matInput type="text" formControlName="estudianteIdentificacion"
+                                placeholder="Identificación del estudiante" matInput [disabled]="isFieldDisabled">
+
+                        </mat-form-field>
+                    </div>
+                </div>
+
                 <!-- Otros campos específicos -->
                 <div class="form-grid2">
                     <div class="form-col1">
@@ -104,7 +125,6 @@
                         </mat-error>
                     </mat-form-field>
                 </div>
-
             </form>
         </div>
     </ng-container>
@@ -115,6 +135,7 @@
             <h2>{{ 'coevaluacion_ii.titulo' | translate }}</h2>
             <form [formGroup]="coevaluacionIIForm" (ngSubmit)="onGuardar()" class="evaluation-form">
                 <div class="form-grid2">
+                    <!-- Campo de fecha de inicio -->
                     <div class="form-col1">
                         <mat-form-field style="width: 100%" floatLabel="always" appearance="fill">
                             <mat-label>{{ 'coevaluacion_ii.fechas' | translate }}</mat-label>
@@ -128,6 +149,8 @@
                             </mat-error>
                         </mat-form-field>
                     </div>
+
+                    <!-- Campo de fecha de fin -->
                     <div class="form-col1">
                         <mat-form-field style="width: 100%" floatLabel="always" appearance="fill">
                             <mat-label>{{ 'coevaluacion_ii.fechas' | translate }}</mat-label>
@@ -143,44 +166,43 @@
                     </div>
                 </div>
 
-                <div class="form-col1">
-                    <mat-form-field style="width: 100%" floatLabel="always">
-                        <mat-label>{{ 'coevaluacion_ii.proyecto_curricular' | translate }}</mat-label>
-                        <input matInput type="text" formControlName="proyectoCurricular"
-                            placeholder="Proyecto Curricular">
-                        <mat-error
-                            *ngIf="coevaluacionIIForm.get('proyectoCurricular')?.hasError('required') && coevaluacionIIForm.get('proyectoCurricular')?.touched">
-                            {{ 'coevaluacion_ii.error_proyecto' | translate }}
-                        </mat-error>
-                    </mat-form-field>
+                <!-- Campos estáticos de Nombre e Identificación -->
+                <div class="form-grid2">
+                    <div class="form-col1">
+                        <mat-form-field style="width: 100%" floatLabel="always">
+                            <mat-label>{{ 'autoevaluacion_ii.docente' | translate }}</mat-label>
+                            <input matInput type="text" formControlName="docenteNombre" placeholder="Nombre del docente"
+                            matInput [disabled]="isFieldDisabled">
+
+                        </mat-form-field>
+                    </div>
                 </div>
 
-                <div class="form-col1">
-                    <mat-form-field style="width: 100%" floatLabel="always">
-                        <mat-label>{{ 'coevaluacion_ii.docente' | translate }}</mat-label>
-                        <mat-select formControlName="docenteNombre">
-                            <mat-option value="" disabled>Seleccione un docente</mat-option>
-                            <mat-option value="docente1">{{ 'coevaluacion_ii.nombre_docente' | translate }}
-                                1</mat-option>
-                            <mat-option value="docente2">{{ 'coevaluacion_ii.nombre_docente' | translate }}
-                                2</mat-option>
-                        </mat-select>
-                        <mat-error
-                            *ngIf="coevaluacionIIForm.get('docenteNombre')?.hasError('required') && coevaluacionIIForm.get('docenteNombre')?.touched">
-                            {{ 'coevaluacion_ii.error_docente' | translate }}
-                        </mat-error>
-                    </mat-form-field>
-                </div>
+                <!-- Otros campos específicos -->
+                <div class="form-grid2">
+                    <div class="form-col1">
+                        <mat-form-field style="width: 100%" floatLabel="always">
+                            <mat-label>{{ 'coevaluacion_ii.proyecto_curricular' | translate }}</mat-label>
+                            <input matInput type="text" formControlName="proyectoCurricular"
+                                placeholder="Proyecto Curricular">
+                            <mat-error
+                                *ngIf="coevaluacionIIForm.get('proyectoCurricular')?.hasError('required') && coevaluacionIIForm.get('proyectoCurricular')?.touched">
+                                {{ 'coevaluacion_ii.error_proyecto' | translate }}
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
 
-                <div class="form-col1">
-                    <mat-form-field style="width: 100%" floatLabel="always">
-                        <mat-label>{{ 'coevaluacion_ii.espacio_academico' | translate }}</mat-label>
-                        <input matInput type="text" formControlName="espacioAcademico" placeholder="Espacio Académico">
-                        <mat-error
-                            *ngIf="coevaluacionIIForm.get('espacioAcademico')?.hasError('required') && coevaluacionIIForm.get('espacioAcademico')?.touched">
-                            {{ 'coevaluacion_ii.error_espacio_academico' | translate }}
-                        </mat-error>
-                    </mat-form-field>
+                    <div class="form-col1">
+                        <mat-form-field style="width: 100%" floatLabel="always">
+                            <mat-label>{{ 'coevaluacion_ii.espacio_academico' | translate }}</mat-label>
+                            <input matInput type="text" formControlName="espacioAcademico"
+                                placeholder="Espacio Académico">
+                            <mat-error
+                                *ngIf="coevaluacionIIForm.get('espacioAcademico')?.hasError('required') && coevaluacionIIForm.get('espacioAcademico')?.touched">
+                                {{ 'coevaluacion_ii.error_espacio_academico' | translate }}
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
                 </div>
 
                 <div class="form-col1">
@@ -198,12 +220,14 @@
         </div>
     </ng-container>
 
+
     <!-- Formulario de Coevaluación I -->
     <ng-container *ngIf="selectedEvaluation === 'coevaluacion-i' && hasRole([ROLES.DOCENTE, ROLES.ADMIN_SGA])">
         <div class="form-container">
             <h2>{{ 'coevaluacion_i.titulo' | translate }}</h2>
             <form [formGroup]="coevaluacionIForm" (ngSubmit)="onGuardar()" class="evaluation-form">
                 <div class="form-grid2">
+                    <!-- Campo de fecha de inicio -->
                     <div class="form-col1">
                         <mat-form-field style="width: 100%" floatLabel="always" appearance="fill">
                             <mat-label>{{ 'coevaluacion_i.fechas' | translate }}</mat-label>
@@ -217,6 +241,8 @@
                             </mat-error>
                         </mat-form-field>
                     </div>
+
+                    <!-- Campo de fecha de fin -->
                     <div class="form-col1">
                         <mat-form-field style="width: 100%" floatLabel="always" appearance="fill">
                             <mat-label>{{ 'coevaluacion_i.fechas' | translate }}</mat-label>
@@ -232,6 +258,19 @@
                     </div>
                 </div>
 
+                <!-- Campos estáticos de Nombre e Identificación -->
+                <div class="form-grid2">
+                    <div class="form-col1">
+                        <mat-form-field style="width: 100%" floatLabel="always">
+                            <mat-label>{{ 'autoevaluacion_ii.docente' | translate }}</mat-label>
+                            <input matInput type="text" formControlName="docenteNombre" placeholder="Nombre del docente"
+                            matInput [disabled]="isFieldDisabled">
+
+                        </mat-form-field>
+                    </div>
+                </div>
+
+                <!-- Otros campos específicos -->
                 <div class="form-grid2">
                     <div class="form-col1">
                         <mat-form-field style="width: 100%" floatLabel="always">
@@ -247,6 +286,7 @@
                             </mat-error>
                         </mat-form-field>
                     </div>
+
                     <div class="form-col1">
                         <mat-form-field style="width: 100%" floatLabel="always">
                             <mat-label>{{ 'coevaluacion_i.espacio_academico' | translate }}</mat-label>
@@ -266,15 +306,16 @@
                 <div class="form-grid2">
                     <div class="form-col1">
                         <mat-form-field style="width: 100%" floatLabel="always">
-                            <mat-label>{{ 'coevaluacion_ii.docente' | translate }}</mat-label>
+                            <mat-label>{{ 'coevaluacion_i.docente' | translate }}</mat-label>
                             <input matInput type="text" formControlName="docenteNombre"
                                 placeholder="Nombre del docente">
                             <mat-error
                                 *ngIf="coevaluacionIForm.get('docenteNombre')?.hasError('required') && coevaluacionIForm.get('docenteNombre')?.touched">
-                                {{ 'coevaluacion_ii.error_docente' | translate }}
+                                {{ 'coevaluacion_i.error_docente' | translate }}
                             </mat-error>
                         </mat-form-field>
                     </div>
+
                     <div class="form-col1">
                         <mat-form-field style="width: 100%" floatLabel="always">
                             <mat-label>{{ 'definicion_formularios.procesos_seleccionar' | translate }}</mat-label>
@@ -312,6 +353,7 @@
             <h2>{{ 'autoevaluacion_ii.titulo' | translate }}</h2>
             <form [formGroup]="autoevaluacionIIForm" (ngSubmit)="onGuardar()" class="evaluation-form">
                 <div class="form-grid2">
+                    <!-- Campo de fecha de inicio -->
                     <div class="form-col1">
                         <mat-form-field style="width: 100%" floatLabel="always" appearance="fill">
                             <mat-label>{{ 'autoevaluacion_ii.fechas' | translate }}</mat-label>
@@ -325,6 +367,8 @@
                             </mat-error>
                         </mat-form-field>
                     </div>
+
+                    <!-- Campo de fecha de fin -->
                     <div class="form-col1">
                         <mat-form-field style="width: 100%" floatLabel="always" appearance="fill">
                             <mat-label>{{ 'autoevaluacion_ii.fechas' | translate }}</mat-label>
@@ -340,49 +384,47 @@
                     </div>
                 </div>
 
+                <!-- Campos estáticos de Nombre e Identificación -->
                 <div class="form-grid2">
                     <div class="form-col1">
                         <mat-form-field style="width: 100%" floatLabel="always">
-                            <mat-label>{{ 'autoevaluacion_ii.nombre_docente' | translate }}</mat-label>
-                            <input matInput type="text" formControlName="docenteNombre"
-                                placeholder="Nombre del docente">
-                            <mat-error
-                                *ngIf="autoevaluacionIIForm.get('docenteNombre')?.hasError('required') && autoevaluacionIIForm.get('docenteNombre')?.touched">
-                                {{ 'autoevaluacion_ii.error_docente_nombre' | translate }}
-                            </mat-error>
+                            <mat-label>{{ 'autoevaluacion_ii.docente' | translate }}</mat-label>
+                            <input matInput type="text" formControlName="docenteNombre" placeholder="Nombre del docente"
+                                matInput [disabled]="isFieldDisabled">
                         </mat-form-field>
                     </div>
+
                     <div class="form-col1">
                         <mat-form-field style="width: 100%" floatLabel="always">
                             <mat-label>{{ 'autoevaluacion_ii.identificacion_docente' | translate }}</mat-label>
                             <input matInput type="text" formControlName="docenteIdentificacion"
-                                placeholder="Identificación del docente">
-                            <mat-error
-                                *ngIf="autoevaluacionIIForm.get('docenteIdentificacion')?.hasError('required') && autoevaluacionIIForm.get('docenteIdentificacion')?.touched">
-                                {{ 'autoevaluacion_ii.error_docente_identificacion' | translate }}
-                            </mat-error>
+                                placeholder="Identificación del docente" matInput [disabled]="isFieldDisabled">
                         </mat-form-field>
                     </div>
                 </div>
 
+                <!-- Otros campos específicos -->
                 <div class="form-grid2">
                     <div class="form-col1">
                         <mat-form-field style="width: 100%" floatLabel="always">
-                            <mat-label>{{ 'autoevaluacion_ii.proyecto1' | translate }}</mat-label>
+                            <mat-label>{{ 'autoevaluacion_ii.proyecto_curricular' | translate }}</mat-label>
                             <input matInput type="text" formControlName="proyectoCurricular"
                                 placeholder="Proyecto Curricular">
                             <mat-error
                                 *ngIf="autoevaluacionIIForm.get('proyectoCurricular')?.hasError('required') && autoevaluacionIIForm.get('proyectoCurricular')?.touched">
-                                {{ 'autoevaluacion_ii.error_proyecto1' | translate }}
+                                {{ 'autoevaluacion_ii.error_proyecto' | translate }}
                             </mat-error>
                         </mat-form-field>
+                    </div>
+
+                    <div class="form-col1">
                         <mat-form-field style="width: 100%" floatLabel="always">
-                            <mat-label>{{ 'autoevaluacion_ii.espacio1' | translate }}</mat-label>
-                            <textarea matInput formControlName="espacioAcademico"
-                                placeholder="Espacio Académico"></textarea>
+                            <mat-label>{{ 'autoevaluacion_ii.espacio_academico' | translate }}</mat-label>
+                            <input matInput type="text" formControlName="espacioAcademico"
+                                placeholder="Espacio Académico">
                             <mat-error
                                 *ngIf="autoevaluacionIIForm.get('espacioAcademico')?.hasError('required') && autoevaluacionIIForm.get('espacioAcademico')?.touched">
-                                {{ 'autoevaluacion_ii.error_espacio1' | translate }}
+                                {{ 'autoevaluacion_ii.error_espacio_academico' | translate }}
                             </mat-error>
                         </mat-form-field>
                     </div>
@@ -403,12 +445,14 @@
         </div>
     </ng-container>
 
+
     <!-- Formulario de Autoevaluación I -->
     <ng-container *ngIf="selectedEvaluation === 'autoevaluacion-i' && hasRole([ROLES.ESTUDIANTE, ROLES.ADMIN_SGA])">
         <div class="form-container">
             <h2>{{ 'autoevaluacion_i.titulo' | translate }}</h2>
             <form [formGroup]="autoevaluacionIForm" (ngSubmit)="onGuardar()" class="evaluation-form">
                 <div class="form-grid2">
+                    <!-- Campo de fecha de inicio -->
                     <div class="form-col1">
                         <mat-form-field style="width: 100%" floatLabel="always" appearance="fill">
                             <mat-label>{{ 'autoevaluacion_i.fechas' | translate }}</mat-label>
@@ -422,6 +466,8 @@
                             </mat-error>
                         </mat-form-field>
                     </div>
+
+                    <!-- Campo de fecha de fin -->
                     <div class="form-col1">
                         <mat-form-field style="width: 100%" floatLabel="always" appearance="fill">
                             <mat-label>{{ 'autoevaluacion_i.fechas' | translate }}</mat-label>
@@ -437,56 +483,28 @@
                     </div>
                 </div>
 
+                <!-- Campos estáticos de Nombre e Identificación -->
                 <div class="form-grid2">
                     <div class="form-col1">
                         <mat-form-field style="width: 100%" floatLabel="always">
                             <mat-label>{{ 'autoevaluacion_i.estudiante' | translate }}</mat-label>
                             <input matInput type="text" formControlName="estudianteNombre"
-                                placeholder="Nombre del estudiante">
-                            <mat-error
-                                *ngIf="autoevaluacionIForm.get('estudianteNombre')?.hasError('required') && autoevaluacionIForm.get('estudianteNombre')?.touched">
-                                {{ 'autoevaluacion_i.error_estudiante' | translate }}
-                            </mat-error>
+                                placeholder="Nombre del estudiante" matInput [disabled]="isFieldDisabled">
+
                         </mat-form-field>
                     </div>
+
                     <div class="form-col1">
                         <mat-form-field style="width: 100%" floatLabel="always">
                             <mat-label>{{ 'autoevaluacion_i.identificacion_estudiante' | translate }}</mat-label>
                             <input matInput type="text" formControlName="estudianteIdentificacion"
-                                placeholder="Identificación del estudiante">
-                            <mat-error
-                                *ngIf="autoevaluacionIForm.get('estudianteIdentificacion')?.hasError('required') && autoevaluacionIForm.get('estudianteIdentificacion')?.touched">
-                                {{ 'autoevaluacion_i.error_identificacion_estudiante' | translate }}
-                            </mat-error>
+                                placeholder="Identificación del estudiante" matInput [disabled]="isFieldDisabled">
+
                         </mat-form-field>
                     </div>
                 </div>
 
-                <div class="form-grid2">
-                    <div class="form-col1">
-                        <mat-form-field style="width: 100%" floatLabel="always">
-                            <mat-label>{{ 'autoevaluacion_i.proyecto1' | translate }}</mat-label>
-                            <input matInput type="text" formControlName="proyectoCurricular"
-                                placeholder="Proyecto Curricular">
-                            <mat-error
-                                *ngIf="autoevaluacionIForm.get('proyectoCurricular')?.hasError('required') && autoevaluacionIForm.get('proyectoCurricular')?.touched">
-                                {{ 'autoevaluacion_i.error_proyecto1' | translate }}
-                            </mat-error>
-                        </mat-form-field>
-                    </div>
-                    <div class="form-col1">
-                        <mat-form-field style="width: 100%" floatLabel="always">
-                            <mat-label>{{ 'autoevaluacion_i.proyecto2' | translate }}</mat-label>
-                            <input matInput type="text" formControlName="proyectoCurricular2"
-                                placeholder="Proyecto Curricular 2">
-                            <mat-error
-                                *ngIf="autoevaluacionIForm.get('proyectoCurricular2')?.hasError('required') && autoevaluacionIForm.get('proyectoCurricular2')?.touched">
-                                {{ 'autoevaluacion_i.error_proyecto2' | translate }}
-                            </mat-error>
-                        </mat-form-field>
-                    </div>
-                </div>
-
+                <!-- Otros campos específicos -->
                 <div class="form-col1">
                     <mat-form-field style="width: 100%" floatLabel="always">
                         <mat-label>{{ 'autoevaluacion_i.descripcion_proceso' | translate }}</mat-label>

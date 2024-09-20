@@ -6,6 +6,7 @@ import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import * as moment from "moment";
 import { DocenteMidService } from "src/app/services/docente-mid.service";
 import Swal from "sweetalert2";
+import { TercerosCrudService } from "src/app/services/terceros-crud.service";
 
 @Component({
   selector: "app-evaluaciones",
@@ -17,6 +18,7 @@ export class EvaluacionesComponent implements OnInit {
   selectedEvaluation: string = "";
   showModal = false;
   userRoles: string[] = [];
+  isFieldDisabled: boolean = true;  // o false, dependiendo de la lógica
   ROLES = ROLES;
   heteroForm: FormGroup;
   coevaluacionIIForm: FormGroup;
@@ -26,7 +28,12 @@ export class EvaluacionesComponent implements OnInit {
 
   @Input() formtype: string = "";
 
-  constructor(private fb: FormBuilder, private userService: UserService, private docenteMidService: DocenteMidService) {
+  constructor(
+    private fb: FormBuilder,
+    private userService: UserService,
+    private docenteMidService: DocenteMidService,
+    private tercerosCrudService: TercerosCrudService
+  ) {
     this.heteroForm = this.fb.group({});
     this.coevaluacionIIForm = this.fb.group({});
     this.coevaluacionIForm = this.fb.group({});
@@ -35,14 +42,133 @@ export class EvaluacionesComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log("EvaluacionesComponent initialized");
+    // Verificar si el persona_id existe en el localStorage
+    let storedPersonaId = localStorage.getItem("persona_id");
+
+    // Si no existe persona_id en el localStorage, lo configuramos con un valor por defecto (94)
+    if (!storedPersonaId) {
+      console.warn(
+        "No se encontró persona_id, estableciendo 94 como valor por defecto."
+      );
+      localStorage.setItem("persona_id", "94");
+      storedPersonaId = "94";
+    }
+
+    console.log("persona_id encontrado:", storedPersonaId);
+
+    // Inicializar los formularios
     this.initializeForms();
+
+    console.log("EvaluacionesComponent initialized");
+
+    // Verificar si el persona_id existe en el localStorage
+    if (!storedPersonaId) {
+      console.error("Persona ID no encontrado en localStorage.");
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "No se ha encontrado el ID de persona. Por favor, inicia sesión de nuevo.",
+      });
+      return; // Si no hay persona_id, terminamos la ejecución
+    }
 
     // Obtener roles del usuario
     this.userService.getUserRoles().then((roles) => {
       this.userRoles = roles;
       console.log("User roles loaded:", this.userRoles);
     });
+
+    // Cargar datos de identificación del usuario
+    this.loadUserData();
+  }
+
+  // Cargar datos de identificación del usuario actual
+  // Cargar datos de identificación del usuario actual
+  loadUserData() {
+    // Intentar obtener el ID de la persona desde el servicio de usuario
+    this.userService
+      .getPersonaId()
+      .then((personaId) => {
+        if (!personaId) {
+          console.error(
+            "No se encontró el ID de la persona. Verifica si el usuario está autenticado correctamente."
+          );
+          return;
+        }
+
+        // Llamar al servicio para obtener los datos de identificación usando el personaId
+        this.tercerosCrudService
+          .getDatosIdentificacionPorTercero(personaId)
+          .subscribe(
+            (data) => {
+              if (data && data.length > 0) {
+                const datosIdentificacion = data[0]; // Asumimos que se devuelve un solo resultado
+
+                // Filtramos los campos requeridos
+                const filteredData = {
+                  CodigoAbreviacion:
+                    datosIdentificacion.TipoDocumentoId?.CodigoAbreviacion,
+                  Id: datosIdentificacion.TerceroId?.Id,
+                  NombreCompleto: datosIdentificacion.TerceroId?.NombreCompleto,
+                  Activo: datosIdentificacion.Activo,
+                  Numero: datosIdentificacion.Numero,
+                  DocumentoSoporte: datosIdentificacion.DocumentoSoporte,
+                };
+
+                // Verificamos si el tercero está activo
+                if (filteredData.Activo) {
+                  // Rellenar el formulario de Heteroevaluación
+                  this.heteroForm.patchValue({
+                    estudianteNombre: filteredData.NombreCompleto,
+                    estudianteIdentificacion: filteredData.Numero,
+                  });
+
+                  // Rellenar el formulario de Autoevaluación I
+                  this.autoevaluacionIForm.patchValue({
+                    estudianteNombre: filteredData.NombreCompleto,
+                    estudianteIdentificacion: filteredData.Numero,
+                  });
+
+                  // Rellenar el formulario de Autoevaluación II
+                  this.autoevaluacionIIForm.patchValue({
+                    docenteNombre: filteredData.NombreCompleto,
+                    docenteIdentificacion: filteredData.Numero,
+                  });
+
+                  // Rellenar el formulario de Coevaluación I
+                  this.coevaluacionIForm.patchValue({
+                    docenteNombre: filteredData.NombreCompleto,
+                  });
+
+                  // Rellenar el formulario de Coevaluación II
+                  this.coevaluacionIIForm.patchValue({
+                    docenteNombre: filteredData.NombreCompleto,
+                  });
+
+                  console.log(
+                    "Datos de identificación filtrados y cargados:",
+                    filteredData
+                  );
+                } else {
+                  console.warn("El usuario no está activo.");
+                }
+              } else {
+                console.warn(
+                  "No se encontraron datos de identificación para el usuario."
+                );
+              }
+            },
+            (error) => {
+              console.error(
+                "Error al cargar los datos de identificación:",
+                error
+              );
+            }
+          );
+      })
+      .catch((error) => {
+        console.error("Error al obtener el ID de la persona:", error);
+      });
   }
 
   // Inicializar formularios
@@ -109,7 +235,7 @@ export class EvaluacionesComponent implements OnInit {
   // Método que maneja la selección del menú desplegable
   onSelectChange(event: MatSelectChange) {
     this.selectedEvaluation = event.value;
-    console.log('Selected Evaluation: ', this.selectedEvaluation);
+    console.log("Selected Evaluation: ", this.selectedEvaluation);
     // invocar la lógica de selección de formularios de ser necesario
   }
 
