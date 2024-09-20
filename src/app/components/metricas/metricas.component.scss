@@ -123,46 +123,6 @@ table {
   margin-bottom: 16px; /* Ajusta el margen según el diseño */
 }
 
-<<<<<<< HEAD
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: #F0F4F8;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.modal-content {
-  background-color: white;
-  padding: 20px;
-  border-radius: 5px;
-  text-align: center;
-  box-shadow: 0 0.5rem 1rem 0 rgba(44, 51, 73, 0.1);
-  max-width: 800px;
-}
-
-.sad-face-icon {
-  margin-top: 20px;
-  color: var(--md-primary-700);
-  overflow: visible;
-}
-
-.sad-icon {
-  font-size: 5rem;
-  display: inline-table;
-  line-height: 1;
-}
-
-h2 {
-  font-size: 1.5em;
-  margin-bottom: 20px;
-  color: var(--md-primary-700);
-}
-=======
 //HOVER SOBRE LAS FILAS
 .mat-mdc-row:hover .mat-mdc-cell {
   background-color: var(--color100);
@@ -185,4 +145,3 @@ mat-form-field {
   --mdc-snackbar-supporting-text-color: rgba(255, 255, 255, 0.87);
   --mat-snack-bar-button-color: #145a95;
 }
->>>>>>> origin/develop

@@ -5,12 +5,8 @@
   </mat-card-header>
   <mat-card-content>
 
-<<<<<<< HEAD
-    <mat-stepper orientation="vertical" [linear]="isLinear" #stepper >
-=======
     <mat-stepper orientation="vertical" [linear]="isLinear" #stepper>
 
->>>>>>> origin/develop
       <mat-step [stepControl]="firstFormGroup">
         <form [formGroup]="firstFormGroup">
           <ng-template matStepLabel>{{ 'metricas.seleccione_periodo_tipo' | translate }}</ng-template>
@@ -305,18 +301,3 @@
 
   </mat-card-content>
 </mat-card>
-
-
-<!-- Modal para mostrar cuando el usuario no tiene permisos -->
-<ng-template #noPermission>
-  <div class="modal-overlay" >
-    <div class="modal-content">
-      <h2>{{ "definicion_formularios.sin_permisos_titulo" | translate }}</h2>
-      <p>{{ "definicion_formularios.sin_permisos_mensaje" | translate }}</p>
-      <!-- Icono grande de carita triste -->
-      <div class="sad-face-icon">
-        <mat-icon class="sad-icon">sentiment_dissatisfied</mat-icon>
-      </div>
-    </div>
-  </div>
-</ng-template>

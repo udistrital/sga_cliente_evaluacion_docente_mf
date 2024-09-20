@@ -1,11 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { Color, ScaleType } from '@swimlane/ngx-charts';
-<<<<<<< HEAD
-import { ROLES } from "src/app/models/diccionario";
-import { DateService } from 'src/app/services/date.service';
-import { UserService } from "src/app/services/user.service";
-=======
 import { Periodo } from "../../models/periodo";
 import { ParametrosService } from 'src/app/services/parametros.service';
 import {
@@ -19,7 +14,6 @@ import { checkContent } from 'src/app/utils/verify-response';
 import { OikosService } from 'src/app/services/oikos.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import Swal from 'sweetalert2';
->>>>>>> origin/develop
 
 @Component({
   selector: 'app-metricas',
@@ -45,11 +39,6 @@ export class MetricasComponent implements OnInit {
   showTipoComponenteSelect: boolean = false;
   showTipoProyectoSelect: boolean = false;
   showTipoDocenteSelect: boolean = false;
-<<<<<<< HEAD
-  userRoles: string[] = [];
-  ROLES = ROLES;
-  dateHeader: string | undefined;
-=======
   periodos: Periodo[] = []; // Inicializado como un array vacío
   periodo: Periodo = new Periodo({}); // Inicializar el objeto periodo
   periodosAnteriores: Periodo[] = [];
@@ -59,7 +48,6 @@ export class MetricasComponent implements OnInit {
   
   // Ajuste aquí: proyectos con select y opciones
   proyectos: { select: any, opciones: any[] } = { select: undefined, opciones: [] };
->>>>>>> origin/develop
 
   // Opciones del gráfico
   gradient: boolean = true;
@@ -83,9 +71,6 @@ export class MetricasComponent implements OnInit {
     { value: 'concejos_curriculares', label: 'definicion_formularios.concejos_curriculares' }
   ];
 
-<<<<<<< HEAD
-  constructor(private _formBuilder: FormBuilder, private dateService: DateService, private userService: UserService,) {
-=======
   // Snack-bar Position Variables
   horizontalPosition: MatSnackBarHorizontalPosition = 'right';
   verticalPosition: MatSnackBarVerticalPosition = 'top';
@@ -97,7 +82,6 @@ export class MetricasComponent implements OnInit {
     private _snackBar: MatSnackBar,
     private oikosService: OikosService,
     private proyectoAcademicoService: ProyectoAcademicoService) {
->>>>>>> origin/develop
     // Datos de ejemplo para una evaluación docente
     this.single = [
       { name: 'Satisfacción general', value: 85 },
@@ -173,19 +157,6 @@ export class MetricasComponent implements OnInit {
     });
   }
 
-<<<<<<< HEAD
-  ngOnInit(): void {
-    this.userService.getUserRoles().then(roles => {
-      this.userRoles = roles;
-      this.dateService.getDateHeader().subscribe(
-        (date: string) => {
-          this.dateHeader = date;
-          console.log('DateHeader:', this.dateHeader);
-        },
-        (error: any) => console.error('Error al obtener el encabezado de fecha:', error)
-      );        
-    }).catch(error => console.error('Error al obtener los roles de usuario:', error));
-=======
   ngOnInit() {
     this.loadProyectos(); // Carga inicial de proyectos
     this.loadfacultad();
@@ -208,7 +179,6 @@ export class MetricasComponent implements OnInit {
         this.mostrarSelectsAdicionales = false; // Oculta los selectores adicionales si no hay facultad
       }
     });
->>>>>>> origin/develop
   }
 
   onSelect(data: any): void {
