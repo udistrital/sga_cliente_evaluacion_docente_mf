@@ -4,6 +4,7 @@ import { UserService } from "src/app/services/user.service";
 import { MatSelectChange } from "@angular/material/select";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import * as moment from "moment";
+import { DateService } from 'src/app/services/date.service';
 
 @Component({
   selector: "app-evaluaciones",
@@ -21,10 +22,11 @@ export class EvaluacionesComponent implements OnInit {
   coevaluacionIForm: FormGroup;
   autoevaluacionIIForm: FormGroup;
   autoevaluacionIForm: FormGroup;
+  dateHeader: string | undefined;
 
   @Input() formtype: string = '';  
 
-  constructor(private fb: FormBuilder, private userService: UserService) {
+  constructor(private fb: FormBuilder, private userService: UserService, private dateService: DateService) {
     this.heteroForm = this.fb.group({});
     this.coevaluacionIIForm = this.fb.group({});
     this.coevaluacionIForm = this.fb.group({});
@@ -32,15 +34,19 @@ export class EvaluacionesComponent implements OnInit {
     this.autoevaluacionIForm = this.fb.group({});
   }
 
-  ngOnInit(): void {
-    console.log("EvaluacionesComponent initialized");
-    this.initializeForms();
 
-    // Obtener roles del usuario
-    this.userService.getUserRoles().then((roles) => {
+  ngOnInit(): void {
+    this.userService.getUserRoles().then(roles => {
       this.userRoles = roles;
-      console.log("User roles loaded:", this.userRoles);
-    });
+      this.dateService.getDateHeader().subscribe(
+        (date: string) => {
+          this.dateHeader = date;
+          console.log('DateHeader:', this.dateHeader);
+        },
+        (error: any) => console.error('Error al obtener el encabezado de fecha:', error)
+      );        
+      this.initializeForms();  
+    }).catch(error => console.error('Error al obtener los roles de usuario:', error));
   }
 
   // Inicializar formularios
