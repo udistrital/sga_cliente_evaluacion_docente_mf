@@ -4,6 +4,7 @@ import { UserService } from "src/app/services/user.service";
 import { MatSelectChange } from "@angular/material/select";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import * as moment from "moment";
+import { DateService } from 'src/app/services/date.service';
 import { ProyectoAcademicoService } from '../../services/proyecto_academico.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { checkContent } from "src/app/utils/verify-response";
@@ -28,6 +29,7 @@ export class EvaluacionesComponent implements OnInit {
   coevaluacionIForm: FormGroup;
   autoevaluacionIIForm: FormGroup;
   autoevaluacionIForm: FormGroup;
+  dateHeader: string | undefined;
   proyectos: { select: any, opciones: any[] } = { select: undefined, opciones: [] };
   facultad = [];
   displayedColumns: string[] = ['nombre', 'codigo', 'estado'];
@@ -44,7 +46,8 @@ export class EvaluacionesComponent implements OnInit {
     private proyectoAcademicoService: ProyectoAcademicoService,
     private _snackBar: MatSnackBar,
     private espaciosAcademicosService: EspaciosAcademicosService,
-    private popUpManager: PopUpManager
+    private popUpManager: PopUpManager,
+    private dateService: DateService
   ) {
     this.heteroForm = this.fb.group({});
     this.coevaluacionIIForm = this.fb.group({});
@@ -52,6 +55,7 @@ export class EvaluacionesComponent implements OnInit {
     this.autoevaluacionIIForm = this.fb.group({});
     this.autoevaluacionIForm = this.fb.group({});
   }
+
 
   ngOnInit(): void {
     console.log("EvaluacionesComponent initialized");
@@ -62,8 +66,15 @@ export class EvaluacionesComponent implements OnInit {
     // Obtener roles del usuario
     this.userService.getUserRoles().then((roles) => {
       this.userRoles = roles;
-      console.log("User roles loaded:", this.userRoles);
-    });
+      this.dateService.getDateHeader().subscribe(
+        (date: string) => {
+          this.dateHeader = date;
+          console.log('DateHeader:', this.dateHeader);
+        },
+        (error: any) => console.error('Error al obtener el encabezado de fecha:', error)
+      );        
+      this.initializeForms();  
+    }).catch(error => console.error('Error al obtener los roles de usuario:', error));
   }
 
   // Inicializar formularios

@@ -1,6 +1,6 @@
 # sga_cliente_evaluacion_docente_mf
 
-Cliente para la gestión de plan trabajo docente, parte del Sistema de Gestión Académica. Este proyecto está desarrollado con Angular.
+Cliente para la gestión de evaluacion docente, parte del Sistema de Gestión Académica. Este proyecto está desarrollado con Angular.
 
 ## Especificaciones Técnicas
 

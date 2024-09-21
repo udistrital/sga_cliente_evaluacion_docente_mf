@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container" *ngIf="hasRole([ROLES.ESTUDIANTE, ROLES.ADMIN_SGA, ROLES.ADMIN_DOCENCIA]); else noPermission">
   <mat-card class="card">
     <div class="select-container">
       <mat-form-field appearance="fill" class="select-field">
@@ -65,3 +65,20 @@
     <h2>Cualitativo</h2>
   </mat-card>
 </div>
+
+
+
+
+<!-- Modal para mostrar cuando el usuario no tiene permisos -->
+<ng-template #noPermission>
+  <div class="modal-overlay" *ngIf="!hasRole([ROLES.ADMIN_SGA, ROLES.ESTUDIANTE, ROLES.CONSEJO_CURRICULAR, ROLES.ADMIN_DOCENCIA])">
+    <div class="modal-content">
+      <h2>{{ "definicion_formularios.sin_permisos_titulo" | translate }}</h2>
+      <p>{{ "definicion_formularios.sin_permisos_mensaje" | translate }}</p>
+      <!-- Icono grande de carita triste -->
+      <div class="sad-face-icon">
+        <mat-icon class="sad-icon">sentiment_dissatisfied</mat-icon>
+      </div>
+    </div>
+  </div>
+</ng-template>

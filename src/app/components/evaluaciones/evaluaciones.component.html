@@ -29,7 +29,7 @@
 
     <!-- Formulario de Heteroevaluación -->
     <ng-container *ngIf="selectedEvaluation === 'heteroevaluacion'">
-        <div *ngIf="hasRole([ROLES.ESTUDIANTE, ROLES.ADMIN_SGA, ROLES.ADMIN_DOCENCIA])" class="form-container">
+        <div *ngIf="hasRole([ROLES.ESTUDIANTE, ROLES.ADMIN_SGA, ROLES.ADMIN_DOCENCIA]); else noPermission" class="form-container">
             <h2>{{ 'heteroevaluacion.titulo' | translate }}</h2>
             <form [formGroup]="heteroForm" (ngSubmit)="onGuardar()" class="evaluation-form">
                 <div class="form-grid2">
@@ -111,7 +111,7 @@
 
     <!-- Formulario de Coevaluación II -->
     <ng-container *ngIf="selectedEvaluation === 'coevaluacion-ii'">
-        <div *ngIf="hasRole([ROLES.DOCENTE, ROLES.ADMIN_SGA, ROLES.ADMIN_DOCENCIA])" class="form-container">
+        <div *ngIf="hasRole([ROLES.DOCENTE, ROLES.ADMIN_SGA, ROLES.ADMIN_DOCENCIA]); else noPermission" class="form-container">
             <h2>{{ 'coevaluacion_ii.titulo' | translate }}</h2>
             <form [formGroup]="coevaluacionIIForm" (ngSubmit)="onGuardar()" class="evaluation-form">
                 <div class="form-grid2">
@@ -205,7 +205,7 @@
 
     <!-- Formulario de Coevaluación I -->
     <ng-container *ngIf="selectedEvaluation === 'coevaluacion-i'">
-        <div *ngIf="hasRole([ROLES.ADMIN_SGA, ROLES.ADMIN_DOCENCIA])" class="form-container">
+        <div *ngIf="hasRole([ROLES.ADMIN_SGA, ROLES.ADMIN_DOCENCIA]); else noPermission" class="form-container">
             <h2>{{ 'coevaluacion_i.titulo' | translate }}</h2>
             <form [formGroup]="coevaluacionIForm" (ngSubmit)="onGuardar()" class="evaluation-form">
                 <div class="form-grid2">
@@ -311,7 +311,7 @@
 
     <!-- Formulario de Autoevaluación II -->
     <ng-container *ngIf="selectedEvaluation === 'autoevaluacion-ii'">
-        <div *ngIf="hasRole([ROLES.DOCENTE, ROLES.ADMIN_SGA, ROLES.ADMIN_DOCENCIA])" class="form-container">
+        <div *ngIf="hasRole([ROLES.DOCENTE, ROLES.ADMIN_SGA, ROLES.ADMIN_DOCENCIA]); else noPermission" class="form-container">
             <h2>{{ 'autoevaluacion_ii.titulo' | translate }}</h2>
             <form [formGroup]="autoevaluacionIIForm" (ngSubmit)="onGuardar()" class="evaluation-form">
                 <div class="form-grid2">
@@ -413,7 +413,7 @@
 
     <!-- Formulario de Autoevaluación I -->
     <ng-container *ngIf="selectedEvaluation === 'autoevaluacion-i'">
-        <div *ngIf="hasRole([ROLES.ESTUDIANTE, ROLES.ADMIN_SGA, ROLES.ADMIN_DOCENCIA])" class="form-container">
+        <div *ngIf="hasRole([ROLES.ESTUDIANTE, ROLES.ADMIN_SGA, ROLES.ADMIN_DOCENCIA]); else noPermission" class="form-container">
             <h2>{{ 'autoevaluacion_i.titulo' | translate }}</h2>
             <form [formGroup]="autoevaluacionIForm" (ngSubmit)="onGuardar()" class="evaluation-form">
                 <div class="form-grid2">
@@ -536,3 +536,18 @@
     </ng-container>
 
 </div>
+
+
+<!-- Modal para mostrar cuando el usuario no tiene permisos -->
+<ng-template #noPermission>
+    <div class="modal-overlay" *ngIf="!hasRole([ROLES.ADMIN_SGA, ROLES.DOCENTE, ROLES.ESTUDIANTE, ROLES.CONSEJO_CURRICULAR, ROLES.ADMIN_DOCENCIA])">
+      <div class="modal-content">
+        <h2>{{ "definicion_formularios.sin_permisos_titulo" | translate }}</h2>
+        <p>{{ "definicion_formularios.sin_permisos_mensaje" | translate }}</p>
+        <!-- Icono grande de carita triste -->
+        <div class="sad-face-icon">
+          <mat-icon class="sad-icon">sentiment_dissatisfied</mat-icon>
+        </div>
+      </div>
+    </div>
+  </ng-template>
