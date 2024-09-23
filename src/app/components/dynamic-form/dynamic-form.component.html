@@ -1,220 +1,159 @@
-<div [ngSwitch]="normalform.tipo_formulario">
-    <!-- Formulario Mini -->
-    <form [formGroup]="form" *ngSwitchCase="'mini'" class="form-horizontal">
-        <mat-card>
-            <mat-card-header>
-                <mat-card-title>{{ normalform.titulo }}</mat-card-title>
-            </mat-card-header>
-            <mat-card-content>
-                <div class="form-grid">
-                    <!-- Instrucciones y Escalas -->
-                    <table class="instruction-table">
-                        <tr>
-                            <td style="background-color: #e0f7e0;">FORMATO</td>
-                            <td>Código SIGUD por asignar</td>
-                        </tr>
-                        <tr>
-                            <td style="background-color: #e0f7e0;">ACTOR</td>
-                            <td>Estudiantes</td>
-                        </tr>
-                        <tr>
-                            <td style="background-color: #e0f7e0;">CRONOGRAMA</td>
-                            <td>Semana 4 a 7 del calendario académico</td>
-                        </tr>
-                        <tr>
-                            <td style="background-color: #e0f7e0;">RÚBRICAS</td>
-                            <td>Selección múltiple</td>
-                        </tr>
-                        <tr>
-                            <td style="background-color: #e0f7e0;">INSTRUCCIÓN</td>
-                            <td>
-                                Estimado estudiante:<br>
-                                Por favor evalúe formativamente a su docente utilizando el formato dispuesto para ello. 
-                                Los ítems 01 a 20 de selección múltiple con única respuesta son obligatorios. 
-                                Puede realizar anotaciones de felicitación o de sugerencias respetuosas en los espacios destinados para tal fin.
-                                Utilice como referencia la siguiente escala para medir el grado de desempeño a evaluar:
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="background-color: #e0f7e0;">ESCALA</td>
-                            <td>
-                                INSUFICIENTE = No sucede y no se demuestra el criterio<br>
-                                NECESITA MEJORAR = Sucede parcialmente pero no se demuestra el criterio<br>
-                                BUENO = Sucede con frecuencia y se demuestra el criterio en un nivel básico<br>
-                                SOBRESALIENTE = Sucede la mayor parte del tiempo y se demuestra el criterio de forma adecuada<br>
-                                EXCELENTE = Sucede siempre y se demuestra el criterio completamente
-                            </td>
-                        </tr>
-                    </table>
-
-                    <!-- Tabla Ámbito 01 -->
-                    <table class="evaluation-table">
-                        <tr>
-                            <th style="background-color: #cce7ff;">ÁMBITO 01: LA DOCENCIA</th>
-                            <th style="background-color: #cce7ff;">Insuficiente</th>
-                            <th style="background-color: #cce7ff;">Necesita Mejorar</th>
-                            <th style="background-color: #cce7ff;">Bueno</th>
-                            <th style="background-color: #cce7ff;">Sobresaliente</th>
-                            <th style="background-color: #cce7ff;">Excelente</th>
-                        </tr>
-                        <tr *ngFor="let question of questions01; let i = index">
-                            <td class="left-align">{{ question }}</td>
-                            <td>
-                                <input type="radio" [formControlName]="'question_' + i" value="Insuficiente">
-                            </td>
-                            <td>
-                                <input type="radio" [formControlName]="'question_' + i" value="Necesita Mejorar">
-                            </td>
-                            <td>
-                                <input type="radio" [formControlName]="'question_' + i" value="Bueno">
-                            </td>
-                            <td>
-                                <input type="radio" [formControlName]="'question_' + i" value="Sobresaliente">
-                            </td>
-                            <td>
-                                <input type="radio" [formControlName]="'question_' + i" value="Excelente">
-                            </td>
-                        </tr>
-                    </table>
-
-                    <!-- Tabla Ámbito 02 -->
-                    <table class="evaluation-table">
-                        <tr>
-                            <th style="background-color: #cce7ff;">ÁMBITO 02: LA ENSEÑANZA</th>
-                            <th style="background-color: #cce7ff;">Insuficiente</th>
-                            <th style="background-color: #cce7ff;">Necesita Mejorar</th>
-                            <th style="background-color: #cce7ff;">Bueno</th>
-                            <th style="background-color: #cce7ff;">Sobresaliente</th>
-                            <th style="background-color: #cce7ff;">Excelente</th>
-                        </tr>
-                        <tr *ngFor="let question of questions02; let i = index">
-                            <td class="left-align">{{ question }}</td>
-                            <td>
-                                <input type="radio" [formControlName]="'question_' + (i + questions01.length)" value="Insuficiente">
-                            </td>
-                            <td>
-                                <input type="radio" [formControlName]="'question_' + (i + questions01.length)" value="Necesita Mejorar">
-                            </td>
-                            <td>
-                                <input type="radio" [formControlName]="'question_' + (i + questions01.length)" value="Bueno">
-                            </td>
-                            <td>
-                                <input type="radio" [formControlName]="'question_' + (i + questions01.length)" value="Sobresaliente">
-                            </td>
-                            <td>
-                                <input type="radio" [formControlName]="'question_' + (i + questions01.length)" value="Excelente">
-                            </td>
-                        </tr>
-                    </table>
-
-                    <!-- Tabla Ámbito 03 -->
-                    <table class="evaluation-table">
-                        <tr>
-                            <th style="background-color: #cce7ff;">ÁMBITO 03: LA PRÁCTICA</th>
-                            <th style="background-color: #cce7ff;">Insuficiente</th>
-                            <th style="background-color: #cce7ff;">Necesita Mejorar</th>
-                            <th style="background-color: #cce7ff;">Bueno</th>
-                            <th style="background-color: #cce7ff;">Sobresaliente</th>
-                            <th style="background-color: #cce7ff;">Excelente</th>
-                        </tr>
-                        <tr *ngFor="let question of questions03; let i = index">
-                            <td class="left-align">{{ question }}</td>
-                            <td>
-                                <input type="radio" [formControlName]="'question_' + (i + questions01.length + questions02.length)" value="Insuficiente">
-                            </td>
-                            <td>
-                                <input type="radio" [formControlName]="'question_' + (i + questions01.length + questions02.length)" value="Necesita Mejorar">
-                            </td>
-                            <td>
-                                <input type="radio" [formControlName]="'question_' + (i + questions01.length + questions02.length)" value="Bueno">
-                            </td>
-                            <td>
-                                <input type="radio" [formControlName]="'question_' + (i + questions01.length + questions02.length)" value="Sobresaliente">
-                            </td>
-                            <td>
-                                <input type="radio" [formControlName]="'question_' + (i + questions01.length + questions02.length)" value="Excelente">
-                            </td>
-                        </tr>
-                    </table>
-
-                    <!-- Enunciado y Campos de Entrada -->
-                    <p class="instruction">
-                        Dados los ítems anteriores, quisiera felicitarle o sugerirle respetuosamente lo siguiente (usar solo el numeral sobre el que desee felicitar o sugerir):
-                    </p>
-                    <div *ngFor="let question of allQuestions; let i = index">
-                        <mat-form-field style="width: 100%">
-                            <textarea matInput placeholder="Comentario sobre el ítem {{ i + 1 }}" [formControlName]="'comment_' + i"></textarea>
-                        </mat-form-field>
-                    </div>
-                </div>
-
-                <ng-content></ng-content>
-
-                <div class="mt-4" *ngIf="normalform.btnLimpiar || normalform.btn">
-                    <button mat-flat-button color="warn" (click)="clearForm()" *ngIf="normalform.btnLimpiar">
-                        {{ normalform.btnLimpiar }}
-                    </button>
-                    <button mat-flat-button color="accent" (click)="validForm()" *ngIf="normalform.btn">
-                        {{ normalform.btn }}
-                    </button>
-                </div>
-            </mat-card-content>
-        </mat-card>
-    </form>
+<div>
+    <!-- Botones para seleccionar el tipo de formulario -->
+    <button mat-button (click)="selectForm('heteroevaluacion')">Heteroevaluación</button>
+    <button mat-button (click)="selectForm('autoevaluacion-i')">Autoevaluación I</button>
+    <button mat-button (click)="selectForm('autoevaluacion-ii')">Autoevaluación II</button>
+    <button mat-button (click)="selectForm('coevaluacion-i')">Coevaluación I</button>
+    <button mat-button (click)="selectForm('coevaluacion-ii')">Coevaluación II</button>
 </div>
 
-<div [ngSwitch]="normalform.tipo_formulario">
-    <!-- Formulario de Autoevaluación -->
-    <form [formGroup]="form" *ngSwitchCase="'autoevaluacion-i'" class="form-horizontal">
-        <mat-card>
-            <mat-card-header>
-                <mat-card-title>{{ normalform.titulo }}</mat-card-title>
-            </mat-card-header>
-            <mat-card-content>
-                <div class="form-grid">
-                    <!-- Instrucción -->
-                    <table class="instruction-table">
-                        <tr>
-                            <td style="background-color: #e0f7e0;">INSTRUCCIÓN 01</td>
-                            <td>
-                                Estimado estudiante:<br>
-                                Por favor autoevalúe su desempeño como estudiante en este espacio curricular. Los ítems 01 a 05 de selección múltiple con única respuesta son obligatorios. Puede realizar anotaciones de mejoramiento para conseguir sus resultados de aprendizaje en los espacios destinados para tal fin.
-                            </td>
-                        </tr>
-                    </table>
+<!-- Vista por pasos usando mat-stepper para los Ámbitos -->
+<mat-vertical-stepper *ngIf="!isFormView" [linear]="true" [formGroup]="stepperForm" #mainStepper>
+    <!-- Ámbitos -->
+    <mat-step *ngFor="let ambito of ambitos; let i = index" [formGroupName]="'ambito_' + i">
+        <ng-template matStepLabel>{{ ambito.titulo }}</ng-template>
 
-                    <!-- Preguntas con opciones en texto -->
-                    <div *ngFor="let question of questionsAutoevaluacion; let i = index" class="question-block">
-                        <p><strong>{{ question.text }}</strong></p>
-                        <mat-radio-group [formControlName]="'question_' + i">
-                            <mat-radio-button *ngFor="let option of question.options" [value]="option.value">
-                                {{ option.text }}
-                            </mat-radio-button>
-                        </mat-radio-group>
-                    </div>
+        <!-- Botón para colapsar/expandir todas las preguntas con ícono de ojo -->
+        <button mat-raised-button color="primary" (click)="toggleAll(i)">
+            <mat-icon>visibility</mat-icon> {{ expandAllState[i] ? 'Colapsar todo' : 'Expandir todo' }}
+        </button>
 
-                    <!-- Comentarios sobre las acciones a tomar -->
-                    <p class="instruction">
-                        Dada su respuesta anterior, escriba las acciones que tomará para fortalecer su éxito en este espacio curricular:
-                    </p>
-                    <div *ngFor="let comment of commentsAutoevaluacion; let i = index">
-                        <mat-form-field style="width: 100%">
-                            <textarea matInput placeholder="Acción {{ i + 1 }}" [formControlName]="'comment_' + i"></textarea>
-                        </mat-form-field>
-                    </div>
+        <!-- Preguntas dentro de los ámbitos usando mat-accordion -->
+        <mat-accordion [multi]="true">
+            <mat-expansion-panel *ngFor="let pregunta of ambito.preguntas; let j = index" [expanded]="expandAllState[i]"
+                class="custom-expansion-panel">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        <!-- Ícono para hacer más llamativo el encabezado de la pregunta -->
+                        <mat-icon color="accent">help_outline</mat-icon> {{ pregunta.text }}
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+
+                <!-- Opción de única respuesta (radio buttons) -->
+                <div *ngIf="pregunta.tipo === 'radio'">
+                    <mat-radio-group [formControlName]="'pregunta_' + generateControlName(pregunta.text)">
+                        <mat-radio-button *ngFor="let option of pregunta.options" [value]="option.valor">
+                            {{ option.texto }}
+                        </mat-radio-button>
+                    </mat-radio-group>
                 </div>
 
-                <ng-content></ng-content>
+                <!-- Opción de selección múltiple (checkboxes) -->
+                <div *ngIf="pregunta.tipo === 'checkbox'">
+                    <mat-checkbox *ngFor="let option of pregunta.options"
+                        [formControlName]="'pregunta_' + generateControlName(pregunta.text)">
+                        {{ option.texto }}
+                    </mat-checkbox>
+                </div>
 
-                <div class="mt-4" *ngIf="normalform.btnLimpiar || normalform.btn">
-                    <button mat-flat-button color="warn" (click)="clearForm()" *ngIf="normalform.btnLimpiar">
-                        {{ normalform.btnLimpiar }}
-                    </button>
-                    <button mat-flat-button color="accent" (click)="validForm()" *ngIf="normalform.btn">
-                        {{ normalform.btn }}
+                <!-- Opción de respuesta abierta (input/textarea) -->
+                <div *ngIf="pregunta.tipo === 'textarea' || pregunta.tipo === 'input'">
+                    <mat-form-field appearance="fill">
+                        <mat-label>{{ pregunta.text }}</mat-label>
+                        <input matInput [formControlName]="'pregunta_' + generateControlName(pregunta.text)">
+                    </mat-form-field>
+                </div>
+
+                <!-- Input para la carga de archivos -->
+                <div *ngIf="pregunta.tipo === 'file'">
+                    <mat-form-field appearance="fill">
+                        <mat-label>Cargar archivo</mat-label>
+                        <input type="file" (change)="handleFileInputChange($event)">
+                    </mat-form-field>
+                </div>
+
+                <!-- Botón para descargar evidencias  -->
+                <div *ngIf="pregunta.tipo === 'download'">
+                    <button mat-raised-button color="primary" (click)="downloadDocument()">
+                        <mat-icon>cloud_download</mat-icon> Descargar Evidencia
                     </button>
                 </div>
-            </mat-card-content>
-        </mat-card>
-    </form>
+
+                <!-- Botón para cargar evidencias justo después del enunciado -->
+                <div
+                    *ngIf="pregunta.text === 'El cuerpo docente debe cargar el acta de co-evalaucion curricularen enste boton: '">
+                    <input type="file" (change)="handleFileInputChange($event)" />
+                    <button mat-raised-button color="primary" (click)="cargarEvidencias()">
+                        <mat-icon>upload</mat-icon> {{ coevaluacionI.botonCargarEvidencias }}
+                    </button>
+                </div>
+
+                <!-- Botón para cargar evidencias en Autoevaluación II debajo del enunciado específico -->
+                <div *ngIf="pregunta.text === 'El cuerpo docente debe cargar las evidencias correspondientes:'">
+                    <input type="file" (change)="handleFileInputChange($event)" />
+                    <button mat-raised-button color="primary" (click)="cargarEvidencias()">
+                        <mat-icon>upload</mat-icon> Cargar Evidencias
+                    </button>
+                </div>
+
+            </mat-expansion-panel>
+        </mat-accordion>
+
+        <!-- Botones Anterior y Siguiente para avanzar entre ámbitos -->
+        <div>
+            <button mat-button matStepperPrevious>Anterior</button>
+            <button mat-button matStepperNext>Siguiente</button>
+        </div>
+    </mat-step>
+</mat-vertical-stepper>
+
+<!-- Vista en formato de formulario común (sin stepper) -->
+<div *ngIf="isFormView" [formGroup]="stepperForm">
+    <div *ngFor="let ambito of ambitos; let i = index" [formGroupName]="'ambito_' + i">
+        <h3>{{ ambito.titulo }}</h3>
+        <mat-accordion [multi]="true">
+            <mat-expansion-panel *ngFor="let pregunta of ambito.preguntas; let j = index"
+                class="custom-expansion-panel">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        <!-- Ícono para hacer más llamativo el encabezado de la pregunta -->
+                        <mat-icon color="accent">help_outline</mat-icon> {{ pregunta.text }}
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+
+                <!-- Opciones para cada pregunta -->
+                <div *ngIf="pregunta.tipo === 'radio'">
+                    <mat-radio-group [formControlName]="'pregunta_' + generateControlName(pregunta.text)">
+                        <mat-radio-button *ngFor="let option of pregunta.options" [value]="option.valor">
+                            {{ option.texto }}
+                        </mat-radio-button>
+                    </mat-radio-group>
+                </div>
+
+                <div *ngIf="pregunta.tipo === 'checkbox'">
+                    <mat-checkbox *ngFor="let option of pregunta.options"
+                        [formControlName]="'pregunta_' + generateControlName(pregunta.text)">
+                        {{ option.texto }}
+                    </mat-checkbox>
+                </div>
+
+                <div *ngIf="pregunta.tipo === 'textarea' || pregunta.tipo === 'input'">
+                    <mat-form-field appearance="fill">
+                        <mat-label>{{ pregunta.text }}</mat-label>
+                        <input matInput [formControlName]="'pregunta_' + generateControlName(pregunta.text)">
+                    </mat-form-field>
+                </div>
+
+                <div *ngIf="pregunta.tipo === 'file'">
+                    <mat-form-field appearance="fill">
+                        <mat-label>Cargar archivo</mat-label>
+                        <input type="file" (change)="handleFileInputChange($event)">
+                    </mat-form-field>
+                </div>
+
+                <!-- Botón para descargar evidencias  -->
+                <div *ngIf="pregunta.tipo === 'download'">
+                    <button mat-raised-button color="primary" (click)="downloadDocument()">Descargar Documento
+                        <mat-icon>cloud_download</mat-icon> Descargar Evidencia
+                    </button>
+                </div>
+
+            </mat-expansion-panel>
+        </mat-accordion>
+    </div>
+</div>
+
+<!-- Botón final para enviar -->
+<div>
+    <button mat-button (click)="submit()">Guardar</button>
 </div>

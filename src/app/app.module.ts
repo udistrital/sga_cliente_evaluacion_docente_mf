@@ -26,6 +26,7 @@ import { MatStepperModule } from '@angular/material/stepper';
 import { EvaluacionesComponent } from './components/evaluaciones/evaluaciones.component';
 import { NgIsGrantedDirective } from './directives/ng-is-granted.directive';
 import { UserService } from './services/user.service';
+
 import { EventosService } from './services/eventos.service';
 import { ParametrosService } from './services/parametros.service';
 import { AnyService } from './services/any.service';
@@ -41,8 +42,17 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatSnackBarModule } from '@angular/material/snack-bar'; // Importar MatSnackBarModule
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { ResultadosComponent } from './components/resultados/resultados.component';
+import { NuxeoComponent } from './components/nuxeo/nuxeo.component';
+import { GestorDocumentalService } from './services/gestor-documental.service';
+import { DocumentoService } from './services/documento.service';
+import { ProyectoAcademicoService } from './services/proyecto_academico.service';
+import { OikosService } from 'src/app/services/oikos.service';
+import { EspaciosAcademicosService } from './services/espacios_academicos.service';
+
+import { DateService } from './services/date.service';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, environment.apiUrl + 'assets/i18n/', '.json');
@@ -56,10 +66,12 @@ export function createTranslateLoader(http: HttpClient) {
     DefinirEscalasComponent,
     EvaluacionesComponent,
     NgIsGrantedDirective,
-    DynamicFormComponent,
-    NgIsGrantedDirective,
-    MetricasComponent, 
-    ResultadosComponent
+    MetricasComponent,
+    NuxeoComponent,
+    ResultadosComponent,
+    MetricasComponent,
+    ResultadosComponent,
+    DynamicFormComponent
   ],
   imports: [
     BrowserModule,
@@ -71,8 +83,7 @@ export function createTranslateLoader(http: HttpClient) {
     HttpClientModule,
     SpinnerUtilModule,
     MatRadioModule,
-    FormsModule,
-    CommonModule,
+    FormsModule,    
     BrowserModule,
     MatTabsModule,
     MatIconModule,
@@ -82,6 +93,7 @@ export function createTranslateLoader(http: HttpClient) {
     MatTableModule,
     MatDialogModule,
     MatSelectModule,
+    MatSnackBarModule,
     AppRoutingModule,
     MatCheckboxModule,
     MatFormFieldModule,
@@ -114,7 +126,13 @@ export function createTranslateLoader(http: HttpClient) {
     EventosService, 
     ParametrosService,
     AnyService,
+    ProyectoAcademicoService,
     UserService,
+    GestorDocumentalService,
+    DocumentoService,
+    OikosService,
+    DateService,
+    EspaciosAcademicosService,
     { provide: HTTP_INTERCEPTORS, useClass: SpinnerUtilInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]

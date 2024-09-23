@@ -59,7 +59,9 @@
         "visualizador_formulario": "Visualizador del formulario",
         "procesos_seleccionar": "Procesos a seleccionar",
         "guardar": "Guardar",
-        "campo_requerido": "Campo requerido"
+        "campo_requerido": "Campo requerido",
+        "sin_permisos_titulo": "Acceso denegado",
+        "sin_permisos_mensaje": "No tienes los permisos necesarios para visualizar esta información. Por favor, contacta al administrador del sistema para obtener más detalles o para solicitar acceso."
     },
 
     "definir_escalas": {
@@ -208,6 +210,9 @@
         "seleccione_filtro_reporte": "Seleccione las opciones de filtrado que desea para el reporte",
         "global": "Global",
         "mensaje_facultad": "Seleccione el nivel para el cual desea generar el reporte y las opciones de filtrado por Facultad",
-        "mensaje_global": "Seleccione el nivel para el cual desea generar el reporte y las opciones de filtrado Global"        
+        "mensaje_global": "Seleccione el nivel para el cual desea generar el reporte y las opciones de filtrado Global",
+        "periodo_academico": "Seleccione el periodo académico",     
+        "seleccionar_facultad": "Seleccione la facultad",
+        "seleccionar_proyecto_curricular": "Seleccione el proyecto curricular"
     }
 }

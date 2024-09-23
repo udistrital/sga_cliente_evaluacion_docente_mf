@@ -1,514 +1,482 @@
-import { Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, QueryList, ViewChild, ViewChildren } from '@angular/core';
-import { MatDatepicker } from '@angular/material/datepicker';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { Subject, BehaviorSubject, combineLatest } from 'rxjs';
-import { debounceTime, distinctUntilChanged, filter, switchMap, map } from 'rxjs/operators';
-import { AnyService } from 'src/app/services/any.service';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { Component, OnInit, ViewChild } from "@angular/core";
+import {
+  AbstractControl,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from "@angular/forms";
+import { MatStepper } from "@angular/material/stepper";
+import { DomSanitizer } from "@angular/platform-browser";
+import { Subject } from "rxjs/internal/Subject";
+import {
+  HETEROEVALUACION,
+  AUTOEVALUACION_I,
+  AUTOEVALUACION_II,
+  COEVALUACION_I,
+  COEVALUACION_II,
+} from "src/app/models/formularios-data";
+import { GestorDocumentalService } from "src/app/services/gestor-documental.service";
+import Swal from "sweetalert2";
 
+// Definir las interfaces
+interface Pregunta {
+  text: string;
+  tipo: string;
+  options: { valor: string; texto: string }[];
+}
+
+interface Ambito {
+  nombre: string;
+  titulo: string;
+  preguntas: Pregunta[];
+}
+
+interface Respuesta {
+  item_id: number;
+  valor?: string;
+  archivos?: string[];
+}
 
 @Component({
-  selector: 'ngx-dinamicform',
-  templateUrl: './dynamic-form.component.html',
-  styleUrls: ['./dynamic-form.component.scss'],
+  selector: "ngx-dynamic-form",
+  templateUrl: "./dynamic-form.component.html",
+  styleUrls: ["./dynamic-form.component.scss"],
 })
-export class DynamicFormComponent implements OnInit, OnChanges {
-  // Inputs
-  @Input() normalform: any;
-  @Input() modeloData: any;
-  @Input() clean!: boolean;
+export class DynamicFormComponent implements OnInit {
+  stepperForm!: FormGroup; // Inicializa el FormGroup correctamente
+  formularios = [
+    HETEROEVALUACION,
+    AUTOEVALUACION_I,
+    AUTOEVALUACION_II,
+    COEVALUACION_I,
+    COEVALUACION_II,
+  ]; // Lista de formularios disponibles
+  selectedForm: any; // Variable para almacenar el formulario seleccionado
+  ambitos: Ambito[] = []; // Tipar los ámbitos correctamente
+  comentarioCounter = 1; // Contador para numerar los comentarios de forma continua
+  actaFile: File | null = null;
+  isFormView: boolean = false;
+  coevaluacionI = COEVALUACION_I;
+  expandAllState: boolean[] = [];
+  uploadedFileUid: string | null = null;
+  documentId: string | null = null;  
 
-  // Outputs
-  @Output() result = new EventEmitter<any>();
-  @Output() resultAux = new EventEmitter<any>();
-  @Output() interlaced = new EventEmitter<any>();
-  @Output() percentage = new EventEmitter<any>();
-
-  // Form-related properties
-  form: FormGroup = new FormGroup({});
-  emptyControl = new FormControl(null);
-  data: any;
-  init = true;
-   // Preguntas del ámbito 01
-  questions01 = [
-    "01. Demuestra conocimiento de los contenidos que se van a enseñar en mi espacio curricular",
-    "02. Demuestra habilidades para conducir procesos de enseñanza-aprendizaje según los contenidos de mi espacio curricular",
-    "03. Demuestra comprensión de ritmos de aprendizaje diferenciados y adapta el aula de clase a estas necesidades",
-    "04. Demuestra habilidades para organizar y explicar ideas",
-    "05. Demuestra habilidades para observar su aula, diagnosticar necesidades y adaptarse al contexto"
-  ];
-
-  // Preguntas del ámbito 02
-  questions02 = [
-    "06. Me da a conocer lo que debo saber, comprender y ser capaz de hacer en mi espacio curricular",
-    "07. Me enseña lo que debo saber, comprender y ser capaz de hacer en mi espacio curricular",
-    "08. Integra en la enseñanza las competencias, la didáctica y la evaluación",
-    "09. Logra que sepa actuar de manera competente en contextos particulares señalados por el contenido de mi espacio curricular",
-    "10. Me enseña a relacionar las competencias y los resultados de aprendizaje de mi espacio curricular"
-  ];
-
-  // Preguntas del ámbito 03
-  questions03 = [
-    "11. Desarrolla las unidades de aprendizaje de mi espacio curricular",
-    "12. Evalúa mis evidencias de aprendizaje y me proporciona devoluciones claras para mi mejoramiento",
-    "13. Demuestra compromiso general con el ambiente de aprendizaje de mi salón",
-    "14. Demuestra respeto por diversidades y diferencias sexo-genéricas, cognitivas, lingüísticas, raciales y culturales dentro y fuera de mi salón",
-    "15. Me motiva para el alcance de competencias y resultados de aprendizaje",
-    "16. Promueve el desarrollo de autoconceptos positivos para el estudiantado",
-    "17. Realiza actividades apropiadas para la consecución de los resultados de aprendizaje y el desarrollo de competencias",
-    "18. Recibe y maneja positivamente preguntas, ideas y opiniones que mantienen al estudiantado pendiente e involucrado en clase",
-    "19. Se adapta a niveles y ritmos de aprendizaje diferenciados tanto míos como de mis compañer@s de clase",
-    "20. Es evidente que prepara sus clases y actividades para estimular mi logro de resultados de aprendizaje y competencias"
-  ];
-
-  // Preguntas de la autoevaluación del aprendizaje
-  questionsAutoevaluacion = [
-    {
-      text: "01. Asumo las actividades que me plantea este espacio curricular en cada unidad de aprendizaje",
-      options: [
-        { value: "Evito hacer las actividades", text: "Evito hacer las actividades" },
-        { value: "A veces me animan las actividades", text: "A veces me animan las actividades" },
-        { value: "Con frecuencia hago las actividades del espacio curricular", text: "Con frecuencia hago las actividades del espacio curricular" },
-        { value: "Me encanta las actividades si he tenido éxito en actividades similares", text: "Me encanta las actividades si he tenido éxito en actividades similares" },
-        { value: "Espero con positivismo el próximo reto", text: "Espero con positivismo el próximo reto" }
-      ]
-    },
-    {
-      text: "02. Siento que puedo lograr los resultados de aprendizaje esperados",
-      options: [
-        { value: "Nunca", text: "Nunca" },
-        { value: "A veces", text: "A veces" },
-        { value: "Con alguna frecuencia", text: "Con alguna frecuencia" },
-        { value: "La mayor parte del tiempo", text: "La mayor parte del tiempo" },
-        { value: "Siempre", text: "Siempre" }
-      ]
-    },
-    {
-      text: "03. Acepto los resultados de la evaluación que realiza mi docente",
-      options: [
-        { value: "Me siento mal con los resultados negativos", text: "Me siento mal con los resultados negativos" },
-        { value: "Me siento bien solo si me interesa el espacio curricular", text: "Me siento bien solo si me interesa el espacio curricular" },
-        { value: "Con frecuencia miro las devoluciones de mi docente positivamente", text: "Con frecuencia miro las devoluciones de mi docente positivamente" },
-        { value: "La mayor parte del tiempo miro las devoluciones de mi docente positivamente", text: "La mayor parte del tiempo miro las devoluciones de mi docente positivamente" },
-        { value: "Siempre miro las devoluciones de mi docente positivamente", text: "Siempre miro las devoluciones de mi docente positivamente" }
-      ]
-    },
-    {
-      text: "04. Estrategias de autoaprendizaje (I)",
-      options: [
-        { value: "No movilizo recursos personales para mi aprendizaje en este espacio curricular", text: "No movilizo recursos personales para mi aprendizaje en este espacio curricular" },
-        { value: "A veces movilizo recursos personales para mi aprendizaje en este espacio curricular", text: "A veces movilizo recursos personales para mi aprendizaje en este espacio curricular" },
-        { value: "Con frecuencia movilizo recursos personales para mi aprendizaje en este espacio curricular", text: "Con frecuencia movilizo recursos personales para mi aprendizaje en este espacio curricular" },
-        { value: "La mayor parte de las veces movilizo recursos personales para mi aprendizaje en este espacio curricular", text: "La mayor parte de las veces movilizo recursos personales para mi aprendizaje en este espacio curricular" },
-        { value: "Siempre movilizo recursos personales para mi aprendizaje en este espacio curricular", text: "Siempre movilizo recursos personales para mi aprendizaje en este espacio curricular" }
-      ]
-    },
-    {
-      text: "05. Estrategias de autoaprendizaje (II)",
-      options: [
-        { value: "No me animo a usar redes para mi aprendizaje en este espacio curricular", text: "No me animo a usar redes para mi aprendizaje en este espacio curricular" },
-        { value: "A veces me animo a usar redes para mi aprendizaje en este espacio curricular", text: "A veces me animo a usar redes para mi aprendizaje en este espacio curricular" },
-        { value: "Con frecuencia me animo a usar redes para mi aprendizaje en este espacio curricular", text: "Con frecuencia me animo a usar redes para mi aprendizaje en este espacio curricular" },
-        { value: "La mayor parte de las veces me animo a usar redes para mi aprendizaje en este espacio curricular", text: "La mayor parte de las veces me animo a usar redes para mi aprendizaje en este espacio curricular" },
-        { value: "Siempre me animo a usar redes para mi aprendizaje en este espacio curricular", text: "Siempre me animo a usar redes para mi aprendizaje en este espacio curricular" }
-      ]
-    }
-  ];
-
-  // Comentarios para acciones a tomar
-  commentsAutoevaluacion = [
-    "1. ",
-    "2. ",
-    "3. "
-  ];
-
-
-  get allQuestions() {
-    return [...this.questions01, ...this.questions02, ...this.questions03];
-  }
+  @ViewChild("mainStepper") mainStepper!: MatStepper;
 
   constructor(
     private fb: FormBuilder,
-    private sanitizer: DomSanitizer,
-  ) {
-    this.initializeForm();
-    this.initializeData();
-  }
-  
+    private gestorService: GestorDocumentalService,
+    private gestorDocumentalService: GestorDocumentalService,
+    private sanitizer: DomSanitizer
+  ) {}
+
   ngOnInit() {
-    if (!this.normalform.tipo_formulario) {
-      this.normalform.tipo_formulario = 'mini';
-      this.normalform.tipo_formulario = 'autoevaluacion-i';
-    }
-    this.initializeFormFields();
+    // Inicializar el formulario principal
+    this.stepperForm = this.fb.group({});
+    this.documentId = '74';
+    // Seleccionar el formulario por defecto para la vista inicial
+    this.selectForm("heteroevaluacion"); // Se puede cambiar según las necesidades
   }
 
-  ngOnChanges(changes: any) {
-    if (changes.normalform && changes.normalform.currentValue) {
-      this.normalform = changes.normalform.currentValue;
-      this.initializeFormFields();
-    }
-  }
+  // Método para inicializar el formulario seleccionado
+  selectForm(tipo_formulario: string) {
+    this.stepperForm = this.fb.group({});
+    this.selectedForm = this.formularios.find(
+      (f) => f.tipo_formulario === tipo_formulario
+    );
 
-  private initializeForm() {
-    const formGroup: { [key: string]: any } = {};
-    this.questionsAutoevaluacion.forEach((_, index) => {
-      formGroup['question_' + index] = new FormControl('');
-    });
-    this.commentsAutoevaluacion.forEach((_, index) => {
-      formGroup['comment_' + index] = new FormControl('');
-    });
-    this.form = this.fb.group(formGroup);
-  }
+    if (this.selectedForm) {
+      this.ambitos = this.selectedForm.ambitos;
 
-  private initializeData() {
-    this.data = {
-      valid: true,
-      data: {},
-      percentage: 0,
-      files: [],
-    };
-  }
+      // Inicializamos el estado de expansión para cada ámbito
+      this.expandAllState = this.ambitos.map(() => false);
 
-  /*private setupSearchSubscription() {
-    this.searchTerm$
-      .pipe(
-        debounceTime(700),
-        distinctUntilChanged(),
-        filter(data => data.text.length > 3),
-        switchMap(({ text, path, query, keyToFilter, field }) =>
-          this.searchEntries(text, path, query, keyToFilter, field)
-        )
-      )
-      .subscribe(response => this.handleSearchResponse(response));
-  }*/
+      // Convertir preguntas de tipo 'select' a 'radio' para los formularios de Heteroevaluación y Autoevaluación I
+      if (
+        tipo_formulario === "heteroevaluacion" ||
+        tipo_formulario === "autoevaluacion-i"
+      ) {
+        this.ambitos.forEach((ambito) => {
+          ambito.preguntas.forEach((pregunta) => {
+            if (pregunta.tipo === "select") {
+              pregunta.tipo = "radio"; // Convertimos 'select' a 'radio'
+            }
+          });
+        });
+      }
 
-  private handleInputChanges(changes: any) {
-    if (changes.normalform?.currentValue) {
-      this.normalform = changes.normalform.currentValue;
-      this.initializeFormFields();
-    }
+      // Mostrar el botón "Cargar Evidencias" al final de los ámbitos 1, 2 y 3 del formulario "Autoevaluación II"
+      if (tipo_formulario === "autoevaluacion-ii") {
+        this.ambitos.forEach((ambito, index) => {
+          // Mostrar el botón solo en los ámbitos 1, 2 y 3
+          if (index === 0 || index === 1 || index === 2) {
+            ambito.preguntas.push({
+              text: "El cuerpo docente debe cargar las evidencias correspondientes:",
+              tipo: "boton",
+              options: [],
+            });
+          }
+        });
+      }
 
-    if (changes.modeloData?.currentValue) {
-      this.modeloData = changes.modeloData.currentValue;
-      this.populateFormWithModelData();
-    }
+      // Inicializar el formulario específico de Coevaluación II si se selecciona ese formulario
+      if (tipo_formulario === "coevaluacion-ii") {
+        this.initializeCoevaluacionIIForm();
+      }
 
-    if (changes.clean && this.init) {
-      this.clearForm();
-      this.clean = false;
+      // Inicializar el formulario dinámico
+      this.initializeForm();
+
+      // Inicializamos el estado expandido de las preguntas
+      this.expandAllState = this.ambitos.map(() => false); // Inicialmente, todas las preguntas están colapsadas
     }
   }
 
-  private initializeFormFields() {
-    if (this.normalform && Array.isArray(this.normalform.campos)) {
-      const formGroup: { [key: string]: any } = {};
-      this.normalform.campos.forEach((c: any) => {
-        formGroup[c.nombre] = [c.valor || ''];
+  // Método para inicializar el formulario específico de Coevaluación II
+  initializeCoevaluacionIIForm() {
+    this.ambitos.forEach((ambito: Ambito, index: number) => {
+      const group = this.fb.group({});
+
+      ambito.preguntas.forEach((pregunta: Pregunta) => {
+        // Si no hay texto o es un tipo de pregunta que no requiere input, no creamos el control
+        if (!pregunta.text || pregunta.tipo === "download") {
+          console.warn(
+            `Pregunta sin texto o de tipo ${pregunta.tipo} no necesita control.`
+          );
+          return;
+        }
+
+        const controlName = this.generateControlName(pregunta.text);
+        group.addControl(`pregunta_${controlName}`, this.fb.control(""));
       });
-      this.form = this.fb.group(formGroup);
+
+      this.stepperForm.addControl(`ambito_${index}`, group);
+    });
+  }
+
+  // Método para insertar inputs numerados después de las preguntas en Heteroevaluación
+  insertNumericalInputs(ambitoIndex: number): void {
+    const inputStart = ambitoIndex === 0 ? 1 : ambitoIndex === 1 ? 6 : 11;
+    const inputEnd = inputStart + 4;
+    const inputsArray = [];
+
+    for (let i = inputStart; i <= inputEnd; i++) {
+      inputsArray.push(this.fb.control(""));
+    }
+
+    const ambitoControl = this.stepperForm.get(
+      `ambito_${ambitoIndex}`
+    ) as FormGroup;
+    if (ambitoControl) {
+      inputsArray.forEach((control, index) => {
+        ambitoControl.addControl(`input_${inputStart + index}`, control);
+      });
     }
   }
 
-  private populateFormWithModelData() {
-    if (this.normalform.campos) {
-      this.normalform.campos.forEach((element: any) => {
-        const key = Object.keys(this.modeloData).find(k => k === element.nombre && this.modeloData[k] !== null);
-        if (key) {
-          this.populateFormField(element, this.modeloData[key]);
+  // Inicializa el formulario dinámico creando los controles para cada pregunta
+  initializeForm() {
+    this.ambitos.forEach((ambito: Ambito, index: number) => {
+      const group = this.fb.group({});
+
+      ambito.preguntas.forEach((pregunta: Pregunta) => {
+        // Si la pregunta no tiene texto o es de tipo 'download', lo ignoramos
+        if (!pregunta.text || pregunta.tipo === "download") {
+          console.log(
+            `Pregunta sin texto o de tipo download encontrada en ámbito: ${ambito.titulo}`
+          );
+          return; // No creamos un control para estas preguntas
+        }
+
+        const controlName = this.generateControlName(pregunta.text);
+
+        // Si es una pregunta de tipo 'radio', agregamos el control con validación requerida
+        if (pregunta.tipo === "radio") {
+          group.addControl(
+            `pregunta_${controlName}`,
+            this.fb.control("", Validators.required)
+          );
+        }
+        // Si es una pregunta de tipo 'input' o 'textarea', simplemente agregamos el control
+        else if (pregunta.tipo === "input" || pregunta.tipo === "textarea") {
+          group.addControl(`pregunta_${controlName}`, this.fb.control(""));
+        }
+        // Para otros tipos, como 'checkbox' u 'options', también se pueden agregar controles aquí
+        else if (pregunta.tipo === "checkbox") {
+          group.addControl(`pregunta_${controlName}`, this.fb.control(false));
+        } else {
+          // En caso de un tipo no especificado, agregar un control por defecto
+          group.addControl(`pregunta_${controlName}`, this.fb.control(""));
         }
       });
-      this.setPercentage();
+
+      // Agregamos el conjunto de preguntas para el ámbito actual al formulario
+      this.stepperForm.addControl(`ambito_${index}`, group);
+    });
+  }
+
+  handleFileInputChange(event: any): void {
+    this.actaFile = event.target.files[0] ?? null;
+  }
+
+  // Agregamos la función calculateComentarioIndex
+  calculateComentarioIndex(
+    ambitoIndex: number,
+    comentarioIndex: number
+  ): number {
+    // Asegúrate de que los índices se calculen de manera que no se repitan
+    return ambitoIndex * 10 + comentarioIndex; // Ajuste este valor si es necesario
+  }
+
+  uploadActa(): void {
+    if (!this.actaFile) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Por favor seleccione un archivo para cargar.",
+      });
+      return;
+    }
+    const sendActa = {
+      IdDocumento: 74,
+      nombre: this.actaFile.name.split(".")[0],
+      metadatos: {
+        proyecto: "123",
+        plan_estudio: "12",
+        espacio_academico: "Espacio académico",
+      },
+      descripcion: "Acta de coevaluación",
+      file: this.actaFile,
+    };
+
+    this.gestorService.uploadFiles([sendActa]).subscribe({
+      next: () => {
+        Swal.fire({
+          icon: "success",
+          title: "Éxito",
+          text: "Archivo cargado correctamente.",
+        });
+      },
+      error: () => {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Ocurrió un error al cargar el archivo.",
+        });
+      },
+    });
+  }
+
+  // Método para obtener un control
+  getFormControl(ambitoIndex: number, controlName: string): AbstractControl {
+    const ambitoControl = this.stepperForm.get("ambito_" + ambitoIndex);
+
+    if (ambitoControl) {
+      // Evitar obtener controles para preguntas de tipo 'download'
+      if (controlName.includes("descarga_archivo_aqu")) {
+        console.log(`Control no necesario para descarga: ${controlName}`);
+        return new FormControl(); // Retornamos un control vacío para evitar el error
+      }
+
+      const control = ambitoControl.get(controlName);
+      if (control) {
+        return control;
+      } else {
+        console.warn(`Control not found for ${controlName}`);
+        return new FormControl(); // Evitar errores retornando un control vacío
+      }
+    }
+
+    return new FormControl(); // Retornamos un control vacío si no se encuentra el ámbito
+  }
+
+  // Método para manejar la selección de una opción
+  onSelectOption(
+    preguntaIndex: number,
+    ambitoIndex: number,
+    innerStepper: MatStepper
+  ) {
+    const control = this.getFormControl(
+      ambitoIndex,
+      `pregunta_${this.ambitos[ambitoIndex].preguntas[preguntaIndex].text}`
+    );
+
+    // Si la respuesta es válida (se ha seleccionado una opción)
+    if (control.valid) {
+      // Avanzar automáticamente a la siguiente pregunta si existe
+      if (preguntaIndex < this.ambitos[ambitoIndex].preguntas.length - 1) {
+        innerStepper.next(); // Avanzar a la siguiente pregunta
+      } else {
+        // Si es la última pregunta, se queda en el mismo ámbito hasta que el usuario decida avanzar
+        console.log(
+          "Última pregunta del ámbito, el usuario debe avanzar manualmente al siguiente ámbito"
+        );
+      }
     }
   }
 
-  private populateFormField(element: any, value: any) {
-    switch (element.etiqueta) {
-      case 'selectmultiple':
-        this.populateSelectMultipleField(element, value);
-        break;
-      case 'select':
-        element.valor = element.opciones.find((e: any) => e.Id === value.Id);
-        break;
-      case 'mat-date':
-        element.valor = new Date(value);
-        break;
-      case 'file':
-        element.url = this.cleanURL(value);
-        element.urlTemp = value;
-        break;
-      default:
-        element.valor = value;
+  // Método para manejar el evento de submit
+  submit() {
+    if (this.stepperForm.valid) {
+      const respuestas = this.generateResponseData();
+      const jsonData = {
+        id_periodo: 1,
+        id_tercero: 1,
+        id_evaluado: 1,
+        proyecto_curricular: 123,
+        espacio_academico: 12,
+        plantilla_id: 456,
+        respuestas,
+      };
+      console.log("Formulario guardado:", jsonData);
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Formulario incompleto",
+        text: "Por favor, complete todas las preguntas.",
+      });
     }
-    this.validCampo(element);
   }
 
-  onChange(event: any, c: any) {
-    if (c.etiqueta === 'file') {
-      this.handleFileChange(event, c);
+  generateResponseData(): Respuesta[] {
+    const respuestas: Respuesta[] = []; // Tipado explícito de la variable respuestas
+    this.ambitos.forEach((ambito, i) => {
+      ambito.preguntas.forEach((pregunta, j) => {
+        const controlName = this.generateControlName(pregunta.text);
+        const control = this.stepperForm.get(
+          `ambito_${i}.pregunta_${controlName}`
+        );
+
+        const respuesta: Respuesta = {
+          item_id: j + 1,
+          valor: control?.value || "",
+        };
+
+        respuestas.push(respuesta);
+      });
+    });
+    return respuestas;
+  }
+
+  // Función para transformar un texto en una clave válida (remueve espacios y caracteres especiales)
+  generateControlName(text: string): string {
+    // Verificamos si el texto es undefined o null, en ese caso devolvemos un valor por defecto
+    return (text || "pregunta_sin_texto")
+      .replace(/[^a-zA-Z0-9]/g, "_")
+      .toLowerCase();
+  }
+
+  // Método para subir el archivo
+  cargarEvidencias(): void {
+    if (!this.actaFile) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Por favor selecciona un archivo para cargar.",
+      });
+      return;
     }
-    this.validCampo(c);
+
+    const sendActa = {
+      IdDocumento: 74, // Este ID puede cambiar según el contexto
+      nombre: this.actaFile.name.split(".")[0],
+      metadatos: {
+        proyecto: "123", // Ajusta estos valores según los metadatos del sistema
+        plan_estudio: "12",
+        espacio_academico: "Espacio académico",
+      },
+      descripcion: "Acta de coevaluación",
+      file: this.actaFile,
+    };
+
+    this.gestorService.uploadFiles([sendActa]).subscribe({
+      next: () => {
+        Swal.fire({
+          icon: "success",
+          title: "Éxito",
+          text: "Archivo cargado correctamente.",
+        });
+      },
+      error: () => {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Ocurrió un error al cargar el archivo.",
+        });
+      },
+    });
   }
 
-  private handleFileChange(event: any, c: any) {
-    c.urlTemp = URL.createObjectURL(event.target.files[0]);
-    c.url = this.cleanURL(c.urlTemp);
-    c.valor = event.target.files[0];
-    c.File = event.target.files[0];
+  getDropdownOptions(campo: string): string[] {
+    if (campo === "Espacio Curricular") {
+      return ["Curricular A", "Curricular B"];
+    } else if (campo === "Código del Espacio Curricular") {
+      return ["Cód. 101", "Cód. 202"];
+    } else if (campo === "Grupo") {
+      return ["Grupo 1", "Grupo 2"];
+    }
+    return [];
   }
 
-  getStepControlName(step: number): string {
-    return `step_${step}`;
+  onNext(innerStepper: MatStepper, ambitoIndex: number, preguntaIndex: number) {
+    const control = this.getFormControl(
+      ambitoIndex,
+      "pregunta_" +
+        this.generateControlName(
+          this.ambitos[ambitoIndex].preguntas[preguntaIndex].text
+        )
+    );
+
+    if (control.valid) {
+      // Si es la última pregunta del ámbito actual, avanza al siguiente ámbito
+      if (preguntaIndex < this.ambitos[ambitoIndex].preguntas.length - 1) {
+        innerStepper.next(); // Avanzar a la siguiente pregunta
+      } else {
+        this.mainStepper.next(); // Si es la última pregunta, avanzar al siguiente ámbito
+      }
+    }
   }
 
-  onChangeDate(event: any, c: any) {
-    c.valor = event.value;
+  getNumericalInputLabel(ambitoIndex: number, inputIndex: number): number {
+    const inputStart = ambitoIndex === 0 ? 1 : ambitoIndex === 1 ? 6 : 11;
+    return inputStart + inputIndex;
   }
 
-  displayWithFn(value: any): string {
-    return value ? value.nombre || value.label || value : '';
+  // Función para manejar la descarga de archivos
+  onDownload(fileName: string) {
+    // lógica para descargar el archivo
+    console.log(`Descargando archivo: ${fileName}`);
+    // se puede hacer una petición HTTP para obtener el archivo y descargarlo
   }
 
-  setNewValue(event: any, field: any): void {
-    field.valor = event.option.value;
-    this.validCampo(field);
+  // Método para alternar la expansión de todas las preguntas de un ámbito
+  toggleAll(index: number) {
+    this.expandAllState[index] = !this.expandAllState[index];
   }
 
-  download(url: string, nombre: string, w: number, h: number) {
+  // Método para manejar la descarga 
+  downloadDocument() {
+    if (this.documentId) {
+      this.gestorDocumentalService.getByUUID(this.documentId).subscribe(
+        (fileUrl: string) => {
+          const sanitizedUrl = this.sanitizer.bypassSecurityTrustUrl(fileUrl);
+          this.triggerDownload(sanitizedUrl as string);
+        },
+        (error: any) => {
+          console.error('Error downloading the document:', error);
+        }
+      );
+    } else {
+      console.error('Document ID not found');
+    }
+  }
+
+  triggerDownload(url: string) {
     const link = document.createElement('a');
     link.href = url;
-    link.download = nombre;
     link.target = '_blank';
-    document.body.appendChild(link);
+    link.download = 'documento.pdf';
     link.click();
-    document.body.removeChild(link);
-  }
-
-  clearForm() {
-    this.form.reset();
-  }
-  
-  /*private resetField(d: any) {
-    if (d.etiqueta === 'file' || d.etiqueta === 'fileRev') {
-      this.resetFileField(d);
-    }
-    if (d.etiqueta === 'autocomplete') {
-      this.resetAutocompleteField();
-    }
-    d.alerta = '';
-    d.clase = 'form-control form-control-success';
-  }*/
-
-  /*private resetFileField(d: any) {
-    const nativeElement = this.DocumentoInputVariable?.nativeElement || null;
-    if (nativeElement) nativeElement.value = '';
-    d.File = undefined;
-    d.url = '';
-    d.urlTemp = '';
-  }*/
-
-  private resetAutocompleteField() {
-    const e = document.querySelectorAll('.inputAuto');
-    e.forEach((el: any) => (el.value = ''));
-  }
-
-  validCampo(c: any, emit = true): boolean {
-    if (this.isFieldInvalid(c)) {
-      c.alerta = '** Debe llenar este campo';
-      c.clase = 'form-control form-control-danger';
-      return false;
-    }
-    this.validateField(c);
-    if (c.entrelazado && emit) {
-      this.interlaced.emit(c);
-    }
-    return true;
-  }
-
-  private isFieldInvalid(c: any): boolean {
-    return c.requerido && (!c.valor || (c.etiqueta === 'file' && !c.valor.name) || c.valor === '');
-  }
-
-  private validateField(c: any) {
-    if (c.etiqueta === 'input' && c.tipo === 'number') {
-      this.validateNumberField(c);
-    } else if (c.etiqueta === 'input' && c.tipo === 'email') {
-      this.validateEmailField(c);
-    } else {
-      c.clase = 'form-control form-control-success';
-      c.alerta = '';
-    }
-  }
-
-  private validateNumberField(c: any) {
-    c.valor = parseInt(c.valor, 10);
-    if (c.valor < c.minimo) {
-      c.clase = 'form-control form-control-danger';
-      c.alerta = `El valor no puede ser menor que ${c.minimo}`;
-    }
-  }
-
-  private validateEmailField(c: any) {
-    const pattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-    if (!pattern.test(c.valor)) {
-      c.clase = 'form-control form-control-danger';
-      c.alerta = 'No es un correo válido';
-    }
-  }
-
-  checkConfirmacion(): boolean {
-    let valido = true;
-    const camposAValidar = this.normalform.campos.filter((campo: any) => campo.etiqueta === 'inputConfirmacion');
-    if (camposAValidar.length % 2 !== 0) {
-      console.warn('Error: Un campo de confirmación no tiene pareja');
-      return false;
-    }
-
-    for (let i = 0; i < camposAValidar.length; i += 2) {
-      if (camposAValidar[i].valor !== camposAValidar[i + 1].valor) {
-        this.markAsInvalid(camposAValidar[i], camposAValidar[i + 1]);
-        valido = false;
-      } else {
-        this.markAsValid(camposAValidar[i], camposAValidar[i + 1]);
-      }
-    }
-    return valido;
-  }
-
-  private markAsInvalid(field1: any, field2: any) {
-    field1.clase = 'form-control form-control-danger';
-    field2.clase = 'form-control form-control-danger';
-    field1.alerta = field1.mensajeIguales || 'Los valores no coinciden';
-    field2.alerta = field2.mensajeIguales || 'Los valores no coinciden';
-  }
-
-  private markAsValid(field1: any, field2: any) {
-    field1.clase = 'form-control form-control-success';
-    field2.clase = 'form-control form-control-success';
-    field1.alerta = '';
-    field2.alerta = '';
-  }
-
-  validForm() {
-    if (this.form.valid) {
-      console.log("Formulario válido:", this.form.value);
-      this.result.emit(this.form.value);
-    } else {
-      console.log("Formulario no válido");
-    }
-  }
-
-
-  private populateResult(d: any, result: any) {
-    if ((d.etiqueta === 'file' || d.etiqueta === 'fileRev') && !d.ocultar) {
-      result[d.nombre] = { file: d.File, url: d.url };
-    } else {
-      result[d.nombre] = d.valor;
-    }
-  }
-
-  private calculatePercentage(resueltos: number, requeridos: number) {
-    this.data.percentage = resueltos / requeridos;
-    this.data.valid = this.data.valid && this.checkConfirmacion();
-    if (this.data.valid && this.data.percentage >= 1) {
-      this.data.data = this.normalform.modelo ? { [this.normalform.modelo]: this.data.data } : this.data.data;
-    }
-    this.percentage.emit(this.data.percentage);
-  }
-
-  auxButton(c: any) {
-    const result: any = {};
-    this.normalform.campos.forEach((d: any) => {
-      result[d.nombre] = d.etiqueta === 'file' ? { file: d.File } : d.valor;
-    });
-    const dataTemp = { data: result, button: c.nombre };
-    c.resultado ? this.result.emit(dataTemp) : this.resultAux.emit(dataTemp);
-  }
-
-  setPercentage() {
-    let requeridos = 0;
-    let resueltos = 0;
-    this.normalform.campos.forEach((form_element: any) => {
-      if (form_element.requerido && !form_element.ocultar) {
-        requeridos += 1;
-        resueltos += form_element.valor ? 1 : 0;
-      }
-    });
-    this.percentage.emit(resueltos / requeridos);
-  }
-
-  cleanURL(oldURL: string): SafeResourceUrl {
-    return this.sanitizer.bypassSecurityTrustUrl(oldURL);
-  }
-
-  onCheckboxChange(c: any) {
-    c.valor = !c.valor;
-    c.alerta = '';
-  }
-
-  getUniqueSteps(campos: any[]): number[] {
-    const uniqueSteps: number[] = [];
-    for (const campo of campos) {
-      if (!uniqueSteps.includes(campo.step) && this.form.get(this.getStepControlName(campo.step))) {
-        uniqueSteps.push(campo.step);
-      }
-    }
-    return uniqueSteps;
-  }
-
-  getFieldsInStep(step: number): any[] {
-    return this.normalform.campos.filter((c: any) => c.step === step);
-  }
-
-  /*handleKeyUp(event: KeyboardEvent, c: any) {
-    const target = event.target as HTMLInputElement;
-    this.searchTerm$.next({
-      text: target.value,
-      path: c.path,
-      query: c.query,
-      field: c,
-      keyToFilter: c.keyToFilter,
-    });
-  }*/
-
-  /*private searchEntries(text: string, path: string, query: string, keyToFilter: string, field: any) {
-    const channelOptions = new BehaviorSubject<any>({ field });
-    const options$ = channelOptions.asObservable();
-    const queryOptions$ = this.anyService.get(path, query.replace(keyToFilter, text));
-
-    return combineLatest([options$, queryOptions$]).pipe(
-      map(([options$, queryOptions$]) => ({
-        options: options$,
-        queryOptions: queryOptions$,
-        keyToFilter: text,
-      }))
-    );
-  }*/
-
-  private handleSearchResponse(response: any) {
-    const opciones = response.queryOptions.Data || response.queryOptions;
-    const fieldAutocomplete = this.normalform.campos.find((field: any) => field.nombre === response.options.field.nombre);
-    if (fieldAutocomplete) {
-      fieldAutocomplete.opciones = opciones;
-      if (opciones.length === 1 && Object.keys(opciones[0]).length === 0) {
-        const canEmit = fieldAutocomplete.entrelazado || false;
-        if (canEmit) {
-          this.interlaced.emit({ ...fieldAutocomplete, noOpciones: true, valorBuscado: response.keyToFilter });
-        }
-      }
-    }
-  }
-
-  private populateSelectMultipleField(element: any, value: any) {
-    element.valor = [];
-    if (value.length > 0) {
-      value.forEach((e1: any) =>
-        element.opciones.forEach((e2: any) => {
-          if (e1.Id === e2.Id) {
-            element.valor.push(e2);
-          }
-        })
-      );
-    }
   }
 }

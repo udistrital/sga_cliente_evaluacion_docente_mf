@@ -1,22 +1,19 @@
-<div class="card-container">
-    <!-- Primera Card (Escala Cualitativa) -->
-    <mat-card class="card-item glass-card">
-        <mat-card-header>
-            <mat-card-title>{{ "definir_escalas.titulo_cualitativa" | translate }}</mat-card-title>
-            <mat-card-subtitle>{{ "definir_escalas.sub_titulo_cualitativa" | translate }}</mat-card-subtitle>
-            <mat-icon class="star-icon">data_usage</mat-icon>
-        </mat-card-header>
-        <mat-card-content>
-            <div class="row mt-4">
-                <div class="col-12">
-                    <div class="alert info">
-                        <mat-icon class="icon">info</mat-icon>
-                        <span>{{ 'definir_escalas.alerta_cualitativa' | translate }}</span>
-                    </div>
-                </div>
+<ng-container *ngIf="hasRole([ROLES.ADMIN_SGA, ROLES.DOCENTE, ROLES.ESTUDIANTE, ROLES.CONSEJO_CURRICULAR]); else noPermission">
+    <div class="container">
+        <div class="form-container">
+            <h2>{{ "definir_escalas.titulo" | translate }}</h2>
+            <div class="form-group">
+                <label for="tipoEscala">{{ "definir_escalas.seleccionar_tipo_escala" | translate }}</label>
+                <select id="tipoEscala" class="form-control" [(ngModel)]="tipoEscala" (change)="onChangeTipoEscala()">
+                    <option value="" disabled selected>{{ "definir_escalas.seleccione" | translate }}</option>
+                    <option value="cualitativa">{{ "definir_escalas.cualitativa" | translate }}</option>
+                    <option value="cuantitativa">{{ "definir_escalas.cuantitativa" | translate }}</option>
+                </select>
             </div>
 
             <!-- Lista de escalas cualitativas -->
+        <mat-card>
+            <mat-card-content>
             <div class="escala-container">
                 <div class="escala-list">
                     <!-- Encabezados de la tabla -->
@@ -124,3 +121,17 @@
 </div>
 
 
+
+<!-- Modal para mostrar cuando el usuario no tiene permisos -->
+<ng-template #noPermission>
+    <div class="modal-overlay" *ngIf="!hasRole([ROLES.ADMIN_SGA, ROLES.DOCENTE, ROLES.ESTUDIANTE, ROLES.CONSEJO_CURRICULAR])">
+      <div class="modal-content">
+        <h2>{{ "definicion_formularios.sin_permisos_titulo" | translate }}</h2>
+        <p>{{ "definicion_formularios.sin_permisos_mensaje" | translate }}</p>
+        <!-- Icono grande de carita triste -->
+        <div class="sad-face-icon">
+          <mat-icon class="sad-icon">sentiment_dissatisfied</mat-icon>
+        </div>
+      </div>
+    </div>
+  </ng-template>
