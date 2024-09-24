@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, SimpleChanges } from "@angular/core";
+import { Component, OnInit, Input, SimpleChanges, ViewChild } from "@angular/core";
 import { ROLES } from "src/app/models/diccionario";
 import { UserService } from "src/app/services/user.service";
 import { MatSelectChange } from "@angular/material/select";
@@ -7,6 +7,14 @@ import * as moment from "moment";
 import { DocenteMidService } from "src/app/services/docente-mid.service";
 import Swal from "sweetalert2";
 import { TercerosCrudService } from "src/app/services/terceros-crud.service";
+import { DateService } from 'src/app/services/date.service';
+import { ProyectoAcademicoService } from '../../services/proyecto_academico.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { checkContent } from "src/app/utils/verify-response";
+import { EspaciosAcademicosService } from '../../services/espacios_academicos.service';
+import { PopUpManager } from 'src/app/managers/popUpManager';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
 
 @Component({
   selector: "app-evaluaciones",
@@ -25,12 +33,25 @@ export class EvaluacionesComponent implements OnInit {
   coevaluacionIForm: FormGroup;
   autoevaluacionIIForm: FormGroup;
   autoevaluacionIForm: FormGroup;
-
-  @Input() formtype: string = "";
+  dateHeader: string | undefined;
+  proyectos: { select: any, opciones: any[] } = { select: undefined, opciones: [] };
+  facultad = [];
+  displayedColumns: string[] = ['nombre', 'codigo', 'estado'];
+  espacios_academicos: any[] = [];
+  dataSource!: MatTableDataSource<any>;
+  
+  @Input() formtype: string = '';  
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  openSnackBar: any;
 
   constructor(
     private fb: FormBuilder,
     private userService: UserService,
+    private proyectoAcademicoService: ProyectoAcademicoService,
+    private _snackBar: MatSnackBar,
+    private espaciosAcademicosService: EspaciosAcademicosService,
+    private popUpManager: PopUpManager,
+    private dateService: DateService,
     private docenteMidService: DocenteMidService,
     private tercerosCrudService: TercerosCrudService
   ) {
@@ -40,6 +61,7 @@ export class EvaluacionesComponent implements OnInit {
     this.autoevaluacionIIForm = this.fb.group({});
     this.autoevaluacionIForm = this.fb.group({});
   }
+
 
   ngOnInit(): void {
     // Verificar si el persona_id existe en el localStorage
@@ -53,11 +75,14 @@ export class EvaluacionesComponent implements OnInit {
       storedPersonaId = "94";
     }
     console.log("persona_id encontrado:", storedPersonaId);
-    // Inicializar los formularios
-    this.initializeForms();
-
     console.log("EvaluacionesComponent initialized");
 
+    // Inicializar los formularios
+    this.initializeForms();
+    this.loadProyectos();
+    this.loadEspaciosAcademicos();
+
+    // Si no hay persona_id, terminamos la ejecución
     if (!storedPersonaId) {
       console.error("Persona ID no encontrado en localStorage.");
       Swal.fire({
@@ -65,26 +90,31 @@ export class EvaluacionesComponent implements OnInit {
         title: "Error",
         text: "No se ha encontrado el ID de persona. Por favor, inicia sesión de nuevo.",
       });
-      return; // Si no hay persona_id, terminamos la ejecución
+      return;
     }
 
     // Obtener roles del usuario
     this.userService.getUserRoles().then((roles) => {
       this.userRoles = roles;
       console.log("User roles loaded:", this.userRoles);
-    });
 
-    // Llamar a la función getCodigoEstudiante y mostrar el código en la consola o un mensaje si no está asignado
-    this.userService
-      .getCodigoEstudiante()
+      // Obtener encabezado de fecha
+      this.dateService.getDateHeader().subscribe(
+        (date: string) => {
+          this.dateHeader = date;
+          console.log('DateHeader:', this.dateHeader);
+        },
+        (error: any) => console.error('Error al obtener el encabezado de fecha:', error)
+      );        
+    }).catch(error => console.error('Error al obtener los roles de usuario:', error));
+
+    // Llamar a la función getCodigoEstudiante y mostrar el código en la consola
+    this.userService.getCodigoEstudiante()
       .then((codigo) => {
         console.log("Código del estudiante:", codigo);
       })
       .catch((error) => {
-        console.error(
-          "Error al obtener el código del estudiante:",
-          error.message
-        );
+        console.error("Error al obtener el código del estudiante:", error.message);
       });
 
     // Cargar datos de identificación del usuario
@@ -93,83 +123,63 @@ export class EvaluacionesComponent implements OnInit {
 
   // Cargar datos de identificación del usuario actual
   loadUserData() {
-    // Intentar obtener el ID de la persona desde el servicio de usuario
-    this.userService
-      .getPersonaId()
-      .then((personaId) => {
-        if (!personaId) {
-          console.error(
-            "No se encontró el ID de la persona. Verifica si el usuario está autenticado correctamente."
-          );
-          return;
-        }
-        // Llamar al servicio para obtener los datos de identificación usando el personaId
-        this.tercerosCrudService
-          .getDatosIdentificacionPorTercero(personaId)
-          .subscribe(
-            (data) => {
-              if (data && data.length > 0) {
-                const datosIdentificacion = data[0]; // Asumimos que se devuelve un solo resultado
-                // Filtramos los campos requeridos
-                const filteredData = {
-                  CodigoAbreviacion:
-                    datosIdentificacion.TipoDocumentoId?.CodigoAbreviacion,
-                  Id: datosIdentificacion.TerceroId?.Id,
-                  NombreCompleto: datosIdentificacion.TerceroId?.NombreCompleto,
-                  Activo: datosIdentificacion.Activo,
-                  Numero: datosIdentificacion.Numero,
-                  DocumentoSoporte: datosIdentificacion.DocumentoSoporte,
-                };
-                // Verificamos si el tercero está activo
-                if (filteredData.Activo) {
-                  // Rellenar el formulario de Heteroevaluación
-                  this.heteroForm.patchValue({
-                    estudianteNombre: filteredData.NombreCompleto,
-                    estudianteIdentificacion: filteredData.Numero,
-                  });
-                  // Rellenar el formulario de Autoevaluación I
-                  this.autoevaluacionIForm.patchValue({
-                    estudianteNombre: filteredData.NombreCompleto,
-                    estudianteIdentificacion: filteredData.Numero,
-                  });
-                  // Rellenar el formulario de Autoevaluación II
-                  this.autoevaluacionIIForm.patchValue({
-                    docenteNombre: filteredData.NombreCompleto,
-                    docenteIdentificacion: filteredData.Numero,
-                  });
-                  // Rellenar el formulario de Coevaluación I
-                  this.coevaluacionIForm.patchValue({
-                    docenteNombre: filteredData.NombreCompleto,
-                  });
-                  // Rellenar el formulario de Coevaluación II
-                  this.coevaluacionIIForm.patchValue({
-                    docenteNombre: filteredData.NombreCompleto,
-                  });
-                  console.log(
-                    "Datos de identificación filtrados y cargados:",
-                    filteredData
-                  );
-                } else {
-                  console.warn("El usuario no está activo.");
-                }
-              } else {
-                console.warn(
-                  "No se encontraron datos de identificación para el usuario."
-                );
-              }
-            },
-            (error) => {
-              console.error(
-                "Error al cargar los datos de identificación:",
-                error
-              );
+    this.userService.getPersonaId().then((personaId) => {
+      if (!personaId) {
+        console.error("No se encontró el ID de la persona. Verifica si el usuario está autenticado correctamente.");
+        return;
+      }
+      
+      // Obtener los datos de identificación usando el personaId
+      this.tercerosCrudService.getDatosIdentificacionPorTercero(personaId).subscribe(
+        (data) => {
+          if (data && data.length > 0) {
+            const datosIdentificacion = data[0];
+            const filteredData = {
+              CodigoAbreviacion: datosIdentificacion.TipoDocumentoId?.CodigoAbreviacion,
+              Id: datosIdentificacion.TerceroId?.Id,
+              NombreCompleto: datosIdentificacion.TerceroId?.NombreCompleto,
+              Activo: datosIdentificacion.Activo,
+              Numero: datosIdentificacion.Numero,
+              DocumentoSoporte: datosIdentificacion.DocumentoSoporte,
+            };
+            
+            // Si el usuario está activo, rellenar los formularios
+            if (filteredData.Activo) {
+              this.heteroForm.patchValue({
+                estudianteNombre: filteredData.NombreCompleto,
+                estudianteIdentificacion: filteredData.Numero,
+              });
+              this.autoevaluacionIForm.patchValue({
+                estudianteNombre: filteredData.NombreCompleto,
+                estudianteIdentificacion: filteredData.Numero,
+              });
+              this.autoevaluacionIIForm.patchValue({
+                docenteNombre: filteredData.NombreCompleto,
+                docenteIdentificacion: filteredData.Numero,
+              });
+              this.coevaluacionIForm.patchValue({
+                docenteNombre: filteredData.NombreCompleto,
+              });
+              this.coevaluacionIIForm.patchValue({
+                docenteNombre: filteredData.NombreCompleto,
+              });
+              console.log("Datos de identificación filtrados y cargados:", filteredData);
+            } else {
+              console.warn("El usuario no está activo.");
             }
-          );
-      })
-      .catch((error) => {
-        console.error("Error al obtener el ID de la persona:", error);
-      });
+          } else {
+            console.warn("No se encontraron datos de identificación para el usuario.");
+          }
+        },
+        (error) => {
+          console.error("Error al cargar los datos de identificación:", error);
+        }
+      );
+    }).catch((error) => {
+      console.error("Error al obtener el ID de la persona:", error);
+    });
   }
+
 
   // Inicializar formularios
   initializeForms(): void {
@@ -223,6 +233,43 @@ export class EvaluacionesComponent implements OnInit {
     });
   }
 
+  // Método para cargar espacios académicos
+  async loadEspaciosAcademicos() {
+    try {
+      const response = await this.cargarEspaciosAcademicos();
+      this.dataSource = new MatTableDataSource<any>(this.espacios_academicos);
+      this.dataSource.paginator = this.paginator;
+    } catch (error) {
+      this.popUpManager.showErrorToast('Error al cargar los espacios académicos: ' + error);
+    }
+  } 
+
+  async cargarEspaciosAcademicos() {
+    return new Promise((resolve, reject) => {
+      this.espaciosAcademicosService
+        .get('espacio-academico?query=espacio_academico_padre,activo:true&limit=0')
+        .subscribe(
+          (response: any) => {
+            this.espacios_academicos = response['Data'];
+            resolve(true);
+          },
+          (error) => {
+            reject(error);
+          }
+        );
+    });
+  } 
+
+  // Método para aplicar filtro en la tabla de espacios académicos
+  aplicarFiltro(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
+  }
+
   // Control de acceso basado en roles
   hasRole(rolesPermitidos: string[]): boolean {
     return rolesPermitidos.some((rol) => this.userRoles.includes(rol));
@@ -246,22 +293,29 @@ export class EvaluacionesComponent implements OnInit {
     }
   }
 
-  // Manejar el guardado tanto para formularios estáticos como dinámicos
-  onGuardar(event?: any): void {
+  onGuardar(event?: any, formValues?: any): void {
     if (event) {
       console.log("Datos recibidos de formulario dinámico:", event);
       this.processFormSubmission(event);
+    } else if (formValues) {
+      console.log("Formulario recibido:", formValues);
+      if (this.validateForm(formValues)) {
+        const formattedValues = {
+          ...formValues,
+          inicioFecha: moment(formValues.inicioFecha, "DD/MM/YYYY").format("YYYY-MM-DD"),
+          finFecha: moment(formValues.finFecha, "DD/MM/YYYY").format("YYYY-MM-DD"),
+        };
+        console.log("Datos formateados para envío:", formattedValues);
+      } else {
+        console.error("El formulario no es válido. Por favor, completa todos los campos requeridos.");
+      }
     } else {
       const formValues = this.getSelectedFormValues();
       if (formValues && this.validateForm(formValues)) {
         const formattedValues = {
           ...formValues,
-          inicioFecha: moment(formValues.inicioFecha, "DD/MM/YYYY").format(
-            "YYYY-MM-DD"
-          ),
-          finFecha: moment(formValues.finFecha, "DD/MM/YYYY").format(
-            "YYYY-MM-DD"
-          ),
+          inicioFecha: moment(formValues.inicioFecha, "DD/MM/YYYY").format("YYYY-MM-DD"),
+          finFecha: moment(formValues.finFecha, "DD/MM/YYYY").format("YYYY-MM-DD"),
         };
         console.log("Datos listos para envío:", formattedValues);
       } else {
@@ -270,89 +324,77 @@ export class EvaluacionesComponent implements OnInit {
     }
   }
 
-  // Procesa el formulario dinámico
-  processFormSubmission(formValues: any) {
-    if (!formValues || Object.keys(formValues).length === 0) {
-      console.error("No se recibieron valores del formulario dinámico.");
-      return;
-    }
-
-    // Verificar qué tipo de evaluación dinámica se está enviando
-    switch (this.selectedEvaluation) {
-      case "heteroevaluacion":
-        this.submitHeteroevaluacion(formValues);
-        break;
-
-      case "autoevaluacion-i":
-        this.submitAutoevaluacionI(formValues);
-        break;
-
-      case "autoevaluacion-ii":
-        this.submitAutoevaluacionII(formValues);
-        break;
-
-      case "coevaluacion-i":
-        this.submitCoevaluacionI(formValues);
-        break;
-
-      case "coevaluacion-ii":
-        this.submitCoevaluacionII(formValues);
-        break;
-
-      default:
-        console.error("No se reconoce la evaluación seleccionada.");
-    }
+// Procesa el formulario dinámico
+processFormSubmission(formValues: any) {
+  if (!formValues || Object.keys(formValues).length === 0) {
+    console.error("No se recibieron valores del formulario dinámico.");
+    return;
   }
 
-  // Métodos para enviar cada tipo de formulario dinámico
+  // Verificar qué tipo de evaluación dinámica se está enviando
+  switch (this.selectedEvaluation) {
+    case "heteroevaluacion":
+      this.submitHeteroevaluacion(formValues);
+      break;
 
-  submitHeteroevaluacion(formValues: any) {
-    if (!formValues) {
-      console.error(
-        "No se recibieron valores del formulario de Heteroevaluación."
-      );
-      return;
-    }
+    case "autoevaluacion-i":
+      this.submitAutoevaluacionI(formValues);
+      break;
 
-    // Aquí realizamos una transformación en caso de que se necesite, como formatear fechas
-    const formattedValues = {
-      ...formValues,
-      inicioFecha: formValues.inicioFecha
-        ? moment(formValues.inicioFecha, "DD/MM/YYYY").format("YYYY-MM-DD")
-        : null,
-      finFecha: formValues.finFecha
-        ? moment(formValues.finFecha, "DD/MM/YYYY").format("YYYY-MM-DD")
-        : null,
-    };
+    case "autoevaluacion-ii":
+      this.submitAutoevaluacionII(formValues);
+      break;
 
-    console.log(
-      "Enviando datos de Heteroevaluación formateados:",
-      formattedValues
-    );
+    case "coevaluacion-i":
+      this.submitCoevaluacionI(formValues);
+      break;
 
-    // Aquí puedes enviar los datos al backend, por ejemplo:
-    this.docenteMidService.get(formattedValues).subscribe(
-      (response) => {
-        console.log(
-          "Datos de Heteroevaluación enviados exitosamente:",
-          response
-        );
-        Swal.fire({
-          icon: "success",
-          title: "Enviado",
-          text: "Formulario de Heteroevaluación enviado correctamente.",
-        });
-      },
-      (error) => {
-        console.error("Error enviando Heteroevaluación:", error);
-        Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: "Ocurrió un error al enviar el formulario de Heteroevaluación.",
-        });
-      }
-    );
+    case "coevaluacion-ii":
+      this.submitCoevaluacionII(formValues);
+      break;
+
+    default:
+      console.error("No se reconoce la evaluación seleccionada.");
   }
+}
+
+// Métodos para enviar cada tipo de formulario dinámico
+
+submitHeteroevaluacion(formValues: any) {
+  if (!formValues) {
+    console.error("No se recibieron valores del formulario de Heteroevaluación.");
+    return;
+  }
+
+  // Realizar una transformación en caso de que se necesite, como formatear fechas
+  const formattedValues = {
+    ...formValues,
+    inicioFecha: formValues.inicioFecha ? moment(formValues.inicioFecha, "DD/MM/YYYY").format("YYYY-MM-DD") : null,
+    finFecha: formValues.finFecha ? moment(formValues.finFecha, "DD/MM/YYYY").format("YYYY-MM-DD") : null,
+  };
+
+  console.log("Enviando datos de Heteroevaluación formateados:", formattedValues);
+
+  // Enviar los datos al backend
+  this.docenteMidService.get(formattedValues).subscribe(
+    (response) => {
+      console.log("Datos de Heteroevaluación enviados exitosamente:", response);
+      Swal.fire({
+        icon: "success",
+        title: "Enviado",
+        text: "Formulario de Heteroevaluación enviado correctamente.",
+      });
+    },
+    (error) => {
+      console.error("Error enviando Heteroevaluación:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Ocurrió un error al enviar el formulario de Heteroevaluación.",
+      });
+    }
+  );
+}
 
   submitAutoevaluacionI(formValues: any) {
     console.log("Enviando formulario de Autoevaluación I:", formValues);
@@ -484,5 +526,28 @@ export class EvaluacionesComponent implements OnInit {
       default:
         return [];
     }
+  }
+
+  onProyectoSelection(event: MatSelectChange): void {
+    const proyectoSeleccionado = event.value;
+    if (proyectoSeleccionado) {
+      this.openSnackBar(`Proyecto seleccionado: ${proyectoSeleccionado.Nombre}`);
+    }
+  }
+
+  loadProyectos(): void {
+    this.proyectoAcademicoService.get('proyecto_academico_institucion?query=Activo:true&sortby=Nombre&order=asc&limit=0')
+      .subscribe({
+        next: (resp) => {
+          if (checkContent(resp)) {
+            this.proyectos.opciones = resp;
+          } else {
+            console.error('No se encontraron proyectos');
+          }
+        },
+        error: (err) => {
+          console.error('Error al cargar proyectos:', err);
+        }
+      });
   }
 }

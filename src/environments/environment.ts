@@ -14,6 +14,8 @@ export const environment = {
     TERCEROS_SERVICE:"https://autenticacion.portaloas.udistrital.edu.co/apioas/terceros_crud/v1/",
     SGA_ESPACIOS_ACADEMICOS_MID_SERVICE:"http://pruebasapi3.intranetoas.udistrital.edu.co:8553/v1/",
     EVALUACION_DOCENTE_MID:"http://localhost:8090/v1/",
-    TERCEROS_CRUD:"http://pruebasapi.intranetoas.udistrital.edu.co:8121/v1/"
+    TERCEROS_CRUD:"http://pruebasapi.intranetoas.udistrital.edu.co:8121/v1/",
+    ESPACIOS_ACADEMICOS_SERVICE_2: 'http://pruebasapi2.intranetoas.udistrital.edu.co:8530/',
+    ESPACIO_ACADEMICO_MID_SERVICE: 'http://localhost:8095/v1/',
 };
     

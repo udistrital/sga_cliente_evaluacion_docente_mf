@@ -61,7 +61,9 @@
         "visualizador_formulario": "Visualizador del formulario",
         "procesos_seleccionar": "Procesos a seleccionar",
         "guardar": "Guardar",
-        "campo_requerido": "Campo requerido"
+        "campo_requerido": "Campo requerido",
+        "sin_permisos_titulo": "Acceso denegado",
+        "sin_permisos_mensaje": "No tienes los permisos necesarios para visualizar esta información. Por favor, contacta al administrador del sistema para obtener más detalles o para solicitar acceso."
     },
 
     "definir_escalas": {
