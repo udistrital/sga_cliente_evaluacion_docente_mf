@@ -42,9 +42,9 @@ export class EvaluacionesComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    
+    // Verificar si el persona_id existe en el localStorage
     let storedPersonaId = localStorage.getItem("persona_id");
-
+    // Si no existe persona_id en el localStorage, lo configuramos con un valor por defecto (94)
     if (!storedPersonaId) {
       console.warn(
         "No se encontró persona_id, estableciendo 94 como valor por defecto."
@@ -52,9 +52,7 @@ export class EvaluacionesComponent implements OnInit {
       localStorage.setItem("persona_id", "94");
       storedPersonaId = "94";
     }
-
     console.log("persona_id encontrado:", storedPersonaId);
-
     // Inicializar los formularios
     this.initializeForms();
 
@@ -67,7 +65,7 @@ export class EvaluacionesComponent implements OnInit {
         title: "Error",
         text: "No se ha encontrado el ID de persona. Por favor, inicia sesión de nuevo.",
       });
-      return;
+      return; // Si no hay persona_id, terminamos la ejecución
     }
 
     // Obtener roles del usuario
@@ -76,21 +74,23 @@ export class EvaluacionesComponent implements OnInit {
       console.log("User roles loaded:", this.userRoles);
     });
 
-    // Cargar datos de identificación del usuario
-    this.loadUserData();
-
-    // Obtener el código del estudiante y mostrarlo en la consola
+    // Llamar a la función getCodigoEstudiante y mostrar el código en la consola o un mensaje si no está asignado
     this.userService
       .getCodigoEstudiante()
       .then((codigo) => {
         console.log("Código del estudiante:", codigo);
       })
       .catch((error) => {
-        console.error("Error al obtener el código del estudiante:", error);
+        console.error(
+          "Error al obtener el código del estudiante:",
+          error.message
+        );
       });
+
+    // Cargar datos de identificación del usuario
+    this.loadUserData();
   }
 
-  // Cargar datos de identificación del usuario actual
   // Cargar datos de identificación del usuario actual
   loadUserData() {
     // Intentar obtener el ID de la persona desde el servicio de usuario
@@ -103,7 +103,6 @@ export class EvaluacionesComponent implements OnInit {
           );
           return;
         }
-
         // Llamar al servicio para obtener los datos de identificación usando el personaId
         this.tercerosCrudService
           .getDatosIdentificacionPorTercero(personaId)
@@ -111,7 +110,6 @@ export class EvaluacionesComponent implements OnInit {
             (data) => {
               if (data && data.length > 0) {
                 const datosIdentificacion = data[0]; // Asumimos que se devuelve un solo resultado
-
                 // Filtramos los campos requeridos
                 const filteredData = {
                   CodigoAbreviacion:
@@ -122,7 +120,6 @@ export class EvaluacionesComponent implements OnInit {
                   Numero: datosIdentificacion.Numero,
                   DocumentoSoporte: datosIdentificacion.DocumentoSoporte,
                 };
-
                 // Verificamos si el tercero está activo
                 if (filteredData.Activo) {
                   // Rellenar el formulario de Heteroevaluación
@@ -130,29 +127,24 @@ export class EvaluacionesComponent implements OnInit {
                     estudianteNombre: filteredData.NombreCompleto,
                     estudianteIdentificacion: filteredData.Numero,
                   });
-
                   // Rellenar el formulario de Autoevaluación I
                   this.autoevaluacionIForm.patchValue({
                     estudianteNombre: filteredData.NombreCompleto,
                     estudianteIdentificacion: filteredData.Numero,
                   });
-
                   // Rellenar el formulario de Autoevaluación II
                   this.autoevaluacionIIForm.patchValue({
                     docenteNombre: filteredData.NombreCompleto,
                     docenteIdentificacion: filteredData.Numero,
                   });
-
                   // Rellenar el formulario de Coevaluación I
                   this.coevaluacionIForm.patchValue({
                     docenteNombre: filteredData.NombreCompleto,
                   });
-
                   // Rellenar el formulario de Coevaluación II
                   this.coevaluacionIIForm.patchValue({
                     docenteNombre: filteredData.NombreCompleto,
                   });
-
                   console.log(
                     "Datos de identificación filtrados y cargados:",
                     filteredData
