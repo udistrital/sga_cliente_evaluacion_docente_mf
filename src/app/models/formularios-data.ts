@@ -692,7 +692,7 @@ export const COEVALUACION_I = {
   
 
 
-export const response = {
+export const responses = {
     Success: true,
     Status: 200,
     Message: "Consulta exitosa",

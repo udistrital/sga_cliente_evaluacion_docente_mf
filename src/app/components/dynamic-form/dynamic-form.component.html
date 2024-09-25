@@ -6,8 +6,8 @@
 <!-- Vista por pasos usando mat-stepper para los Ámbitos -->
 <mat-vertical-stepper  [linear]="true" [formGroup]="stepperForm" #mainStepper>
     <!-- Ámbitos -->
-    <mat-step *ngFor="let seccion of todasSecciones; let i = index" [formGroupName]="'seccion' + i">
-        <ng-template matStepLabel>{{ seccion.nombre }}</ng-template>
+    <mat-step *ngFor="let seccion of todasSecciones; let i = index">
+        <ng-template matStepLabel >{{ seccion.nombre }}</ng-template>
 
         <!-- Botón para colapsar/expandir todas las preguntas con ícono de ojo -->
         <button mat-raised-button color="primary" (click)="toggleAll(i)">
@@ -27,7 +27,7 @@
 
                 <!-- Opción de única respuesta (radio buttons) -->
                 <div *ngIf="pregunta.campos[0].nombre === 'Escala definida'">
-                    <mat-radio-group [formControlName]="'pregunta_' + generateControlName(pregunta.text)">
+                    <mat-radio-group>
                         <mat-radio-button *ngFor="let option of pregunta.campos[0].escala" [value]="option.valor">
                             {{ option.nombre }}
                         </mat-radio-button>
@@ -37,52 +37,52 @@
              
 
                 <!-- Opción de selección múltiple (checkboxes) -->
-                <div *ngIf="pregunta.campos[0].nombre === ''">
+                <!-- <div *ngIf="pregunta.campos[0].nombre === ''">
                     <mat-checkbox *ngFor="let option of pregunta.campos[0].escala"
                         [formControlName]="'pregunta_' + generateControlName(pregunta.text)">
                         {{ option.nombre}}
                     </mat-checkbox>
-                </div>
+                </div> -->
 
                 <!-- Opción de respuesta abierta (input/textarea) -->
-                <div *ngIf="pregunta.campos[0].nombre === 'Comentario' || pregunta.tipo === 'input'">
+                <!-- <div *ngIf="pregunta.campos[0].nombre === 'Comentario' || pregunta.tipo === 'input'">
                     <mat-form-field appearance="fill">
                         <mat-label>{{ pregunta.text }}</mat-label>
                         <input matInput [formControlName]="'pregunta_' + generateControlName(pregunta.text)">
                     </mat-form-field>
-                </div>
+                </div> -->
 
                 <!-- Input para la carga de archivos -->
-                <div *ngIf="pregunta.tipo === 'file'">
+                <!-- <div *ngIf="pregunta.tipo === 'file'">
                     <mat-form-field appearance="fill">
                         <mat-label>Cargar archivo</mat-label>
                         <input type="file" (change)="handleFileInputChange($event)">
                     </mat-form-field>
-                </div>
+                </div> -->
 
                 <!-- Botón para descargar evidencias  -->
-                <div *ngIf="pregunta.tipo === 'download'">
+                <!-- <div *ngIf="pregunta.tipo === 'download'">
                     <button mat-raised-button color="primary" (click)="downloadDocument()">
                         <mat-icon>cloud_download</mat-icon> Descargar Evidencia
                     </button>
-                </div>
+                </div> -->
 
                 <!-- Botón para cargar evidencias justo después del enunciado -->
-                <div
+                <!-- <div
                     *ngIf="pregunta.text === 'El cuerpo docente debe cargar el acta de co-evalaucion curricularen enste boton: '">
                     <input type="file" (change)="handleFileInputChange($event)" />
-                    <button mat-raised-button color="primary" (click)="cargarEvidencias()">
+                    <button mat-raised-button color="primary" (click)="cargarEvidencias()"> -->
                         <!-- <mat-icon>upload</mat-icon> {{ coevaluacionI.botonCargarEvidencias }} -->
-                    </button>
-                </div>
+                    <!-- </button>
+                </div> -->
 
                 <!-- Botón para cargar evidencias en Autoevaluación II debajo del enunciado específico -->
-                <div *ngIf="pregunta.text === 'El cuerpo docente debe cargar las evidencias correspondientes:'">
+                <!-- <div *ngIf="pregunta.text === 'El cuerpo docente debe cargar las evidencias correspondientes:'">
                     <input type="file" (change)="handleFileInputChange($event)" />
                     <button mat-raised-button color="primary" (click)="cargarEvidencias()">
                         <mat-icon>upload</mat-icon> Cargar Evidencias
                     </button>
-                </div>
+                </div> -->
 
             </mat-expansion-panel>
         </mat-accordion>
@@ -94,63 +94,6 @@
         </div>
     </mat-step>
 </mat-vertical-stepper>
-
-<!-- Vista en formato de formulario común (sin stepper) -->
-<div  [formGroup]="stepperForm">
-    <div *ngFor="let seccion of todasSecciones; let i = index" [formGroupName]="'seccion' + i">
-        <h3>{{ seccion.nombre }}</h3>
-        <mat-accordion [multi]="true">
-            <mat-expansion-panel *ngFor="let pregunta of seccion.items; let j = index"
-                class="custom-expansion-panel">
-                <mat-expansion-panel-header>
-                    <mat-panel-title>
-                        <!-- Ícono para hacer más llamativo el encabezado de la pregunta -->
-                        <mat-icon color="accent">help_outline</mat-icon> {{ pregunta.nombre }}
-                    </mat-panel-title>
-                </mat-expansion-panel-header>
-
-                <!-- Opciones para cada pregunta -->
-                <div *ngIf="pregunta.tipo === 'radio'">
-                    <mat-radio-group [formControlName]="'pregunta_' + generateControlName(pregunta.text)">
-                        <mat-radio-button *ngFor="let option of pregunta.options" [value]="option.valor">
-                            {{ option.texto }}
-                        </mat-radio-button>
-                    </mat-radio-group>
-                </div>
-
-                <div *ngIf="pregunta.tipo === 'checkbox'">
-                    <mat-checkbox *ngFor="let option of pregunta.options"
-                        [formControlName]="'pregunta_' + generateControlName(pregunta.text)">
-                        {{ option.texto }}
-                    </mat-checkbox>
-                </div>
-
-                <div *ngIf="pregunta.tipo === 'textarea' || pregunta.tipo === 'input'">
-                    <mat-form-field appearance="fill">
-                        <mat-label>{{ pregunta.text }}</mat-label>
-                        <input matInput [formControlName]="'pregunta_' + generateControlName(pregunta.text)">
-                    </mat-form-field>
-                </div>
-
-                <div *ngIf="pregunta.tipo === 'file'">
-                    <mat-form-field appearance="fill">
-                        <mat-label>Cargar archivo</mat-label>
-                        <input type="file" (change)="handleFileInputChange($event)">
-                    </mat-form-field>
-                </div>
-
-                <!-- Botón para descargar evidencias  -->
-                <div *ngIf="pregunta.tipo === 'download'">
-                    <button mat-raised-button color="primary" (click)="downloadDocument()">Descargar Documento
-                        <mat-icon>cloud_download</mat-icon> Descargar Evidencia
-                    </button>
-                </div>
-
-            </mat-expansion-panel>
-        </mat-accordion>
-    </div>
-</div>
-
 <!-- Botón final para enviar -->
 <div>
     <!-- <button mat-button (click)="submit()">Guardar</button> -->

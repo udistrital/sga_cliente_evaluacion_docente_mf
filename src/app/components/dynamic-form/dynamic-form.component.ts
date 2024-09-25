@@ -4,19 +4,11 @@ import {
   FormBuilder,
   FormControl,
   FormGroup,
-  Validators,
 } from "@angular/forms";
 import { MatStepper } from "@angular/material/stepper";
 import { DomSanitizer } from "@angular/platform-browser";
 import { Subject } from "rxjs/internal/Subject";
-import {
-  HETEROEVALUACION,
-  AUTOEVALUACION_I,
-  AUTOEVALUACION_II,
-  COEVALUACION_I,
-  COEVALUACION_II,
-  response,
-} from "src/app/models/formularios-data";
+import { EvaluacionDocenteMidService } from "src/app/services/evaluacion-docente-mid.service";
 import { GestorDocumentalService } from "src/app/services/gestor-documental.service";
 import Swal from "sweetalert2";
 
@@ -46,72 +38,43 @@ interface Respuesta {
 })
 export class DynamicFormComponent implements OnInit {
   stepperForm!: FormGroup; // Inicializa el FormGroup correctamente
-  formularios = [
-    response,
-    HETEROEVALUACION,
-    AUTOEVALUACION_I,
-    AUTOEVALUACION_II,
-    COEVALUACION_I,
-    COEVALUACION_II,
-  ]; // Lista de formularios disponibles
-  selectedForm: any; // Variable para almacenar el formulario seleccionado
-  ambitos: Ambito[] = []; // Tipar los ámbitos correctamente
+  //ambitos: Ambito[] = []; // Tipar los ámbitos correctamente
   todasSecciones: any[] = [];
-  comentarioCounter = 1; // Contador para numerar los comentarios de forma continua
   actaFile: File | null = null;
-  isFormView: boolean = false;
-  coevaluacionI = COEVALUACION_I;
   expandAllState: boolean[] = [];
-  uploadedFileUid: string | null = null;
-  documentId: string | null = null;
-
   @ViewChild("mainStepper") mainStepper!: MatStepper;
   @Input() inputData: any; // Define el @Input
 
   constructor(
     private fb: FormBuilder,
+    private sanitizer: DomSanitizer,
+    private evaluacionDocenteMidService: EvaluacionDocenteMidService,
     private gestorService: GestorDocumentalService,
     private gestorDocumentalService: GestorDocumentalService,
-    private sanitizer: DomSanitizer
+
   ) { }
 
   ngOnInit() {
     // Inicializar el formulario principal
     this.stepperForm = this.fb.group({});
-    this.documentId = '74';
     // Seleccionar el formulario por defecto para la vista inicial
     this.selectForm(this.inputData); // Se puede cambiar según las necesidades
   }
 
-  // Método para inicializar el formulario seleccionado
-  selectForm(tipo_formulario: string) {
-    const docenteId = response.Data.Data.docente;
-    const espacioAcademico = response.Data.Data.espacioAcademico;
-    const cualitativa = response.Data.Data.seccion.cualitativa.map(seccion => ({ tipo: 'cualitativa', ...seccion }));
-    const cuantitativa = response.Data.Data.seccion.cuantitativa.map(seccion => ({ tipo: 'cuantitativa', ...seccion }));
-    // const descripcion = [{ tipo: 'descripcion', orden: 3, nombre: "Descripción" }];
-    // const cargarArchivo = [{ tipo: 'cargar archivo', orden: 1, nombre: "Cargar Archivo" }];
-    // const descargaArchivos = [{ tipo: 'descarga de archivos', orden: 4, nombre: "Descarga de Archivos" }];
-    // Combinar todas las secciones en un solo array
-    this.todasSecciones = [
-      ...cualitativa,
-      ...cuantitativa,
-      // ...descripcion,
-      // ...cargarArchivo,
-      // ...descargaArchivos
-    ];
-    this.todasSecciones = this.todasSecciones.filter((seccion, index, self) => 
-      index === self.findIndex((s) => s.orden === seccion.orden)
-    );
-    
-    // Ordenar todas las secciones de menor a mayor por 'orden'
-    this.todasSecciones.sort((a, b) => a.orden - b.orden);
-
-    // Imprimir las secciones ordenadas
-    console.log("Secciones ordenadas de menor a mayor:", this.todasSecciones);
-
-
-  }
+// Método para inicializar el formulario seleccionado
+selectForm(tipo_formulario: string) {
+  this.evaluacionDocenteMidService.get(`formulario_por_tipo/?id_tipo_formulario=3&id_periodo=1&id_tercero=1&id_espacio=1`)
+    .subscribe(response => {
+      console.log(response);
+      if (response.Success === true && response.Status === 200) {
+          this.todasSecciones = response.Data.seccion;
+      } else {
+        console.log('Error al obtener el formulario:', response.Message);
+      }
+    }, error => {
+      console.error('Error validando la existencia de la evaluación:', error);
+    });
+}
 
   handleFileInputChange(event: any): void {
     this.actaFile = event.target.files[0] ?? null;
@@ -196,13 +159,13 @@ export class DynamicFormComponent implements OnInit {
   ) {
     const control = this.getFormControl(
       ambitoIndex,
-      `pregunta_${this.ambitos[ambitoIndex].preguntas[preguntaIndex].text}`
+      `pregunta_${this.todasSecciones[ambitoIndex].preguntas[preguntaIndex].text}`
     );
 
     // Si la respuesta es válida (se ha seleccionado una opción)
     if (control.valid) {
       // Avanzar automáticamente a la siguiente pregunta si existe
-      if (preguntaIndex < this.ambitos[ambitoIndex].preguntas.length - 1) {
+      if (preguntaIndex < this.todasSecciones[ambitoIndex].preguntas.length - 1) {
         innerStepper.next(); // Avanzar a la siguiente pregunta
       } else {
         // Si es la última pregunta, se queda en el mismo ámbito hasta que el usuario decida avanzar
@@ -238,8 +201,8 @@ export class DynamicFormComponent implements OnInit {
 
   generateResponseData(): Respuesta[] {
     const respuestas: Respuesta[] = []; // Tipado explícito de la variable respuestas
-    this.ambitos.forEach((ambito, i) => {
-      ambito.preguntas.forEach((pregunta, j) => {
+    this.todasSecciones.forEach((ambito, i) => {
+      ambito.preguntas.forEach((pregunta:any, j:number) => {
         const controlName = this.generateControlName(pregunta.text);
         const control = this.stepperForm.get(
           `ambito_${i}.pregunta_${controlName}`
@@ -321,13 +284,13 @@ export class DynamicFormComponent implements OnInit {
       ambitoIndex,
       "pregunta_" +
       this.generateControlName(
-        this.ambitos[ambitoIndex].preguntas[preguntaIndex].text
+        this.todasSecciones[ambitoIndex].preguntas[preguntaIndex].text
       )
     );
 
     if (control.valid) {
       // Si es la última pregunta del ámbito actual, avanza al siguiente ámbito
-      if (preguntaIndex < this.ambitos[ambitoIndex].preguntas.length - 1) {
+      if (preguntaIndex < this.todasSecciones[ambitoIndex].preguntas.length - 1) {
         innerStepper.next(); // Avanzar a la siguiente pregunta
       } else {
         this.mainStepper.next(); // Si es la última pregunta, avanzar al siguiente ámbito
@@ -354,8 +317,9 @@ export class DynamicFormComponent implements OnInit {
 
   // Método para manejar la descarga 
   downloadDocument() {
-    if (this.documentId) {
-      this.gestorDocumentalService.getByUUID(this.documentId).subscribe(
+    const documentoId = '74';
+    if (documentoId) {
+      this.gestorDocumentalService.getByUUID(documentoId).subscribe(
         (fileUrl: string) => {
           const sanitizedUrl = this.sanitizer.bypassSecurityTrustUrl(fileUrl);
           this.triggerDownload(sanitizedUrl as string);
