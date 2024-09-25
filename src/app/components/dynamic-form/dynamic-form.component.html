@@ -27,7 +27,7 @@
 
                 <!-- Opción de única respuesta (radio buttons) -->
                 <div *ngIf="pregunta.campos[0].nombre === 'Escala definida'">
-                    <mat-radio-group>
+                    <mat-radio-group [formControlName]="'pregunta_' + generateControlName(pregunta.nombre)">
                         <mat-radio-button *ngFor="let option of pregunta.campos[0].escala" [value]="option.valor">
                             {{ option.nombre }}
                         </mat-radio-button>
@@ -96,5 +96,5 @@
 </mat-vertical-stepper>
 <!-- Botón final para enviar -->
 <div>
-    <!-- <button mat-button (click)="submit()">Guardar</button> -->
+    <button mat-button (click)="submit()">Guardar</button>
 </div>

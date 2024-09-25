@@ -4,6 +4,7 @@ import {
   FormBuilder,
   FormControl,
   FormGroup,
+  Validators,
 } from "@angular/forms";
 import { MatStepper } from "@angular/material/stepper";
 import { DomSanitizer } from "@angular/platform-browser";
@@ -57,6 +58,8 @@ export class DynamicFormComponent implements OnInit {
   ngOnInit() {
     // Inicializar el formulario principal
     this.stepperForm = this.fb.group({});
+
+
     // Seleccionar el formulario por defecto para la vista inicial
     this.selectForm(this.inputData); // Se puede cambiar según las necesidades
   }
@@ -68,6 +71,12 @@ selectForm(tipo_formulario: string) {
       console.log(response);
       if (response.Success === true && response.Status === 200) {
           this.todasSecciones = response.Data.seccion;
+          this.todasSecciones.forEach((seccion, i) => {
+            seccion.items.forEach((pregunta: any, j: number) => {
+              const controlName = this.generateControlName(pregunta.nombre);
+              this.stepperForm.addControl(`pregunta_${controlName}`, this.fb.control('', Validators.required));
+            });
+          });
       } else {
         console.log('Error al obtener el formulario:', response.Message);
       }
@@ -176,6 +185,27 @@ selectForm(tipo_formulario: string) {
     }
   }
 
+  saveForm(jsonData: any) {
+    this.evaluacionDocenteMidService.post('respuesta_formulario', jsonData)
+    .subscribe(response =>
+       {
+        if(response.Status == 200 &&response.Success == true){
+          Swal.fire({
+            icon: 'success',
+            title: 'Formulario guardado',
+            text: 'El formulario ha sido guardado correctamente.',
+          });
+        }
+       },
+       error => {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Ocurrió un error al guardar el formulario.',
+        });
+       });
+  }
+
   // Método para manejar el evento de submit
   submit() {
     if (this.stepperForm.valid) {
@@ -189,6 +219,7 @@ selectForm(tipo_formulario: string) {
         plantilla_id: 456,
         respuestas,
       };
+      this.saveForm(jsonData);
       console.log("Formulario guardado:", jsonData);
     } else {
       Swal.fire({
@@ -201,11 +232,11 @@ selectForm(tipo_formulario: string) {
 
   generateResponseData(): Respuesta[] {
     const respuestas: Respuesta[] = []; // Tipado explícito de la variable respuestas
-    this.todasSecciones.forEach((ambito, i) => {
-      ambito.preguntas.forEach((pregunta:any, j:number) => {
-        const controlName = this.generateControlName(pregunta.text);
+    this.todasSecciones.forEach((seccion, i) => {
+      seccion.items.forEach((pregunta:any, j:number) => {
+        const controlName = this.generateControlName(pregunta.nombre);
         const control = this.stepperForm.get(
-          `ambito_${i}.pregunta_${controlName}`
+          `pregunta_${controlName}`
         );
 
         const respuesta: Respuesta = {
