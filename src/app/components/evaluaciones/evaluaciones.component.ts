@@ -15,6 +15,7 @@ import { EspaciosAcademicosService } from '../../services/espacios_academicos.se
 import { PopUpManager } from 'src/app/managers/popUpManager';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
+import { ParametrosService } from "src/app/services/parametros.service";
 
 @Component({
   selector: "app-evaluaciones",
@@ -26,7 +27,8 @@ export class EvaluacionesComponent implements OnInit {
   selectedEvaluation: string = "";
   showModal = false;
   userRoles: string[] = [];
-  isFieldDisabled: boolean = true; // o false, dependiendo de la lógica
+  isFieldDisabled: boolean = true; 
+  periodosActivosDescripciones: string[] = [];
   ROLES = ROLES;
   heteroForm: FormGroup;
   coevaluacionIIForm: FormGroup;
@@ -53,7 +55,8 @@ export class EvaluacionesComponent implements OnInit {
     private popUpManager: PopUpManager,
     private dateService: DateService,
     private docenteMidService: DocenteMidService,
-    private tercerosCrudService: TercerosCrudService
+    private tercerosCrudService: TercerosCrudService,
+    private parametrosService: ParametrosService 
   ) {
     this.heteroForm = this.fb.group({});
     this.coevaluacionIIForm = this.fb.group({});
@@ -66,7 +69,6 @@ export class EvaluacionesComponent implements OnInit {
   ngOnInit(): void {
     // Verificar si el persona_id existe en el localStorage
     let storedPersonaId = localStorage.getItem("persona_id");
-    // Si no existe persona_id en el localStorage, lo configuramos con un valor por defecto (94)
     if (!storedPersonaId) {
       console.warn(
         "No se encontró persona_id, estableciendo 94 como valor por defecto."
@@ -82,7 +84,6 @@ export class EvaluacionesComponent implements OnInit {
     this.loadProyectos();
     this.loadEspaciosAcademicos();
 
-    // Si no hay persona_id, terminamos la ejecución
     if (!storedPersonaId) {
       console.error("Persona ID no encontrado en localStorage.");
       Swal.fire({
@@ -98,14 +99,22 @@ export class EvaluacionesComponent implements OnInit {
       this.userRoles = roles;
       console.log("User roles loaded:", this.userRoles);
 
-      // Obtener encabezado de fecha
-      this.dateService.getDateHeader().subscribe(
-        (date: string) => {
-          this.dateHeader = date;
-          console.log('DateHeader:', this.dateHeader);
+      // Nueva consulta para obtener los periodos activos
+      this.parametrosService.get('periodo?query=CodigoAbreviacion:PA,Activo:true&sortby=Id&order=desc&limit=5').subscribe(
+        (response) => {
+          if (response && response.Data && response.Data.length) {
+            // Extraer y almacenar las descripciones de los periodos activos
+            this.periodosActivosDescripciones = response.Data.map((periodo: any) => periodo.Descripcion);
+            console.log('Descripciones de los periodos activos:', this.periodosActivosDescripciones);
+          } else {
+            console.error('No se encontraron periodos activos o la estructura de datos no es la esperada.');
+          }
         },
-        (error: any) => console.error('Error al obtener el encabezado de fecha:', error)
-      );        
+        (error) => {
+          console.error('Error al obtener los periodos activos:', error);
+        }
+      );
+
     }).catch(error => console.error('Error al obtener los roles de usuario:', error));
 
     // Llamar a la función getCodigoEstudiante y mostrar el código en la consola
