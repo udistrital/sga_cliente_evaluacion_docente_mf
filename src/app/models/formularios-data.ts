@@ -1,5 +1,3 @@
-
-
 // Opciones comunes para la evaluación
 export const EVALUACION_OPTIONS = [
     { valor: "insuficiente", texto: "Insuficiente" },
@@ -473,7 +471,6 @@ export const COEVALUACION_II_AMBITO_01 = {
     ],
 };
 
-
 export const COEVALUACION_II_AMBITO_02 = {
     titulo: "SECCIÓN 02 - ANÁLISIS DE LA COEVALUACIÓN I",
     preguntas: [
@@ -633,5 +630,194 @@ export const COEVALUACION_I = {
     botonCargarEvidencias: "CARGUE EVIDENCIAS",
 };
 
+// export const response = {
+//     Success: true,
+//     Status: 200,
+//     Message: "Consulta exitosa",
+//     Data: {
+//       Data: {
+//         docente: "11",
+//         espacioAcademico: "1",
+//         seccion: {
+//           cuantitativa: {
+//             items: [
+//               {
+//                 campos: [
+//                   {
+//                     escala: [
+//                       {
+//                         nombre: "Insuficiente",
+//                         tipo_campo: 2,
+//                         valor: 200
+//                       },
+//                       {
+//                         nombre: "Aceptable",
+//                         tipo_campo: 2,
+//                         valor: 200
+//                       },
+//                       {
+//                         nombre: "Excelente",
+//                         tipo_campo: 2,
+//                         valor: 200
+//                       }
+//                     ],
+//                     nombre: "Escala definida",
+//                     porcentaje: 50,
+//                     tipo_campo: 2,
+//                     valor: 0
+//                   }
+//                 ],
+//                 id: 1,
+//                 nombre: "Item 1",
+//                 orden: 1
+//               },
+//               {
+//                 campos: null,
+//                 id: 3,
+//                 nombre: "Item 2",
+//                 orden: 2
+//               }
+//             ],
+//             nombre: "Sección 1",
+//             orden: 1
+//           }
+//         },
+//         tipoEvaluacion: "1"
+//       },
+//       Message: "Consulta exitosa",
+//       Status: 200,
+//       Success: true
+//     }
+//   };
+  
 
+
+export const responses = {
+    Success: true,
+    Status: 200,
+    Message: "Consulta exitosa",
+    Data: {
+      Data: {
+        docente: "11",
+        espacioAcademico: "1",
+        seccion: {
+          cualitativa: [
+            {
+              items: [
+                {
+                  campos: [
+                    {
+                      escala: [
+                        { nombre: "Insuficiente", tipo_campo: 2, valor: 200 },
+                        { nombre: "Aceptable", tipo_campo: 2, valor: 200 },
+                        { nombre: "Excelente", tipo_campo: 2, valor: 200 }
+                      ],
+                      nombre: "Escala definida",
+                      porcentaje: 50,
+                      tipo_campo: 2,
+                      valor: 0
+                    }
+                  ],
+                  id: 2,
+                  nombre: "Item 2",
+                  orden: 2
+                }
+              ],
+              nombre: "Sección 2",
+              orden: 2
+            },
+            {
+              items: [
+                {
+                  campos: [
+                    {
+                      escala: [
+                        { nombre: "Insuficiente", tipo_campo: 2, valor: 200 },
+                        { nombre: "Aceptable", tipo_campo: 2, valor: 200 },
+                        { nombre: "Excelente", tipo_campo: 2, valor: 200 }
+                      ],
+                      nombre: "Escala definida",
+                      porcentaje: 10,
+                      tipo_campo: 2,
+                      valor: 0
+                    }
+                  ],
+                  id: 7,
+                  nombre: "Pregunta 3",
+                  orden: 3
+                },
+                { campos: null, id: 8, nombre: "Pregunta 3", orden: 3 },
+                { campos: null, id: 8, nombre: "Pregunta 3", orden: 3 }
+              ],
+              nombre: "Sección A",
+              orden: 2
+            }
+          ],
+          cuantitativa: [
+            {
+              items: [
+                {
+                  campos: [
+                    {
+                      escala: null,
+                      nombre: "Comentario",
+                      porcentaje: 10,
+                      tipo_campo: 4,
+                      valor: 0
+                    }
+                  ],
+                  id: 5,
+                  nombre: "Pregunta 1",
+                  orden: 1
+                },
+                {
+                  campos: [
+                    {
+                      escala: [
+                        { nombre: "Insuficiente", tipo_campo: 2, valor: 200 },
+                        { nombre: "Aceptable", tipo_campo: 2, valor: 200 },
+                        { nombre: "Excelente", tipo_campo: 2, valor: 200 }
+                      ],
+                      nombre: "Escala definida",
+                      porcentaje: 10,
+                      tipo_campo: 2,
+                      valor: 0
+                    }
+                  ],
+                  id: 6,
+                  nombre: "Pregunta 2",
+                  orden: 2
+                },
+                {
+                  campos: [
+                    {
+                      escala: [
+                        { nombre: "Insuficiente", tipo_campo: 2, valor: 200 },
+                        { nombre: "Aceptable", tipo_campo: 2, valor: 200 },
+                        { nombre: "Excelente", tipo_campo: 2, valor: 200 }
+                      ],
+                      nombre: "Escala definida",
+                      porcentaje: 10,
+                      tipo_campo: 2,
+                      valor: 0
+                    }
+                  ],
+                  id: 7,
+                  nombre: "Pregunta 3",
+                  orden: 3
+                }
+              ],
+              nombre: "Sección 1",
+              orden: 1
+            }
+          ]
+        },
+        tipoEvaluacion: "2"
+      },
+      Message: "Consulta exitosa",
+      Status: 200,
+      Success: true
+    }
+  };
+  
 
