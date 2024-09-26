@@ -56,17 +56,17 @@ export const HETEROEVALUACION_AMBITO_02 = {
         options: EVALUACION_OPTIONS,
         },
         {
-        text: "08. (Pregunta vacía)",
+        text: "08. Integra en la enseñanza las competencias, la didactica y la evalaución",
         tipo: "select",
         options: EVALUACION_OPTIONS,
         },
         {
-        text: "09. (Pregunta vacía)",
+        text: "09. Logra que sepa actuar de manera competente en contextos particulares señalados por el contenido de mi espacio curricular",
         tipo: "select",
         options: EVALUACION_OPTIONS,
         },
         {
-        text: "10. (Pregunta vacía)",
+        text: "10. Me enseña a relacionar las competencias y los resultados de aprendizaje de mi espacio curricular",
         tipo: "select",
         options: EVALUACION_OPTIONS,
         },
@@ -88,42 +88,42 @@ export const HETEROEVALUACION_AMBITO_03 = {
         options: EVALUACION_OPTIONS,
         },
         {
-        text: "13. (Pregunta vacía)",
+        text: "13. Demuestra compromiso general con el ambiente de aprendizaje de mi salón",
         tipo: "select",
         options: EVALUACION_OPTIONS,
         },
         {
-        text: "14. (Pregunta vacía)",
+        text: "14. Demuestra respeto por diversidades y diferencias sexo-genéricas, cognitivas, lingüísticas, raciales y culturales dentro y fuera de mi salón",
         tipo: "select",
         options: EVALUACION_OPTIONS,
         },
         {
-        text: "15. (Pregunta vacía)",
+        text: "15. Me motiva para el alcance de competencias y resultados de aprendizaje",
         tipo: "select",
         options: EVALUACION_OPTIONS,
         },
         {
-        text: "16. (Pregunta vacía)",
+        text: "16. Promueve el desarrollo de autoconceptos positivos para el estudiantado",
         tipo: "select",
         options: EVALUACION_OPTIONS,
         },
         {
-        text: "17. (Pregunta vacía)",
+        text: "17. Realiza actividades apropiadas para la consecución de los resultados de aprendizaje y el desarrollo de competencias",
         tipo: "select",
         options: EVALUACION_OPTIONS,
         },
         {
-        text: "18. (Pregunta vacía)",
+        text: "18. Recibe y maneja positivamente preguntas, ideas y opiniones que mantienen al estudiantado pendiente e involucrado en clase",
         tipo: "select",
         options: EVALUACION_OPTIONS,
         },
         {
-        text: "19. (Pregunta vacía)",
+        text: "19. Se adapta a niveles y ritmos de aprendizaje diferenciados tanto míos como de mis compañeros de clase",
         tipo: "select",
         options: EVALUACION_OPTIONS,
         },
         {
-        text: "20. (Pregunta vacía)",
+        text: "20. Es evidente que prepara sus clases y actividades para estimular mi logro de resultados de aprendizaje y competencias",
         tipo: "select",
         options: EVALUACION_OPTIONS,
         },
@@ -289,7 +289,12 @@ export const AUTOEVALUACION_I_AMBITO_01 = {
                     "Siempre me animo a usar redes para mi aprendizaje en este espacio curricular",
                 },
             ],
-            },
+        },
+        {
+            text: "Dada su respuesta anterior, escribe las acciones que tomará para fortalecer su éxito en este espacio curricular:",
+            tipo: "textarea",
+            options: [],
+        }
 
     ],
 };
@@ -306,42 +311,42 @@ export const AUTOEVALUACION_II_AMBITO_01 = {
     titulo: "ÁMBITO 01: LA DOCENCIA",
     preguntas: [
         {
-        text: "01. No conozco los contenidos que imparto y no tengo habilidades para conducir procesos de enseñanza-aprendizaje",
+        text: "Rúbrica holística ambito La Docencia",
         tipo: "radio",
-        options: EVALUACION_OPTIONS,
+        options: [
+            {
+            valor: "1",
+            texto: "Insuficiente: No conozco los contenidos que imparto y no tengo habilidades para conducir procesos de enseñanza-aprendizaje",
+            },
+            {
+            valor: "2",
+            texto: "Necesita mejorar: Conozco parcialmente los contenidos que imparto y se me dificulta conducir procesos de enseñanza-aprendizaje",
+            },
+            {
+            valor: "3",
+            texto: "Bueno: Conozco parcialmente los contenidos que imparto, pero tengo habilidades para conducir procesos de enseñanza-aprendizaje",
+            },
+            {
+            valor: "4",
+            texto: "Sobresaliente: Conozco lo que enseño y tengo habilidades para conducir procesos de enseñanza-aprendizaje",
+            },
+            {
+            valor: "5",
+            texto: "Excelente: Vinculo mi investigación propia a lo que enseño y tengo habilidades para conducir procesos de enseñanza-aprendizaje",
+            }
+        ],
         },
         {
-        text: "02. Conozco parcialmente los contenidos que imparto y se me dificulta conducir procesos de enseñanza-aprendizaje",
-        tipo: "radio",
-        options: EVALUACION_OPTIONS,
+        text: "Dada su respuesta anterior, escriba las acciones que tomará para fortalecer su calidad docente:",
+        tipo: "textarea",
+        options: [],
         },
         {
-        text: "03. Conozco parcialmente los contenidos que imparto, pero tengo habilidades para conducir procesos de enseñanza-aprendizaje",
-        tipo: "radio",
-        options: EVALUACION_OPTIONS,
+        text: "De acuerdo con sus acciones de fortalecimiento, escriba las evidencias que subirá a su portafolio docente digital:",
+        tipo: "file",
+        options: [],
         },
-        {
-        text: "04. Conozco lo que enseño y tengo habilidades para conducir procesos de enseñanza-aprendizaje",
-        tipo: "radio",
-        options: EVALUACION_OPTIONS,
-        },
-        {
-        text: "05. Vinculo mi investigación propia a lo que enseño y tengo habilidades para conducir procesos de enseñanza-aprendizaje",
-        tipo: "radio",
-        options: EVALUACION_OPTIONS,
-        },
-    ],
-    comentarios: {
-        label:
-        "Dada su respuesta anterior, escriba las acciones que tomará para fortalecer su calidad docente:",
-        cantidad: 3,
-    },
-    evidencias: {
-        label:
-        "De acuerdo con sus acciones de fortalecimiento, escriba las evidencias que subirá a su portafolio docente digital:",
-        cantidad: 3,
-        botonCargar: "CARGUE EVIDENCIAS",
-    },
+    ]
 };
 
 // Ámbito 02: La Enseñanza
@@ -349,42 +354,42 @@ export const AUTOEVALUACION_II_AMBITO_02 = {
     titulo: "ÁMBITO 02: LA ENSEÑANZA",
     preguntas: [
         {
-        text: "06. No doy a conocer las competencias y resultados de aprendizaje ni integro en mi enseñanza competencias, didáctica y evaluación",
+        text: "Rúbrica holística ambito La Enseñanza",
         tipo: "radio",
-        options: EVALUACION_OPTIONS,
+        options: [
+            {
+            valor: "1",
+            texto: "Insuficiente: No doy a conocer las competencias y resultados de aprendizaje ni integro en mi enseñanza competencias, didáctica y evaluación",
+            },
+            {
+            valor: "2",
+            texto: "Necesita mejorar: Doy a conocer a mis alumnos parcialmente los contenidos que imparto y se me dificulta integrar en mi enseñanza competencias, didáctica y evaluación",
+            },
+            {
+            valor: "3",
+            texto: "Bueno: Doy a conocer a mis alumnos parcialmente los contenidos que imparto, pero integro en mi enseñanza competencias, didáctica y evaluación",
+            },
+            {
+            valor: "4",
+            texto: "Sobresaliente: Doy a conocer a mis alumnos los contenidos que imparto e integro en mi enseñanza competencias, didáctica y evaluación",
+            },
+            {
+            valor: "5",
+            texto: "Excelente: Doy a conocer a mis alumnos los contenidos que imparto basados en mi investigación e integro en mi enseñanza competencias, didáctica y evaluación",
+            }
+        ],
         },
         {
-        text: "07. Doy a conocer a mis alumnos parcialmente los contenidos que imparto y se me dificulta integrar en mi enseñanza competencias, didáctica y evaluación",
-        tipo: "radio",
-        options: EVALUACION_OPTIONS,
+        text: "Dada su respuesta anterior, escriba las acciones que tomará para fortalecer su enseñanza:",
+        tipo: "textarea",
+        options: [],
         },
         {
-        text: "08. Doy a conocer a mis alumnos parcialmente los contenidos que imparto, pero integro en mi enseñanza competencias, didáctica y evaluación",
-        tipo: "radio",
-        options: EVALUACION_OPTIONS,
+        text: "De acuerdo con sus acciones de fortalecimiento, escriba las evidencias que subirá a su portafolio docente digital:",
+        tipo: "file",
+        options: [],
         },
-        {
-        text: "09. Doy a conocer a mis alumnos los contenidos que imparto e integro en mi enseñanza competencias, didáctica y evaluación",
-        tipo: "radio",
-        options: EVALUACION_OPTIONS,
-        },
-        {
-        text: "10. Doy a conocer a mis alumnos los contenidos que imparto basados en mi investigación e integro en mi enseñanza competencias, didáctica y evaluación",
-        tipo: "radio",
-        options: EVALUACION_OPTIONS,
-        },
-    ],
-    comentarios: {
-        label:
-        "Dada su respuesta anterior, escriba las acciones que tomará para fortalecer su enseñanza:",
-        cantidad: 3,
-    },
-    evidencias: {
-        label:
-        "De acuerdo con sus acciones de fortalecimiento, escriba las evidencias que subirá a su portafolio docente digital:",
-        cantidad: 3,
-        botonCargar: "CARGUE EVIDENCIAS",
-    },
+    ]
 };
 
 // Ámbito 03: La Práctica
@@ -392,42 +397,42 @@ export const AUTOEVALUACION_II_AMBITO_03 = {
     titulo: "ÁMBITO 03: LA PRÁCTICA",
     preguntas: [
         {
-        text: "11. No demuestro compromiso con el clima de aprendizaje y no realizo actividades apropiadas para la consecución de resultados de aprendizaje y desarrollo de competencias",
+        text: "Rúbrica holística ambito La Práctica",
         tipo: "radio",
-        options: EVALUACION_OPTIONS,
+        options: [
+            {
+                valor: "1",
+                texto: "Insuficiente: No demuestro compromiso con el clima de aprendizaje y no realizo actividades apropiadas para la consecución de resultados de aprendizaje y desarrollo de competencias",
+                },
+                {
+                valor: "2",
+                texto: "Necesita mejorar: Demuestro parcialmente compromiso con el clima de aprendizaje y no realizo actividades apropiadas para la consecución de resultados de aprendizaje y desarrollo de competencias",
+                },
+                {
+                valor: "3",
+                texto: "Bueno: Demuestro parcialmente compromiso con el clima de aprendizaje, pero realizo actividades apropiadas para la consecución de resultados de aprendizaje y desarrollo de competencias",
+                },
+                {
+                valor: "4",
+                texto: "Sobresaliente: Demuestro con frecuencia compromiso con el clima de aprendizaje y realizo actividades apropiadas para la consecución de resultados de aprendizaje y desarrollo de competencias",
+                },
+                {
+                valor: "5",
+                texto: "Excelente: Demuestro siempre mi compromiso con el clima de aprendizaje y realizo actividades apropiadas para la consecución de resultados de aprendizaje y desarrollo de competencias",
+                }
+        ],
         },
         {
-        text: "12. Demuestro parcialmente compromiso con el clima de aprendizaje y no realizo actividades apropiadas para la consecución de resultados de aprendizaje y desarrollo de competencias",
-        tipo: "radio",
-        options: EVALUACION_OPTIONS,
+        text: "Dada su respuesta anterior, escriba las acciones que tomará para fortalecer su práctica docente:",
+        tipo: "textarea",
+        options: [],
         },
         {
-        text: "13. Demuestro parcialmente compromiso con el clima de aprendizaje, pero realizo actividades apropiadas para la consecución de resultados de aprendizaje y desarrollo de competencias",
-        tipo: "radio",
-        options: EVALUACION_OPTIONS,
+        text: "De acuerdo con sus acciones de fortalecimiento, escriba las evidencias que subirá a su portafolio docente digital:",
+        tipo: "file",
+        options: [],
         },
-        {
-        text: "14. Demuestro con frecuencia compromiso con el clima de aprendizaje y realizo actividades apropiadas para la consecución de resultados de aprendizaje y desarrollo de competencias",
-        tipo: "radio",
-        options: EVALUACION_OPTIONS,
-        },
-        {
-        text: "15. Demuestro siempre mi compromiso con el clima de aprendizaje y realizo actividades apropiadas para la consecución de resultados de aprendizaje y desarrollo de competencias",
-        tipo: "radio",
-        options: EVALUACION_OPTIONS,
-        },
-    ],
-    comentarios: {
-        label:
-        "Dada su respuesta anterior, escriba las acciones que tomará para fortalecer su práctica docente:",
-        cantidad: 3,
-    },
-    evidencias: {
-        label:
-        "De acuerdo con sus acciones de fortalecimiento, escriba las evidencias que subirá a su portafolio docente digital:",
-        cantidad: 3,
-        botonCargar: "CARGUE EVIDENCIAS",
-    },
+    ]
 };
 
 // Estructura completa de Autoevaluación II
@@ -445,27 +450,23 @@ export const COEVALUACION_II_AMBITO_01 = {
     titulo: "SECCIÓN 01 - ANÁLISIS DE LA HETEROEVALUACIÓN",
     preguntas: [
         {
-            text: "De acuerdo con los resultados de la heteroevaluación conceptúen un promedio y decidan una opción de la escala provista.",
-            tipo: "texto",
-        },
-        {
             text: "01. ÁMBITO 01: DOCENCIA",
-            tipo: "texto",
+            tipo: "radio",
             options: EVALUACION_OPTIONS,  
         },
         {
             text: "02. ÁMBITO 02: ENSEÑANZA",
-            tipo: "texto",
+            tipo: "radio",
             options: EVALUACION_OPTIONS,  
         },
         {
             text: "03. ÁMBITO 03: PRÁCTICA",
-            tipo: "texto",
+            tipo: "radio",
             options: EVALUACION_OPTIONS,
         },
         {
             text: "PROMEDIO ASIGNADO POR EL CONCEJO CURRICULAR",
-            tipo: "texto",
+            tipo: "radio",
             options: EVALUACION_OPTIONS, 
         },
     ],
@@ -485,15 +486,9 @@ export const COEVALUACION_II_AMBITO_03 = {
     titulo: "SECCIÓN 03 - ANÁLISIS DE LA AUTOEVALUACIÓN",
     preguntas: [
         {
-            text: "De acuerdo con los resultados de la autoevaluación, las acciones y las evidencias, conceptúen un promedio y decidan una opción de la escala provista.",
-            tipo: "texto",
-
-        },
-        {
             text: "01. ÁMBITO 01: DOCENCIA",
-            tipo: "texto",
+            tipo: "radio",
             options: EVALUACION_OPTIONS,
-
         },
         {
             text: "Descarga archivo aquí",
@@ -501,7 +496,7 @@ export const COEVALUACION_II_AMBITO_03 = {
         },
         {
             text: "02. ÁMBITO 02: ENSEÑANZA",
-            tipo: "texto",
+            tipo: "radio",
             options: EVALUACION_OPTIONS,
         },
         {
@@ -510,7 +505,7 @@ export const COEVALUACION_II_AMBITO_03 = {
         },
         {
             text: "03. ÁMBITO 03: PRÁCTICA",
-            tipo: "texto",
+            tipo: "radio",
             options: EVALUACION_OPTIONS,
         },
         {
@@ -519,7 +514,7 @@ export const COEVALUACION_II_AMBITO_03 = {
         },
         {
             text: "PROMEDIO ASIGNADO POR EL CONCEJO CURRICULAR",
-            tipo: "texto",
+            tipo: "radio",
             options: EVALUACION_OPTIONS,
         },
     ],
@@ -529,18 +524,13 @@ export const COEVALUACION_II_AMBITO_04 = {
     titulo: "SECCIÓN 04 - PROMEDIO",
     preguntas: [
         {
-            text: "De acuerdo con los resultados de las secciones anteriores, establezcan un promedio final y escriban observaciones para el cuerpo docente.",
-            tipo: "texto",
-            options: EVALUACION_OPTIONS,
-        },
-        {
             text: "PROMEDIO ASIGNADO POR EL CONCEJO CURRICULAR",
-            tipo: "texto",
+            tipo: "radio",
             options: EVALUACION_OPTIONS,
         },
         {
-            text: "01. comentario:",
-            tipo: "input", 
+            text: "Plan de acción para fortalecimiento de la docencia, la enseñanza y la práctica",
+            tipo: "textarea", 
             options: [],
         },
     ],
@@ -562,72 +552,41 @@ export const COEVALUACION_I = {
     tipo_formulario: "coevaluacion-i",
     ambitos: [
         {
-        titulo: "Acta de Coevalaución", 
-        preguntas: [
-            {
-                text: "Espacio Curricular",
-                tipo: "input",
-                options: [],
+            titulo: "Acta de Coevalaución",
+            preguntas: [
+                {
+                    text: "Frente a la heteroevaluación realizada por el estudiantado a la persona docente, ésta tiene las siguientes observaciones:",
+                    tipo: "textarea",
+                    options: [],
                 },
-            {
-            text: "Código del Espacio Curricular",
-            tipo: "input",
-            options: [],
-            },
-            {
-            text: "Grupo",
-            tipo: "input",
-            options: [],
-            },
-        ],
+                {
+                    text: "Frente a la heteroevaluación realizada por el estudiantado sobre sí mismos, se tienen las siguientes observaciones conjuntas:",
+                    tipo: "textarea",
+                    options: [],
+                },
+                {
+                    text: "Frente a la heteroevaluación realizada por el estudiantado sobre sí mismos, se tienen las siguientes observaciones conjuntas:",
+                    tipo: "textarea",
+                    options: [],
+                },
+                {
+                    text: "Tanto estudiantes como persona docente proponen el siguiente plan de acción:",
+                    tipo: "textarea",
+                    options: [],
+                },
+                {
+                    text: "Listado de personas intervinientes:",
+                    tipo: "textarea",
+                    options: [],
+                },
+                {
+                    text: "El cuerpo docente debe cargar el acta de co-evalaucion curricularen enste boton: ",
+                    tipo: "file",
+                    options: [],
+                },
+            ],
         },
-        {
-        titulo: "Observaciones del Docente",
-        preguntas: [
-            {
-            text: "Frente a la heteroevaluación realizada por el estudiantado a la persona docente, ésta tiene las siguientes observaciones:",
-            tipo: "textarea",
-            options: [],
-            },
-        ],
-        },
-        {
-        titulo: "Observaciones de los Estudiantes",
-        preguntas: [
-            {
-            text: "Frente a la heteroevaluación realizada por el estudiantado sobre sí mismos, se tienen las siguientes observaciones conjuntas:",
-            tipo: "textarea",
-            options: [],
-            },
-        ],
-        },
-        {
-        titulo: "Plan de Acción",
-        preguntas: [
-            {
-            text: "Tanto estudiantes como persona docente proponen el siguiente plan de acción:",
-            tipo: "textarea",
-            options: [],
-            },
-        ],
-        },
-        {
-        titulo: "Personas Intervinientes",
-        preguntas: [
-            {
-            text: "Listado de personas intervinientes:",
-            tipo: "textarea",
-            options: [],
-            },
-            {
-                text: "El cuerpo docente debe cargar el acta de co-evalaucion curricularen enste boton: ",
-                tipo: "texto",
-            },
-
-        ],
-        },
-    ],
-    botonCargarEvidencias: "CARGUE EVIDENCIAS",
+    ]
 };
 
 // export const response = {
