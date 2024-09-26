@@ -60,8 +60,6 @@ export class EvaluacionesComponent implements OnInit {
   ngOnInit(): void {
     console.log("EvaluacionesComponent initialized");
     this.initializeForms();
-    this.loadProyectos();
-     this.loadEspaciosAcademicos();
 
     // Obtener roles del usuario
     this.userService.getUserRoles().then((roles) => {

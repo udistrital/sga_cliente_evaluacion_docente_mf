@@ -19,10 +19,19 @@
   color: #2a5d83; /* Puedes cambiar este color para que coincida con tu diseño */
 }
 
-mat-radio-group {
-    display: flex;
-    flex-direction: column; /* Hace que los radio buttons se alineen verticalmente */
-}
+mat-radio-group {  
+    &.vertical {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  
+    &.horizontal {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+    }
+  }
 
 mat-radio-button {
     margin-bottom: 10px; /* Añade espacio entre los botones de opción */
