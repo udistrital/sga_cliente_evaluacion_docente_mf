@@ -1,11 +1,17 @@
-import { Component, OnInit, Input, SimpleChanges } from "@angular/core";
+import { Component, OnInit, Input, SimpleChanges, ViewChild } from "@angular/core";
 import { ROLES } from "src/app/models/diccionario";
 import { UserService } from "src/app/services/user.service";
 import { MatSelectChange } from "@angular/material/select";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import * as moment from "moment";
-import { DocenteMidService } from "src/app/services/docente-mid.service";
-import Swal from "sweetalert2";
+import { DateService } from 'src/app/services/date.service';
+import { ProyectoAcademicoService } from '../../services/proyecto_academico.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { checkContent } from "src/app/utils/verify-response";
+import { EspaciosAcademicosService } from '../../services/espacios_academicos.service';
+import { PopUpManager } from 'src/app/managers/popUpManager';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
 
 @Component({
   selector: "app-evaluaciones",
@@ -23,16 +29,33 @@ export class EvaluacionesComponent implements OnInit {
   coevaluacionIForm: FormGroup;
   autoevaluacionIIForm: FormGroup;
   autoevaluacionIForm: FormGroup;
+  dateHeader: string | undefined;
+  proyectos: { select: any, opciones: any[] } = { select: undefined, opciones: [] };
+  facultad = [];
+  displayedColumns: string[] = ['nombre', 'codigo', 'estado'];
+  espacios_academicos: any[] = [];
+  dataSource!: MatTableDataSource<any>;
+  
+  @Input() formtype: string = '';  
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  openSnackBar: any;
 
-  @Input() formtype: string = "";
-
-  constructor(private fb: FormBuilder, private userService: UserService, private docenteMidService: DocenteMidService) {
+  constructor(
+    private fb: FormBuilder,
+    private userService: UserService,
+    private proyectoAcademicoService: ProyectoAcademicoService,
+    private _snackBar: MatSnackBar,
+    private espaciosAcademicosService: EspaciosAcademicosService,
+    private popUpManager: PopUpManager,
+    private dateService: DateService
+  ) {
     this.heteroForm = this.fb.group({});
     this.coevaluacionIIForm = this.fb.group({});
     this.coevaluacionIForm = this.fb.group({});
     this.autoevaluacionIIForm = this.fb.group({});
     this.autoevaluacionIForm = this.fb.group({});
   }
+
 
   ngOnInit(): void {
     console.log("EvaluacionesComponent initialized");
@@ -41,8 +64,15 @@ export class EvaluacionesComponent implements OnInit {
     // Obtener roles del usuario
     this.userService.getUserRoles().then((roles) => {
       this.userRoles = roles;
-      console.log("User roles loaded:", this.userRoles);
-    });
+      this.dateService.getDateHeader().subscribe(
+        (date: string) => {
+          this.dateHeader = date;
+          console.log('DateHeader:', this.dateHeader);
+        },
+        (error: any) => console.error('Error al obtener el encabezado de fecha:', error)
+      );        
+      this.initializeForms();  
+    }).catch(error => console.error('Error al obtener los roles de usuario:', error));
   }
 
   // Inicializar formularios
@@ -97,9 +127,41 @@ export class EvaluacionesComponent implements OnInit {
     });
   }
 
-  // Control de acceso basado en roles
-  hasRole(rolesPermitidos: string[]): boolean {
-    return rolesPermitidos.some((rol) => this.userRoles.includes(rol));
+  // Método para cargar espacios académicos
+  async loadEspaciosAcademicos() {
+    try {
+      const response = await this.cargarEspaciosAcademicos();
+      this.dataSource = new MatTableDataSource<any>(this.espacios_academicos);
+      this.dataSource.paginator = this.paginator;
+    } catch (error) {
+      this.popUpManager.showErrorToast('Error al cargar los espacios académicos: ' + error);
+    }
+  } 
+
+   async cargarEspaciosAcademicos() {
+    return new Promise((resolve, reject) => {
+      this.espaciosAcademicosService
+        .get('espacio-academico?query=espacio_academico_padre,activo:true&limit=0')
+        .subscribe(
+          (response: any) => {
+            this.espacios_academicos = response['Data'];
+            resolve(true);
+          },
+          (error) => {
+            reject(error);
+          }
+        );
+    });
+  } 
+
+  // Método para aplicar filtro en la tabla de espacios académicos
+  aplicarFiltro(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
   }
 
   selectForm(formType: string) {
@@ -109,254 +171,76 @@ export class EvaluacionesComponent implements OnInit {
   // Método que maneja la selección del menú desplegable
   onSelectChange(event: MatSelectChange) {
     this.selectedEvaluation = event.value;
-    console.log('Selected Evaluation: ', this.selectedEvaluation);
-    // invocar la lógica de selección de formularios de ser necesario
   }
 
   // Detecta cambios en el valor de formtype y actualiza el formulario mostrado
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes["formtype"]) {
+    if (changes['formtype']) {
       this.selectForm(this.formtype);
     }
   }
 
-  // Manejar el guardado tanto para formularios estáticos como dinámicos
-  onGuardar(event?: any): void {
-    if (event) {
-      console.log("Datos recibidos de formulario dinámico:", event);
-      this.processFormSubmission(event);
-    } else {
-      const formValues = this.getSelectedFormValues();
-      if (formValues && this.validateForm(formValues)) {
+  onGuardar(formValues?: any): void {
+    if (formValues) {
+      console.log("Formulario recibido:", formValues);
+      if (this.validateForm(formValues)) {
         const formattedValues = {
           ...formValues,
-          inicioFecha: moment(formValues.inicioFecha, "DD/MM/YYYY").format(
-            "YYYY-MM-DD"
-          ),
-          finFecha: moment(formValues.finFecha, "DD/MM/YYYY").format(
-            "YYYY-MM-DD"
-          ),
+          inicioFecha: moment(formValues.inicioFecha, "DD/MM/YYYY").format("YYYY-MM-DD"),
+          finFecha: moment(formValues.finFecha, "DD/MM/YYYY").format("YYYY-MM-DD"),
         };
-        console.log("Datos listos para envío:", formattedValues);
+        console.log("Datos formateados para envío:", formattedValues);
       } else {
-        console.error("Formulario no es válido.");
+        console.error("El formulario no es válido. Por favor, completa todos los campos requeridos.");
       }
+    } else {
+      console.error("No se recibieron valores del formulario.");
     }
-  }
-
-  // Procesa el formulario dinámico
-  processFormSubmission(formValues: any) {
-    if (!formValues || Object.keys(formValues).length === 0) {
-      console.error("No se recibieron valores del formulario dinámico.");
-      return;
-    }
-
-    // Verificar qué tipo de evaluación dinámica se está enviando
-    switch (this.selectedEvaluation) {
-      case "heteroevaluacion":
-        this.submitHeteroevaluacion(formValues);
-        break;
-
-      case "autoevaluacion-i":
-        this.submitAutoevaluacionI(formValues);
-        break;
-
-      case "autoevaluacion-ii":
-        this.submitAutoevaluacionII(formValues);
-        break;
-
-      case "coevaluacion-i":
-        this.submitCoevaluacionI(formValues);
-        break;
-
-      case "coevaluacion-ii":
-        this.submitCoevaluacionII(formValues);
-        break;
-
-      default:
-        console.error("No se reconoce la evaluación seleccionada.");
-    }
-  }
-
-  // Métodos para enviar cada tipo de formulario dinámico
-
-  submitHeteroevaluacion(formValues: any) {
-    if (!formValues) {
-      console.error(
-        "No se recibieron valores del formulario de Heteroevaluación."
-      );
-      return;
-    }
-
-    // Aquí realizamos una transformación en caso de que se necesite, como formatear fechas
-    const formattedValues = {
-      ...formValues,
-      inicioFecha: formValues.inicioFecha
-        ? moment(formValues.inicioFecha, "DD/MM/YYYY").format("YYYY-MM-DD")
-        : null,
-      finFecha: formValues.finFecha
-        ? moment(formValues.finFecha, "DD/MM/YYYY").format("YYYY-MM-DD")
-        : null,
-    };
-
-    console.log(
-      "Enviando datos de Heteroevaluación formateados:",
-      formattedValues
-    );
-
-    // Aquí puedes enviar los datos al backend, por ejemplo:
-    this.docenteMidService.get(formattedValues).subscribe(
-      (response) => {
-        console.log(
-          "Datos de Heteroevaluación enviados exitosamente:",
-          response
-        );
-        Swal.fire({
-          icon: "success",
-          title: "Enviado",
-          text: "Formulario de Heteroevaluación enviado correctamente.",
-        });
-      },
-      (error) => {
-        console.error("Error enviando Heteroevaluación:", error);
-        Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: "Ocurrió un error al enviar el formulario de Heteroevaluación.",
-        });
-      }
-    );
-  }
-
-  submitAutoevaluacionI(formValues: any) {
-    console.log("Enviando formulario de Autoevaluación I:", formValues);
-    // Aquí la lógica de transformación y envío
-    const formattedValues = {
-      ...formValues,
-      inicioFecha: moment(formValues.inicioFecha, "DD/MM/YYYY").format(
-        "YYYY-MM-DD"
-      ),
-      finFecha: moment(formValues.finFecha, "DD/MM/YYYY").format("YYYY-MM-DD"),
-    };
-    console.log("Datos formateados de Autoevaluación I:", formattedValues);
-    // Lógica de envío al servidor
-  }
-
-  submitAutoevaluacionII(formValues: any) {
-    console.log("Enviando formulario de Autoevaluación II:", formValues);
-    // Transformación y envío
-    const formattedValues = {
-      ...formValues,
-      inicioFecha: moment(formValues.inicioFecha, "DD/MM/YYYY").format(
-        "YYYY-MM-DD"
-      ),
-      finFecha: moment(formValues.finFecha, "DD/MM/YYYY").format("YYYY-MM-DD"),
-    };
-    console.log("Datos formateados de Autoevaluación II:", formattedValues);
-    // Lógica de envío al servidor
-  }
-
-  submitCoevaluacionI(formValues: any) {
-    console.log("Enviando formulario de Coevaluación I:", formValues);
-    // Transformación y envío
-    const formattedValues = {
-      ...formValues,
-      inicioFecha: moment(formValues.inicioFecha, "DD/MM/YYYY").format(
-        "YYYY-MM-DD"
-      ),
-      finFecha: moment(formValues.finFecha, "DD/MM/YYYY").format("YYYY-MM-DD"),
-    };
-    console.log("Datos formateados de Coevaluación I:", formattedValues);
-    // Lógica de envío al servidor
-  }
-
-  submitCoevaluacionII(formValues: any) {
-    console.log("Enviando formulario de Coevaluación II:", formValues);
-    // Transformación y envío
-    const formattedValues = {
-      ...formValues,
-      inicioFecha: moment(formValues.inicioFecha, "DD/MM/YYYY").format(
-        "YYYY-MM-DD"
-      ),
-      finFecha: moment(formValues.finFecha, "DD/MM/YYYY").format("YYYY-MM-DD"),
-    };
-    console.log("Datos formateados de Coevaluación II:", formattedValues);
-    // Lógica de envío al servidor
   }
 
   validateForm(formValues: any): boolean {
-    const requiredFields = this.getRequiredFieldsForSelectedForm();
+    const requiredFields = [
+      "inicioFecha",
+      "finFecha",
+      "proyectoCurricular",
+      "docenteNombre",
+      "descripcionProceso",
+    ];
+
     for (const field of requiredFields) {
       if (!formValues[field] || formValues[field].trim() === "") {
         console.error(`El campo ${field} es obligatorio.`);
         return false;
       }
     }
+
     return true;
   }
 
-  // Métodos para obtener valores del formulario dependiendo de la evaluación seleccionada
-  getSelectedFormValues(): any {
-    switch (this.selectedEvaluation) {
-      case "heteroevaluacion":
-        return this.heteroForm.value;
-      case "autoevaluacion-i":
-        return this.autoevaluacionIForm.value;
-      case "autoevaluacion-ii":
-        return this.autoevaluacionIIForm.value;
-      case "coevaluacion-i":
-        return this.coevaluacionIForm.value;
-      case "coevaluacion-ii":
-        return this.coevaluacionIIForm.value;
-      default:
-        return null;
+  hasRole(requiredRoles: string[]): boolean {
+    return requiredRoles.some((role) => this.userRoles.includes(role));
+  }
+
+  onProyectoSelection(event: MatSelectChange): void {
+    const proyectoSeleccionado = event.value;
+    if (proyectoSeleccionado) {
+      this.openSnackBar(`Proyecto seleccionado: ${proyectoSeleccionado.Nombre}`);
     }
   }
 
-  getRequiredFieldsForSelectedForm(): string[] {
-    switch (this.selectedEvaluation) {
-      case "heteroevaluacion":
-        return [
-          "inicioFecha",
-          "finFecha",
-          "proyectoCurricular",
-          "docenteNombre",
-          "descripcionProceso",
-        ];
-      case "autoevaluacion-i":
-        return [
-          "inicioFecha",
-          "finFecha",
-          "estudianteNombre",
-          "estudianteIdentificacion",
-          "proyectoCurricular",
-        ];
-      case "autoevaluacion-ii":
-        return [
-          "inicioFecha",
-          "finFecha",
-          "docenteNombre",
-          "docenteIdentificacion",
-          "proyectoCurricular",
-        ];
-      case "coevaluacion-i":
-        return [
-          "inicioFecha",
-          "finFecha",
-          "proyectoCurricular",
-          "docenteNombre",
-          "grupoSeleccionado",
-        ];
-      case "coevaluacion-ii":
-        return [
-          "inicioFecha",
-          "finFecha",
-          "proyectoCurricular",
-          "docenteNombre",
-          "espacioAcademico",
-        ];
-      default:
-        return [];
-    }
+  loadProyectos(): void {
+    this.proyectoAcademicoService.get('proyecto_academico_institucion?query=Activo:true&sortby=Nombre&order=asc&limit=0')
+      .subscribe({
+        next: (resp) => {
+          if (checkContent(resp)) {
+            this.proyectos.opciones = resp;
+          } else {
+            console.error('No se encontraron proyectos');
+          }
+        },
+        error: (err) => {
+          console.error('Error al cargar proyectos:', err);
+        }
+      });
   }
 }

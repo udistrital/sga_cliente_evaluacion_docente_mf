@@ -52,7 +52,10 @@ import { DocenteCrudService } from './services/docente-crud.service';
 import { DocenteMidService } from './services/docente-mid.service';
 import { ProyectoAcademicoService } from './services/proyecto_academico.service';
 import { OikosService } from 'src/app/services/oikos.service';
+import { EspaciosAcademicosService } from './services/espacios_academicos.service';
 
+import { DateService } from './services/date.service';
+import { SgaEvaluacionDocenteMidService } from './services/sga_evaluacion_docente_mid.service';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, environment.apiUrl + 'assets/i18n/', '.json');
@@ -133,6 +136,9 @@ export function createTranslateLoader(http: HttpClient) {
     DocenteMidService,
     DocenteCrudService,
     OikosService,
+    DateService,
+    EspaciosAcademicosService,
+    SgaEvaluacionDocenteMidService,
     { provide: HTTP_INTERCEPTORS, useClass: SpinnerUtilInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]

@@ -4,6 +4,7 @@ import { UserService } from 'src/app/services/user.service';
 import { EventosService } from 'src/app/services/eventos.service';
 import { ParametrosService } from 'src/app/services/parametros.service';
 import { PopUpManager } from 'src/app/managers/popUpManager';
+import { DateService } from 'src/app/services/date.service';
 
 @Component({
   selector: 'app-asignacion-fechas',
@@ -35,20 +36,30 @@ export class AsignacionFechasComponent implements OnInit {
   mensajeError: string = '';
   evaluaciones: any[] = [];
   errorPut: boolean = false;
+  dateHeader: string | undefined;
 
   constructor(
     private userService: UserService,
     private eventosService: EventosService,
     private parametrosService: ParametrosService,
-    private popUpManager: PopUpManager
+    private popUpManager: PopUpManager,
+    private dateService: DateService
   ) {}
 
   ngOnInit(): void {
     this.userService.getUserRoles().then(roles => {
       this.userRoles = roles;
-    });
-    this.obtenerPeriodosActivos();
+      this.dateService.getDateHeader().subscribe(
+        (date: string) => {
+          this.dateHeader = date;
+          console.log('DateHeader:', this.dateHeader);
+        },
+        (error: any) => console.error('Error al obtener el encabezado de fecha:', error)
+      );        
+      this.obtenerPeriodosActivos();  
+    }).catch(error => console.error('Error al obtener los roles de usuario:', error));
   }
+  
 
   hasRole(requiredRoles: string[]): boolean {
     return requiredRoles.some(role => this.userRoles.includes(role));

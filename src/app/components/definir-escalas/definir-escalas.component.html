@@ -1,4 +1,4 @@
-<ng-container *ngIsGranted="[ROLES.ADMIN_SGA, ROLES.VICERRECTOR, ROLES.ASESOR_VICE, ROLES.COORDINADOR, ROLES.COORDINADOR_PREGADO, ROLES.COORDINADOR_POSGRADO, ROLES.ASISTENTE_ADMISIONES, ROLES.ADMIN_DOCENCIA, ROLES.ASIS_PROYECTO, ROLES.SEC_DECANATURA, ROLES.DECANO]">
+<ng-container *ngIf="hasRole([ROLES.ADMIN_SGA, ROLES.DOCENTE, ROLES.ESTUDIANTE, ROLES.CONSEJO_CURRICULAR]); else noPermission">
     <div class="container">
         <div class="form-container">
             <h2>{{ "definir_escalas.titulo" | translate }}</h2>
@@ -10,86 +10,128 @@
                     <option value="cuantitativa">{{ "definir_escalas.cuantitativa" | translate }}</option>
                 </select>
             </div>
-            
-            <div *ngIf="tipoEscala" class="escala-container">
-                <h3>
-                    <input [(ngModel)]="tipoEscalaTitulo" placeholder="{{ tipoEscala }} {{ 'definir_escalas.del_seud' | translate }}">
-                    <button mat-icon-button class="small-icon"><mat-icon>edit</mat-icon></button>
-                </h3>
-                <textarea class="form-control" [(ngModel)]="descripcion" placeholder="{{ 'definir_escalas.descripcion' | translate }}"></textarea>
-            
+
+            <!-- Lista de escalas cualitativas -->
+        <mat-card>
+            <mat-card-content>
+            <div class="escala-container">
                 <div class="escala-list">
-                    <div class="escala-item" *ngFor="let escala of escalas; let i = index">
-                        <input [(ngModel)]="escala.label" placeholder="{{ 'definir_escalas.estado' | translate }}">
-                        <input [(ngModel)]="escala.descripcion" 
-                               [attr.placeholder]="tipoEscala === 'cualitativa' ? 'Descripción' : 'Valor numérico'"
-                               [attr.pattern]="tipoEscala === 'cuantitativa' ? '[0-9]*' : '.*'"
-                               [attr.maxlength]="tipoEscala === 'cuantitativa' ? '3' : null"
-                               (keypress)="tipoEscala === 'cuantitativa' ? restrictNumeric($event) : null">
-                        <button mat-icon-button class="small-icon"><mat-icon>edit</mat-icon></button>
+                    <!-- Encabezados de la tabla -->
+                    <div class="escala-header">
+                        <div class="escala-header-item">{{ 'definir_escalas.tipo' | translate }}</div>
+                        <div class="escala-header-item">{{ 'definir_escalas.criterios' | translate }}</div>
+                        <div class="escala-header-item">{{ 'definir_escalas.acciones' | translate }}</div>
+                    </div>
+                    <div class="escala-item row mb-2" *ngFor="let escala of cualitativaEscalas; let i = index">
+                        <!-- Input de label -->
+                        <div class="col-5">
+                            <input class="form-control custom-input" [(ngModel)]="escala.label"
+                                placeholder="{{ 'definir_escalas.estado' | translate }}">
+                        </div>
+                        <!-- Input de descripción -->
+                        <div class="col-5">
+                            <input class="form-control custom-input" [(ngModel)]="escala.descripcion"
+                                placeholder="Descripción">
+                        </div>
+                        <!-- Botones de editar y eliminar -->
+                        <div class="col-2 d-flex align-items-center justify-content-end">
+                            <button mat-icon-button class="small-icon"
+                                (click)="editarEscala(escala, i)"><mat-icon>edit</mat-icon></button>
+                            <button mat-icon-button class="small-icon"
+                                (click)="eliminarEscala('cualitativa', i)"><mat-icon>delete</mat-icon></button>
+                        </div>
                     </div>
                 </div>
-            
-                <button class="btn btn-secondary" (click)="agregarEscala()">{{ "definir_escalas.agregar_elemento_escala" | translate }}</button>
-                <button class="btn" (click)="visualizarEscalas()">{{ "definir_escalas.visualizar" | translate }}</button>
-                <button class="btn btn-primary" (click)="tablasElegidas()">{{ "definir_escalas.elegir" | translate }}</button>
+                <!-- Botones para cualitativa -->
+                <div class="button-container">
+                    <button mat-flat-button color="primary" class="btn-add-scale" (click)="agregarEscala('cualitativa')">
+                        <mat-icon>add</mat-icon>
+                        {{ 'definir_escalas.agregar_elemento_escala' | translate }}
+                    </button>
+                    <button mat-flat-button color="primary">
+                        <mat-icon>save</mat-icon>
+                        {{ 'definicion_formularios.guardar' | translate }}
+                    </button>
+                </div>
             </div>
+        </mat-card-content>
+    </mat-card>
+
+    <!-- Segunda Card (Escala Cuantitativa) -->
+    <mat-card class="card-item glass-card">
+        <mat-card-header>
+            <mat-card-title>{{ "definir_escalas.titulo_cuantitativo" | translate }}</mat-card-title>
+            <mat-card-subtitle>{{ "definir_escalas.sub_titulo_cuantitativo" | translate }}</mat-card-subtitle>
+            <mat-icon class="star-icon">bar_chart</mat-icon>
+        </mat-card-header>
+        <mat-card-content>
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="alert info">
+                        <mat-icon class="icon">info</mat-icon>
+                        <span>{{ 'definir_escalas.alerta_cuantitativa' | translate }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lista de escalas cuantitativas -->
+            <div class="escala-container">
+                <div class="escala-list">                    
+                     <!-- Encabezados de la tabla -->
+                     <div class="escala-header">
+                        <div class="escala-header-item">{{ 'definir_escalas.tipo' | translate }}</div>
+                        <div class="escala-header-item">{{ 'definir_escalas.valor' | translate }}</div>
+                        <div class="escala-header-item">{{ 'definir_escalas.acciones' | translate }}</div>
+                    </div>
+                    <div class="escala-item row mb-2" *ngFor="let escala of cuantitativaEscalas; let i = index">
+                        <!-- Input de label -->
+                        <div class="col-5">
+                            <input class="form-control custom-input" [(ngModel)]="escala.label"
+                                placeholder="{{ 'definir_escalas.estado' | translate }}">
+                        </div>
+                        <!-- Input de descripción -->
+                        <div class="col-5">
+                            <input class="form-control custom-input" [(ngModel)]="escala.descripcion"
+                                placeholder="Valor numérico" pattern="[0-9]*" maxlength="3"
+                                (keypress)="restrictNumeric($event)">
+                        </div>
+                        <!-- Botones de editar y eliminar -->
+                        <div class="col-2 d-flex align-items-center justify-content-end">
+                            <button mat-icon-button class="small-icon"
+                                (click)="editarEscala(escala, i)"><mat-icon>edit</mat-icon></button>
+                            <button mat-icon-button class="small-icon"
+                                (click)="eliminarEscala('cuantitativa', i)"><mat-icon>delete</mat-icon></button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Botones para cuantitativa -->
+                <div class="button-container">
+                    <button mat-flat-button color="primary" class="btn-add-scale" (click)="agregarEscala('cuantitativa')">
+                        <mat-icon>add</mat-icon>
+                        {{ 'definir_escalas.agregar_elemento_escala' | translate }}
+                    </button>
+                    <button mat-flat-button color="primary">
+                        <mat-icon>save</mat-icon>
+                        {{ 'definicion_formularios.guardar' | translate }}
+                    </button>
+                </div>
+            </div>
+        </mat-card-content>
+    </mat-card>    
+</div>
+
+
+
+<!-- Modal para mostrar cuando el usuario no tiene permisos -->
+<ng-template #noPermission>
+    <div class="modal-overlay" *ngIf="!hasRole([ROLES.ADMIN_SGA, ROLES.DOCENTE, ROLES.ESTUDIANTE, ROLES.CONSEJO_CURRICULAR])">
+      <div class="modal-content">
+        <h2>{{ "definicion_formularios.sin_permisos_titulo" | translate }}</h2>
+        <p>{{ "definicion_formularios.sin_permisos_mensaje" | translate }}</p>
+        <!-- Icono grande de carita triste -->
+        <div class="sad-face-icon">
+          <mat-icon class="sad-icon">sentiment_dissatisfied</mat-icon>
         </div>
-    
-        <div class="visualizations">
-            <div class="visualization-container cualitativa">
-                <h3>Vista tablas cualitativas</h3>
-                <div class="visualization-content" *ngIf="visualizacionesCualitativas.length > 0">
-                    <div *ngFor="let visualizacion of visualizacionesCualitativas" class="visualizacion" [class.selected]="visualizacion.selected" (click)="seleccionarTabla(visualizacion)">
-                        <h3>
-                            <input [(ngModel)]="visualizacion.tipoEscala" placeholder="Titulo de la escala">
-                            <button mat-icon-button (click)="eliminarVisualizacion(visualizacion, 'cualitativa')"><mat-icon>close</mat-icon></button>
-                        </h3>
-                        <p>{{ visualizacion.descripcion }}</p>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>{{ "definir_escalas.estado" | translate }}</th>
-                                    <th>{{ "definir_escalas.descripcion_columna" | translate }}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr *ngFor="let escala of visualizacion.escalas">
-                                    <td>{{ escala.label }}</td>
-                                    <td>{{ escala.descripcion }}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-    
-            <div class="visualization-container cuantitativa">
-                <h3>Vista tablas cuantitativas</h3>
-                <div class="visualization-content" *ngIf="visualizacionesCuantitativas.length > 0">
-                    <div *ngFor="let visualizacion of visualizacionesCuantitativas" class="visualizacion" [class.selected]="visualizacion.selected" (click)="seleccionarTabla(visualizacion)">
-                        <h3>
-                            <input [(ngModel)]="visualizacion.tipoEscala" placeholder="Titulo de la escala">
-                            <button mat-icon-button (click)="eliminarVisualizacion(visualizacion, 'cuantitativa')"><mat-icon>close</mat-icon></button>
-                        </h3>
-                        <p>{{ visualizacion.descripcion }}</p>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>{{ "definir_escalas.estado" | translate }}</th>
-                                    <th>Valor</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr *ngFor="let escala of visualizacion.escalas">
-                                    <td>{{ escala.label }}</td>
-                                    <td>{{ escala.descripcion }}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
-</ng-container>
+  </ng-template>

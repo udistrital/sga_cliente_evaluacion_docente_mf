@@ -3,8 +3,12 @@
     "GLOBAL": {
         "atencion": "Atención",
         "aceptar": "Aceptar",
-        "cancelar": "Cancelar"
+        "cancelar": "Cancelar",
+        "seleccionar": "Seleccionar",
+        "error": "Error"
     },
+
+    
     
     "HOME": {
         "TITLE": "SGA",
@@ -13,7 +17,6 @@
         "LOGOUT": "Cerrar sesión",
         "THEME": "Tema"
     },
-
     "GLOBAL":{
         "GUARDAR": "Guardar",
         "CANCELAR": "Cancelar",
@@ -25,7 +28,10 @@
         "periodo": "Periodo",
         "continuar": "Continuar",
         "atras": "Atrás",
-        "generar": "Generar"
+        "generar": "Generar",
+        "atencion": "Atención",
+        "aceptar": "Aceptar",
+        "cancelar": "Cancelar"
     },
 
     "asignacion_fechas": {
@@ -63,11 +69,21 @@
         "visualizador_formulario": "Visualizador del formulario",
         "procesos_seleccionar": "Procesos a seleccionar",
         "guardar": "Guardar",
-        "campo_requerido": "Campo requerido"
+        "campo_requerido": "Campo requerido",
+        "sin_permisos_titulo": "Acceso denegado",
+        "sin_permisos_mensaje": "No tienes los permisos necesarios para visualizar esta información. Por favor, contacta al administrador del sistema para obtener más detalles o para solicitar acceso."
+    },
+
+    "evaluaciones": {
+        "titulo": "Evaluaciones",
+        "sub_titulo": "Módulo para la presentación de las siguientes evaluaciones",
+        "alerta": "A continuación, deberá seleccionar el tipo de evaluación que desea presentar.",
+        "select_evaluacion": "Seleccionar evaluación"
     },
 
     "definir_escalas": {
-        "titulo": "Definir Escala",
+        "titulo_cualitativa": "Definición de escala cualitativa",
+        "titulo_cuantitativo": "Definición de escala cuantitativa",
         "seleccionar_tipo_escala": "Seleccionar tipo de escala",
         "seleccione": "Seleccione",
         "cualitativa": "Cualitativa",
@@ -75,10 +91,20 @@
         "escala": "Escala",
         "del_seud": "del SEUD",
         "descripcion": "Define descripción u objetivos del mismo",
-        "agregar_elemento_escala": "Agregar elemento de escala",
+        "agregar_elemento_escala": "Agregar elemento",
         "estado": "Estado",
         "descripcion_columna": "Descripción",
-        "visualizar": "visualizar"
+        "visualizar": "visualizar",
+        "sub_titulo_cualitativa": "Permite clasificar el desempeño del docente usando categorías como 'Insuficiente', 'Necesita Mejorar', 'Bueno', etc.",
+        "sub_titulo_cuantitativo": "Permite calificar el desempeño del docente con valores numéricos, como del 1 al 5.",
+        "alerta_cualitativa": "A continuación, deberá diligenciar el formulario utilizando la escala cualitativa, seleccionando una categoría que mejor describa el desempeño del docente, como 'Excelente', 'Bueno', 'Aceptable', etc.",
+        "alerta_cuantitativa": "A continuación, deberá diligenciar el formulario utilizando la escala cuantitativa, asignando una calificación numérica al desempeño del docente, basada en su experiencia.",
+        "titulo_cualitativa_seud": "Escala cualitativa del SEUD",
+        "titulo_cuantitativa_seud": "Escala cuantitativa del SEUD",
+        "acciones": "Acciones",
+        "tipo": "Evaluación",
+        "valor": "Valor",
+        "criterios": "Criterios"
     },
     
     "heteroevaluacion": {
@@ -116,11 +142,12 @@
         "descripcion": "Descripción",
         "formulario": "Formulario correspondiente",
         "formulario_placeholder": "Formulario correspondiente",
+        "espacio_academico": "Espacio Académico",
         "guardar": "Guardar"
     },
 
     "coevaluacion_i": {
-        "titulo": "Evaluación de Coevaluación I",
+        "titulo": "Coevaluación I",
         "formato": "Código SIGUD por asignar",
         "actor": "Cuerpo docente y estudiantado",
         "cronograma": "Semanas 10 a 11 del calendario académico",

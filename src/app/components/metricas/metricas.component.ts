@@ -44,9 +44,6 @@ export class MetricasComponent implements OnInit {
   periodosAnteriores: Periodo[] = [];
   mostrarSelectsAdicionales: boolean = false;
   facultad = [];
-  /* opcionSeleccionadoFacultad: any; */
-  
-  // Ajuste aquí: proyectos con select y opciones
   proyectos: { select: any, opciones: any[] } = { select: undefined, opciones: [] };
 
   // Opciones del gráfico
@@ -233,7 +230,6 @@ export class MetricasComponent implements OnInit {
     this.periodo = event.value;
     if (this.periodo.Id) {
       this.cargarPeriodosAnteriores(this.periodo);
-      // Aquí puedes llamar a cualquier método adicional que necesite el periodo seleccionado
     } else {
       this.periodosAnteriores = [];
     }

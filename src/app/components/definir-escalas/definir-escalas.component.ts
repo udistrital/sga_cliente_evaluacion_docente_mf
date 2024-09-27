@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef } from '@angular/core';
 import { ROLES } from 'src/app/models/diccionario';
 import { UserService } from 'src/app/services/user.service';
+import { DateService } from 'src/app/services/date.service';
+import { NgIfContext } from '@angular/common';
 
 
 @Component({
@@ -9,6 +11,9 @@ import { UserService } from 'src/app/services/user.service';
   styleUrls: ['./definir-escalas.component.scss']
 })
 export class DefinirEscalasComponent implements OnInit {
+isGranted(arg0: ("ADMIN_SGA"|"VICERRECTOR"|"ASESOR_VICE"|"COORDINADOR"|"COORDINADOR_PREGADO"|"COORDINADOR_POSGRADO"|"ASISTENTE_ADMISIONES"|"ADMIN_DOCENCIA"|"ASIS_PROYECTO"|"SEC_DECANATURA"|"DECANO")[]): any {
+throw new Error('Method not implemented.');
+}
   tipoEscala: string = '';
   descripcion: string = '';
   tipoEscalaTitulo: string = '';
@@ -17,6 +22,8 @@ export class DefinirEscalasComponent implements OnInit {
   visualizacionesCuantitativas: any[] = [];
   userRoles: string[] = [];
   ROLES = ROLES;
+  dateHeader: string | undefined;
+  noPermission: TemplateRef<NgIfContext<boolean>> | null = null;
 
   cualitativaEscalas = [
     { label: 'INSUFICIENTE', descripcion: 'No sucede y no se demuestra el criterio' },
@@ -34,12 +41,19 @@ export class DefinirEscalasComponent implements OnInit {
     { label: 'EXCELENTE', descripcion: '5' }
   ];
 
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService, private dateService: DateService) {}
 
   ngOnInit(): void {
     this.userService.getUserRoles().then(roles => {
       this.userRoles = roles;
-    });
+      this.dateService.getDateHeader().subscribe(
+        (date: string) => {
+          this.dateHeader = date;
+          console.log('DateHeader:', this.dateHeader);
+        },
+        (error: any) => console.error('Error al obtener el encabezado de fecha:', error)
+      );              
+    }).catch(error => console.error('Error al obtener los roles de usuario:', error));
   }
 
   onChangeTipoEscala() {
@@ -54,28 +68,44 @@ export class DefinirEscalasComponent implements OnInit {
     }
   }
 
-  agregarEscala() {
-    if (this.tipoEscala === 'cualitativa') {
-      this.escalas.push({ label: '', descripcion: 'Escribe una descripcion aqui' });
-    } else if (this.tipoEscala === 'cuantitativa') {
-      this.escalas.push({ label: '', descripcion: '' });
+  agregarEscala(tipo: string) {
+    if (tipo === 'cualitativa') {
+      this.cualitativaEscalas.push({ label: '', descripcion: 'Escribe una descripcion aqui' });
+    } else if (tipo === 'cuantitativa') {
+      this.cuantitativaEscalas.push({ label: '', descripcion: '' });
     }
   }
 
-  visualizarEscalas() {
+  visualizarEscalas(tipo: string) {
     const visualizacion = {
-      tipoEscala: this.tipoEscalaTitulo,
-      descripcion: this.descripcion,
-      escalas: [...this.escalas],
+      tipoEscala: tipo === 'cualitativa' ? 'Escala cualitativa' : 'Escala cuantitativa',
+      escalas: tipo === 'cualitativa' ? [...this.cualitativaEscalas] : [...this.cuantitativaEscalas],
       selected: false
     };
-
-    if (this.tipoEscala === 'cualitativa') {
+  
+    if (tipo === 'cualitativa') {
       this.visualizacionesCualitativas.push(visualizacion);
-    } else if (this.tipoEscala === 'cuantitativa') {
+    } else if (tipo === 'cuantitativa') {
       this.visualizacionesCuantitativas.push(visualizacion);
     }
   }
+
+  eliminarEscala(tipo: string, index: number) {
+    if (tipo === 'cualitativa') {
+      this.cualitativaEscalas.splice(index, 1);
+    } else if (tipo === 'cuantitativa') {
+      this.cuantitativaEscalas.splice(index, 1);
+    }
+  }
+
+  editarEscala(escala: any, index: number) {
+    // Implementa la lógica para editar una escala si es necesario.
+    console.log(`Editando escala en la posición ${index}`, escala);
+  }
+
+
+
+
 
   seleccionarTabla(visualizacion: any) {
     visualizacion.selected = !visualizacion.selected;
