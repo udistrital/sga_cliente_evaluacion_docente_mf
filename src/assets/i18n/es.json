@@ -18,7 +18,6 @@
         "FORMULARIO": "Formulario",
         "ACCIONES": "Acciones",
         "proyecto_academico": "Proyecto Académico",
-        "seleccionar": "Seleccionar",
         "periodo": "Periodo",
         "continuar": "Continuar",
         "atras": "Atrás",
@@ -28,7 +27,6 @@
         "cancelar": "Cancelar",
         "seleccionar": "Seleccionar",
         "error": "Error"
-    },
     },
 
     "asignacion_fechas": {
