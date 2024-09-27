@@ -1,5 +1,6 @@
 export const environment = {
     production: false,
     apiUrl: "https://pruebassgaevaluaciondocente.portaloas.udistrital.edu.co/",
-    EVENTOS_CRUD: 'http://pruebasapi2.intranetoas.udistrital.edu.co:8107/'
+    SGA_EVALUACION_DOCENTE_MID_SERVICE: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/evaluacion_docente_mid/v1/',
+    EVENTOS_CRUD: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/sesiones_crud/v2/',
 };
