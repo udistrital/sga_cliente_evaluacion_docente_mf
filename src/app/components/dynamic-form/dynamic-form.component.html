@@ -1,77 +1,110 @@
-<div>
-    <!-- Botones para seleccionar el tipo de formulario -->
-    <button mat-button (click)="loadFormulario('heteroevaluacion')">Heteroevaluación</button>
-    <button mat-button (click)="loadFormulario('autoevaluacion-i')">Autoevaluación I</button>
-    <button mat-button (click)="loadFormulario('autoevaluacion-ii')">Autoevaluación II</button>
-    <button mat-button (click)="loadFormulario('coevaluacion-i')">Coevaluación I</button>
-    <button mat-button (click)="loadFormulario('coevaluacion-ii')">Coevaluación II</button>
-</div>
+<!-- Vista por pasos usando mat-stepper para las Secciones (Ámbitos) -->
+<mat-card>
+    <mat-card-content>
+        <mat-vertical-stepper [linear]="true" [formGroup]="stepperForm" #mainStepper>
+            <!-- Secciones -->
+    <mat-step *ngFor="let seccion of todasSecciones; let i = index">
+        <ng-template matStepLabel >{{ seccion.nombre }}</ng-template>
 
-<!-- Vista por pasos usando mat-stepper para los Ámbitos -->
-<mat-vertical-stepper *ngIf="!isFormView" [linear]="true" [formGroup]="stepperForm" #mainStepper>
-    <!-- Ámbitos -->
-    <mat-step *ngFor="let ambito of ambitos; let i = index" [formGroupName]="'ambito_' + i">
-        <ng-template matStepLabel>{{ ambito.nombre }}</ng-template>
-
-        <!-- Botón para colapsar/expandir todas las preguntas con ícono de ojo -->
-        <button mat-raised-button color="primary" (click)="toggleAll(i)">
-            <mat-icon>visibility</mat-icon> {{ expandAllState[i] ? 'Colapsar todo' : 'Expandir todo' }}
-        </button>
-
-        <!-- Preguntas dentro de los ámbitos usando mat-accordion -->
-        <mat-accordion [multi]="true">
-            <mat-expansion-panel *ngFor="let item of ambito.items; let j = index" [expanded]="expandAllState[i]"
-                class="custom-expansion-panel">
-                <mat-expansion-panel-header>
-                    <mat-panel-title>
-                        <mat-icon color="accent">help_outline</mat-icon> {{ item.text }}
-                    </mat-panel-title>
-                </mat-expansion-panel-header>
-
-                <!-- Opción de única respuesta (radio buttons) -->
-                <div *ngIf="item.campos && item.campos[0]?.tipo_campo === 1">
-                    <mat-radio-group [formControlName]="'pregunta_' + generateControlName(item.text)">
-                        <mat-radio-button *ngFor="let option of item.campos[0]?.escala" [value]="option.valor">
-                            {{ option.nombre }}
-                        </mat-radio-button>
-                    </mat-radio-group>
-                </div>
-
-                <!-- Opción de respuesta abierta (input/textarea) -->
-                <div *ngIf="item.tipo === 'input' || item.tipo === 'textarea'">
-                    <mat-form-field appearance="fill">
-                        <mat-label>{{ item.text }}</mat-label>
-                        <input matInput [formControlName]="'pregunta_' + generateControlName(item.text)">
-                    </mat-form-field>
-                </div>
-
-                <!-- Carga de archivos -->
-                <div *ngIf="item.tipo === 'file'">
-                    <mat-form-field appearance="fill">
-                        <mat-label>Cargar archivo</mat-label>
-                        <input type="file" (change)="handleFileInputChange($event)">
-                    </mat-form-field>
-                </div>
-
-                <!-- Botón para descargar archivos -->
-                <div *ngIf="item.tipo === 'download'">
-                    <button mat-raised-button color="primary" (click)="downloadDocument()">
-                        <mat-icon>cloud_download</mat-icon> Descargar Evidencia
+                <!-- Botón para colapsar/expandir todas las preguntas con ícono de ojo -->
+                <div style="width: 100%; display: flex; justify-content: flex-end; padding-bottom: 1rem;">
+                    <button mat-button color="primary" (click)="toggleAll(i)">
+                        <mat-icon>visibility</mat-icon> {{ expandAllState ? 'Colapsar todo' : 'Expandir todo' }}
+                    </button>
+                    <button mat-button color="primary" (click)="toggleLayout(i)">
+                        <mat-icon>grid_view</mat-icon> {{ vertHorAllState ? 'Vertical' : 'Horizontal' }}
                     </button>
                 </div>
 
-            </mat-expansion-panel>
-        </mat-accordion>
+                <!-- Preguntas dentro de los ámbitos usando mat-accordion -->
+                <mat-accordion [multi]="expandAllState">
+                    <mat-expansion-panel *ngFor="let pregunta of seccion.items; let j = index"
+                        [expanded]="expandAllState || j === panelIndex[i]" (opened)="panelIndex[i] = j"
+                        class="custom-expansion-panel">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                <!-- Ícono para hacer más llamativo el encabezado de la pregunta -->
+                                <mat-icon color="accent">help_outline</mat-icon> {{ pregunta.nombre }}
+                            </mat-panel-title>
+                        </mat-expansion-panel-header>
 
-        <!-- Botones para avanzar y retroceder entre ámbitos -->
-        <div>
-            <button mat-button matStepperPrevious>Anterior</button>
-            <button mat-button matStepperNext>Siguiente</button>
-        </div>
-    </mat-step>
-</mat-vertical-stepper>
+                        <div *ngIf="pregunta.campos !== null">
+                        <!-- Opción de única respuesta (radio buttons) -->
+                        <div *ngIf="pregunta.campos[0].tipo_campo === TIPOINPUT.Radio">
+                            <mat-radio-group [formControlName]="'pregunta_' + generateControlName(seccion.id, pregunta.id)"
+                                [ngClass]="{ 'vertical': !vertHorAllState, 'horizontal': vertHorAllState }">
+                                <mat-radio-button *ngFor="let option of pregunta.campos[0].escala" [value]="option.valor">
+                                    {{ option.nombre }}
+                                </mat-radio-button>
+                            </mat-radio-group>
+                        </div>
 
-<!-- Botón final para enviar el formulario -->
-<div>
-    <button mat-button (click)="submit()">Guardar</button>
+                        <!-- Opción de respuesta abierta (input/textarea) -->
+                        <div *ngIf="pregunta.campos[0].tipo_campo === TIPOINPUT.Textarea">
+                            <mat-form-field style="width: 100%;" appearance="fill">
+                                <!-- <mat-label>{{ pregunta.nombre }}</mat-label> -->
+                                <textarea matInput [formControlName]="'pregunta_' + generateControlName(seccion.id, pregunta.id)"></textarea>
+                            </mat-form-field>
+                        </div>
+
+                        <!-- Input para la carga de archivos -->
+                        <div *ngIf="pregunta.campos[0].tipo_campo === TIPOINPUT.File">
+                            <!-- <mat-form-field appearance="fill"> -->
+                                <mat-label>Cargar archivo</mat-label>
+                                <input type="file" accept=".jpg, .jpeg, .png, .pdf" (change)="handleFileInputChange($event, seccion.id, pregunta.id)">
+                            <!-- </mat-form-field> -->
+                        </div>
+
+                        <!-- Botón para descargar evidencias  -->
+                        <div *ngIf="pregunta.tipo === 'download'">
+                            <button mat-raised-button color="primary" (click)="downloadDocument()">
+                                <mat-icon>cloud_download</mat-icon> Descargar Evidencia
+                            </button>
+                        </div>
+
+                        <!-- Botón para cargar evidencias justo después del enunciado -->
+                        <!-- <div
+                            *ngIf="pregunta.text === 'El cuerpo docente debe cargar el acta de co-evalaucion curricularen enste boton: '">
+                            <input type="file" (change)="handleFileInputChange($event)" />
+                            <button mat-raised-button color="primary" (click)="cargarEvidencias()">
+                                <mat-icon>upload</mat-icon> {{ coevaluacionI.botonCargarEvidencias }}
+                            </button>
+                        </div> -->
+
+                        <!-- Botón para cargar evidencias en Autoevaluación II debajo del enunciado específico -->
+                        <!-- <div *ngIf="pregunta.text === 'El cuerpo docente debe cargar las evidencias correspondientes:'">
+                            <input type="file" (change)="handleFileInputChange($event)" />
+                            <button mat-raised-button color="primary" (click)="cargarEvidencias()">
+                                <mat-icon>upload</mat-icon> Cargar Evidencias
+                            </button>
+                        </div> -->
+                        </div>
+
+                        <mat-action-row *ngIf="!expandAllState">
+                            <button mat-button (click)="cambioPanel(i, false)" [disabled]="j === 0">
+                                Atrás
+                            </button>
+                            <button mat-button (click)="cambioPanel(i, true)"
+                                [disabled]="j === seccion.items.length - 1">
+                                Adelante
+                            </button>
+                        </mat-action-row>
+
+                    </mat-expansion-panel>
+                </mat-accordion>
+
+                <!-- Botones Anterior y Siguiente para avanzar entre ámbitos -->
+                <div>
+                    <button mat-button matStepperPrevious [disabled]="i === 0">Anterior</button>
+                    <button mat-button matStepperNext [disabled]="i === (todasSecciones.length - 1)">Siguiente</button>
+                </div>
+            </mat-step>
+        </mat-vertical-stepper>
+    </mat-card-content>
+</mat-card>
+
+
+<!-- Botón final para enviar -->
+<div style="width: 100%; display: flex; justify-content: center">
+    <button mat-raised-button color="primary" (click)="submit()">Guardar</button>
 </div>

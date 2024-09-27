@@ -1,10 +1,4 @@
-import {
-  Component,
-  Input,
-  OnInit,
-  SimpleChanges,
-  ViewChild,
-} from "@angular/core";
+import { Component, Input, OnChanges, OnInit, ViewChild } from "@angular/core";
 import {
   AbstractControl,
   FormBuilder,
@@ -14,27 +8,12 @@ import {
 } from "@angular/forms";
 import { MatStepper } from "@angular/material/stepper";
 import { DomSanitizer } from "@angular/platform-browser";
-
-import { DocenteMidService } from "src/app/services/docente-mid.service";
+import { TIPOINPUT } from "src/app/models/const_eva";
 import { GestorDocumentalService } from "src/app/services/gestor-documental.service";
+import { SgaEvaluacionDocenteMidService } from "src/app/services/sga_evaluacion_docente_mid.service";
 import Swal from "sweetalert2";
 
 // Definir las interfaces
-interface Pregunta {
-  text: string;
-  tipo: string;
-  campos?: Array<{
-    tipo_campo: number;
-    escala: Array<{ valor: string; nombre: string }>;
-  }>;
-}
-
-interface Ambito {
-  nombre: string;
-  titulo: string;
-  preguntas: Pregunta[];
-  items: Pregunta[];
-}
 
 interface Respuesta {
   item_id: number;
@@ -47,247 +26,80 @@ interface Respuesta {
   templateUrl: "./dynamic-form.component.html",
   styleUrls: ["./dynamic-form.component.scss"],
 })
-export class DynamicFormComponent implements OnInit {
+export class DynamicFormComponent implements OnInit, OnChanges {
+
   stepperForm!: FormGroup; // Inicializa el FormGroup correctamente
-  selectedForm: any;
-  ambitos: Ambito[] = [];
-  comentarioCounter = 1;
+  TIPOINPUT = TIPOINPUT;
+  todasSecciones: any[] = [];
   actaFile: File | null = null;
-  isFormView: boolean = false;
-  //coevaluacionI = COEVALUACION_I;
-  expandAllState: boolean[] = [];
+  expandAllState: boolean = false;
+  vertHorAllState: boolean = false;
+  panelIndex: number[] = [];
+
   uploadedFileUid: string | null = null;
-  documentId: string | null = null;
+  documentId: string | null = null;  
 
   @ViewChild("mainStepper") mainStepper!: MatStepper;
+  @Input() inputData: any; // Define el @Input
 
   @Input() formtype!: string;
 
   constructor(
     private fb: FormBuilder,
+    private sanitizer: DomSanitizer,
+    private evaluacionDocenteMidService: SgaEvaluacionDocenteMidService,
     private gestorService: GestorDocumentalService,
     private gestorDocumentalService: GestorDocumentalService,
-    private sanitizer: DomSanitizer,
-    private docentemidservice: DocenteMidService
-  ) {}
 
-  ngOnInit() {
-    this.stepperForm = this.fb.group({});
-    if (this.formtype) {
-      this.loadFormulario(this.formtype);
-    }
-  }
+  ) { this.stepperForm = this.fb.group({});
+}
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes["formtype"] && changes["formtype"].currentValue) {
-      this.loadFormulario(changes["formtype"].currentValue);
-    }
-  }
+ngOnInit() {
+  // Inicializar el formulario principal
+  //this.stepperForm = this.fb.group({});
+  this.documentId = '74';
+  // Seleccionar el formulario por defecto para la vista inicial
+  //this.selectForm("heteroevaluacion"); // Se puede cambiar según las necesidades
+}
 
-  private getFormTypeId(formtype: string): number {
-    switch (formtype) {
-      case "autoevaluacion-ii":
-        return 5;
-      case "autoevaluacion-i":
-        return 4;
-      case "heteroevaluacion":
-        return 3;
-      case "coevaluacion-ii":
-        return 2;
-      case "coevaluacion-i":
-        return 1;
-      default:
-        return 0; // Caso por defecto, puede ajustarse
-    }
-  }
+ngOnChanges() {
+  this.selectForm(this.formtype);
+}
 
-  loadFormulario(tipo_formulario: string) {
-    const id_tipo_formulario = this.getFormTypeId(tipo_formulario);
-
-    if (id_tipo_formulario === 0) {
-      console.warn("Tipo de formulario no válido");
-      return;
-    }
-
-    this.docentemidservice
-      .obtenerFormulario(id_tipo_formulario)
-      .subscribe((data) => {
-        if (data && data.seccion) {
-          console.log("Datos recibidos del servicio:", data);
-
-          // Procesar las secciones y generar los ámbitos (cualitativa, cuantitativa, descripcion)
-          const secciones = data.seccion;
-          this.ambitos = [];
-
-          if (secciones.cualitativa) {
-            this.ambitos.push(secciones.cualitativa);
-          }
-          if (secciones.cuantitativa) {
-            this.ambitos.push(secciones.cuantitativa);
-          }
-          if (secciones.descripcion) {
-            this.ambitos.push(secciones.descripcion);
-          }
-
-          // Validar que cada ítem tenga las propiedades correctas antes de construir el formulario
-          this.ambitos.forEach((ambito) => {
-            ambito.items.forEach((item) => {
-              console.log(`Verificando item: ${item.text}`, item);
+// Método para inicializar el formulario seleccionado
+selectForm(tipo_formulario: string) {
+  this.evaluacionDocenteMidService.get(`formulario_por_tipo/?id_tipo_formulario=${tipo_formulario}&id_periodo=1&id_tercero=1&id_espacio=1`)
+    .subscribe(response => {
+      console.log(response);
+      if (response.Success === true && response.Status === 200) {
+          this.todasSecciones = response.Data.seccion;
+          this.todasSecciones.forEach((seccion, i) => {
+            seccion.items.forEach((pregunta: any, j: number) => {
+              if (pregunta.campos !== null) {
+                let controlName = this.generateControlName(seccion.id, pregunta.id);
+                const requiredCheck = pregunta.campos[0].tipo_campo === TIPOINPUT.FileDownload ? null : Validators.required;
+                this.stepperForm.addControl(`pregunta_${controlName}`, this.fb.control('', requiredCheck));
+              }
             });
           });
-
-          this.buildForm(); // Construir el formulario
-        } else {
-          console.log(
-            "No se recibieron datos del backend o los datos no tienen el formato esperado"
-          );
-        }
-      });
-  }
-
-  buildForm() {
-    this.stepperForm = this.fb.group({}); // Crear un nuevo FormGroup
-
-    this.ambitos.forEach((ambito, index) => {
-      const group = this.fb.group({}); // Crear un FormGroup por cada ámbito
-
-      if (ambito.items) {
-        ambito.items.forEach((item: any) => {
-          const controlName = this.generateControlName(
-            item.nombre || item.text
-          ); // Generar el nombre del control, usando 'text' o 'nombre'
-
-          // Verificar si el nombre del control es válido
-          if (controlName.startsWith("control_sin_nombre")) {
-            console.warn(
-              "No se puede generar un control válido para la pregunta:",
-              item
-            );
-            return; // Saltar este ítem si no tiene un nombre válido
-          }
-
-          // Crear controles según el tipo de campo
-          if (
-            item.campos &&
-            item.campos.length > 0 &&
-            item.campos[0].tipo_campo === 1
-          ) {
-            // Escalas (tipo_campo === 1)
-            group.addControl(
-              `pregunta_${controlName}`,
-              this.fb.control("", Validators.required)
-            );
-          } else {
-            // Para otros tipos de campos (si aplica)
-            group.addControl(`pregunta_${controlName}`, this.fb.control(""));
-          }
-        });
+          const maxSecciones = this.todasSecciones.length;
+          // Inicializamos el estado expandido de las preguntas
+          this.expandAllState = false;
+          this.vertHorAllState = false;
+          this.panelIndex = Array(maxSecciones).fill(0);
+      } else {
+        console.log('Error al obtener el formulario:', response.Message);
       }
-
-      this.stepperForm.addControl(`ambito_${index}`, group); // Añadir el grupo de ámbito al formulario principal
+    }, error => {
+      console.error('Error validando la existencia de la evaluación:', error);
     });
-  }
+}
 
-  // Método para inicializar el formulario seleccionado
-  selectForm(tipo_formulario: string) {
-    // Limpiar el formulario antes de cargar uno nuevo
-    this.stepperForm = this.fb.group({});
-    this.ambitos = []; // Reinicia los ámbitos para evitar mostrar datos anteriores
-
-    // Cargar el formulario desde el backend utilizando el servicio
-    this.loadFormulario(tipo_formulario);
-  }
-
-  // Método para inicializar el formulario específico de Coevaluación II
-  initializeCoevaluacionIIForm() {
-    this.ambitos.forEach((ambito: Ambito, index: number) => {
-      const group = this.fb.group({});
-
-      ambito.items.forEach((item: Pregunta) => {
-        // Usar 'items'
-        if (!item.text || item.tipo === "download") {
-          console.warn(
-            `Item sin texto o de tipo ${item.tipo} no necesita control.`
-          );
-          return;
-        }
-
-        const controlName = this.generateControlName(item.text);
-        group.addControl(`pregunta_${controlName}`, this.fb.control(""));
-      });
-
-      this.stepperForm.addControl(`ambito_${index}`, group);
-    });
-  }
-
-  // Método para insertar inputs numerados después de las preguntas en Heteroevaluación
-  insertNumericalInputs(ambitoIndex: number): void {
-    const inputStart = ambitoIndex === 0 ? 1 : ambitoIndex === 1 ? 6 : 11;
-    const inputEnd = inputStart + 4;
-    const inputsArray = [];
-
-    for (let i = inputStart; i <= inputEnd; i++) {
-      inputsArray.push(this.fb.control(""));
-    }
-
-    const ambitoControl = this.stepperForm.get(
-      `ambito_${ambitoIndex}`
-    ) as FormGroup;
-    if (ambitoControl) {
-      inputsArray.forEach((control, index) => {
-        ambitoControl.addControl(`input_${inputStart + index}`, control);
-      });
-    }
-  }
-
-  // Inicializa el formulario dinámico creando los controles para cada pregunta
-  initializeForm() {
-    this.ambitos.forEach((ambito: Ambito, index: number) => {
-      const group = this.fb.group({}); // Crear un grupo de control para el ámbito
-
-      ambito.items.forEach((item: Pregunta) => {
-        if (!item.text || item.tipo === "download") {
-          console.log(
-            `Item sin texto o de tipo download encontrado en ámbito: ${ambito.nombre}`
-          );
-          return; // No se crean controles para ítems de tipo descarga o sin texto
-        }
-
-        const controlName = this.generateControlName(item.text);
-
-        // Crear controles según el tipo de pregunta
-        switch (item.tipo) {
-          case "radio":
-            group.addControl(
-              `pregunta_${controlName}`,
-              this.fb.control("", Validators.required)
-            );
-            break;
-          case "input":
-          case "textarea":
-            group.addControl(
-              `pregunta_${controlName}`,
-              this.fb.control("", Validators.required)
-            );
-            break;
-          case "checkbox":
-            group.addControl(`pregunta_${controlName}`, this.fb.control(false));
-            break;
-          case "file":
-            group.addControl(`pregunta_${controlName}`, this.fb.control(null)); // Para archivos, si es necesario
-            break;
-          default:
-            group.addControl(`pregunta_${controlName}`, this.fb.control("")); // Control por defecto
-            break;
-        }
-      });
-
-      this.stepperForm.addControl(`ambito_${index}`, group); // Añadir el grupo de ámbito al formulario principal
-    });
-  }
-
-  handleFileInputChange(event: any): void {
-    this.actaFile = event.target.files[0] ?? null;
+  handleFileInputChange(event: any, seccionId: number, itemId: number): void {
+    const controlName = `pregunta_${this.generateControlName(seccionId, itemId)}`;
+    this.stepperForm.patchValue({
+        [controlName]: event.target.files[0] ?? null,
+    })
   }
 
   // Agregamos la función calculateComentarioIndex
@@ -304,16 +116,15 @@ export class DynamicFormComponent implements OnInit {
       Swal.fire({
         icon: "error",
         title: "Error",
-        text: "Por favor selecciona un archivo para cargar.",
+        text: "Por favor seleccione un archivo para cargar.",
       });
       return;
     }
-
     const sendActa = {
-      IdDocumento: 74, // Este ID puede cambiar según sea necesario en tu contexto
+      IdDocumento: 74,
       nombre: this.actaFile.name.split(".")[0],
       metadatos: {
-        proyecto: "123", // Debes ajustar estos valores según tu lógica de negocio
+        proyecto: "123",
         plan_estudio: "12",
         espacio_academico: "Espacio académico",
       },
@@ -370,13 +181,13 @@ export class DynamicFormComponent implements OnInit {
   ) {
     const control = this.getFormControl(
       ambitoIndex,
-      `pregunta_${this.ambitos[ambitoIndex].items[preguntaIndex].text}` // Cambia preguntas por items
+      `pregunta_${this.todasSecciones[ambitoIndex].preguntas[preguntaIndex].text}`
     );
 
     // Si la respuesta es válida (se ha seleccionado una opción)
     if (control.valid) {
       // Avanzar automáticamente a la siguiente pregunta si existe
-      if (preguntaIndex < this.ambitos[ambitoIndex].preguntas.length - 1) {
+      if (preguntaIndex < this.todasSecciones[ambitoIndex].preguntas.length - 1) {
         innerStepper.next(); // Avanzar a la siguiente pregunta
       } else {
         // Si es la última pregunta, se queda en el mismo ámbito hasta que el usuario decida avanzar
@@ -385,6 +196,27 @@ export class DynamicFormComponent implements OnInit {
         );
       }
     }
+  }
+
+  saveForm(jsonData: any) {
+    this.evaluacionDocenteMidService.post('respuesta_formulario', jsonData)
+    .subscribe(response =>
+       {
+        if(response.Status == 200 &&response.Success == true){
+          Swal.fire({
+            icon: 'success',
+            title: 'Formulario guardado',
+            text: 'El formulario ha sido guardado correctamente.',
+          });
+        }
+       },
+       error => {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Ocurrió un error al guardar el formulario.',
+        });
+       });
   }
 
   // Método para manejar el evento de submit
@@ -400,8 +232,10 @@ export class DynamicFormComponent implements OnInit {
         plantilla_id: 456,
         respuestas,
       };
+      //this.saveForm(jsonData);
       console.log("Formulario guardado:", jsonData);
     } else {
+      console.log("Formulario inválido:", this.stepperForm);
       Swal.fire({
         icon: "error",
         title: "Formulario incompleto",
@@ -411,83 +245,74 @@ export class DynamicFormComponent implements OnInit {
   }
 
   generateResponseData(): Respuesta[] {
-    const respuestas: Respuesta[] = [];
-    this.ambitos.forEach((ambito, i) => {
-      ambito.items.forEach((pregunta, j) => {
-        const controlName = this.generateControlName(pregunta.text);
+    const respuestas: Respuesta[] = []; // Tipado explícito de la variable respuestas
+    this.todasSecciones.forEach((seccion, i) => {
+      seccion.items.forEach(async (pregunta:any, j:number) => {
+        const controlName = this.generateControlName(seccion.id, pregunta.id);
         const control = this.stepperForm.get(
-          `ambito_${i}.pregunta_${controlName}`
+          `pregunta_${controlName}`
         );
 
-        const respuesta: Respuesta = {
-          item_id: j + 1,
-          valor: control?.value || "",
-        };
-
-        respuestas.push(respuesta);
+        if (control?.value instanceof File) {
+          console.log("Archivo cargado:", control.value);
+          await this.loadFile(control.value).then((resp) => {
+            const respuesta: Respuesta = {
+              item_id: pregunta.id,
+              valor: resp[0].res.Enlace,
+            };
+            respuestas.push(respuesta);
+          })
+        } else {
+          const respuesta: Respuesta = {
+            item_id: pregunta.id,
+            valor: control?.value || "",
+          };
+          respuestas.push(respuesta);
+        }
+        
       });
     });
     return respuestas;
   }
 
-  // Función para transformar un texto en una clave válida (remueve espacios y caracteres especiales)
-  /**
-   * Generar un nombre de control basado en el texto (remueve espacios y caracteres especiales).
-   */
-  generateControlName(text: string | null): string {
-    if (!text || text.trim() === "") {
-      console.warn(
-        "El texto proporcionado para generar el control está vacío o no es válido"
-      );
-      return "control_sin_nombre_" + Math.random().toString(36).substring(2, 7); // Generar un nombre aleatorio
-    }
-    return text.replace(/[^a-zA-Z0-9]/g, "_").toLowerCase();
+  // Función para generar el nombre de un control
+  generateControlName(seccionId: number, itemId: number): string {
+    // Ejemplo: sec_1_pre1
+    return `sec_${seccionId}_pre_${itemId}`;
   }
 
-  // Método para renderizar las preguntas dependiendo de su tipo
-  renderQuestion(question: Pregunta, form: FormGroup, controlName: string) {
-    switch (question.tipo) {
-      case "radio":
-        return this.renderRadioQuestion(question, form, controlName);
-      case "input":
-        return this.renderInputQuestion(question, form, controlName);
-      case "checkbox":
-        return this.renderCheckboxQuestion(question, form, controlName);
-      default:
-        return null;
-    }
+  // Cargar archivos nuxeo como promesa
+  loadFile(file: File): Promise<any> {
+    return new Promise((resolve, reject) => {
+      const objetoFile = {
+        IdDocumento: 74, // Este ID puede cambiar según el contexto
+        nombre: "Evidencia evaluación",
+        metadatos: {},
+        descripcion: "",
+        file: file,
+    };
+    this.gestorService.uploadFiles([objetoFile]).subscribe({
+      next: (resp) => {
+        console.log("Archivo cargado:", resp);
+        resolve(resp);
+        /* Swal.fire({
+          icon: "success",
+          title: "Éxito",
+          text: "Archivo cargado correctamente.",
+        }); */
+      },
+      error: (err) => {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Ocurrió un error al cargar el archivo.",
+        });
+        reject("Error al cargar archivo");
+      },
+    });
+    });
   }
 
-  // Métodos para manejar las preguntas de tipo radio, input y checkbox
-  renderRadioQuestion(question: any, form: FormGroup, controlName: string) {
-    return `
-      <mat-radio-group [formControlName]="${controlName}">
-        ${question.options
-          .map(
-            (option: any) =>
-              `<mat-radio-button [value]="${option.valor}">${option.texto}</mat-radio-button>`
-          )
-          .join("")}
-      </mat-radio-group>
-    `;
-  }
-
-  renderInputQuestion(question: any, form: FormGroup, controlName: string) {
-    return `
-      <mat-form-field appearance="fill">
-        <mat-label>${question.text}</mat-label>
-        <input matInput [formControlName]="${controlName}">
-      </mat-form-field>
-    `;
-  }
-
-  renderCheckboxQuestion(question: any, form: FormGroup, controlName: string) {
-    return `
-      <mat-checkbox [formControlName]="${controlName}">
-        ${question.text}
-      </mat-checkbox>
-    `;
-  }
 
   // Método para subir el archivo
   cargarEvidencias(): void {
@@ -541,24 +366,24 @@ export class DynamicFormComponent implements OnInit {
     return [];
   }
 
-  onNext(innerStepper: MatStepper, ambitoIndex: number, preguntaIndex: number) {
+  /* onNext(innerStepper: MatStepper, ambitoIndex: number, preguntaIndex: number) {
     const control = this.getFormControl(
       ambitoIndex,
       "pregunta_" +
-        this.generateControlName(
-          this.ambitos[ambitoIndex].preguntas[preguntaIndex].text
-        )
+      this.generateControlName(
+        this.todasSecciones[ambitoIndex].preguntas[preguntaIndex].text
+      )
     );
 
     if (control.valid) {
       // Si es la última pregunta del ámbito actual, avanza al siguiente ámbito
-      if (preguntaIndex < this.ambitos[ambitoIndex].preguntas.length - 1) {
+      if (preguntaIndex < this.todasSecciones[ambitoIndex].preguntas.length - 1) {
         innerStepper.next(); // Avanzar a la siguiente pregunta
       } else {
         this.mainStepper.next(); // Si es la última pregunta, avanzar al siguiente ámbito
       }
     }
-  }
+  } */
 
   getNumericalInputLabel(ambitoIndex: number, inputIndex: number): number {
     const inputStart = ambitoIndex === 0 ? 1 : ambitoIndex === 1 ? 6 : 11;
@@ -574,31 +399,48 @@ export class DynamicFormComponent implements OnInit {
 
   // Método para alternar la expansión de todas las preguntas de un ámbito
   toggleAll(index: number) {
-    this.expandAllState[index] = !this.expandAllState[index];
+    this.expandAllState = !this.expandAllState;
   }
 
-  // Método para manejar la descarga
+  // Método para alternar entre radio horizontal o vertical
+  toggleLayout(index: number) {
+    this.vertHorAllState = !this.vertHorAllState;
+  }
+
+  cambioPanel(index: number, sentido: boolean) {
+    console.log(index, sentido);
+    if (sentido) {
+      this.panelIndex[index] = this.panelIndex[index] + 1;
+      console.log("+",this.panelIndex[index]);
+    } else {
+      this.panelIndex[index] = this.panelIndex[index] - 1;
+      console.log("-",this.panelIndex[index]);
+    }
+  }
+
+  // Método para manejar la descarga 
   downloadDocument() {
-    if (this.documentId) {
-      this.gestorDocumentalService.getByUUID(this.documentId).subscribe(
+    const documentoId = '74';
+    if (documentoId) {
+      this.gestorDocumentalService.getByUUID(documentoId).subscribe(
         (fileUrl: string) => {
           const sanitizedUrl = this.sanitizer.bypassSecurityTrustUrl(fileUrl);
           this.triggerDownload(sanitizedUrl as string);
         },
         (error: any) => {
-          console.error("Error downloading the document:", error);
+          console.error('Error downloading the document:', error);
         }
       );
     } else {
-      console.error("Document ID not found");
+      console.error('Document ID not found');
     }
   }
 
   triggerDownload(url: string) {
-    const link = document.createElement("a");
+    const link = document.createElement('a');
     link.href = url;
-    link.target = "_blank";
-    link.download = "documento.pdf";
+    link.target = '_blank';
+    link.download = 'documento.pdf';
     link.click();
   }
 }

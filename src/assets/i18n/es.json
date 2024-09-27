@@ -1,5 +1,15 @@
 {
     
+    "GLOBAL": {
+        "atencion": "Atención",
+        "aceptar": "Aceptar",
+        "cancelar": "Cancelar",
+        "seleccionar": "Seleccionar",
+        "error": "Error"
+    },
+
+    
+    
     "HOME": {
         "TITLE": "SGA",
         "SELECT": "Seleccionar tipo de evaluación",
@@ -8,7 +18,6 @@
         "THEME": "Tema",
         "seleccione": "Seleccionar"
     },
-
     "GLOBAL":{
         "GUARDAR": "Guardar",
         "CANCELAR": "Cancelar",
@@ -66,8 +75,16 @@
         "sin_permisos_mensaje": "No tienes los permisos necesarios para visualizar esta información. Por favor, contacta al administrador del sistema para obtener más detalles o para solicitar acceso."
     },
 
+    "evaluaciones": {
+        "titulo": "Evaluaciones",
+        "sub_titulo": "Módulo para la presentación de las siguientes evaluaciones",
+        "alerta": "A continuación, deberá seleccionar el tipo de evaluación que desea presentar.",
+        "select_evaluacion": "Seleccionar evaluación"
+    },
+
     "definir_escalas": {
-        "titulo": "Definir Escala",
+        "titulo_cualitativa": "Definición de escala cualitativa",
+        "titulo_cuantitativo": "Definición de escala cuantitativa",
         "seleccionar_tipo_escala": "Seleccionar tipo de escala",
         "seleccione": "Seleccione",
         "cualitativa": "Cualitativa",
@@ -75,10 +92,20 @@
         "escala": "Escala",
         "del_seud": "del SEUD",
         "descripcion": "Define descripción u objetivos del mismo",
-        "agregar_elemento_escala": "Agregar elemento de escala",
+        "agregar_elemento_escala": "Agregar elemento",
         "estado": "Estado",
         "descripcion_columna": "Descripción",
-        "visualizar": "visualizar"
+        "visualizar": "visualizar",
+        "sub_titulo_cualitativa": "Permite clasificar el desempeño del docente usando categorías como 'Insuficiente', 'Necesita Mejorar', 'Bueno', etc.",
+        "sub_titulo_cuantitativo": "Permite calificar el desempeño del docente con valores numéricos, como del 1 al 5.",
+        "alerta_cualitativa": "A continuación, deberá diligenciar el formulario utilizando la escala cualitativa, seleccionando una categoría que mejor describa el desempeño del docente, como 'Excelente', 'Bueno', 'Aceptable', etc.",
+        "alerta_cuantitativa": "A continuación, deberá diligenciar el formulario utilizando la escala cuantitativa, asignando una calificación numérica al desempeño del docente, basada en su experiencia.",
+        "titulo_cualitativa_seud": "Escala cualitativa del SEUD",
+        "titulo_cuantitativa_seud": "Escala cuantitativa del SEUD",
+        "acciones": "Acciones",
+        "tipo": "Evaluación",
+        "valor": "Valor",
+        "criterios": "Criterios"
     },
     
     "heteroevaluacion": {
@@ -118,11 +145,17 @@
         "error_fecha_inicio": "Por favor, ingrese la fecha de inicio.",
         "error_fecha_fin": "Por favor, ingrese la fecha de fin.",
         "error_proyecto": "Por favor, seleccione un proyecto.",
+        "espacio_academico": "Espacio Académico",
         "error_descripcion": "Por favor, ingrese una descripción."
     },
 
     "coevaluacion_i": {
-        "titulo": "Evaluación de Coevaluación I",
+        "titulo": "Coevaluación I",
+        "formato": "Código SIGUD por asignar",
+        "actor": "Cuerpo docente y estudiantado",
+        "cronograma": "Semanas 10 a 11 del calendario académico",
+        "documento": "Acta de co-evaluación del espacio curricular",
+        "instruccion": "Estimado cuerpo docente y estudiantado: Por favor co-evalúen con compromisos mutuos su desempeño docente y el de sus estudiantes en este espacio curricular utilizando el formato dispuesto para ello. Por favor cargue el acta resultado de este ejercicio de coevaluación.",
         "fechas": "Fechas",
         "inicio": "Inicio",
         "fin": "Fin",
