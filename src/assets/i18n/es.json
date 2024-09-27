@@ -3,8 +3,12 @@
     "GLOBAL": {
         "atencion": "Atención",
         "aceptar": "Aceptar",
-        "cancelar": "Cancelar"
+        "cancelar": "Cancelar",
+        "seleccionar": "Seleccionar",
+        "error": "Error"
     },
+
+    
     
     "HOME": {
         "TITLE": "SGA",
@@ -12,20 +16,6 @@
         "LOGIN": "Iniciar sesión",
         "LOGOUT": "Cerrar sesión",
         "THEME": "Tema"
-    },
-
-    "GLOBAL":{
-        "GUARDAR": "Guardar",
-        "CANCELAR": "Cancelar",
-        "ELIMINAR": "Eliminar",
-        "EDITAR": "Editar",
-        "AGREGAR": "Agregar",
-        "proyecto_academico": "Proyecto Académico",
-        "seleccionar": "Seleccionar",
-        "periodo": "Periodo",
-        "continuar": "Continuar",
-        "atras": "Atrás",
-        "generar": "Generar"
     },
 
     "asignacion_fechas": {
@@ -63,7 +53,16 @@
         "visualizador_formulario": "Visualizador del formulario",
         "procesos_seleccionar": "Procesos a seleccionar",
         "guardar": "Guardar",
-        "campo_requerido": "Campo requerido"
+        "campo_requerido": "Campo requerido",
+        "sin_permisos_titulo": "Acceso denegado",
+        "sin_permisos_mensaje": "No tienes los permisos necesarios para visualizar esta información. Por favor, contacta al administrador del sistema para obtener más detalles o para solicitar acceso."
+    },
+
+    "evaluaciones": {
+        "titulo": "Evaluaciones",
+        "sub_titulo": "Módulo para la presentación de las siguientes evaluaciones",
+        "alerta": "A continuación, deberá seleccionar el tipo de evaluación que desea presentar.",
+        "select_evaluacion": "Seleccionar evaluación"
     },
 
     "definir_escalas": {
@@ -116,11 +115,12 @@
         "descripcion": "Descripción",
         "formulario": "Formulario correspondiente",
         "formulario_placeholder": "Formulario correspondiente",
+        "espacio_academico": "Espacio Académico",
         "guardar": "Guardar"
     },
 
     "coevaluacion_i": {
-        "titulo": "Evaluación de Coevaluación I",
+        "titulo": "Coevaluación I",
         "formato": "Código SIGUD por asignar",
         "actor": "Cuerpo docente y estudiantado",
         "cronograma": "Semanas 10 a 11 del calendario académico",
