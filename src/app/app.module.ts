@@ -42,7 +42,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
-import { MatSnackBarModule } from '@angular/material/snack-bar'; // Importar MatSnackBarModule
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatMenuModule } from '@angular/material/menu';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { ResultadosComponent } from './components/resultados/resultados.component';
 import { NuxeoComponent } from './components/nuxeo/nuxeo.component';
@@ -118,8 +119,9 @@ export function createTranslateLoader(http: HttpClient) {
     MatButtonModule,
     MatIconModule,
     MatFormFieldModule,
-    MatExpansionModule,
-    MatStepperModule  
+    MatStepperModule,
+    MatInputModule,
+    MatMenuModule  
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [

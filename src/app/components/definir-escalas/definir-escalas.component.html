@@ -1,137 +1,141 @@
-<ng-container *ngIf="hasRole([ROLES.ADMIN_SGA, ROLES.DOCENTE, ROLES.ESTUDIANTE, ROLES.CONSEJO_CURRICULAR]); else noPermission">
-    <div class="container">
-        <div class="form-container">
-            <h2>{{ "definir_escalas.titulo" | translate }}</h2>
-            <div class="form-group">
-                <label for="tipoEscala">{{ "definir_escalas.seleccionar_tipo_escala" | translate }}</label>
-                <select id="tipoEscala" class="form-control" [(ngModel)]="tipoEscala" (change)="onChangeTipoEscala()">
-                    <option value="" disabled selected>{{ "definir_escalas.seleccione" | translate }}</option>
-                    <option value="cualitativa">{{ "definir_escalas.cualitativa" | translate }}</option>
-                    <option value="cuantitativa">{{ "definir_escalas.cuantitativa" | translate }}</option>
-                </select>
-            </div>
+<mat-card>
+    <mat-card-header>
+        <mat-card-title>{{ "definir_escalas.titulo_principal" | translate }}</mat-card-title>
+    </mat-card-header>
 
-            <!-- Lista de escalas cualitativas -->
-        <mat-card>
-            <mat-card-content>
-            <div class="escala-container">
-                <div class="escala-list">
-                    <!-- Encabezados de la tabla -->
-                    <div class="escala-header">
-                        <div class="escala-header-item">{{ 'definir_escalas.tipo' | translate }}</div>
-                        <div class="escala-header-item">{{ 'definir_escalas.criterios' | translate }}</div>
-                        <div class="escala-header-item">{{ 'definir_escalas.acciones' | translate }}</div>
-                    </div>
-                    <div class="escala-item row mb-2" *ngFor="let escala of cualitativaEscalas; let i = index">
-                        <!-- Input de label -->
-                        <div class="col-5">
-                            <input class="form-control custom-input" [(ngModel)]="escala.label"
-                                placeholder="{{ 'definir_escalas.estado' | translate }}">
-                        </div>
-                        <!-- Input de descripción -->
-                        <div class="col-5">
-                            <input class="form-control custom-input" [(ngModel)]="escala.descripcion"
-                                placeholder="Descripción">
-                        </div>
-                        <!-- Botones de editar y eliminar -->
-                        <div class="col-2 d-flex align-items-center justify-content-end">
-                            <button mat-icon-button class="small-icon"
-                                (click)="editarEscala(escala, i)"><mat-icon>edit</mat-icon></button>
-                            <button mat-icon-button class="small-icon"
-                                (click)="eliminarEscala('cualitativa', i)"><mat-icon>delete</mat-icon></button>
-                        </div>
-                    </div>
-                </div>
-                <!-- Botones para cualitativa -->
-                <div class="button-container">
-                    <button mat-flat-button color="primary" class="btn-add-scale" (click)="agregarEscala('cualitativa')">
-                        <mat-icon>add</mat-icon>
-                        {{ 'definir_escalas.agregar_elemento_escala' | translate }}
-                    </button>
-                    <button mat-flat-button color="primary">
-                        <mat-icon>save</mat-icon>
-                        {{ 'definicion_formularios.guardar' | translate }}
-                    </button>
-                </div>
-            </div>
-        </mat-card-content>
-    </mat-card>
+    <mat-card-content>
+        <!-- Grupo de tabs para Listado y Formulario -->
+        <mat-tab-group [(selectedIndex)]="activeTab" (selectedTabChange)="tabChanged($event)">
+            <!-- Pestaña de Lista -->
+            <mat-tab label="{{ 'GLOBAL.lista' | translate }}">
+                <mat-card>
+                    <mat-card-content>
+                        <!-- Buscador -->
+                        <mat-form-field class="form-field">
+                            <mat-icon matPrefix>search</mat-icon> <!-- Ícono de lupa -->
+                            <mat-label>{{ "GLOBAL.buscar" | translate }}</mat-label>
+                            <input matInput type="text" (keyup)="applyFilterEscalas($event)"
+                                placeholder="{{ 'GLOBAL.buscar' | translate }}" />
+                        </mat-form-field>
 
-    <!-- Segunda Card (Escala Cuantitativa) -->
-    <mat-card class="card-item glass-card">
-        <mat-card-header>
-            <mat-card-title>{{ "definir_escalas.titulo_cuantitativo" | translate }}</mat-card-title>
-            <mat-card-subtitle>{{ "definir_escalas.sub_titulo_cuantitativo" | translate }}</mat-card-subtitle>
-            <mat-icon class="star-icon">bar_chart</mat-icon>
-        </mat-card-header>
-        <mat-card-content>
-            <div class="row mt-4">
-                <div class="col-12">
-                    <div class="alert info">
-                        <mat-icon class="icon">info</mat-icon>
-                        <span>{{ 'definir_escalas.alerta_cuantitativa' | translate }}</span>
-                    </div>
-                </div>
-            </div>
+                        <!-- Botón para añadir nueva escala -->
+                        <mat-toolbar>
+                            <button mat-icon-button color="accent" (click)="activarModoCreacion()">
+                                <mat-icon>add</mat-icon> <!-- Ícono de más para añadir escala -->
+                            </button>
+                            <span>{{ "definir_escalas.aniadir_nueva_escala" | translate }}</span>
+                            <!-- Texto "Añadir nueva escala" -->
+                        </mat-toolbar>
 
-            <!-- Lista de escalas cuantitativas -->
-            <div class="escala-container">
-                <div class="escala-list">                    
-                     <!-- Encabezados de la tabla -->
-                     <div class="escala-header">
-                        <div class="escala-header-item">{{ 'definir_escalas.tipo' | translate }}</div>
-                        <div class="escala-header-item">{{ 'definir_escalas.valor' | translate }}</div>
-                        <div class="escala-header-item">{{ 'definir_escalas.acciones' | translate }}</div>
-                    </div>
-                    <div class="escala-item row mb-2" *ngFor="let escala of cuantitativaEscalas; let i = index">
-                        <!-- Input de label -->
-                        <div class="col-5">
-                            <input class="form-control custom-input" [(ngModel)]="escala.label"
-                                placeholder="{{ 'definir_escalas.estado' | translate }}">
+                        <!-- Tabla de escalas existentes -->
+                        <table mat-table [dataSource]="dataSource" matSort class="full-width-table">
+                            <!-- Columnas de la tabla -->
+                            <ng-container matColumnDef="Tipo">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ "definir_escalas.tipo_escala" |
+                                    translate }}</th>
+                                <td mat-cell *matCellDef="let escala">{{ escala.label }}</td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="Descripcion">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ "definir_escalas.descripcion" |
+                                    translate }}</th>
+                                <td mat-cell *matCellDef="let escala">{{ escala.descripcion }}</td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="TipoInput">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ "definir_escalas.tipo_input" |
+                                    translate }}</th>
+                                <td mat-cell *matCellDef="let escala">{{ escala.tipoCampo }}</td>
+                            </ng-container>
+
+                            <!-- Nueva columna de Estado -->
+                            <ng-container matColumnDef="Estado">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ "GLOBAL.estado" | translate }}
+                                </th>
+                                <td mat-cell *matCellDef="let escala">
+                                    <div [ngClass]="escala.activo ? 'status-active' : 'status-inactive'">
+                                        {{ escala.activo ? 'Activo' : 'Inactivo' }}
+                                    </div>
+                                </td>
+                            </ng-container>
+
+                            <!-- Columna de acciones con menú desplegable -->
+                            <ng-container matColumnDef="Acciones">
+                                <th mat-header-cell *matHeaderCellDef>{{ "GLOBAL.acciones" | translate }}</th>
+                                <td mat-cell *matCellDef="let escala">
+                                    <button mat-icon-button [matMenuTriggerFor]="menu">
+                                        <mat-icon>more_vert</mat-icon> <!-- Ícono de puntitos -->
+                                    </button>
+                                    <mat-menu #menu="matMenu">
+                                        <button mat-menu-item (click)="vistaGeneral(escala)">
+                                            <mat-icon>visibility</mat-icon> <!-- Ícono de ver -->
+                                            {{ "definir_escalas.ver_general" | translate }}
+                                        </button>
+                                        <button mat-menu-item (click)="inactivarEscala(escala)">
+                                            <mat-icon>unpublished</mat-icon> <!-- Ícono de inactivar -->
+                                            {{ "definir_escalas.inactivar" | translate }}
+                                        </button>
+                                    </mat-menu>
+                                </td>
+
+                            </ng-container>
+
+                            <!-- Filas -->
+                            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
+                            <!-- Mensaje si no hay datos -->
+                            <tr class="mat-row" *matNoDataRow>
+                                <td class="mat-cell" colspan="5">{{ "definir_escalas.sin_escalas" | translate }}</td>
+                            </tr>
+                        </table>
+
+                        <!-- Paginador -->
+                        <mat-paginator [pageSize]="5" showFirstLastButtons></mat-paginator>
+                    </mat-card-content>
+                </mat-card>
+            </mat-tab>
+
+            <!-- Pestaña de Formulario -->
+            <mat-tab label="{{ 'GLOBAL.formulario' | translate }}">
+                <mat-card>
+                    <mat-card-content>
+                        <!-- Formulario para crear nueva escala -->
+                        <div *ngIf="isCreating">
+                            <h3>{{ "definir_escalas.formulario_creacion" | translate }}</h3>
+                            <form [formGroup]="formularioEscala">
+                                <mat-form-field class="full-width">
+                                    <mat-label>{{ "definir_escalas.tipo_escala" | translate }}</mat-label>
+                                    <input matInput formControlName="label" />
+                                </mat-form-field>
+
+                                <mat-form-field class="full-width">
+                                    <mat-label>{{ "definir_escalas.descripcion" | translate }}</mat-label>
+                                    <input matInput formControlName="descripcion" />
+                                </mat-form-field>
+
+                                <mat-form-field class="full-width">
+                                    <mat-label>{{ "definir_escalas.tipo_input" | translate }}</mat-label>
+                                    <mat-select formControlName="tipoCampo">
+                                        <mat-option *ngFor="let tipo of tipoCampos" [value]="tipo.label">{{ tipo.label
+                                            }}</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+
+                                <!-- Botones de acción -->
+                                <button mat-flat-button color="primary" (click)="agregarEscala()">
+                                    <mat-icon>save</mat-icon> <!-- Ícono de guardar -->
+                                    {{ "GLOBAL.guardar" | translate }}
+                                </button>
+                                <button mat-flat-button color="warn" (click)="cancelarCreacion()">
+                                    <mat-icon>close</mat-icon> <!-- Ícono de cancelar -->
+                                    {{ "GLOBAL.cancelar" | translate }}
+                                </button>
+                            </form>
                         </div>
-                        <!-- Input de descripción -->
-                        <div class="col-5">
-                            <input class="form-control custom-input" [(ngModel)]="escala.descripcion"
-                                placeholder="Valor numérico" pattern="[0-9]*" maxlength="3"
-                                (keypress)="restrictNumeric($event)">
-                        </div>
-                        <!-- Botones de editar y eliminar -->
-                        <div class="col-2 d-flex align-items-center justify-content-end">
-                            <button mat-icon-button class="small-icon"
-                                (click)="editarEscala(escala, i)"><mat-icon>edit</mat-icon></button>
-                            <button mat-icon-button class="small-icon"
-                                (click)="eliminarEscala('cuantitativa', i)"><mat-icon>delete</mat-icon></button>
-                        </div>
-                    </div>
-                </div>
-                <!-- Botones para cuantitativa -->
-                <div class="button-container">
-                    <button mat-flat-button color="primary" class="btn-add-scale" (click)="agregarEscala('cuantitativa')">
-                        <mat-icon>add</mat-icon>
-                        {{ 'definir_escalas.agregar_elemento_escala' | translate }}
-                    </button>
-                    <button mat-flat-button color="primary">
-                        <mat-icon>save</mat-icon>
-                        {{ 'definicion_formularios.guardar' | translate }}
-                    </button>
-                </div>
-            </div>
-        </mat-card-content>
-    </mat-card>    
-</div>
-
-
-
-<!-- Modal para mostrar cuando el usuario no tiene permisos -->
-<ng-template #noPermission>
-    <div class="modal-overlay" *ngIf="!hasRole([ROLES.ADMIN_SGA, ROLES.DOCENTE, ROLES.ESTUDIANTE, ROLES.CONSEJO_CURRICULAR])">
-      <div class="modal-content">
-        <h2>{{ "definicion_formularios.sin_permisos_titulo" | translate }}</h2>
-        <p>{{ "definicion_formularios.sin_permisos_mensaje" | translate }}</p>
-        <!-- Icono grande de carita triste -->
-        <div class="sad-face-icon">
-          <mat-icon class="sad-icon">sentiment_dissatisfied</mat-icon>
-        </div>
-      </div>
-    </div>
-  </ng-template>
+                    </mat-card-content>
+                </mat-card>
+            </mat-tab>
+        </mat-tab-group>
+    </mat-card-content>
+</mat-card>

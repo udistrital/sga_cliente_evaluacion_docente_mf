@@ -115,6 +115,39 @@
     border-radius: 4px;
 }
 
-
-
-
+.mat-mdc-row:hover .mat-mdc-cell {
+    background-color: var(--color100);
+  }
+  
+  /* Estilos para el indicador de estado */
+  .status-indicator {
+    margin-top: 0.3em;
+    font-weight: bold;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    margin-bottom: 0.3rem;
+  }
+  .status-indicator.active {
+    color: white;
+    background-color: var(--success-accent);
+  }
+  .status-indicator.inactive {
+    color: white;
+    background-color: var(--danger-base);
+  }
+  
+  /* Estilos para la tabla y el buscador */
+  .full-width-table {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+  
+  .form-field {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+  
+  .mat-form-field {
+    width: 100%;
+  }
+  
