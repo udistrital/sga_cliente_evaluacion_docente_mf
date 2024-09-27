@@ -13,5 +13,7 @@ export const environment = {
     SGA_PLAN_TRABAJO_DOCENTE_MID_SERVICE: "http://localhost:8552/v1/",
     ESPACIOS_ACADEMICOS_SERVICE:"https://autenticacion.portaloas.udistrital.edu.co/apioas/espacios_academicos_crud/v1/",
     TERCEROS_SERVICE:"https://autenticacion.portaloas.udistrital.edu.co/apioas/terceros_crud/v1/",
-    SGA_ESPACIOS_ACADEMICOS_MID_SERVICE:"http://pruebasapi3.intranetoas.udistrital.edu.co:8553/v1/"
+    SGA_ESPACIOS_ACADEMICOS_MID_SERVICE:"http://pruebasapi3.intranetoas.udistrital.edu.co:8553/v1/",
+    EVALUACION_DOCENTE_MID:"http://localhost:8090/v1/"
 };
+    
