@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ROLES } from 'src/app/models/diccionario';
 import { UserService } from 'src/app/services/user.service';
 import { DateService } from 'src/app/services/date.service';
+import { ParametrosService } from 'src/app/services/parametros.service';
 
 @Component({
   selector: 'app-definicion-formularios',
@@ -11,6 +12,7 @@ import { DateService } from 'src/app/services/date.service';
 })
 export class DefinicionFormulariosComponent implements OnInit {
   form: FormGroup;
+  periodosActivosDescripciones: string[] = [];
   selectedProcess: string = '';
   procesos = [
     { nombre: 'Heteroevaluación', icon: 'assessment' },
@@ -34,26 +36,34 @@ export class DefinicionFormulariosComponent implements OnInit {
     { value: 'docconcejos_curricularesentes', label: 'definicion_formularios.concejos_curriculares' }
   ];
 
-  constructor(private userService: UserService, private fb: FormBuilder, private dateService: DateService) {
+  constructor(private userService: UserService, private fb: FormBuilder, private dateService: DateService, private parametrosService: ParametrosService) {
     this.form = this.fb.group({
       roles: ['', Validators.required],
     });
   }
 
-  ngOnInit(): void {    
-    this.currentPcDate = new Date().toLocaleString(); 
+  ngOnInit(): void {
+    this.currentPcDate = new Date().toLocaleString();
+    
     this.userService.getUserRoles().then(roles => {
       this.userRoles = roles;
-      this.dateService.getDateHeader().subscribe(
-        (date: string) => {
-          this.dateHeader = date;
-          console.log('Fecha del encabezado de la API:', this.dateHeader);
-          console.log('Fecha actual del PC:', this.currentPcDate);
+      this.parametrosService.get('periodo?query=CodigoAbreviacion:PA,Activo:true&sortby=Id&order=desc&limit=5').subscribe(
+        (response) => {
+          if (response && response.Data && response.Data.length) {
+            this.periodosActivosDescripciones = response.Data.map((periodo: any) => periodo.Descripcion);
+            console.log('Descripciones de los periodos activos:', this.periodosActivosDescripciones);
+          } else {
+            console.error('No se encontraron periodos activos o la estructura de datos no es la esperada.');
+          }
         },
-        (error: any) => console.error('Error al obtener el encabezado de fecha:', error)
-      );               
+        (error) => {
+          console.error('Error al obtener los periodos activos:', error);
+        }
+      );
+
     }).catch(error => console.error('Error al obtener los roles de usuario:', error));
   }
+
 
   selectProcess(proceso: string) {
     this.selectedProcess = proceso;
