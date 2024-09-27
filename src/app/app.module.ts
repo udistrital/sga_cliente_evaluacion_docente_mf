@@ -54,6 +54,7 @@ import { OikosService } from 'src/app/services/oikos.service';
 import { EspaciosAcademicosService } from './services/espacios_academicos.service';
 
 import { DateService } from './services/date.service';
+import { SgaEvaluacionDocenteMidService } from './services/sga_evaluacion_docente_mid.service';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, environment.apiUrl + 'assets/i18n/', '.json');
@@ -135,6 +136,7 @@ export function createTranslateLoader(http: HttpClient) {
     OikosService,
     DateService,
     EspaciosAcademicosService,
+    SgaEvaluacionDocenteMidService,
     { provide: HTTP_INTERCEPTORS, useClass: SpinnerUtilInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
