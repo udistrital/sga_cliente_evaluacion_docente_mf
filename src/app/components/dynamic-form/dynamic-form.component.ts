@@ -68,7 +68,7 @@ ngOnChanges() {
 
 // Método para inicializar el formulario seleccionado
 selectForm(tipo_formulario: string) {
-  this.evaluacionDocenteMidService.get(`formulario_por_tipo/?id_tipo_formulario=${tipo_formulario}&id_periodo=1&id_tercero=1&id_espacio=1`)
+  this.evaluacionDocenteMidService.get(`formulario_por_tipo?id_tipo_formulario=${tipo_formulario}&id_periodo=1&id_tercero=1&id_espacio=1`)
     .subscribe(response => {
       console.log(response);
       if (response.Success === true && response.Status === 200) {
