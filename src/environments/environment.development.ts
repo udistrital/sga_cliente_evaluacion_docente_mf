@@ -5,4 +5,5 @@ export const environment = {
     GESTOR_DOCUMENTAL_MID_SERVICE: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/gestor_documental_mid/v1',
     DOCUMENTO_SERVICE: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/documento_crud/v2/',
     EVENTOS_CRUD: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/sesiones_crud/v2/',
+    
 };
