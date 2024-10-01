@@ -68,6 +68,8 @@ export class EvaluacionesComponent implements OnInit {
 
 
   ngOnInit(): void {
+    console.log(">>> Test actualización de bucket!!! <<<");
+    
     console.log("EvaluacionesComponent initialized");
     this.initializeForms(this.persona);
 
