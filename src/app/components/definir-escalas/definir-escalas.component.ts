@@ -1,10 +1,10 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { ROLES } from "src/app/models/diccionario";
-import { UserService } from "src/app/services/user.service";
-import { DateService } from "src/app/services/date.service";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatTableDataSource } from "@angular/material/table";
 import { FormGroup, FormBuilder, Validators, FormArray } from "@angular/forms";
+import { EvaluacionDocenteService } from "src/app/services/evaluacion-docente-crud.service";
+import { ParametrosService } from "src/app/services/parametros.service";
 
 @Component({
   selector: "app-definir-escalas",
@@ -15,6 +15,7 @@ export class DefinirEscalasComponent implements OnInit {
   tipoEscala: string = "";
   descripcion: string = "";
   escalas: any[] = [];
+  tiposInput: any[] = []; // Guardará los tipos de input de la API
   userRoles: string[] = [];
   ROLES = ROLES;
   isCreating: boolean = false;
@@ -26,69 +27,93 @@ export class DefinirEscalasComponent implements OnInit {
   formularioEscala!: FormGroup;
   showMultipleOptions: boolean = false;
 
-  // Definir los tipos de campo
-  tipoCampos = [
-    { id: 1, label: "Texto" },
-    { id: 2, label: "Selección Múltiple" },
-    { id: 3, label: "Cargar Archivos" },
-    { id: 4, label: "Descargar Archivos" },
-  ];
+  tipoCamposMap: { [key: string]: number } = {
+    Textarea: 4674, // Cambia 'Texto' por 'Textarea'
+    Radio: 4668, // 'Selección Múltiple' por 'Radio'
+    ArchivoAnexo: 6686, // Mantener 'Cargar Archivos'
+    LinkNuxeo: 4672, // 'Descargar Archivos'
+  };
 
   // Columnas de la tabla incluyendo "Estado"
-  displayedColumns: string[] = [
-    "Pregunta",
-    "Descripcion",
-    "TipoInput",
-    "Estado",
-    "Acciones",
-  ];
+  displayedColumns: string[] = ["Pregunta", "TipoInput", "Estado", "Acciones"];
   dataSource!: MatTableDataSource<any>;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   constructor(
     private fb: FormBuilder,
-    private userService: UserService,
-    private dateService: DateService
+    private evaluacionDocenteService: EvaluacionDocenteService,
+    private parametrosService: ParametrosService
   ) {}
 
   ngOnInit(): void {
+    this.inicializarFormulario();
     this.cargarEscalas();
-    this.dataSource = new MatTableDataSource(this.escalas);
-    this.dataSource.paginator = this.paginator;
+    this.obtenerTiposInput(); // Llama al método para obtener los tipos de input
+  }
 
-    // Inicialización del formulario
+  inicializarFormulario() {
     this.formularioEscala = this.fb.group({
       label: ["", Validators.required],
-      descripcion: ["", Validators.required],
       tipoCampo: ["", Validators.required],
-      opciones: this.fb.array([]), // Agregamos el FormArray para las opciones de selección múltiple
+      opciones: this.fb.array([]),
     });
   }
 
-  // Devuelve el FormArray de opciones
   get opciones(): FormArray {
     return this.formularioEscala.get("opciones") as FormArray;
   }
 
   cargarEscalas() {
-    this.escalas = [
-      {
-        label: "Texto 1",
-        descripcion: "Escala de texto",
-        tipoCampo: "Texto",
-        activo: true,
-        fechaCreacion: new Date(),
+    this.evaluacionDocenteService.get("campo").subscribe(
+      (response: any) => {
+        this.escalas = response.Data;
+
+        // Ordenar primero los activos, luego los inactivos, y después por fecha
+        this.escalas.sort((a: any, b: any) => {
+          if (a.activo !== b.activo) {
+            return a.activo ? -1 : 1; // Activos primero
+          }
+          return (
+            new Date(b.fechaCreacion).getTime() -
+            new Date(a.fechaCreacion).getTime()
+          ); // Más recientes primero
+        });
+
+        this.dataSource = new MatTableDataSource(this.escalas);
+        this.dataSource.paginator = this.paginator;
       },
-      {
-        label: "Selección Múltiple 1",
-        descripcion: "Escala de selección múltiple",
-        tipoCampo: "Selección Múltiple",
-        activo: true,
-        opciones: ["Opción 1", "Opción 2"],
-        fechaCreacion: new Date(),
+      (error) => {
+        console.error("Error al cargar las escalas", error);
+      }
+    );
+  }
+
+  obtenerTiposInput() {
+    const ids = "4668|4674|4672|6686";
+    this.parametrosService.get(`parametro?query=id__in:${ids}`).subscribe(
+      (response: any) => {
+        this.tiposInput = response.Data;
       },
-    ];
+      (error) => {
+        console.error("Error al obtener los tipos de input", error);
+      }
+    );
+  }
+
+  getTipoEscalaNombre(tipoCampoId: number): string {
+    switch (tipoCampoId) {
+      case 4674:
+        return "Texto";
+      case 4668:
+        return "Selección única respuesta";
+      case 6686:
+        return "Cargar archivo";
+      case 4672:
+        return "Descargar archivo";
+      default:
+        return "Desconocido";
+    }
   }
 
   applyFilterEscalas(event: Event) {
@@ -102,7 +127,7 @@ export class DefinirEscalasComponent implements OnInit {
 
   activarModoCreacion() {
     this.isCreating = true;
-    this.activeTab = 1; // Cambiar a la pestaña de Formulario
+    this.activeTab = 1;
   }
 
   tabChanged(event: any) {
@@ -112,16 +137,16 @@ export class DefinirEscalasComponent implements OnInit {
   }
 
   onTipoCampoChange(event: any) {
-    if (event.value === "Selección Múltiple") {
+    const tipoSeleccionado = event.value;
+
+    if (tipoSeleccionado === "Radio") {
       this.showMultipleOptions = true;
       this.opciones.clear();
-      // Añadimos tres opciones iniciales por defecto
       this.opciones.push(this.fb.control("Opción 1"));
       this.opciones.push(this.fb.control("Opción 2"));
-      this.opciones.push(this.fb.control("Opción 3"));
     } else {
       this.showMultipleOptions = false;
-      this.opciones.clear(); // Limpiar opciones si no es 'Selección Múltiple'
+      this.opciones.clear();
     }
   }
 
@@ -132,50 +157,176 @@ export class DefinirEscalasComponent implements OnInit {
         activo: true,
         fechaCreacion: new Date(),
       };
-      this.escalas.push(nuevaEscala);
-      this.dataSource.data = this.escalas;
-      this.isCreating = false;
-      this.formularioEscala.reset(); // Reiniciar el formulario
-      this.activeTab = 0; // Regresar a la lista
+
+      const tipoCampoId = this.tipoCamposMap[nuevaEscala.tipoCampo];
+
+      if (!tipoCampoId) {
+        console.error(
+          `No se encontró un ID de tipo de campo para el tipo: ${nuevaEscala.tipoCampo}`
+        );
+        return;
+      }
+
+      // Realizamos el POST para la pregunta base (aplica para cualquier tipo de input)
+      console.log("Preparando POST para la pregunta base:", {
+        tipo_campo_id: tipoCampoId,
+        campo_padre_id: null,
+        nombre: nuevaEscala.label,
+        valor: 0,
+        activo: true,
+      });
+
+      this.evaluacionDocenteService
+        .post("campo", {
+          tipo_campo_id: tipoCampoId,
+          campo_padre_id: null, // Siempre es null para la pregunta principal
+          nombre: nuevaEscala.label, // Escriba su pregunta
+          valor: 0,
+          activo: true, // Activo por defecto
+        })
+        .subscribe(
+          (response: any) => {
+            console.log(
+              "POST para la pregunta base realizado con éxito. Respuesta:",
+              response
+            );
+            const campoPadreId = response.Data.Id; // Guardamos el ID del campo padre para opciones (Radio)
+
+            // Si el tipo de campo es Radio, generamos un POST por cada opción
+            if (nuevaEscala.tipoCampo === "Radio") {
+              console.log(
+                "El campo es de tipo 'Radio'. Preparando POST para cada opción..."
+              );
+              nuevaEscala.opciones.forEach((opcion: string) => {
+                console.log("Preparando POST para la opción de Radio:", {
+                  tipo_campo_id: tipoCampoId, // Mismo tipo de campo para opciones
+                  campo_padre_id: campoPadreId, // Relacionamos con el campo padre (pregunta base)
+                  nombre: opcion, // Nombre de la opción
+                  valor: 0,
+                  activo: true,
+                });
+
+                this.evaluacionDocenteService
+                  .post("campo", {
+                    tipo_campo_id: tipoCampoId, // Mismo tipo de campo para opciones
+                    campo_padre_id: campoPadreId, // Relacionamos con el campo padre (pregunta base)
+                    nombre: opcion, // Nombre de la opción
+                    valor: 0,
+                    activo: true, // Activo por defecto
+                  })
+                  .subscribe(
+                    (respuestaOpcion: any) => {
+                      console.log(
+                        "POST para la opción de Radio realizado con éxito. Respuesta:",
+                        respuestaOpcion
+                      );
+                    },
+                    (error: any) => {
+                      console.error(
+                        "Error al hacer el POST para la opción de Radio:",
+                        error
+                      );
+                    }
+                  );
+              });
+            }
+
+            // Añadimos la nueva escala al arreglo local para actualizar la vista
+            nuevaEscala.TipoCampoId = tipoCampoId;
+            nuevaEscala.Nombre = nuevaEscala.label; // Nombre de la pregunta o campo
+            this.escalas.push(nuevaEscala);
+            this.dataSource.data = this.escalas;
+
+            // Resetear el formulario después de guardar
+            this.isCreating = false;
+            this.formularioEscala.reset();
+            this.activeTab = 0;
+          },
+          (error: any) => {
+            console.error(
+              "Error al hacer el POST para la pregunta base:",
+              error
+            );
+          }
+        );
+    } else {
+      console.error(
+        "Formulario no es válido. Datos del formulario:",
+        this.formularioEscala.value
+      );
     }
   }
 
-  // Agregar una nueva opción al FormArray
   agregarOpcion() {
-    const nuevaOpcion = this.fb.control(""); // Creamos un nuevo FormControl vacío
-    this.opciones.push(nuevaOpcion); // Añadimos el nuevo control al FormArray
+    const nuevaOpcion = this.fb.control("");
+    this.opciones.push(nuevaOpcion);
   }
 
-  // Quitar la última opción del FormArray
   quitarOpcion() {
     if (this.opciones.length > 1) {
-      this.opciones.removeAt(this.opciones.length - 1); // Eliminar la última opción
+      this.opciones.removeAt(this.opciones.length - 1);
     }
   }
 
   cancelarCreacion() {
     this.isCreating = false;
     this.formularioEscala.reset();
-    this.activeTab = 0; // Regresar a la lista
+    this.activeTab = 0;
   }
 
   vistaGeneral(escala: any) {
     this.escalaSeleccionada = escala;
     this.isViewingScale = true;
-    this.activeTab = 2; // Cambiar a la pestaña de vista de escala
+    this.activeTab = 2;
   }
 
   regresarLista() {
     this.isViewingScale = false;
-    this.activeTab = 0; // Regresar a la lista
+    this.activeTab = 0;
   }
 
   inactivarEscala(escala: any) {
-    escala.activo = false;
-    this.dataSource.data = this.escalas;
+    console.log("Inactivando escala con Id:", escala.Id);
+
+    if (!escala.Id) {
+      console.error("Error: El Id de la escala es undefined o null.");
+      return;
+    }
+
+    const escalaActualizada = { ...escala, activo: false };
+
+    this.evaluacionDocenteService
+      .put(`campo/${escala.Id}`, escalaActualizada)
+      .subscribe(
+        (response: any) => {
+          console.log("Escala inactivada con éxito", response);
+          this.cargarEscalas(); // Actualizar la lista de escalas
+        },
+        (error) => {
+          console.error("Error al inactivar la escala", error);
+        }
+      );
   }
 
-  hasRole(requiredRoles: string[]): boolean {
-    return requiredRoles.some((role) => this.userRoles.includes(role));
+  toggleEstadoEscala(escala: any) {
+    const nuevoEstado = !escala.activo; // Cambia el estado activo/inactivo
+    const escalaActualizada = { ...escala, activo: nuevoEstado };
+
+    this.evaluacionDocenteService
+      .put(`campo/${escala.Id}`, escalaActualizada)
+      .subscribe(
+        (response: any) => {
+          console.log(
+            `${
+              nuevoEstado ? "Escala activada" : "Escala inactivada"
+            } con éxito`,
+            response
+          );
+          this.cargarEscalas(); // Actualizar la lista de escalas
+        },
+        (error) => {
+          console.error("Error al cambiar el estado de la escala", error);
+        }
+      );
   }
 }

@@ -177,4 +177,48 @@
       gap: 10px;
     }
   }
+
+  .escala-detalle-card {
+    margin: 16px;
+    padding: 16px;
+  }
+  
+  .detalle-escala {
+    margin-bottom: 16px;
+  }
+  
+  .detalle-escala p {
+    margin: 8px 0;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+  }
+  
+  .detalle-escala mat-icon {
+    margin-right: 8px;
+  }
+  
+  .active-icon {
+    color: green;
+  }
+  
+  .inactive-icon {
+    color: red;
+  }
+  
+  .acciones {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 24px;
+  }
+  
+  button[mat-stroked-button] {
+    display: flex;
+    align-items: center;
+  }
+  
+  button mat-icon {
+    margin-right: 8px;
+  }
+  
   

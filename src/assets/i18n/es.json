@@ -26,7 +26,8 @@
         "aceptar": "Aceptar",
         "cancelar": "Cancelar",
         "seleccionar": "Seleccionar",
-        "error": "Error"
+        "error": "Error",
+        "estado":"Estados"
     },
 
     "asignacion_fechas": {
@@ -87,7 +88,8 @@
         "guardar": "Guardar",
         "cancelar": "Cancelar",
         "eliminar": "Eliminar",
-        "buscar": "Buscar"
+        "buscar": "Buscar",
+        "pregunta":"Definicion de escala"
     },
     
     "heteroevaluacion": {
