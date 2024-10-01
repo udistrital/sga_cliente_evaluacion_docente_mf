@@ -55,6 +55,7 @@ export class DynamicFormComponent implements OnInit, OnChanges {
 }
 
 ngOnInit() {
+  console.log("check if take the changes...")
   // Inicializar el formulario principal
   //this.stepperForm = this.fb.group({});
   this.documentId = '74';
@@ -232,7 +233,7 @@ selectForm(tipo_formulario: string) {
         plantilla_id: 456,
         respuestas,
       };
-      //this.saveForm(jsonData);
+      this.saveForm(jsonData);
       console.log("Formulario guardado:", jsonData);
     } else {
       console.log("Formulario inválido:", this.stepperForm);
