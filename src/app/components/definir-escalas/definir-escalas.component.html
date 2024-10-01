@@ -30,25 +30,25 @@
                             <!-- Columna de Pregunta -->
                             <ng-container matColumnDef="Pregunta">
                                 <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ "definir_escalas.pregunta" |
-                                    translate }}</th>
+                                    translate }}
+                                </th>
                                 <td mat-cell *matCellDef="let escala">{{ escala.Nombre }}</td>
                             </ng-container>
 
-                            <!-- Columna de Tipo de Input -->
-                            <ng-container matColumnDef="TipoInput">
-                                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ "definir_escalas.tipo_input" |
+                            <!-- Columna de Tipo de Escala -->
+                            <ng-container matColumnDef="TipoEscala">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ "definir_escalas.tipo_escala" |
                                     translate }}</th>
                                 <td mat-cell *matCellDef="let escala">{{ getTipoEscalaNombre(escala.TipoCampoId) }}</td>
                             </ng-container>
+
 
                             <!-- Columna de Estado -->
                             <ng-container matColumnDef="Estado">
                                 <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ "GLOBAL.estado" | translate }}
                                 </th>
                                 <td mat-cell *matCellDef="let escala">
-                                    <div [ngClass]="escala.activo ? 'status-active' : 'status-inactive'">
-                                        {{ escala.activo ? 'Activo' : 'Inactivo' }}
-                                    </div>
+                                    <div class="status-active">Activo</div>
                                 </td>
                             </ng-container>
 
@@ -65,10 +65,11 @@
                                             {{ "definir_escalas.ver_general" | translate }}
                                         </button>
                                         <!-- Botón dinámico para activar/inactivar -->
-                                        <button mat-menu-item (click)="toggleEstadoEscala(escala)">
+                                        <button mat-menu-item (click)="mostrarConfirmacion(escala)">
                                             <mat-icon>{{ escala.activo ? 'toggle_off' : 'toggle_on' }}</mat-icon>
                                             {{ escala.activo ? 'Inactivar Escala' : 'Activar Escala' }}
                                         </button>
+
                                     </mat-menu>
                                 </td>
                             </ng-container>
@@ -157,46 +158,54 @@
                     <mat-card-header>
                         <mat-card-title>{{ "definir_escalas.vista_escala" | translate }}</mat-card-title>
                     </mat-card-header>
-
+                
                     <mat-card-content>
                         <div class="detalle-escala">
                             <!-- Pregunta -->
-                            <mat-icon color="primary">question_answer</mat-icon>
-                            <p><strong>{{ "Pregunta:" }}</strong> {{ escalaSeleccionada.label }}</p>
-
+                            <div class="detalle-item">
+                                <mat-icon color="primary">question_answer</mat-icon>
+                                <p><strong>Pregunta:</strong></p>
+                                <p>{{ escalaSeleccionada.label }}</p>
+                            </div>
+                
                             <!-- Tipo de Escala -->
-                            <mat-icon color="primary">category</mat-icon>
-                            <p><strong>{{ "Tipo de Escala:" }}</strong> {{
-                                getTipoEscalaNombre(escalaSeleccionada.TipoCampoId) }}</p>
-
+                            <div class="detalle-item">
+                                <mat-icon color="primary">category</mat-icon>
+                                <p><strong>Tipo de Escala:</strong></p>
+                                <p>{{ getTipoEscalaNombre(escalaSeleccionada.TipoCampoId) }}</p>
+                            </div>
+                
                             <!-- Estado -->
-                            <mat-icon
-                                [ngClass]="escalaSeleccionada.activo ? 'active-icon' : 'inactive-icon'">toggle_on</mat-icon>
-                            <p><strong>{{ "Estado:" }}</strong> {{ escalaSeleccionada.activo ? 'Activo' : 'Inactivo' }}
-                            </p>
-
+                            <div class="detalle-item">
+                                <mat-icon [ngClass]="escalaSeleccionada.activo ? 'active-icon' : 'inactive-icon'">toggle_on</mat-icon>
+                                <p><strong>Estado:</strong></p>
+                                <p>{{ escalaSeleccionada.activo ? 'Activo' : 'Inactivo' }}</p>
+                            </div>
+                
                             <!-- Fecha de creación -->
-                            <mat-icon color="primary">calendar_today</mat-icon>
-                            <p><strong>{{ "Fecha de Creación:" }}</strong> {{ escalaSeleccionada.fechaCreacion |
-                                date:'fullDate' }}</p>
-
+                            <div class="detalle-item">
+                                <mat-icon color="primary">calendar_today</mat-icon>
+                                <p><strong>Fecha de Creación:</strong></p>
+                                <p>{{ escalaSeleccionada.fechaCreacion | date:'fullDate' }}</p>
+                            </div>
+                
                             <!-- Opciones si es Radio -->
-                            <div *ngIf="escalaSeleccionada.tipoCampo === 'Radio'">
+                            <div class="detalle-item" *ngIf="escalaSeleccionada.TipoCampoId === tipoCamposMap['Radio']">
                                 <mat-icon color="primary">list</mat-icon>
-                                <p><strong>{{ "Opciones:" }}</strong></p>
+                                <p><strong>Opciones:</strong></p>
                                 <ul>
-                                    <li *ngFor="let opcion of escalaSeleccionada.opciones">{{ opcion }}</li>
+                                    <li *ngFor="let opcion of escalaSeleccionada.opciones">{{ opcion.Nombre }}</li>
                                 </ul>
                             </div>
                         </div>
-
+                
                         <!-- Botón para activar/inactivar -->
                         <div class="acciones">
                             <button mat-stroked-button color="warn" (click)="toggleEstadoEscala(escalaSeleccionada)">
                                 <mat-icon>{{ escalaSeleccionada.activo ? 'toggle_off' : 'toggle_on' }}</mat-icon>
                                 {{ escalaSeleccionada.activo ? 'Inactivar Escala' : 'Activar Escala' }}
                             </button>
-
+                
                             <!-- Botón de regresar -->
                             <button mat-flat-button color="primary" (click)="regresarLista()">
                                 <mat-icon>arrow_back</mat-icon>

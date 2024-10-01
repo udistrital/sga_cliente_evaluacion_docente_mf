@@ -12,7 +12,7 @@ export const environment = {
     EVALUACION_DOCENTE_CRUD:'http://localhost:8080/v1/',
 
     PROYECTO_ACADEMICO_SERVICE:'https://autenticacion.portaloas.udistrital.edu.co/apioas/proyecto_academico_crud/v1/',
-    PARAMETROS_CRUD: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/parametros/v1/',//'http://pruebasapi.intranetoas.udistrital.edu.co:8510/v1/',
+    PARAMETROS_CRUD: 'http://pruebasapi.intranetoas.udistrital.edu.co:8510/v1/',//'https://autenticacion.portaloas.udistrital.edu.co/apioas/parametros/v1/',
     PLAN_TRABAJO_DOCENTE_SERVICE:"https://autenticacion.portaloas.udistrital.edu.co/apioas/plan_trabajo_docente_crud/v1/",
     OIKOS_SERVICE: 'http://pruebasapi.intranetoas.udistrital.edu.co:8087/v2/',
     SGA_PLAN_TRABAJO_DOCENTE_MID_SERVICE: "http://localhost:8552/v1/",

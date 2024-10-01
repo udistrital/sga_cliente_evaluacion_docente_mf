@@ -221,4 +221,29 @@
     margin-right: 8px;
   }
   
-  
+  .detalle-item {
+    margin-bottom: 16px;  // Espacio entre los títulos y los contenidos
+}
+
+.detalle-item p {
+    margin: 4px 0;  // Espaciado más pequeño entre título y contenido
+    font-size: 16px;
+}
+
+.detalle-item mat-icon {
+    margin-right: 8px;  // Espacio entre el ícono y el texto
+}
+
+.acciones {
+    margin-top: 24px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.active-icon {
+    color: green;
+}
+
+.inactive-icon {
+    color: red;
+}

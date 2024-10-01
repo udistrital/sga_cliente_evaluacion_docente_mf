@@ -13,7 +13,7 @@ import { environment } from '../environments/environment';
 import { AppComponent } from './app.component';
 import { DefinicionFormulariosComponent } from './components/definicion-formularios/definicion-formularios.component';
 import { AsignacionFechasComponent } from './components/asignacion-fechas/asignacion-fechas.component';
-import { DefinirEscalasComponent } from './components/definir-escalas/definir-escalas.component';
+import { DefinirEscalasComponent, DialogoConfirmacion } from './components/definir-escalas/definir-escalas.component';
 import { DynamicFormComponent } from './components/dynamic-form/dynamic-form.component';
 
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -76,7 +76,8 @@ export function createTranslateLoader(http: HttpClient) {
     ResultadosComponent,
     MetricasComponent,
     ResultadosComponent,
-    DynamicFormComponent
+    DynamicFormComponent,
+    DialogoConfirmacion
   ],
   imports: [
     BrowserModule,
