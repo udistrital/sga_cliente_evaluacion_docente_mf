@@ -1,12 +1,10 @@
 import { Injectable } from "@angular/core";
 import { RequestManager } from "../managers/requestManager";
-import { environment } from "src/environments/environment";
 
 @Injectable({
     providedIn: "root",
 })
 export class TercerosCrudService {
-    private apiUrl = environment.TERCEROS_CRUD;
 
     constructor(private requestManager: RequestManager) {
         this.requestManager.setPath("TERCEROS_CRUD");
