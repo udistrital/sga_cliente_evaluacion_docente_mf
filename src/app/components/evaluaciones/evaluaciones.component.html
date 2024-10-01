@@ -1,5 +1,5 @@
 <mat-card
-    *ngIf="hasRole([ROLES.ADMIN_SGA, ROLES.DOCENTE, ROLES.ESTUDIANTE, ROLES.CONSEJO_CURRICULAR]); else noPermission">
+    *ngIf="hasRole([ROLES.ADMIN_SGA, ROLES.DOCENTE, ROLES.ESTUDIANTE, ROLES.CONSEJO_CURRICULAR, ROLES.COORDINADOR, ROLES.DECANO]); else noPermission">
     <mat-card-header>
         <mat-card-title>{{ "evaluaciones.titulo" | translate }}</mat-card-title>
         <mat-card-subtitle>{{ "evaluaciones.sub_titulo" | translate }}</mat-card-subtitle>
@@ -28,7 +28,7 @@
                     'autoevaluacion_ii.titulo' | translate }}</mat-option>
                 <mat-option *ngIf="hasRole([ROLES.ADMIN_SGA, ROLES.DOCENTE])" value="coevaluacion-i">{{
                     'coevaluacion_i.titulo' | translate }}</mat-option>
-                <mat-option *ngIf="hasRole([ROLES.ADMIN_SGA])" value="coevaluacion-ii">{{
+                <mat-option *ngIf="hasRole([ROLES.ADMIN_SGA, ROLES.COORDINADOR, ROLES.DECANO])" value="coevaluacion-ii">{{
                     'coevaluacion_ii.titulo' | translate }}</mat-option>
             </mat-select>
         </mat-form-field>
@@ -129,7 +129,7 @@
                             <mat-form-field style="width: 100%" appearance="outline">
                                 <mat-label>{{ 'heteroevaluacion.descripcion_proceso' | translate }}</mat-label>
                                 <textarea matInput formControlName="descripcionProceso"
-                                    placeholder="Descripción del proceso"></textarea>
+                                    placeholder="Descripción del proceso" rows="3" readonly></textarea>
                                 <mat-error
                                     *ngIf="heteroForm.get('descripcionProceso')?.hasError('required') && heteroForm.get('descripcionProceso')?.touched">
                                     {{ 'heteroevaluacion.error_descripcion' | translate }}
@@ -185,7 +185,7 @@
                         <div class="form-grid2">
                             <div class="form-col1">
                                 <mat-form-field style="width: 100%" appearance="outline">
-                                    <mat-label>{{ 'autoevaluacion_i.estudiante' | translate }}</mat-label>
+                                    <mat-label>{{ 'autoevaluacion_i.nombre_estudiante' | translate }}</mat-label>
                                     <input matInput readonly type="text" formControlName="estudianteNombre"
                                         placeholder="Nombre del estudiante">
                                     <mat-error
@@ -243,7 +243,7 @@
                             <mat-form-field style="width: 100%" appearance="outline">
                                 <mat-label>{{ 'autoevaluacion_i.descripcion_proceso' | translate }}</mat-label>
                                 <textarea matInput formControlName="descripcionProceso"
-                                    placeholder="Descripción del proceso"></textarea>
+                                    placeholder="Descripción del proceso" rows="3" readonly></textarea>
                                 <mat-error
                                     *ngIf="autoevaluacionIForm.get('descripcionProceso')?.hasError('required') && autoevaluacionIForm.get('descripcionProceso')?.touched">
                                     {{ 'autoevaluacion_i.error_descripcion' | translate }}
@@ -337,7 +337,7 @@
                             </div>
                             <div class="form-col1">
                                 <mat-form-field style="width: 100%" appearance="outline">
-                                    <mat-label>{{ 'autoevaluacion_ii.espacio1' | translate }}</mat-label>
+                                    <mat-label>{{ 'autoevaluacion_ii.espacio_academico' | translate }}</mat-label>
                                     <mat-select formControlName="espacioAcademico" required>
                                         <mat-option *ngFor="let espacio of espacios_academicos"
                                             [value]="espacio.nombre">
@@ -346,7 +346,7 @@
                                     </mat-select>
                                     <mat-error
                                         *ngIf="autoevaluacionIIForm.get('espacioAcademico')?.hasError('required') && autoevaluacionIIForm.get('espacioAcademico')?.touched">
-                                        {{ 'autoevaluacion_ii.error_espacio1' | translate }}
+                                        {{ 'autoevaluacion_ii.error_espacio' | translate }}
                                     </mat-error>
                                 </mat-form-field>
 
@@ -357,7 +357,7 @@
                             <mat-form-field style="width: 100%" appearance="outline">
                                 <mat-label>{{ 'autoevaluacion_ii.descripcion_proceso' | translate }}</mat-label>
                                 <textarea matInput formControlName="descripcionProceso"
-                                    placeholder="Descripción del proceso"></textarea>
+                                    placeholder="Descripción del proceso" rows="3" readonly></textarea>
                                 <mat-error
                                     *ngIf="autoevaluacionIIForm.get('descripcionProceso')?.hasError('required') && autoevaluacionIIForm.get('descripcionProceso')?.touched">
                                     {{ 'autoevaluacion_ii.error_descripcion' | translate }}
@@ -475,7 +475,7 @@
                             <mat-form-field style="width: 100%" appearance="outline">
                                 <mat-label>{{ 'coevaluacion_i.descripcion_proceso' | translate }}</mat-label>
                                 <textarea matInput formControlName="descripcionProceso"
-                                    placeholder="Descripción del proceso"></textarea>
+                                    placeholder="Descripción del proceso" rows="3" readonly></textarea>
                                 <mat-error
                                     *ngIf="coevaluacionIForm.get('descripcionProceso')?.hasError('required') && coevaluacionIForm.get('descripcionProceso')?.touched">
                                     {{ 'coevaluacion_i.error_descripcion' | translate }}
@@ -490,7 +490,7 @@
 
         <!-- Formulario de Coevaluación II -->
     <ng-container *ngIf="selectedEvaluation === 'coevaluacion-ii'">
-        <mat-card *ngIf="hasRole([ROLES.CONSEJO_CURRICULAR, ROLES.DECANO, ROLES.ADMIN_SGA, ROLES.ADMIN_DOCENCIA]); else noPermission" class="form-container">
+        <mat-card *ngIf="hasRole([ROLES.CONSEJO_CURRICULAR, ROLES.DECANO, ROLES.ADMIN_SGA, ROLES.ADMIN_DOCENCIA, ROLES.COORDINADOR, ROLES.DECANO]); else noPermission" class="form-container">
             <mat-card-header style="padding-bottom: 1rem;">
                 <mat-card-title>{{ 'coevaluacion_ii.titulo' | translate }}</mat-card-title>
             </mat-card-header>
@@ -574,7 +574,7 @@
                     <mat-form-field style="width: 100%" appearance="outline">
                         <mat-label>{{ 'coevaluacion_ii.descripcion_proceso' | translate }}</mat-label>
                         <textarea matInput formControlName="descripcionProceso"
-                            placeholder="Descripción del proceso"></textarea>
+                            placeholder="Descripción del proceso" rows="3" readonly></textarea>
                         <mat-error
                             *ngIf="coevaluacionIIForm.get('descripcionProceso')?.hasError('required') && coevaluacionIIForm.get('descripcionProceso')?.touched">
                             {{ 'coevaluacion_ii.error_descripcion' | translate }}
@@ -594,7 +594,7 @@
 <!-- Modal para mostrar cuando el usuario no tiene permisos -->
 <ng-template #noPermission>
     <div class="modal-overlay"
-        *ngIf="!hasRole([ROLES.ADMIN_SGA, ROLES.DOCENTE, ROLES.ESTUDIANTE, ROLES.CONSEJO_CURRICULAR])">
+        *ngIf="!hasRole([ROLES.ADMIN_SGA, ROLES.DOCENTE, ROLES.ESTUDIANTE, ROLES.CONSEJO_CURRICULAR, ROLES.COORDINADOR, ROLES.DECANO])">
         <div class="modal-content">
             <h2>{{ "definicion_formularios.sin_permisos_titulo" | translate }}</h2>
             <p>{{ "definicion_formularios.sin_permisos_mensaje" | translate }}</p>

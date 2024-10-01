@@ -229,8 +229,7 @@ selectForm(tipo_formulario: string) {
         id_tercero: 1,
         id_evaluado: 1,
         proyecto_curricular: 123,
-        espacio_academico: 12,
-        plantilla_id: 456,
+        espacio_academico: "12",
         respuestas,
       };
       this.saveForm(jsonData);
