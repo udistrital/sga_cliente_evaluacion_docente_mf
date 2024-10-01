@@ -49,6 +49,8 @@ import { ResultadosComponent } from './components/resultados/resultados.componen
 import { NuxeoComponent } from './components/nuxeo/nuxeo.component';
 import { GestorDocumentalService } from './services/gestor-documental.service';
 import { DocumentoService } from './services/documento.service';
+import { DocenteCrudService } from './services/docente-crud.service';
+import { DocenteMidService } from './services/docente-mid.service';
 import { ProyectoAcademicoService } from './services/proyecto_academico.service';
 import { OikosService } from 'src/app/services/oikos.service';
 import { EspaciosAcademicosService } from './services/espacios_academicos.service';
@@ -134,6 +136,8 @@ export function createTranslateLoader(http: HttpClient) {
     UserService,
     GestorDocumentalService,
     DocumentoService,
+    DocenteMidService,
+    DocenteCrudService,
     OikosService,
     DateService,
     EspaciosAcademicosService,

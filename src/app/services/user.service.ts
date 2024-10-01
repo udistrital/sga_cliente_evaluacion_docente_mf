@@ -18,6 +18,35 @@ export class UserService {
         });
     }
 
+    // Nueva función para obtener el código del estudiante
+    public getCodigoEstudiante(): Promise<string> {
+        return new Promise((resolve, reject) => {
+            try {
+                const userStr = localStorage.getItem('user'); // Obtener la cadena de 'user' del localStorage
+                if (!userStr) {
+                    reject(new Error("No user data in localStorage"));
+                    return;
+                }
+                
+                const userObj = JSON.parse(atob(userStr)); // Desencriptar y parsear el usuario
+                console.log("Decoded user data:", userObj); // Imprimir datos decodificados para diagnóstico
+                
+                // Verificar si el código está en user o userService
+                const codigo = userObj.user?.Codigo || userObj.userService?.Codigo || null;
+    
+                if (codigo) {
+                    resolve(codigo);
+                } else {
+                    reject(new Error(`No ha sido asignado un código al usuario`));
+                }
+            } catch (error) {
+                console.error("Error decoding user data:", error);
+                reject(new Error("Error processing user data"));
+            }
+        });
+    }
+    
+    
     private decodeUser(): any {
         const strUser = localStorage.getItem("user");
         if (strUser === null || strUser === "") {

@@ -1,10 +1,12 @@
-{    
+{
+
     "HOME": {
         "TITLE": "SGA",
         "SELECT": "Seleccionar tipo de evaluación",
         "LOGIN": "Iniciar sesión",
         "LOGOUT": "Cerrar sesión",
-        "THEME": "Tema"
+        "THEME": "Tema",
+        "seleccione": "Seleccionar"
     },
 
     "GLOBAL":{
@@ -57,7 +59,7 @@
         "sub_titulo_roles": "Sección para la asignación de Roles",
         "alerta": "A continuación, deberá seleccionar los roles que intervienen y el proceso, que puede ser Heteroevaluación, Autoevaluación de estudiantes, Coevaluación I, Autoevaluación docente, o Coevaluación II.",
         "seleccionar_roles": "Seleccionar roles que intervienen",
-        "seleccione": "Seleccionar ROL",
+        "seleccione": "Seleccionar",
         "administradores": "Administradores",
         "docentes": "Docentes",
         "estudiantes": "Estudiantes",
@@ -67,7 +69,9 @@
         "guardar": "Guardar",
         "campo_requerido": "Campo requerido",
         "sin_permisos_titulo": "Acceso denegado",
-        "sin_permisos_mensaje": "No tienes los permisos necesarios para visualizar esta información. Por favor, contacta al administrador del sistema para obtener más detalles o para solicitar acceso."
+        "sin_permisos_mensaje": "No tienes los permisos necesarios para visualizar esta información. Por favor, contacta al administrador del sistema para obtener más detalles o para solicitar acceso.",
+        "aniadir_nueva_escala": "Añadir nueva escala",
+        "tipo_escala": "Tipo de Escala"
     },
 
     "evaluaciones": {
@@ -89,7 +93,9 @@
         "cancelar": "Cancelar",
         "eliminar": "Eliminar",
         "buscar": "Buscar",
-        "pregunta":"Definicion de escala"
+        "pregunta":"Definicion de escala",
+        "ver_general":"Vista de escala"
+
     },
     
     "heteroevaluacion": {
@@ -106,9 +112,11 @@
         "proyecto2": "Nombre del proyecto curricular 2",
         "descripcion_proceso": "Descripción del proceso y orientación al usuario",
         "descripcion": "Descripción",
-        "formulario": "Formulario correspondiente",
-        "formulario_placeholder": "Formulario correspondiente",
-        "guardar": "Guardar"
+        "error_fecha_inicio": "Por favor, ingrese la fecha de inicio.",
+        "error_fecha_fin": "Por favor, ingrese la fecha de fin.",
+        "error_proyecto": "Por favor, seleccione un proyecto.",
+        "error_docente": "Por favor, seleccione un docente.",
+        "error_descripcion": "Por favor, ingrese una descripción."
     },
 
     "autoevaluacion_i": {
@@ -116,7 +124,6 @@
         "fechas": "Fechas",
         "inicio": "Inicio",
         "fin": "Fin",
-        "estudiante": "Estudiante",
         "nombre_estudiante": "Nombre del Estudiante",
         "identificacion_estudiante": "Identificación estudiante",
         "identificacion": "Identificación",
@@ -125,10 +132,11 @@
         "proyecto2": "Nombre del proyecto curricular 2",
         "descripcion_proceso": "Descripción del proceso y orientación al usuario",
         "descripcion": "Descripción",
-        "formulario": "Formulario correspondiente",
-        "formulario_placeholder": "Formulario correspondiente",
+        "error_fecha_inicio": "Por favor, ingrese la fecha de inicio.",
+        "error_fecha_fin": "Por favor, ingrese la fecha de fin.",
+        "error_proyecto": "Por favor, seleccione un proyecto.",
         "espacio_academico": "Espacio Académico",
-        "guardar": "Guardar"
+        "error_descripcion": "Por favor, ingrese una descripción."
     },
 
     "coevaluacion_i": {
@@ -139,8 +147,8 @@
         "documento": "Acta de co-evaluación del espacio curricular",
         "instruccion": "Estimado cuerpo docente y estudiantado: Por favor co-evalúen con compromisos mutuos su desempeño docente y el de sus estudiantes en este espacio curricular utilizando el formato dispuesto para ello. Por favor cargue el acta resultado de este ejercicio de coevaluación.",
         "fechas": "Fechas",
-        "error_fecha_inicio": "Por favor, ingrese la fecha de inicio.",
-        "error_fecha_fin": "Por favor, ingrese la fecha de finalización.",
+        "inicio": "Inicio",
+        "fin": "Fin",
         "proyecto_curricular": "Proyecto Curricular",
         "error_proyecto": "Por favor, seleccione un proyecto curricular.",
         "espacio_academico": "Espacio Académico",
@@ -159,9 +167,8 @@
         "fechas": "Fechas",
         "inicio": "Inicio",
         "fin": "Fin",
-        "nombre_docente": "Nombre del docente",
-        "nombre": "Nombre del Docente",
-        "identificacion_docente": "Identificación del docente",
+        "nombre_docente": "Nombre del Docente",
+        "identificacion_docente": "Identificación del Docente",
         "identificacion": "Identificación",
         "proyecto_curricular": "Proyecto Curricular",
         "proyecto1": "Nombre del proyecto curricular 1",
@@ -173,9 +180,11 @@
         "espacioN": "Lista de n espacios académicos asociados al docente y al proyecto curricular",
         "descripcion_proceso": "Descripción del proceso y orientación al usuario",
         "descripcion": "Descripción",
-        "formulario": "Formulario correspondiente",
-        "formulario_placeholder": "Formulario correspondiente",
-        "guardar": "Guardar"
+        "error_fecha_inicio": "Por favor, ingrese la fecha de inicio.",
+        "error_fecha_fin": "Por favor, ingrese la fecha de fin.",
+        "error_proyecto": "Por favor, seleccione un proyecto.",
+        "error_espacio_academico": "Por favor, seleccione un espacio académico.",
+        "error_descripcion": "Por favor, ingrese una descripción."
     },
     
     "coevaluacion_ii": {
@@ -184,16 +193,15 @@
         "inicio": "Inicio",
         "fin": "Fin",
         "proyecto_curricular": "Proyecto Curricular",
-        "proyecto": "Proyecto",
-        "docente": "Docente",
-        "nombre_docente": "Nombre del Docente",
+        "proyecto": "Indique su proyecto curricular",
+        "error_proyecto": "Por favor, seleccione un proyecto curricular.",
         "espacio_academico": "Espacio Académico",
-        "espacio": "Espacio académico",
-        "descripcion_proceso": "Descripción del proceso y orientación al usuario",
-        "descripcion": "Descripción",
-        "formulario": "Formulario correspondiente",
-        "formulario_placeholder": "Formulario correspondiente",
-        "guardar": "Guardar"
+        "espacio": "Indique su espacio curricular",
+        "error_espacio_academico": "Por favor, seleccione un espacio académico.",
+        "docente": "Docente",
+        "error_docente": "Por favor, ingrese el nombre del docente.",
+        "descripcion_proceso": "Descripción del proceso",
+        "error_descripcion": "Por favor, ingrese la descripción del proceso."
     },
 
     "metricas":{
