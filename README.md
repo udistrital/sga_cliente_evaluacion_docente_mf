@@ -167,4 +167,3 @@ sga_cliente_evaluacion_docente_mf is distributed in the hope that it will be use
 
 You should have received a copy of the GNU General Public License along with sga_cliente_evaluacion_docente_mf. If not, see https://www.gnu.org/licenses/.
 
-
