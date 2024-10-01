@@ -1,8 +1,8 @@
 export const TIPOINPUT = Object.freeze({
-    Radio: 2,
-    Textarea: 1,
-    File: 3,
-    FileDownload: 4,
+    Radio: 4668,
+    Textarea: 4663,
+    File: 6686,
+    FileDownload: 4672,
 })
 
 export const FOLDERNUXEO = Object.freeze({
