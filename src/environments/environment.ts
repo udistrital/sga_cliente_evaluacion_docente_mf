@@ -5,7 +5,6 @@ export const environment = {
     GESTOR_DOCUMENTAL_MID_SERVICE: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/gestor_documental_mid/v1',
     DOCUMENTO_SERVICE: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/documento_crud/v2/',
     EVENTOS_CRUD: 'http://pruebasapi2.intranetoas.udistrital.edu.co:8107/v1/',
-    EVALUACION_DOCENTE_MID:"http://localhost:8090/v1/",
     ESPACIOS_ACADEMICOS_SERVICE:"https://autenticacion.portaloas.udistrital.edu.co/apioas/espacios_academicos_crud/v1/",
     ESPACIOS_ACADEMICOS_SERVICE_2: 'http://pruebasapi2.intranetoas.udistrital.edu.co:8530/',
     ESPACIO_ACADEMICO_MID_SERVICE: 'http://localhost:8095/v1/',
