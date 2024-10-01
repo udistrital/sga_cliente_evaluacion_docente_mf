@@ -29,7 +29,8 @@
         "cancelar": "Cancelar",
         "seleccionar": "Seleccionar",
         "error": "Error",
-        "estado":"Estados"
+        "estado":"Estados",
+        "regresar": "Volver"
     },
 
     "asignacion_fechas": {
@@ -94,7 +95,7 @@
         "eliminar": "Eliminar",
         "buscar": "Buscar",
         "pregunta":"Definicion de escala",
-        "ver_general":"Vista de escala"
+        "ver_escala":"Vista de escala"
 
     },
     

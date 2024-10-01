@@ -32,7 +32,8 @@
         "aceptar": "Accept",
         "cancelar": "Cancel",
         "estado":"Estados",
-        "ver_general":"Vista de escala"
+        "ver_general":"Vista de escala",
+        "regresar": "back up"
     },
     
     "asignacion_fechas": {
@@ -75,7 +76,8 @@
         "cancelar": "Cancel",
         "eliminar": "Delete",
         "buscar": "Search",
-        "pregunta":"Definicion de escala"
+        "pregunta":"Definicion de escala",
+        "ver":"Vista de escala"
     },
     
     "heteroevaluacion": {

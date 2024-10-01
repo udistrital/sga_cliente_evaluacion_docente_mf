@@ -68,18 +68,17 @@ export class DefinirEscalasComponent implements OnInit {
     this.evaluacionDocenteService.get("campo").subscribe(
       (response: any) => {
         this.escalas = response.Data;
-
-        // Ordenar primero los activos, luego los inactivos, y después por fecha
+  
+        // Ordenar primero los activos, luego los inactivos
         this.escalas.sort((a: any, b: any) => {
-          if (a.activo !== b.activo) {
-            return a.activo ? -1 : 1; // Activos primero
+          if (a.activo === b.activo) {
+            // Si ambos tienen el mismo estado, no hacer nada
+            return 0;
           }
-          return (
-            new Date(b.fechaCreacion).getTime() -
-            new Date(a.fechaCreacion).getTime()
-          ); // Más recientes primero
+          // Colocar los activos (true) antes que los inactivos (false)
+          return a.activo ? -1 : 1;
         });
-
+  
         this.dataSource = new MatTableDataSource(this.escalas);
         this.dataSource.paginator = this.paginator;
       },
@@ -87,7 +86,7 @@ export class DefinirEscalasComponent implements OnInit {
         console.error("Error al cargar las escalas", error);
       }
     );
-  }
+  }  
 
   obtenerTiposInput() {
     const ids = "4668|4674|4672|6686";
@@ -101,20 +100,20 @@ export class DefinirEscalasComponent implements OnInit {
     );
   }
 
-  getTipoEscalaNombre(tipoCampoId: number): string {
-    switch (tipoCampoId) {
-      case 4674:
-        return "Texto";
-      case 4668:
-        return "Selección única respuesta";
-      case 6686:
-        return "Cargar archivo";
-      case 4672:
-        return "Descargar archivo";
+  getTipoEscalaNombre(tipoCampo: string): string {
+    switch (tipoCampo) {
+      case 'Textarea':
+        return 'Texto';
+      case 'LinkNuxeo':
+        return 'Descargar Archivo';
+      case 'ArchivoAnexo':
+        return 'Cargar archivo';
+      case 'Radio':
+        return 'Selección de única respuesta';
       default:
-        return "Desconocido";
+        return 'Desconocido';
     }
-  }
+  }  
 
   applyFilterEscalas(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
@@ -309,24 +308,27 @@ export class DefinirEscalasComponent implements OnInit {
   }
 
   toggleEstadoEscala(escala: any) {
-    const nuevoEstado = !escala.activo; // Cambia el estado activo/inactivo
+    if (!escala || !escala.Id) {
+      console.error("El Id de la escala no está definido.");
+      return;
+    }
+  
+    // Invertir el estado de activo
+    const nuevoEstado = !escala.activo;
     const escalaActualizada = { ...escala, activo: nuevoEstado };
-
-    this.evaluacionDocenteService
-      .put(`campo/${escala.Id}`, escalaActualizada)
-      .subscribe(
-        (response: any) => {
-          console.log(
-            `${
-              nuevoEstado ? "Escala activada" : "Escala inactivada"
-            } con éxito`,
-            response
-          );
-          this.cargarEscalas(); // Actualizar la lista de escalas
-        },
-        (error) => {
-          console.error("Error al cambiar el estado de la escala", error);
-        }
-      );
+  
+    // Realizar el PUT para cambiar el estado de la escala
+    this.evaluacionDocenteService.put(`campo/${escala.Id}`, escalaActualizada).subscribe(
+      (response: any) => {
+        console.log(`${nuevoEstado ? "Escala activada" : "Escala inactivada"} con éxito`, response);
+  
+        // Actualizar la lista de escalas después de cambiar el estado
+        this.cargarEscalas();
+      },
+      (error: any) => {
+        console.error("Error al cambiar el estado de la escala", error);
+      }
+    );
   }
+  
 }

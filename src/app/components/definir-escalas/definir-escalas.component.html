@@ -64,11 +64,10 @@
                                             <mat-icon>visibility</mat-icon> <!-- Ícono de ver -->
                                             {{ "definir_escalas.ver_general" | translate }}
                                         </button>
-                                        <button mat-stroked-button color="warn"
-                                            (click)="toggleEstadoEscala(escalaSeleccionada)">
-                                            <mat-icon>{{ escalaSeleccionada.activo ? 'toggle_off' : 'toggle_on'
-                                                }}</mat-icon>
-                                            {{ escalaSeleccionada.activo ? 'Inactivar Escala' : 'Activar Escala' }}
+                                        <!-- Botón dinámico para activar/inactivar -->
+                                        <button mat-menu-item (click)="toggleEstadoEscala(escala)">
+                                            <mat-icon>{{ escala.activo ? 'toggle_off' : 'toggle_on' }}</mat-icon>
+                                            {{ escala.activo ? 'Inactivar Escala' : 'Activar Escala' }}
                                         </button>
                                     </mat-menu>
                                 </td>
@@ -108,12 +107,16 @@
                                     <mat-select formControlName="tipoCampo"
                                         (selectionChange)="onTipoCampoChange($event)">
                                         <mat-option *ngFor="let tipo of tiposInput" [value]="tipo.Nombre">
-                                            <mat-icon>{{ tipo.Nombre === 'Radio' ? 'select_all' : 'deselect'
-                                                }}</mat-icon>
-                                            {{ tipo.Nombre }}
+                                            <mat-icon *ngIf="tipo.Nombre === 'Textarea'">edit_note</mat-icon>
+                                            <mat-icon *ngIf="tipo.Nombre === 'LinkNuxeo'">download</mat-icon>
+                                            <mat-icon *ngIf="tipo.Nombre === 'ArchivoAnexo'">upload</mat-icon>
+                                            <mat-icon *ngIf="tipo.Nombre === 'Radio'">checklist</mat-icon>
+                                            <!-- Texto más entendible para el usuario -->
+                                            {{ getTipoEscalaNombre(tipo.Nombre) }}
                                         </mat-option>
                                     </mat-select>
                                 </mat-form-field>
+
 
                                 <!-- Opciones adicionales cuando el tipo de campo es 'Radio' (Selección Múltiple) -->
                                 <div *ngIf="showMultipleOptions" formArrayName="opciones">
@@ -136,7 +139,7 @@
                                 <!-- Botones de acción -->
                                 <button mat-flat-button color="primary" (click)="agregarEscala()">
                                     <mat-icon>save</mat-icon>
-                                    {{ "GLOBAL.guardar" | translate }}
+                                    {{ "GLOBAL.GUARDAR" | translate }}
                                 </button>
                                 <button mat-flat-button color="warn" (click)="cancelarCreacion()">
                                     <mat-icon>close</mat-icon>
@@ -160,11 +163,6 @@
                             <!-- Pregunta -->
                             <mat-icon color="primary">question_answer</mat-icon>
                             <p><strong>{{ "Pregunta:" }}</strong> {{ escalaSeleccionada.label }}</p>
-
-                            <!-- Descripción -->
-                            <mat-icon color="primary">description</mat-icon>
-                            <p><strong>{{ "Descripción:" }}</strong> {{ escalaSeleccionada.descripcion || 'No
-                                disponible' }}</p>
 
                             <!-- Tipo de Escala -->
                             <mat-icon color="primary">category</mat-icon>
