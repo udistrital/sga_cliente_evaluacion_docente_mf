@@ -17,13 +17,24 @@
                                 placeholder="{{ 'GLOBAL.buscar' | translate }}" />
                         </mat-form-field>
 
+                        <!-- Alerta informativa -->
+                        <div class="alert info" style="margin-bottom: 16px;">
+                            <mat-icon class="icon">info</mat-icon>
+                            <span>
+                                A continuación, verá el listado de las preguntas habilitadas para las evaluaciones, en
+                                el cual podrá agregar más con el botón
+                                <strong>+</strong>. Podrá ver la pregunta o deshabilitarla con el botón de la columna de
+                                acciones. Si la deshabilita, se ELIMINARÁ automáticamente.
+                            </span>
+                        </div>
+
                         <!-- Botón para añadir nueva escala -->
                         <mat-toolbar>
                             <button mat-icon-button color="accent" (click)="activarModoCreacion()">
                                 <mat-icon>add</mat-icon> <!-- Ícono de más para añadir escala -->
                             </button>
-                            <span>{{ "definir_escalas.aniadir_nueva_escala" | translate }}</span>
                         </mat-toolbar>
+
 
                         <!-- Tabla de escalas existentes -->
                         <table mat-table [dataSource]="dataSource" matSort class="full-width-table">
@@ -82,7 +93,7 @@
                         </table>
 
                         <!-- Paginador -->
-                        <mat-paginator [pageSize]="5" showFirstLastButtons></mat-paginator>
+                        <mat-paginator [pageSize]="10" showFirstLastButtons></mat-paginator>
                     </mat-card-content>
                 </mat-card>
             </mat-tab>
@@ -122,12 +133,6 @@
                             </div>
 
                             <form [formGroup]="formularioEscala">
-                                <!-- Pregunta del formulario -->
-                                <mat-form-field class="full-width">
-                                    <mat-label>{{ "Escriba su pregunta" | translate }}</mat-label>
-                                    <input matInput formControlName="label" autocomplete="off"
-                                        [value]="exampleQuestion" />
-                                </mat-form-field>
 
                                 <!-- Tipo de escala seleccionable -->
                                 <mat-form-field class="full-width">
@@ -144,23 +149,32 @@
                                     </mat-select>
                                 </mat-form-field>
 
+                                <!-- Pregunta del formulario -->
+                                <mat-form-field class="full-width">
+                                    <mat-label>{{ "Escriba su pregunta" | translate }}</mat-label>
+                                    <input matInput formControlName="label" autocomplete="off"
+                                        [value]="exampleQuestion" />
+                                </mat-form-field>
+
                                 <!-- Opciones cuando es selección múltiple (Radio) -->
                                 <div *ngIf="showMultipleOptions" formArrayName="opciones">
-                                    <div *ngFor="let opcionGroup of opciones.controls; let i = index" [formGroupName]="i" class="option-row">
-                                        
+                                    <div *ngFor="let opcionGroup of opciones.controls; let i = index"
+                                        [formGroupName]="i" class="option-row">
+
                                         <!-- Casilla de opción -->
                                         <mat-form-field class="custom-input full-width">
                                             <mat-label>{{ 'Opción ' + (i + 1) }}</mat-label>
                                             <input matInput formControlName="opcion"
                                                 placeholder="{{ getPlaceholderForOption(i) }}" autocomplete="off" />
                                         </mat-form-field>
-                                
+
                                         <!-- Casilla de valor -->
                                         <mat-form-field class="custom-input number-input">
                                             <mat-label>Valor</mat-label>
-                                            <input matInput type="number" min="1" max="100" formControlName="valorControl" autocomplete="off" />
+                                            <input matInput type="number" min="1" max="100"
+                                                formControlName="valorControl" autocomplete="off" />
                                         </mat-form-field>
-                                
+
                                     </div>
 
                                     <div>
