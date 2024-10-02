@@ -1,5 +1,4 @@
 {
-    
     "HOME": {
         "TITLE": "SGA",
         "SELECT": "Select evaluation type",
@@ -12,7 +11,7 @@
         "cancelar": "Cancel"
     },
 
-    "GLOBAL":{
+    "GLOBAL": {
         "GUARDAR": "Save",
         "CANCELAR": "Cancel",
         "ELIMINAR": "Delete",
@@ -31,11 +30,11 @@
         "atencion": "Attention",
         "aceptar": "Accept",
         "cancelar": "Cancel",
-        "estado":"Estados",
-        "ver_general":"Vista de escala",
-        "regresar": "back up"
+        "estado": "Status",
+        "ver_general": "View scale",
+        "regresar": "Go back"
     },
-    
+
     "asignacion_fechas": {
         "titulo": "Assignment of dates for processes",
         "seleccionar_nivel_formacion": "Select the level of training to assign",
@@ -76,22 +75,23 @@
         "cancelar": "Cancel",
         "eliminar": "Delete",
         "buscar": "Search",
-        "pregunta":"Definicion de escala",
-        "ver_general":"Vista de escala",
-        "vista_escala":"Vista de la escala",
-        "alerta_formulario1":"A continuación, deberá diligenciar el formulario de opcion multiple con unica respuesta, asignando una calificación numérica sido 1 el valor mas bajo y 5 el valor mas alto al desempeño de las opciones asignadas.",
-        "alerta_formulario2":"A continuación, deberá diligenciar la pregunta del formulario de texto, asignando una pregunta abierta, para una respuesta de campo abierto",
-        "alerta_formulario3":"A continuación, deberá diligenciar el formulario para el enunciado del boton de carga sobre uno o varios archivos",
-        "alerta_formulario4":"A continuación, deberá diligenciar el formulario para el enunciado del boton de descarga sobre uno o varios archivos)",
-        "alerta_formulario5": "A continuación, verá el listado de las preguntas habilitadas para las evaluaciones, en el cual podrá agregar más con el botón <strong>+</strong>. Podrá ver la pregunta o deshabilitarla con el botón de la columna de acciones. Si la deshabilita, se ELIMINARÁ automáticamente.",
-        "seleccionar_tipo_escala": "Seleccionar tipo de escala",
-        "tipo_Textarea": "Texto",
-        "tipo_LinkNuxeo": "Descargar archivo",
-        "tipo_ArchivoAnexo": "Cargar archivo",
-        "tipo_Radio": "Selección de única respuesta"
-
+        "pregunta": "Scale definition",
+        "ver_general": "View scale",
+        "vista_escala": "Scale view",
+        "alerta_formulario1": "Next, you must complete the multiple-choice form with a single response, assigning a numerical rating from 1 (lowest value) to 5 (highest value) to the performance of the assigned options.",
+        "alerta_formulario2": "Next, you must complete the form's text question, assigning an open question for an open field response.",
+        "alerta_formulario3": "Next, you must complete the form for the upload button's label for one or more files.",
+        "alerta_formulario4": "Next, you must complete the form for the download button's label for one or more files.",
+        "alerta_formulario5": "You will now see a list of the enabled questions for evaluations, where you can add more using the <strong>+</strong> button. You can view the question or disable it with the action column button. If disabled, it will be automatically DELETED.",
+        "seleccionar_tipo_escala": "Select scale type",
+        "tipo_Textarea": "Text",
+        "tipo_LinkNuxeo": "Download file",
+        "tipo_ArchivoAnexo": "Upload file",
+        "tipo_Radio": "Single answer selection",
+        "previsualizar":"Preview",
+        "ejemplo_escala":"Example view of the scale"
     },
-    
+
     "heteroevaluacion": {
         "titulo": "Heteroevaluation",
         "fechas": "Dates",
@@ -167,7 +167,7 @@
         "error_espacio_academico": "Please select an academic space.",
         "error_descripcion": "Please enter a description."
     },
-    
+
     "coevaluacion_ii": {
         "titulo": "Co-evaluation II",
         "fechas": "Dates",
@@ -185,11 +185,11 @@
         "error_descripcion": "Please enter a process description."
     },
 
-    "metricas":{
+    "metricas": {
         "metricas": "Metrics",
         "tipo_reporte": "Report type",
         "filtros": "Filters",
-        "elegir_todas": "All",
+        "elegir_todas": "Select All",
         "vinculacion": "Linkage",
         "componente": "Component",
         "facultad": "Faculty",

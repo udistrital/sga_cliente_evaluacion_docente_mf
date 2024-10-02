@@ -93,7 +93,6 @@
         "guardar": "Guardar",
         "cancelar": "Cancelar",
         "eliminar": "Eliminar",
-        "buscar": "Buscar",
         "pregunta":"Definicion de escala",
         "ver_general":"Vista de escala",
         "vista_escala":"Vista de la escala",
@@ -106,7 +105,10 @@
         "tipo_Textarea": "Texto",
         "tipo_LinkNuxeo": "Descargar archivo",
         "tipo_ArchivoAnexo": "Cargar archivo",
-        "tipo_Radio": "Selección de única respuesta"
+        "tipo_Radio": "Selección de única respuesta",
+        "previsualizar":"Previsualizar",
+        "ejemplo_escala":"Ejemplo vista de la escala"
+
     },
     
     "heteroevaluacion": {

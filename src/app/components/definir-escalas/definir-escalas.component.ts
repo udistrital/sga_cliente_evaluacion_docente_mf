@@ -23,28 +23,19 @@ import {
   styleUrls: ["./definir-escalas.component.scss"],
 })
 export class DefinirEscalasComponent implements OnInit {
-  tipoEscala: string = "";
-  descripcion: string = "";
+  tipoEscala = "";
   escalas: any[] = [];
   tiposInput: any[] = [];
-  userRoles: string[] = [];
   ROLES = ROLES;
-  isCreating: boolean = false;  
+  isCreating = false;
   activeTab = 0;
-  isViewingScale: boolean = false;
+  isViewingScale = false;
   escalaSeleccionada: any = {};
-  exampleQuestion: string = "";
-  previsualizacionActiva: boolean = false;
-  ejemploPregunta: string = '';
+  previsualizacionActiva = false;
+  ejemploPregunta = "";
+  showMultipleOptions = false;
 
-  // Formulario Reactivo
-  formularioEscala!: FormGroup;
-  showMultipleOptions: boolean = false;
-
-  // Valores por defecto de las opciones
   valores: number[] = [1, 2, 3, 4, 5];
-
-  // Lista de opciones de ejemplo
   opcionesPorDefecto: string[] = [
     "INSUFICIENTE",
     "NECESITA MEJORAR",
@@ -58,59 +49,54 @@ export class DefinirEscalasComponent implements OnInit {
     Radio: 4668,
     ArchivoAnexo: 6686,
     LinkNuxeo: 4672,
-  };  
+  };
+
   displayedColumns: string[] = ["Pregunta", "TipoEscala", "Estado", "Acciones"];
   dataSource!: MatTableDataSource<any>;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+  formularioEscala!: FormGroup;
 
   constructor(
     private fb: FormBuilder,
     private evaluacionDocenteService: EvaluacionDocenteService,
     private parametrosService: ParametrosService,
     public dialog: MatDialog,
-    private cdr: ChangeDetectorRef // Inyectar ChangeDetectorRef
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
     this.inicializarFormulario();
     this.cargarEscalas();
     this.obtenerTiposInput();
-
-    // Configurar el paginador para mostrar 10 escalas por página por defecto
-    if (this.paginator) {
-      this.paginator._intl.itemsPerPageLabel = "Escalas por página";
-    }
   }
 
   inicializarFormulario() {
     this.formularioEscala = this.fb.group({
       label: ["", Validators.required],
       tipoCampo: ["", Validators.required],
-      opciones: this.fb.array([]), // Inicialización del FormArray vacío
+      opciones: this.fb.array([]),
     });
-
-    // Añadir opciones por defecto como FormGroups dentro del FormArray
-    this.opcionesPorDefecto.forEach((opcion, index) => {
-      this.opciones.push(
-        this.fb.group({
-          opcion: [opcion, Validators.required], // Campo de la opción
-          valorControl: [
-            this.valores[index],
-            [Validators.required, Validators.min(1), Validators.max(100)],
-          ], // Campo del valor
-        })
-      );
-    });
+    this.agregarOpcionesPorDefecto();
   }
 
   get opciones(): FormArray {
     return this.formularioEscala.get("opciones") as FormArray;
   }
 
-  // Método para obtener el placeholder para las opciones
-  getPlaceholderForOption(index: number): string {
-    return this.opcionesPorDefecto[index] || "Opción " + (index + 1);
+  agregarOpcionesPorDefecto() {
+    this.opcionesPorDefecto.forEach((opcion, index) => {
+      this.opciones.push(
+        this.fb.group({
+          opcion: [opcion, Validators.required],
+          valorControl: [
+            this.valores[index],
+            [Validators.required, Validators.min(1), Validators.max(100)],
+          ],
+        })
+      );
+    });
   }
 
   cargarEscalas() {
@@ -120,37 +106,27 @@ export class DefinirEscalasComponent implements OnInit {
         this.dataSource = new MatTableDataSource(this.escalas);
         this.dataSource.paginator = this.paginator;
       },
-      (error) => {
-        console.error("Error al cargar las escalas activas", error);
-      }
+      (error) => console.error("Error al cargar las escalas activas", error)
     );
   }
 
   obtenerTiposInput() {
     const ids = "4668|4674|4672|6686";
     this.parametrosService.get(`parametro?query=id__in:${ids}`).subscribe(
-      (response: any) => {
-        this.tiposInput = response.Data;
-      },
-      (error) => {
-        console.error("Error al obtener los tipos de input", error);
-      }
+      (response: any) => (this.tiposInput = response.Data),
+      (error) => console.error("Error al obtener los tipos de input", error)
     );
   }
 
   getTipoEscalaNombre(tipoCampoId: number): string {
-    switch (tipoCampoId) {
-      case 4674:
-        return "Texto";
-      case 4668:
-        return "Selección de única respuesta";
-      case 6686:
-        return "Cargar archivo";
-      case 4672:
-        return "Descargar archivo";
-      default:
-        return "Desconocido";
-    }
+    const nombres: { [key: number]: string } = {
+      4674: "Texto",
+      4668: "Selección de única respuesta",
+      6686: "Cargar archivo",
+      4672: "Descargar archivo",
+    };
+
+    return nombres[tipoCampoId] || "Desconocido";
   }
 
   regresarLista() {
@@ -158,18 +134,14 @@ export class DefinirEscalasComponent implements OnInit {
     this.activeTab = 0;
   }
 
-  // Función para mostrar el diálogo de confirmación
   mostrarConfirmacion(escala: any): void {
-    console.log("Iniciando confirmación para la escala:", escala);
-
     this.evaluacionDocenteService.get(`campo/${escala.Id}`).subscribe(
       (response: any) => {
         const escalaSeleccionada = response?.Data;
-
         const dialogRef = this.dialog.open(DialogoConfirmacion, {
           width: "300px",
           data: {
-            message: `Va a inhabilitar la escala "${escalaSeleccionada?.Nombre}", y no podrá recuperarla, ¿está segur@ de hacer esto?`,
+            message: `Va a inhabilitar la escala "${escalaSeleccionada?.Nombre}", ¿está segur@ de hacer esto?`,
             buttonText: { ok: "Inhabilitar", cancel: "Cancelar" },
             escala: escalaSeleccionada,
           },
@@ -177,26 +149,12 @@ export class DefinirEscalasComponent implements OnInit {
 
         dialogRef.afterClosed().subscribe((result) => {
           if (result) {
-            console.log("Resultado del diálogo: OK");
-            this.inactivarEscala(escalaSeleccionada); // Llamada a inactivarEscala
-          } else {
-            console.log("Resultado del diálogo: Cancelado");
+            this.inactivarEscala(escalaSeleccionada);
           }
         });
       },
-      (error) => {
-        console.error("Error al obtener la escala:", error);
-      }
+      (error) => console.error("Error al obtener la escala:", error)
     );
-  }
-
-  applyFilterEscalas(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
-    }
   }
 
   activarModoCreacion() {
@@ -204,106 +162,37 @@ export class DefinirEscalasComponent implements OnInit {
     this.activeTab = 1;
   }
 
-  tabChanged(event: any) {
-    if (event.index === 1) {
-      this.activarModoCreacion();
-    }
-  }
-
   onTipoCampoChange(event: any) {
     const tipoSeleccionado = event.value;
+    this.showMultipleOptions = tipoSeleccionado === "Radio";
+    this.opciones.clear();
 
-    console.log("Tipo de campo seleccionado: ", tipoSeleccionado);
-
-    switch (tipoSeleccionado) {
-      case "Radio":
-        this.showMultipleOptions = true;
-        this.opciones.clear(); // Limpia el FormArray
-
-        // Añadir las opciones de forma correcta, cada una como FormGroup
-        this.opciones.push(
-          this.fb.group({
-            opcion: ["INSUFICIENTE", Validators.required],
-            valorControl: [
-              1,
-              [Validators.required, Validators.min(1), Validators.max(100)],
-            ],
-          })
-        );
-        this.opciones.push(
-          this.fb.group({
-            opcion: ["NECESITA MEJORAR", Validators.required],
-            valorControl: [
-              2,
-              [Validators.required, Validators.min(1), Validators.max(100)],
-            ],
-          })
-        );
-        this.opciones.push(
-          this.fb.group({
-            opcion: ["BUENO", Validators.required],
-            valorControl: [
-              3,
-              [Validators.required, Validators.min(1), Validators.max(100)],
-            ],
-          })
-        );
-        this.opciones.push(
-          this.fb.group({
-            opcion: ["SOBRESALIENTE", Validators.required],
-            valorControl: [
-              4,
-              [Validators.required, Validators.min(1), Validators.max(100)],
-            ],
-          })
-        );
-        this.opciones.push(
-          this.fb.group({
-            opcion: ["EXCELENTE", Validators.required],
-            valorControl: [
-              5,
-              [Validators.required, Validators.min(1), Validators.max(100)],
-            ],
-          })
-        );
-        this.exampleQuestion =
-          "Demuestra conocimientos de los contenidos que se van a enseñar en el espacio curricular";
-        break;
-      case "Textarea":
-        this.showMultipleOptions = false;
-        this.opciones.clear();
-        this.exampleQuestion =
-          "Frente a la heteroevaluación realizada por el estudiante a la persona docente, esta tiene las siguientes observaciones:";
-        break;
-      case "ArchivoAnexo":
-        this.showMultipleOptions = false;
-        this.opciones.clear();
-        this.exampleQuestion =
-          "El cuerpo docente debe cargar el acta de coevaluación del espacio curricular en este botón:";
-        break;
-      case "LinkNuxeo":
-        this.showMultipleOptions = false;
-        this.opciones.clear();
-        this.exampleQuestion = "01 Ámbito 01: Docencia";
-        break;
-      default:
-        this.showMultipleOptions = false;
-        this.opciones.clear();
-        this.exampleQuestion = "";
+    if (this.showMultipleOptions) {
+      this.agregarOpcionesPorDefecto();
     }
 
-    console.log(
-      "Opciones después del cambio de tipo de campo: ",
-      this.opciones.value
-    ); // Verifica las opciones después de cambiar el tipo de campo
+    this.ejemploPregunta = this.getEjemploPregunta(tipoSeleccionado);
+  }
+
+  getEjemploPregunta(tipoSeleccionado: string): string {
+    const preguntas: { [key: string]: string } = {
+      Radio:
+        "Demuestra conocimientos de los contenidos que se van a enseñar en el espacio curricular",
+      Textarea:
+        "Frente a la heteroevaluación realizada por el estudiante a la persona docente, esta tiene las siguientes observaciones:",
+      ArchivoAnexo:
+        "El cuerpo docente debe cargar el acta de coevaluación del espacio curricular en este botón:",
+      LinkNuxeo: "01 Ámbito 01: Docencia",
+    };
+
+    return preguntas[tipoSeleccionado] || "";
+  }
+
+  getPlaceholderForOption(index: number): string {
+    return this.opcionesPorDefecto[index] || "Opción " + (index + 1);
   }
 
   agregarEscala() {
-    console.log(
-      "Formulario al intentar guardar: ",
-      this.formularioEscala.value
-    );
-
     if (this.formularioEscala.valid) {
       const nuevaEscala = {
         ...this.formularioEscala.value,
@@ -314,80 +203,47 @@ export class DefinirEscalasComponent implements OnInit {
       const TipoCampoId = this.tipoCamposMap[nuevaEscala.tipoCampo];
 
       if (!TipoCampoId) {
-        console.error(
+        return console.error(
           `No se encontró un ID de tipo de campo para el tipo: ${nuevaEscala.tipoCampo}`
         );
-        return;
       }
 
-      // Realizar el POST para la pregunta base
       this.evaluacionDocenteService
         .post("campo", {
-          TipoCampoId: TipoCampoId, // Cambiamos a TipoCampoId
-          CampoPadreId: 0, // Para la pregunta base, el CampoPadreId es 0
+          TipoCampoId,
+          CampoPadreId: 0,
           Nombre: nuevaEscala.label,
           Valor: 0,
           Activo: true,
         })
         .subscribe(
           (response: any) => {
-            console.log(
-              "POST para la pregunta base realizado con éxito. Respuesta: ",
-              response
-            );
-
-            const campoPadreId = response.Data.Id; // Obtener el Id de la pregunta base
+            const campoPadreId = response.Data.Id;
 
             if (nuevaEscala.tipoCampo === "Radio") {
-              // Si es de tipo Radio, realizar POST para cada opción
               nuevaEscala.opciones.forEach((opcion: any, index: number) => {
                 this.evaluacionDocenteService
                   .post("campo", {
-                    TipoCampoId: TipoCampoId, // Mantener el mismo TipoCampoId
-                    CampoPadreId: campoPadreId, // El CampoPadreId es el Id de la pregunta base
+                    TipoCampoId,
+                    CampoPadreId: campoPadreId,
                     Nombre: opcion.opcion,
-                    Valor: opcion.valorControl, // Asignar el valor de la opción
+                    Valor: opcion.valorControl,
                     Activo: true,
                   })
-                  .subscribe(
-                    (respuestaOpcion: any) => {
-                      console.log(
-                        `POST para la opción ${
-                          index + 1
-                        } de Radio realizado con éxito. Respuesta:`,
-                        respuestaOpcion
-                      );
-                    },
-                    (error: any) => {
-                      console.error(
-                        `Error al hacer el POST para la opción ${
-                          index + 1
-                        } de Radio:`,
-                        error
-                      );
-                    }
-                  );
+                  .subscribe();
               });
             }
 
-            // Después de guardar exitosamente, regresa a la lista y recarga las escalas
-            this.isCreating = false;
-            this.formularioEscala.reset();
-            this.activeTab = 0;
-            this.cargarEscalas(); // Recargar la lista automáticamente
+            this.resetFormulario();
           },
-          (error: any) => {
+          (error: any) =>
             console.error(
               "Error al hacer el POST para la pregunta base:",
               error
-            );
-          }
+            )
         );
     } else {
-      console.error(
-        "Formulario no es válido. Datos del formulario:",
-        this.formularioEscala.value
-      );
+      console.error("Formulario no es válido.", this.formularioEscala.value);
     }
   }
 
@@ -401,7 +257,7 @@ export class DefinirEscalasComponent implements OnInit {
         ],
       })
     );
-    this.cdr.detectChanges(); // Forzar la detección de cambios
+    this.cdr.detectChanges();
   }
 
   quitarOpcion() {
@@ -416,145 +272,95 @@ export class DefinirEscalasComponent implements OnInit {
     this.activeTab = 0;
   }
 
+  resetFormulario() {
+    this.isCreating = false;
+    this.formularioEscala.reset();
+    this.activeTab = 0;
+    this.cargarEscalas();
+  }
+
   vistaGeneral(escala: any) {
-    // Asignar la escala seleccionada a la variable para visualizar sus detalles
     this.escalaSeleccionada = escala;
-
-    // Configurar el tipo de escala según el tipo de campo
-    switch (escala.TipoCampoId) {
-      case this.tipoCamposMap['Textarea']:
-        this.tipoEscala = 'Textarea';
-        break;
-      case this.tipoCamposMap['Radio']:
-        this.tipoEscala = 'Radio';
-        break;
-      case this.tipoCamposMap['ArchivoAnexo']:
-        this.tipoEscala = 'ArchivoAnexo';
-        break;
-      case this.tipoCamposMap['LinkNuxeo']:
-        this.tipoEscala = 'LinkNuxeo';
-        break;
-      default:
-        this.tipoEscala = '';
-    }
-    
-
-    // Cambiar a la pestaña de vista general
+    this.tipoEscala = this.getTipoEscalaNombre(escala.TipoCampoId);
     this.isViewingScale = true;
     this.activeTab = 2;
   }
 
   inactivarEscala(escala: any) {
-    console.log(
-      "Iniciando proceso de inactivación para la escala con Id:",
-      escala?.Id
-    );
-
     if (!escala?.Id) {
-      console.error("Error: El Id de la escala es undefined o null.");
-      return;
+      return console.error("Error: El Id de la escala es undefined o null.");
     }
-
-    // Ajustar el formato de las fechas eliminando +0000 y utilizando toISOString
+  
     const escalaActualizada = {
-      Id: escala?.Id,
-      TipoCampoId: escala?.TipoCampoId || 4668, // Asegúrate de que el TipoCampoId esté presente
-      CampoPadreId: escala?.CampoPadreId || 0, // Asegúrate de que CampoPadreId esté presente
-      Nombre: escala?.Nombre || "Nombre por defecto", // Verificar el campo Nombre
-      Valor: escala?.Valor || 0, // Definir el valor si es necesario
-      Activo: false, // Cambiar el estado a inactivo
-      FechaCreacion: new Date(escala?.FechaCreacion).toISOString(), // Ajustar el formato de la fecha
-      FechaModificacion: new Date().toISOString(), // Actualizar la fecha de modificación en formato limpio
+      Id: escala.Id,
+      TipoCampoId: escala.TipoCampoId, 
+      CampoPadreId: escala.CampoPadreId, 
+      Nombre: escala.Nombre, 
+      Valor: escala.Valor, 
+      Activo: false,
+      FechaCreacion: this.formatFecha(escala.FechaCreacion), 
+      FechaModificacion: this.formatFecha(new Date()), 
     };
-
-    console.log("Cuerpo del PUT antes de enviar:", escalaActualizada); // Verificar el cuerpo
-
-    // Realizar el PUT
-    this.evaluacionDocenteService
-      .put(`campo/${escala?.Id}`, escalaActualizada)
-      .subscribe(
-        (response: any) => {
-          console.log("Escala inactivada con éxito:", response);
-          this.cargarEscalas(); // Recargar la lista de escalas
-        },
-        (error) => {
-          console.error("Error al inactivar la escala:", error);
-        }
-      );
-  }
-
-  toggleEstadoEscala(escala: any) {
-    if (!escala || !escala.Id) {
-      console.error("El Id de la escala no está definido.");
-      return;
-    }
-
-    // Invertir el estado de activo
-    const nuevoEstado = !escala.activo;
-
-    // Actualizar la escala con el nuevo estado y las fechas correctas
-    const escalaActualizada = {
-      ...escala,
-      Activo: nuevoEstado,
-      FechaModificacion: new Date().toISOString(), // Fecha de modificación actual
-      FechaCreacion: escala.FechaCreacion || new Date().toISOString(), // Mantener la fecha de creación
-      TipoCampoId: escala.TipoCampoId || 4668, // Asegúrate de que TipoCampoId esté presente y correcto
-      CampoPadreId: escala.CampoPadreId || 0, // Si es necesario, asigna el valor correcto a CampoPadreId
-      Valor: escala.Valor || 0, // Asegúrate de que el valor esté definido
-      Nombre: escala.Nombre || "Nombre por defecto", // Revisa que el nombre esté correctamente definido
-    };
-
-    // Agregar log para verificar el cuerpo del PUT antes de enviarlo
-    console.log("Cuerpo del PUT a enviar:", escalaActualizada);
-
-    // Realizar el PUT para cambiar el estado de la escala
+  
     this.evaluacionDocenteService
       .put(`campo/${escala.Id}`, escalaActualizada)
       .subscribe(
-        (response: any) => {
-          console.log(
-            `${
-              nuevoEstado ? "Escala activada" : "Escala inactivada"
-            } con éxito`,
-            response
-          );
-          this.cargarEscalas(); // Recargar la lista de escalas después de actualizar el estado
-        },
-        (error: any) => {
-          console.error("Error al actualizar la escala:", error);
-        }
+        () => this.cargarEscalas(), 
+        (error: any) => console.error("Error al inactivar la escala:", error)
       );
   }
 
+  private formatFecha(fecha: string | Date): string {
+    return new Date(fecha).toISOString().split(".")[0] + "Z";
+  }
 
-  previsualizarEscala() {
-    // Activar la previsualización
-    this.previsualizacionActiva = true;
+  toggleEstadoEscala(escala: any) {
+    if (!escala?.Id) {
+      return console.error("El Id de la escala no está definido.");
+    }
+  
+    const nuevoEstado = false;
+  
+    const escalaActualizada = {
+      Id: escala.Id,
+      TipoCampoId: escala.TipoCampoId, 
+      CampoPadreId: escala.CampoPadreId , 
+      Nombre: escala.Nombre , 
+      Valor: escala.Valor, 
+      Activo: nuevoEstado, 
+      FechaCreacion: this.formatFecha(escala.FechaCreacion), 
+      FechaModificacion: this.formatFecha(new Date()), 
+    };
+  
+    this.evaluacionDocenteService
+      .put(`campo/${escala.Id}`, escalaActualizada)
+      .subscribe(
+        () => this.cargarEscalas(), 
+        (error: any) => console.error("Error al actualizar la escala:", error)
+      );
+  }
 
-    // Configurar la pregunta de ejemplo según el tipo de campo seleccionado
-    switch (this.formularioEscala.get('tipoCampo')?.value) {
-      case 'Radio':
-        this.tipoEscala = 'Radio';
-        this.ejemploPregunta = this.formularioEscala.get('label')?.value || 'Texto de la pregunta';
-        break;
-      case 'Textarea':
-        this.tipoEscala = 'Textarea';
-        this.ejemploPregunta = this.formularioEscala.get('label')?.value || 'Texto de la pregunta';
-        break;
-      case 'ArchivoAnexo':
-        this.tipoEscala = 'ArchivoAnexo';
-        this.ejemploPregunta = this.formularioEscala.get('label')?.value || 'Texto de la pregunta';
-        break;
-      case 'LinkNuxeo':
-        this.tipoEscala = 'LinkNuxeo';
-        this.ejemploPregunta = this.formularioEscala.get('label')?.value || 'Texto de la pregunta';
-        break;
-      default:
-        this.tipoEscala = '';
-        this.ejemploPregunta = '';
+  tabChanged(event: any) {
+    if (event.index === 1) {
+      this.activarModoCreacion();
     }
   }
 
+  applyFilterEscalas(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
+  }
+
+  previsualizarEscala() {
+    this.previsualizacionActiva = true;
+    this.ejemploPregunta =
+      this.formularioEscala.get("label")?.value || "Texto de la pregunta";
+    this.tipoEscala = this.formularioEscala.get("tipoCampo")?.value;
+  }
 }
 
 // Definir el diálogo de confirmación directamente dentro del mismo archivo
