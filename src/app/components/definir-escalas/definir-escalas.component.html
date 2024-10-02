@@ -30,8 +30,7 @@
                             <!-- Columna de Pregunta -->
                             <ng-container matColumnDef="Pregunta">
                                 <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ "definir_escalas.pregunta" |
-                                    translate }}
-                                </th>
+                                    translate }}</th>
                                 <td mat-cell *matCellDef="let escala">{{ escala.Nombre }}</td>
                             </ng-container>
 
@@ -41,7 +40,6 @@
                                     translate }}</th>
                                 <td mat-cell *matCellDef="let escala">{{ getTipoEscalaNombre(escala.TipoCampoId) }}</td>
                             </ng-container>
-
 
                             <!-- Columna de Estado -->
                             <ng-container matColumnDef="Estado">
@@ -69,7 +67,6 @@
                                             <mat-icon>{{ escala.activo ? 'toggle_off' : 'toggle_on' }}</mat-icon>
                                             {{ escala.activo ? 'Inactivar Escala' : 'Activar Escala' }}
                                         </button>
-
                                     </mat-menu>
                                 </td>
                             </ng-container>
@@ -97,12 +94,42 @@
                         <!-- Formulario para crear nueva escala -->
                         <div *ngIf="isCreating">
                             <h3>{{ "definir_escalas.formulario_creacion" | translate }}</h3>
+
+                            <!-- Mensaje de alerta dinámico -->
+                            <div class="row mt-4">
+                                <div class="col-12">
+                                    <div *ngIf="formularioEscala.controls['tipoCampo'].value === 'Radio'"
+                                        class="alert info">
+                                        <mat-icon class="icon">info</mat-icon>
+                                        <span>{{ 'definir_escalas.alerta_formulario1' | translate }}</span>
+                                    </div>
+                                    <div *ngIf="formularioEscala.controls['tipoCampo'].value === 'Textarea'"
+                                        class="alert info">
+                                        <mat-icon class="icon">info</mat-icon>
+                                        <span>{{ 'definir_escalas.alerta_formulario2' | translate }}</span>
+                                    </div>
+                                    <div *ngIf="formularioEscala.controls['tipoCampo'].value === 'ArchivoAnexo'"
+                                        class="alert info">
+                                        <mat-icon class="icon">info</mat-icon>
+                                        <span>{{ 'definir_escalas.alerta_formulario3' | translate }}</span>
+                                    </div>
+                                    <div *ngIf="formularioEscala.controls['tipoCampo'].value === 'LinkNuxeo'"
+                                        class="alert info">
+                                        <mat-icon class="icon">info</mat-icon>
+                                        <span>{{ 'definir_escalas.alerta_formulario4' | translate }}</span>
+                                    </div>
+                                </div>
+                            </div>
+
                             <form [formGroup]="formularioEscala">
+                                <!-- Pregunta del formulario -->
                                 <mat-form-field class="full-width">
                                     <mat-label>{{ "Escriba su pregunta" | translate }}</mat-label>
-                                    <input matInput formControlName="label" autocomplete="off" />
+                                    <input matInput formControlName="label" autocomplete="off"
+                                        [value]="exampleQuestion" />
                                 </mat-form-field>
 
+                                <!-- Tipo de escala seleccionable -->
                                 <mat-form-field class="full-width">
                                     <mat-label>{{ "Seleccionar tipo de escala" | translate }}</mat-label>
                                     <mat-select formControlName="tipoCampo"
@@ -112,21 +139,30 @@
                                             <mat-icon *ngIf="tipo.Nombre === 'LinkNuxeo'">download</mat-icon>
                                             <mat-icon *ngIf="tipo.Nombre === 'ArchivoAnexo'">upload</mat-icon>
                                             <mat-icon *ngIf="tipo.Nombre === 'Radio'">checklist</mat-icon>
-                                            <!-- Texto más entendible para el usuario -->
                                             {{ getTipoEscalaNombre(tipo.Nombre) }}
                                         </mat-option>
                                     </mat-select>
                                 </mat-form-field>
 
-
-                                <!-- Opciones adicionales cuando el tipo de campo es 'Radio' (Selección Múltiple) -->
+                                <!-- Opciones cuando es selección múltiple (Radio) -->
                                 <div *ngIf="showMultipleOptions" formArrayName="opciones">
-                                    <div *ngFor="let opcion of opciones.controls; let i = index">
-                                        <mat-form-field class="full-width">
+                                    <div *ngFor="let opcionGroup of opciones.controls; let i = index" [formGroupName]="i" class="option-row">
+                                        
+                                        <!-- Casilla de opción -->
+                                        <mat-form-field class="custom-input full-width">
                                             <mat-label>{{ 'Opción ' + (i + 1) }}</mat-label>
-                                            <input matInput [formControlName]="i" autocomplete="off" />
+                                            <input matInput formControlName="opcion"
+                                                placeholder="{{ getPlaceholderForOption(i) }}" autocomplete="off" />
                                         </mat-form-field>
+                                
+                                        <!-- Casilla de valor -->
+                                        <mat-form-field class="custom-input number-input">
+                                            <mat-label>Valor</mat-label>
+                                            <input matInput type="number" min="1" max="100" formControlName="valorControl" autocomplete="off" />
+                                        </mat-form-field>
+                                
                                     </div>
+
                                     <div>
                                         <button mat-mini-fab color="primary" (click)="agregarOpcion()">
                                             <mat-icon>add</mat-icon>
@@ -158,7 +194,7 @@
                     <mat-card-header>
                         <mat-card-title>{{ "definir_escalas.vista_escala" | translate }}</mat-card-title>
                     </mat-card-header>
-                
+
                     <mat-card-content>
                         <div class="detalle-escala">
                             <!-- Pregunta -->
@@ -167,28 +203,29 @@
                                 <p><strong>Pregunta:</strong></p>
                                 <p>{{ escalaSeleccionada.label }}</p>
                             </div>
-                
+
                             <!-- Tipo de Escala -->
                             <div class="detalle-item">
                                 <mat-icon color="primary">category</mat-icon>
                                 <p><strong>Tipo de Escala:</strong></p>
                                 <p>{{ getTipoEscalaNombre(escalaSeleccionada.TipoCampoId) }}</p>
                             </div>
-                
+
                             <!-- Estado -->
                             <div class="detalle-item">
-                                <mat-icon [ngClass]="escalaSeleccionada.activo ? 'active-icon' : 'inactive-icon'">toggle_on</mat-icon>
+                                <mat-icon
+                                    [ngClass]="escalaSeleccionada.activo ? 'active-icon' : 'inactive-icon'">toggle_on</mat-icon>
                                 <p><strong>Estado:</strong></p>
                                 <p>{{ escalaSeleccionada.activo ? 'Activo' : 'Inactivo' }}</p>
                             </div>
-                
+
                             <!-- Fecha de creación -->
                             <div class="detalle-item">
                                 <mat-icon color="primary">calendar_today</mat-icon>
                                 <p><strong>Fecha de Creación:</strong></p>
                                 <p>{{ escalaSeleccionada.fechaCreacion | date:'fullDate' }}</p>
                             </div>
-                
+
                             <!-- Opciones si es Radio -->
                             <div class="detalle-item" *ngIf="escalaSeleccionada.TipoCampoId === tipoCamposMap['Radio']">
                                 <mat-icon color="primary">list</mat-icon>
@@ -198,14 +235,14 @@
                                 </ul>
                             </div>
                         </div>
-                
+
                         <!-- Botón para activar/inactivar -->
                         <div class="acciones">
                             <button mat-stroked-button color="warn" (click)="toggleEstadoEscala(escalaSeleccionada)">
                                 <mat-icon>{{ escalaSeleccionada.activo ? 'toggle_off' : 'toggle_on' }}</mat-icon>
                                 {{ escalaSeleccionada.activo ? 'Inactivar Escala' : 'Activar Escala' }}
                             </button>
-                
+
                             <!-- Botón de regresar -->
                             <button mat-flat-button color="primary" (click)="regresarLista()">
                                 <mat-icon>arrow_back</mat-icon>
@@ -214,7 +251,6 @@
                         </div>
                     </mat-card-content>
                 </mat-card>
-
             </mat-tab>
         </mat-tab-group>
     </mat-card-content>

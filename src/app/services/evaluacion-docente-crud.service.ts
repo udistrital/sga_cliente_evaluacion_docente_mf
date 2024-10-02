@@ -20,7 +20,7 @@ export class EvaluacionDocenteService {
     }
     
     getCamposActivos() {
-        return this.get('campo?query=activo:true&limit=0');
+        return this.get('campo?query=activo:true,CampoPadreId:0&limit=0&sortby=Id&order=desc');
     }
 
     post(endpoint: string, element: any) {

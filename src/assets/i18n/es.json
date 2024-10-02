@@ -95,7 +95,11 @@
         "eliminar": "Eliminar",
         "buscar": "Buscar",
         "pregunta":"Definicion de escala",
-        "ver_escala":"Vista de escala"
+        "ver_escala":"Vista de escala",
+        "alerta_formulario1":"A continuación, deberá diligenciar el formulario de opcion multiple con unica respuesta, asignando una calificación numérica sido 1 el valor mas bajo y 5 el valor mas alto al desempeño de las opciones asignadas.",
+        "alerta_formulario2":"A continuación, deberá diligenciar la pregunta del formulario de texto, asignando una pregunta abierta, para una respuesta de campo abierto",
+        "alerta_formulario3":"A continuación, deberá diligenciar el formulario para el enunciado del boton de carga sobre uno o varios archivos",
+        "alerta_formulario4":"A continuación, deberá diligenciar el formulario para el enunciado del boton de descarga sobre uno o varios archivos)"
 
     },
     
