@@ -20,12 +20,7 @@
                         <!-- Alerta informativa -->
                         <div class="alert info" style="margin-bottom: 16px;">
                             <mat-icon class="icon">info</mat-icon>
-                            <span>
-                                A continuación, verá el listado de las preguntas habilitadas para las evaluaciones, en
-                                el cual podrá agregar más con el botón
-                                <strong>+</strong>. Podrá ver la pregunta o deshabilitarla con el botón de la columna de
-                                acciones. Si la deshabilita, se ELIMINARÁ automáticamente.
-                            </span>
+                            <span [innerHTML]="'definir_escalas.alerta_formulario5' | translate"></span>
                         </div>
 
                         <!-- Botón para añadir nueva escala -->
@@ -40,43 +35,48 @@
                         <table mat-table [dataSource]="dataSource" matSort class="full-width-table">
                             <!-- Columna de Pregunta -->
                             <ng-container matColumnDef="Pregunta">
-                                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ "definir_escalas.pregunta" |
-                                    translate }}</th>
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                                    {{ "definir_escalas.pregunta" | translate }}
+                                </th>
                                 <td mat-cell *matCellDef="let escala">{{ escala.Nombre }}</td>
                             </ng-container>
 
                             <!-- Columna de Tipo de Escala -->
+                            <!-- Columna de Tipo de Escala -->
                             <ng-container matColumnDef="TipoEscala">
-                                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ "definir_escalas.tipo_escala" |
-                                    translate }}</th>
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                                    {{ "definir_escalas.tipo_escala" | translate }}
+                                </th>
                                 <td mat-cell *matCellDef="let escala">{{ getTipoEscalaNombre(escala.TipoCampoId) }}</td>
                             </ng-container>
 
                             <!-- Columna de Estado -->
                             <ng-container matColumnDef="Estado">
-                                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ "GLOBAL.estado" | translate }}
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                                    {{ "GLOBAL.estado" | translate }}
                                 </th>
                                 <td mat-cell *matCellDef="let escala">
                                     <div class="status-active">Activo</div>
                                 </td>
                             </ng-container>
 
-                            <!-- Columna de acciones con menú desplegable -->
+                            <!-- Columna de Acciones -->
                             <ng-container matColumnDef="Acciones">
-                                <th mat-header-cell *matHeaderCellDef>{{ "GLOBAL.ACCIONES" | translate }}</th>
+                                <th mat-header-cell *matHeaderCellDef>
+                                    {{ "GLOBAL.ACCIONES" | translate }}
+                                </th>
                                 <td mat-cell *matCellDef="let escala">
                                     <button mat-icon-button [matMenuTriggerFor]="menu">
-                                        <mat-icon>more_vert</mat-icon> <!-- Ícono de puntitos -->
+                                        <mat-icon>more_vert</mat-icon>
                                     </button>
                                     <mat-menu #menu="matMenu">
                                         <button mat-menu-item (click)="vistaGeneral(escala)">
-                                            <mat-icon>visibility</mat-icon> <!-- Ícono de ver -->
+                                            <mat-icon>visibility</mat-icon>
                                             {{ "definir_escalas.ver_general" | translate }}
                                         </button>
-                                        <!-- Botón dinámico para activar/inactivar -->
                                         <button mat-menu-item (click)="mostrarConfirmacion(escala)">
                                             <mat-icon>{{ escala.activo ? 'toggle_off' : 'toggle_on' }}</mat-icon>
-                                            {{ escala.activo ? 'Inactivar Escala' : 'Activar Escala' }}
+                                            {{ escala.activo ? 'Activar Escala' : 'Inactivar Escala' }}
                                         </button>
                                     </mat-menu>
                                 </td>
@@ -136,18 +136,22 @@
 
                                 <!-- Tipo de escala seleccionable -->
                                 <mat-form-field class="full-width">
-                                    <mat-label>{{ "Seleccionar tipo de escala" | translate }}</mat-label>
+                                    <mat-label>{{ "definir_escalas.seleccionar_tipo_escala" | translate }}</mat-label>
                                     <mat-select formControlName="tipoCampo"
                                         (selectionChange)="onTipoCampoChange($event)">
                                         <mat-option *ngFor="let tipo of tiposInput" [value]="tipo.Nombre">
+                                            <!-- Íconos basados en el tipo de campo -->
                                             <mat-icon *ngIf="tipo.Nombre === 'Textarea'">edit_note</mat-icon>
                                             <mat-icon *ngIf="tipo.Nombre === 'LinkNuxeo'">download</mat-icon>
                                             <mat-icon *ngIf="tipo.Nombre === 'ArchivoAnexo'">upload</mat-icon>
                                             <mat-icon *ngIf="tipo.Nombre === 'Radio'">checklist</mat-icon>
-                                            {{ getTipoEscalaNombre(tipo.Nombre) }}
+
+                                            <!-- Traducir el nombre del tipo de campo -->
+                                            {{ 'definir_escalas.tipo_' + tipo.Nombre | translate }}
                                         </mat-option>
                                     </mat-select>
                                 </mat-form-field>
+
 
                                 <!-- Pregunta del formulario -->
                                 <mat-form-field class="full-width">
@@ -200,6 +204,81 @@
                         </div>
                     </mat-card-content>
                 </mat-card>
+                <!-- Botón de Pre-visualización -->
+                <button mat-flat-button color="primary" (click)="previsualizarEscala()">
+                    <mat-icon>visibility</mat-icon>
+                    Pre-visualizar
+                </button>
+
+                <!-- Espacio para la vista previa de la escala -->
+                <div *ngIf="previsualizacionActiva" class="escala-previsualizacion">
+                    <h3>Ejemplo de escala</h3>
+
+                    <div *ngIf="tipoEscala === 'Textarea'" class="vista-previa-textarea">
+                        <!-- Previsualización para tipo Textarea -->
+                        <mat-card class="ejemplo-escala">
+                            <mat-card-header>
+                                <mat-card-title>
+                                    1. {{ ejemploPregunta || 'Texto de la pregunta' }}
+                                </mat-card-title>
+                            </mat-card-header>
+                            <mat-card-content>
+                                <textarea matInput placeholder="Escribe tu respuesta aqui" rows="5"></textarea>
+                            </mat-card-content>
+                        </mat-card>
+                    </div>
+
+                    <div *ngIf="tipoEscala === 'Radio'" class="vista-previa-radio">
+                        <!-- Previsualización para tipo Radio -->
+                        <mat-card class="ejemplo-escala">
+                            <mat-card-header>
+                                <mat-card-title>
+                                    1. {{ ejemploPregunta || 'Texto de la pregunta' }}
+                                </mat-card-title>
+                            </mat-card-header>
+                            <mat-card-content>
+                                <mat-radio-group>
+                                    <mat-radio-button *ngFor="let opcion of opciones.controls" [value]="opcion.value">
+                                        {{ opcion.value.opcion }}
+                                    </mat-radio-button>
+                                </mat-radio-group>
+                            </mat-card-content>
+                        </mat-card>
+                    </div>
+
+                    <div *ngIf="tipoEscala === 'ArchivoAnexo'" class="vista-previa-archivo">
+                        <!-- Previsualización para tipo ArchivoAnexo -->
+                        <mat-card class="ejemplo-escala">
+                            <mat-card-header>
+                                <mat-card-title>
+                                    1. {{ ejemploPregunta || 'Texto de la pregunta' }}
+                                </mat-card-title>
+                            </mat-card-header>
+                            <mat-card-content>
+                                <button mat-raised-button color="primary">
+                                    <mat-icon>upload</mat-icon> Cargar
+                                </button>
+                            </mat-card-content>
+                        </mat-card>
+                    </div>
+
+                    <div *ngIf="tipoEscala === 'LinkNuxeo'" class="vista-previa-descargar">
+                        <!-- Previsualización para tipo LinkNuxeo (Descargar archivo) -->
+                        <mat-card class="ejemplo-escala">
+                            <mat-card-header>
+                                <mat-card-title>
+                                    1. {{ ejemploPregunta || 'Texto de la pregunta' }}
+                                </mat-card-title>
+                            </mat-card-header>
+                            <mat-card-content>
+                                <button mat-raised-button color="primary">
+                                    <mat-icon>download</mat-icon> Descargar
+                                </button>
+                            </mat-card-content>
+                        </mat-card>
+                    </div>
+                </div>
+
             </mat-tab>
 
             <!-- Pestaña de Vista de Escala -->
@@ -211,61 +290,124 @@
 
                     <mat-card-content>
                         <div class="detalle-escala">
-                            <!-- Pregunta -->
+
+                            <!-- Nombre de la pregunta -->
                             <div class="detalle-item">
                                 <mat-icon color="primary">question_answer</mat-icon>
-                                <p><strong>Pregunta:</strong></p>
-                                <p>{{ escalaSeleccionada.label }}</p>
+                                <p><strong>{{ "Pregunta:" | translate }}</strong></p>
+                                <p>{{ escalaSeleccionada.Nombre }}</p>
                             </div>
 
                             <!-- Tipo de Escala -->
                             <div class="detalle-item">
                                 <mat-icon color="primary">category</mat-icon>
-                                <p><strong>Tipo de Escala:</strong></p>
+                                <p><strong>{{ "Tipo de Escala:" | translate }}</strong></p>
                                 <p>{{ getTipoEscalaNombre(escalaSeleccionada.TipoCampoId) }}</p>
                             </div>
 
-                            <!-- Estado -->
+                            <!-- Estado Activo/Inactivo -->
                             <div class="detalle-item">
                                 <mat-icon
-                                    [ngClass]="escalaSeleccionada.activo ? 'active-icon' : 'inactive-icon'">toggle_on</mat-icon>
-                                <p><strong>Estado:</strong></p>
-                                <p>{{ escalaSeleccionada.activo ? 'Activo' : 'Inactivo' }}</p>
+                                    [ngClass]="escalaSeleccionada.activo ? 'inactive-icon' : 'active-icon' ">toggle_on</mat-icon>
+                                <p><strong>{{ "Estado:" | translate }}</strong></p>
+                                <p>{{ escalaSeleccionada.activo ? 'Inactivo' : 'Activo' }}</p>
                             </div>
 
                             <!-- Fecha de creación -->
                             <div class="detalle-item">
                                 <mat-icon color="primary">calendar_today</mat-icon>
-                                <p><strong>Fecha de Creación:</strong></p>
-                                <p>{{ escalaSeleccionada.fechaCreacion | date:'fullDate' }}</p>
-                            </div>
-
-                            <!-- Opciones si es Radio -->
-                            <div class="detalle-item" *ngIf="escalaSeleccionada.TipoCampoId === tipoCamposMap['Radio']">
-                                <mat-icon color="primary">list</mat-icon>
-                                <p><strong>Opciones:</strong></p>
-                                <ul>
-                                    <li *ngFor="let opcion of escalaSeleccionada.opciones">{{ opcion.Nombre }}</li>
-                                </ul>
+                                <p><strong>{{ "Fecha de Creación:" | translate }}</strong></p>
+                                <p>{{ escalaSeleccionada.FechaCreacion | date: 'fullDate' }}</p>
                             </div>
                         </div>
 
+                        <!-- Vista previa de la escala según el tipo de campo -->
+                        <div *ngIf="escalaSeleccionada" class="previsualizacion-general">
+                            <h3>{{ "Ejemplo de escala" | translate }}</h3>
+
+                            <!-- Previsualización para tipo Textarea -->
+                            <div *ngIf="escalaSeleccionada.TipoCampoId === tipoCamposMap['Textarea']"
+                                class="vista-previa-textarea">
+                                <mat-card class="ejemplo-escala">
+                                    <mat-card-header>
+                                        <mat-card-title>
+                                            1. {{ escalaSeleccionada.Nombre || 'Texto de la pregunta' }}
+                                        </mat-card-title>
+                                    </mat-card-header>
+                                    <mat-card-content>
+                                        <textarea matInput placeholder="Escribe tu respuesta aquí" rows="5"></textarea>
+                                    </mat-card-content>
+                                </mat-card>
+                            </div>
+
+                            <!-- Previsualización para tipo Radio -->
+                            <div *ngIf="escalaSeleccionada.TipoCampoId === tipoCamposMap['Radio']"
+                                class="vista-previa-radio">
+                                <mat-card class="ejemplo-escala">
+                                    <mat-card-header>
+                                        <mat-card-title>
+                                            1. {{ escalaSeleccionada.Nombre || 'Texto de la pregunta' }}
+                                        </mat-card-title>
+                                    </mat-card-header>
+                                    <mat-card-content>
+                                        <mat-radio-group>
+                                            <mat-radio-button *ngFor="let opcion of escalaSeleccionada.Opciones"
+                                                [value]="opcion">
+                                                {{ opcion.Nombre }}
+                                            </mat-radio-button>
+                                        </mat-radio-group>
+                                    </mat-card-content>
+                                </mat-card>
+                            </div>
+
+                            <!-- Previsualización para tipo ArchivoAnexo -->
+                            <div *ngIf="escalaSeleccionada.TipoCampoId === tipoCamposMap['ArchivoAnexo']"
+                                class="vista-previa-archivo">
+                                <mat-card class="ejemplo-escala">
+                                    <mat-card-header>
+                                        <mat-card-title>
+                                            1. {{ escalaSeleccionada.Nombre || 'Texto de la pregunta' }}
+                                        </mat-card-title>
+                                    </mat-card-header>
+                                    <mat-card-content>
+                                        <button mat-raised-button color="primary">
+                                            <mat-icon>upload</mat-icon> Cargar
+                                        </button>
+                                    </mat-card-content>
+                                </mat-card>
+                            </div>
+
+                            <!-- Previsualización para tipo LinkNuxeo (Descargar archivo) -->
+                            <div *ngIf="escalaSeleccionada.TipoCampoId === tipoCamposMap['LinkNuxeo']"
+                                class="vista-previa-descargar">
+                                <mat-card class="ejemplo-escala">
+                                    <mat-card-header>
+                                        <mat-card-title>
+                                            1. {{ escalaSeleccionada.Nombre || 'Texto de la pregunta' }}
+                                        </mat-card-title>
+                                    </mat-card-header>
+                                    <mat-card-content>
+                                        <button mat-raised-button color="primary">
+                                            <mat-icon>download</mat-icon> Descargar
+                                        </button>
+                                    </mat-card-content>
+                                </mat-card>
+                            </div>
+                        </div>
+
+
                         <!-- Botón para activar/inactivar -->
                         <div class="acciones">
-                            <button mat-stroked-button color="warn" (click)="toggleEstadoEscala(escalaSeleccionada)">
-                                <mat-icon>{{ escalaSeleccionada.activo ? 'toggle_off' : 'toggle_on' }}</mat-icon>
-                                {{ escalaSeleccionada.activo ? 'Inactivar Escala' : 'Activar Escala' }}
-                            </button>
-
                             <!-- Botón de regresar -->
                             <button mat-flat-button color="primary" (click)="regresarLista()">
                                 <mat-icon>arrow_back</mat-icon>
                                 {{ "GLOBAL.regresar" | translate }}
                             </button>
-                        </div>
+                        </div>>
                     </mat-card-content>
                 </mat-card>
             </mat-tab>
+
         </mat-tab-group>
     </mat-card-content>
 </mat-card>

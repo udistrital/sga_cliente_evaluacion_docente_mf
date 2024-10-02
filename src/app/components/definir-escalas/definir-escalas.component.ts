@@ -29,11 +29,13 @@ export class DefinirEscalasComponent implements OnInit {
   tiposInput: any[] = [];
   userRoles: string[] = [];
   ROLES = ROLES;
-  isCreating: boolean = false;
+  isCreating: boolean = false;  
   activeTab = 0;
   isViewingScale: boolean = false;
   escalaSeleccionada: any = {};
   exampleQuestion: string = "";
+  previsualizacionActiva: boolean = false;
+  ejemploPregunta: string = '';
 
   // Formulario Reactivo
   formularioEscala!: FormGroup;
@@ -56,8 +58,7 @@ export class DefinirEscalasComponent implements OnInit {
     Radio: 4668,
     ArchivoAnexo: 6686,
     LinkNuxeo: 4672,
-  };
-
+  };  
   displayedColumns: string[] = ["Pregunta", "TipoEscala", "Estado", "Acciones"];
   dataSource!: MatTableDataSource<any>;
 
@@ -75,10 +76,10 @@ export class DefinirEscalasComponent implements OnInit {
     this.inicializarFormulario();
     this.cargarEscalas();
     this.obtenerTiposInput();
-  
+
     // Configurar el paginador para mostrar 10 escalas por página por defecto
     if (this.paginator) {
-      this.paginator._intl.itemsPerPageLabel = 'Escalas por página';
+      this.paginator._intl.itemsPerPageLabel = "Escalas por página";
     }
   }
 
@@ -88,8 +89,6 @@ export class DefinirEscalasComponent implements OnInit {
       tipoCampo: ["", Validators.required],
       opciones: this.fb.array([]), // Inicialización del FormArray vacío
     });
-
-    console.log("Formulario inicializado: ", this.formularioEscala.value); // Verifica que el formulario inicializado sea correcto
 
     // Añadir opciones por defecto como FormGroups dentro del FormArray
     this.opcionesPorDefecto.forEach((opcion, index) => {
@@ -103,8 +102,6 @@ export class DefinirEscalasComponent implements OnInit {
         })
       );
     });
-
-    console.log("Opciones iniciales: ", this.opciones.value); // Verifica las opciones creadas dentro del FormArray
   }
 
   get opciones(): FormArray {
@@ -154,6 +151,11 @@ export class DefinirEscalasComponent implements OnInit {
       default:
         return "Desconocido";
     }
+  }
+
+  regresarLista() {
+    this.isViewingScale = false;
+    this.activeTab = 0;
   }
 
   // Función para mostrar el diálogo de confirmación
@@ -368,15 +370,11 @@ export class DefinirEscalasComponent implements OnInit {
               });
             }
 
-            // Guardar la escala con el campo TipoCampoId correcto
-            nuevaEscala.TipoCampoId = TipoCampoId;
-            nuevaEscala.Nombre = nuevaEscala.label;
-            this.escalas.push(nuevaEscala);
-            this.dataSource.data = this.escalas;
-
+            // Después de guardar exitosamente, regresa a la lista y recarga las escalas
             this.isCreating = false;
             this.formularioEscala.reset();
             this.activeTab = 0;
+            this.cargarEscalas(); // Recargar la lista automáticamente
           },
           (error: any) => {
             console.error(
@@ -419,14 +417,31 @@ export class DefinirEscalasComponent implements OnInit {
   }
 
   vistaGeneral(escala: any) {
+    // Asignar la escala seleccionada a la variable para visualizar sus detalles
     this.escalaSeleccionada = escala;
+
+    // Configurar el tipo de escala según el tipo de campo
+    switch (escala.TipoCampoId) {
+      case this.tipoCamposMap['Textarea']:
+        this.tipoEscala = 'Textarea';
+        break;
+      case this.tipoCamposMap['Radio']:
+        this.tipoEscala = 'Radio';
+        break;
+      case this.tipoCamposMap['ArchivoAnexo']:
+        this.tipoEscala = 'ArchivoAnexo';
+        break;
+      case this.tipoCamposMap['LinkNuxeo']:
+        this.tipoEscala = 'LinkNuxeo';
+        break;
+      default:
+        this.tipoEscala = '';
+    }
+    
+
+    // Cambiar a la pestaña de vista general
     this.isViewingScale = true;
     this.activeTab = 2;
-  }
-
-  regresarLista() {
-    this.isViewingScale = false;
-    this.activeTab = 0;
   }
 
   inactivarEscala(escala: any) {
@@ -510,6 +525,36 @@ export class DefinirEscalasComponent implements OnInit {
         }
       );
   }
+
+
+  previsualizarEscala() {
+    // Activar la previsualización
+    this.previsualizacionActiva = true;
+
+    // Configurar la pregunta de ejemplo según el tipo de campo seleccionado
+    switch (this.formularioEscala.get('tipoCampo')?.value) {
+      case 'Radio':
+        this.tipoEscala = 'Radio';
+        this.ejemploPregunta = this.formularioEscala.get('label')?.value || 'Texto de la pregunta';
+        break;
+      case 'Textarea':
+        this.tipoEscala = 'Textarea';
+        this.ejemploPregunta = this.formularioEscala.get('label')?.value || 'Texto de la pregunta';
+        break;
+      case 'ArchivoAnexo':
+        this.tipoEscala = 'ArchivoAnexo';
+        this.ejemploPregunta = this.formularioEscala.get('label')?.value || 'Texto de la pregunta';
+        break;
+      case 'LinkNuxeo':
+        this.tipoEscala = 'LinkNuxeo';
+        this.ejemploPregunta = this.formularioEscala.get('label')?.value || 'Texto de la pregunta';
+        break;
+      default:
+        this.tipoEscala = '';
+        this.ejemploPregunta = '';
+    }
+  }
+
 }
 
 // Definir el diálogo de confirmación directamente dentro del mismo archivo

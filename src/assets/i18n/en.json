@@ -77,11 +77,18 @@
         "eliminar": "Delete",
         "buscar": "Search",
         "pregunta":"Definicion de escala",
-        "ver":"Vista de escala",
+        "ver_general":"Vista de escala",
+        "vista_escala":"Vista de la escala",
         "alerta_formulario1":"A continuación, deberá diligenciar el formulario de opcion multiple con unica respuesta, asignando una calificación numérica sido 1 el valor mas bajo y 5 el valor mas alto al desempeño de las opciones asignadas.",
         "alerta_formulario2":"A continuación, deberá diligenciar la pregunta del formulario de texto, asignando una pregunta abierta, para una respuesta de campo abierto",
         "alerta_formulario3":"A continuación, deberá diligenciar el formulario para el enunciado del boton de carga sobre uno o varios archivos",
-        "alerta_formulario4":"A continuación, deberá diligenciar el formulario para el enunciado del boton de descarga sobre uno o varios archivos)"
+        "alerta_formulario4":"A continuación, deberá diligenciar el formulario para el enunciado del boton de descarga sobre uno o varios archivos)",
+        "alerta_formulario5": "A continuación, verá el listado de las preguntas habilitadas para las evaluaciones, en el cual podrá agregar más con el botón <strong>+</strong>. Podrá ver la pregunta o deshabilitarla con el botón de la columna de acciones. Si la deshabilita, se ELIMINARÁ automáticamente.",
+        "seleccionar_tipo_escala": "Seleccionar tipo de escala",
+        "tipo_Textarea": "Texto",
+        "tipo_LinkNuxeo": "Descargar archivo",
+        "tipo_ArchivoAnexo": "Cargar archivo",
+        "tipo_Radio": "Selección de única respuesta"
 
     },
     
