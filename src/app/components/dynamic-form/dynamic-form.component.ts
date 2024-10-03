@@ -432,9 +432,7 @@ selectForm(tipo_formulario: string) {
     if (this.documentId) {
       this.gestorDocumentalService.getByUUID(this.documentId).subscribe(
         (fileUrl: string) => {
-          console.log(fileUrl);
-          const sanitizedUrl = this.sanitizer.bypassSecurityTrustUrl(fileUrl);
-          this.triggerDownload(sanitizedUrl as string);
+          this.triggerDownload(fileUrl);
         },
         (error: any) => {
           console.error('Error downloading the document:', error);
