@@ -13,7 +13,7 @@ import { environment } from '../environments/environment';
 import { AppComponent } from './app.component';
 import { DefinicionFormulariosComponent } from './components/definicion-formularios/definicion-formularios.component';
 import { AsignacionFechasComponent } from './components/asignacion-fechas/asignacion-fechas.component';
-import { DefinirEscalasComponent } from './components/definir-escalas/definir-escalas.component';
+import { DefinirEscalasComponent, DialogoConfirmacion } from './components/definir-escalas/definir-escalas.component';
 import { DynamicFormComponent } from './components/dynamic-form/dynamic-form.component';
 
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -42,7 +42,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
-import { MatSnackBarModule } from '@angular/material/snack-bar'; // Importar MatSnackBarModule
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatMenuModule } from '@angular/material/menu';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { ResultadosComponent } from './components/resultados/resultados.component';
 import { NuxeoComponent } from './components/nuxeo/nuxeo.component';
@@ -55,6 +56,7 @@ import { EspaciosAcademicosService } from './services/espacios_academicos.servic
 
 import { DateService } from './services/date.service';
 import { SgaEvaluacionDocenteMidService } from './services/sga_evaluacion_docente_mid.service';
+import { EvaluacionDocenteService } from './services/evaluacion-docente-crud.service';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, environment.apiUrl + 'assets/i18n/', '.json');
@@ -73,7 +75,8 @@ export function createTranslateLoader(http: HttpClient) {
     ResultadosComponent,
     MetricasComponent,
     ResultadosComponent,
-    DynamicFormComponent
+    DynamicFormComponent,
+    DialogoConfirmacion
   ],
   imports: [
     BrowserModule,
@@ -120,8 +123,9 @@ export function createTranslateLoader(http: HttpClient) {
     MatButtonModule,
     MatIconModule,
     MatFormFieldModule,
-    MatExpansionModule,
-    MatStepperModule  
+    MatStepperModule,
+    MatInputModule,
+    MatMenuModule  
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [
@@ -137,6 +141,7 @@ export function createTranslateLoader(http: HttpClient) {
     DateService,
     EspaciosAcademicosService,
     SgaEvaluacionDocenteMidService,
+    EvaluacionDocenteService,
     { provide: HTTP_INTERCEPTORS, useClass: SpinnerUtilInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]

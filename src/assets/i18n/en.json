@@ -1,5 +1,4 @@
 {
-    
     "HOME": {
         "TITLE": "SGA",
         "SELECT": "Select evaluation type",
@@ -12,20 +11,30 @@
         "cancelar": "Cancel"
     },
 
-    "GLOBAL":{
+    "GLOBAL": {
         "GUARDAR": "Save",
         "CANCELAR": "Cancel",
         "ELIMINAR": "Delete",
         "EDITAR": "Edit",
         "AGREGAR": "Add",
+        "BUSCAR": "Search",
+        "LISTA": "List",
+        "FORMULARIO": "Form",
+        "ACCIONES": "Actions",
         "proyecto_academico": "Academic Project",
         "seleccionar": "Select",
         "periodo": "Period",
         "continuar": "Continue",
         "atras": "Back",
-        "generar": "Generate"
+        "generar": "Generate",
+        "atencion": "Attention",
+        "aceptar": "Accept",
+        "cancelar": "Cancel",
+        "estado": "Status",
+        "ver_general": "View scale",
+        "regresar": "Go back"
     },
-    
+
     "asignacion_fechas": {
         "titulo": "Assignment of dates for processes",
         "seleccionar_nivel_formacion": "Select the level of training to assign",
@@ -55,20 +64,34 @@
     },
 
     "definir_escalas": {
-        "titulo": "Define Scale",
-        "seleccionar_tipo_escala": "Select type of scale",
-        "seleccione": "Select",
-        "cualitativa": "Qualitative",
-        "cuantitativa": "Quantitative",
-        "escala": "Scale",
-        "del_seud": "of SEUD",
-        "descripcion": "Define description or objectives",
-        "agregar_elemento_escala": "Add scale element",
-        "estado": "Status",
-        "descripcion_columna": "Description",
-        "visualizar": "View"
+        "titulo_principal": "Define Scales",
+        "aniadir_nueva_escala": "Add new scale",
+        "tipo_escala": "Scale Type",
+        "descripcion": "Description",
+        "tipo_input": "Input Type",
+        "formulario_creacion": "Creation Form",
+        "sin_escalas": "No scales available",
+        "guardar": "Save",
+        "cancelar": "Cancel",
+        "eliminar": "Delete",
+        "buscar": "Search",
+        "pregunta": "Scale definition",
+        "ver_general": "View scale",
+        "vista_escala": "Scale view",
+        "alerta_formulario1": "Next, you must complete the multiple-choice form with a single response, assigning a numerical rating from 1 (lowest value) to 5 (highest value) to the performance of the assigned options.",
+        "alerta_formulario2": "Next, you must complete the form's text question, assigning an open question for an open field response.",
+        "alerta_formulario3": "Next, you must complete the form for the upload button's label for one or more files.",
+        "alerta_formulario4": "Next, you must complete the form for the download button's label for one or more files.",
+        "alerta_formulario5": "You will now see a list of the enabled questions for evaluations, where you can add more using the <strong>+</strong> button. You can view the question or disable it with the action column button. If disabled, it will be automatically DELETED.",
+        "seleccionar_tipo_escala": "Select scale type",
+        "tipo_Textarea": "Text",
+        "tipo_LinkNuxeo": "Download file",
+        "tipo_ArchivoAnexo": "Upload file",
+        "tipo_Radio": "Single answer selection",
+        "previsualizar":"Preview",
+        "ejemplo_escala":"Example view of the scale"
     },
-    
+
     "heteroevaluacion": {
         "titulo": "Heteroevaluation",
         "fechas": "Dates",
@@ -144,7 +167,7 @@
         "error_espacio_academico": "Please select an academic space.",
         "error_descripcion": "Please enter a description."
     },
-    
+
     "coevaluacion_ii": {
         "titulo": "Co-evaluation II",
         "fechas": "Dates",
@@ -162,11 +185,11 @@
         "error_descripcion": "Please enter a process description."
     },
 
-    "metricas":{
+    "metricas": {
         "metricas": "Metrics",
         "tipo_reporte": "Report type",
         "filtros": "Filters",
-        "elegir_todas": "All",
+        "elegir_todas": "Select All",
         "vinculacion": "Linkage",
         "componente": "Component",
         "facultad": "Faculty",
