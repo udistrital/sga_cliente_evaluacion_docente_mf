@@ -14,6 +14,7 @@ import { DynamicFormComponent } from './components/dynamic-form/dynamic-form.com
 import { AuthGuard } from 'src/_guards/auth.guard';
 // Importar el componente EmptyRouteComponent
 import { NuxeoComponent } from './components/nuxeo/nuxeo.component';
+import { DefinicionPlantillasComponent } from './components/definicion-plantillas/definicion-plantillas.component';
 
 const routes: Routes = [
   {
@@ -51,8 +52,13 @@ const routes: Routes = [
     component: NuxeoComponent },
   {
     path: 'dynamic-form',
-    //canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
     component: DynamicFormComponent
+  },
+  {
+    path: 'definicion-plantillas',
+    //canActivate: [AuthGuard],
+    component: DefinicionPlantillasComponent
   },
 ];
 

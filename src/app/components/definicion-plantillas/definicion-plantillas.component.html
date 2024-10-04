@@ -1,0 +1,311 @@
+<mat-card>
+    <mat-card-header>
+        <mat-card-title>{{ "Listado de formularios" }}</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+        <!-- Tabla inicial -->
+        <table mat-table [dataSource]="formularios" class="full-width-table">
+            <!-- Columnas para la tabla de Listado de formularios -->
+            <ng-container matColumnDef="numero">
+                <th mat-header-cell *matHeaderCellDef>#</th>
+                <td mat-cell *matCellDef="let form">{{ form.numero }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="proceso">
+                <th mat-header-cell *matHeaderCellDef>Proceso</th>
+                <td mat-cell *matCellDef="let form">{{ form.proceso }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="fecha">
+                <th mat-header-cell *matHeaderCellDef>Fecha de creación / edición</th>
+                <td mat-cell *matCellDef="let form">{{ form.fecha | date }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="estado">
+                <th mat-header-cell *matHeaderCellDef>Estado</th>
+                <td mat-cell *matCellDef="let form">{{ form.estado }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="ponderacion">
+                <th mat-header-cell *matHeaderCellDef>Ponderación global</th>
+                <td mat-cell *matCellDef="let form">{{ form.ponderacion }}%</td>
+            </ng-container>
+
+            <ng-container matColumnDef="acciones">
+                <th mat-header-cell *matHeaderCellDef>
+                    <button mat-icon-button (click)="mostrarVistaComponente()">
+                        <mat-icon>add</mat-icon>
+                    </button>
+                </th>
+                <td mat-cell *matCellDef="let form">
+                    <button mat-icon-button>
+                        <mat-icon>edit</mat-icon>
+                    </button>
+                    <button mat-icon-button>
+                        <mat-icon>lock</mat-icon>
+                    </button>
+                    <button mat-icon-button>
+                        <mat-icon>visibility</mat-icon>
+                    </button>
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+
+        <!-- Formulario de creación 
+        <div *ngIf="creandoFormulario">
+            <mat-card>
+                <mat-card-header>
+                    <mat-card-title>{{ "Crear nuevo formulario" }}</mat-card-title>
+                </mat-card-header>
+
+                <mat-card-content>
+                    
+                    <div>
+                        <mat-form-field>
+                            <mat-label>Seleccionar proceso</mat-label>
+                            <mat-select [(ngModel)]="formularioSeleccionado.proceso">
+                                <mat-option *ngFor="let proceso of procesos" [value]="proceso">
+                                    {{ proceso }}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+
+                        <mat-form-field>
+                            <mat-label>Seleccionar período académico</mat-label>
+                            <mat-select [(ngModel)]="formularioSeleccionado.periodo">
+                                <mat-option *ngFor="let periodo of periodos" [value]="periodo">
+                                    {{ periodo }}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+
+                        <mat-form-field>
+                            <mat-label>Rol / Usuario asociado</mat-label>
+                            <mat-select [(ngModel)]="formularioSeleccionado.rol">
+                                <mat-option *ngFor="let rol of roles" [value]="rol">
+                                    {{ rol }}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+
+                  
+                    <div>
+                        <button mat-flat-button color="primary" (click)="mostrarOpciones()">
+                            Seleccione el tipo de respuesta
+                        </button>
+                        <span>{{ tipoRespuestaSeleccionada }}</span>
+                    </div>
+
+                    
+                    <div *ngIf="mostrarOpcionesTipoRespuesta">
+                        <button mat-button (click)="seleccionarTipoRespuesta('Múltiple (escala de 1 a 5)')">
+                            <mat-icon>check_circle</mat-icon> Múltiple (escala de 1 a 5)
+                        </button>
+                        <button mat-button (click)="seleccionarTipoRespuesta('Texto')">
+                            <mat-icon>text_fields</mat-icon> Texto
+                        </button>
+                        <button mat-button (click)="seleccionarTipoRespuesta('Soporte documental')">
+                            <mat-icon>attach_file</mat-icon> Soporte documental
+                        </button>
+                        <button mat-button (click)="seleccionarTipoRespuesta('Lista de respuestas')">
+                            <mat-icon>list</mat-icon> Lista de respuestas
+                        </button>
+                    </div>
+
+                    <button mat-flat-button color="warn" (click)="cancelarCreacion()">Cerrar</button>
+                </mat-card-content>
+            </mat-card>
+        </div> 
+
+     
+        <div *ngIf="editandoComponente">
+            <mat-card>
+                <mat-card-header>
+                    <mat-card-title>{{ formularioSeleccionado.proceso }}</mat-card-title>
+                </mat-card-header>
+
+                <mat-card-content>
+                    
+                    <div>
+                        <mat-form-field>
+                            <input matInput placeholder="Texto orientativo a usuarios funcionales"
+                                [(ngModel)]="textoOrientativo" />
+                        </mat-form-field>
+                        <button mat-icon-button (click)="agregarComponente()">
+                            <mat-icon>add</mat-icon>
+                        </button>
+                    </div>
+
+                    <table mat-table [dataSource]="componentes" class="full-width-table">
+                        <ng-container matColumnDef="nombre">
+                            <th mat-header-cell *matHeaderCellDef>Componente</th>
+                            <td mat-cell *matCellDef="let componente">{{ componente.nombre }}</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="estado">
+                            <th mat-header-cell *matHeaderCellDef>Estado</th>
+                            <td mat-cell *matCellDef="let componente">{{ componente.estado }}</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="ponderacion">
+                            <th mat-header-cell *matHeaderCellDef>Ponderación global</th>
+                            <td mat-cell *matCellDef="let componente">{{ componente.ponderacion }}%</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="acciones">
+                            <th mat-header-cell *matHeaderCellDef></th>
+                            <td mat-cell *matCellDef="let componente">
+                                <button mat-icon-button>
+                                    <mat-icon>edit</mat-icon>
+                                </button>
+                                <button mat-icon-button>
+                                    <mat-icon>lock</mat-icon>
+                                </button>
+                            </td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+                    </table>
+
+                  
+                    <div>
+                        <mat-card>
+                            <mat-form-field>
+                                <input matInput placeholder="Agregar título" [(ngModel)]="nuevoTitulo" />
+                            </mat-form-field>
+
+                            <mat-form-field>
+                                <input matInput placeholder="Texto de la pregunta o acción" />
+                                <mat-select placeholder="Seleccione tipo de respuesta">
+                                    <mat-option value="cuantitativo">Cuantitativo</mat-option>
+                                    <mat-option value="cualitativo">Cualitativo</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </mat-card>
+                    </div>
+
+                    <button mat-flat-button color="primary" (click)="guardarFormulario()">Guardar formulario</button>
+                </mat-card-content>
+            </mat-card>
+        </div>-->
+
+        <!-- Tabla "Agregar componente" visible solo cuando se presiona el botón "+" -->
+        <div *ngIf="mostrandoVistaComponente">
+            <mat-card>
+                <mat-card-header>
+                    <mat-card-title>{{ "Agregar componente" }}</mat-card-title>
+                </mat-card-header>
+                <mat-card-content>
+                    <table mat-table [dataSource]="componentes" class="full-width-table">
+                        <ng-container matColumnDef="numero">
+                            <th mat-header-cell *matHeaderCellDef>#</th>
+                            <td mat-cell *matCellDef="let compo">{{ compo.numero }}</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="nombre">
+                            <th mat-header-cell *matHeaderCellDef>Componente</th>
+                            <td mat-cell *matCellDef="let compo">{{ compo.nombre }}</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="estado">
+                            <th mat-header-cell *matHeaderCellDef>Estado</th>
+                            <td mat-cell *matCellDef="let compo">{{ compo.estado }}</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="ponderacion">
+                            <th mat-header-cell *matHeaderCellDef>Ponderación global</th>
+                            <td mat-cell *matCellDef="let compo">{{ compo.ponderacion }}%</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="acciones">
+                            <th mat-header-cell *matHeaderCellDef>
+                                <button mat-icon-button (click)="agregarComponente()">
+                                    <mat-icon>add</mat-icon>
+                                </button>
+                            </th>
+                            <td mat-cell *matCellDef="let compo">
+                                <button mat-icon-button>
+                                    <mat-icon>edit</mat-icon>
+                                </button>
+                                <button mat-icon-button>
+                                    <mat-icon>lock</mat-icon>
+                                </button>
+                            </td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="displayedColumnsComponente"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumnsComponente"></tr>
+                    </table>
+                </mat-card-content>
+            </mat-card>
+        </div>
+
+
+        <!-- Vista de edición y creación de componentes -->
+        <div *ngIf="mostrandoVistaComponente">
+            <mat-card>
+                <mat-card-header>
+                    <mat-card-title>{{ "Formulario " + formularioSeleccionado.proceso }}</mat-card-title>
+                </mat-card-header>
+
+                <mat-card-content>
+                    <!-- Texto orientativo a usuarios funcionales -->
+                    <div>
+                        <mat-form-field>
+                            <input matInput placeholder="Texto orientativo a usuarios funcionales"
+                                [(ngModel)]="textoOrientativo" />
+                        </mat-form-field>
+                        <button mat-icon-button (click)="agregarTextoOrientativo()">
+                            <mat-icon>add</mat-icon>
+                        </button>
+                    </div>
+
+                    <!-- Agregar componentes -->
+                    <table mat-table [dataSource]="componentes" class="full-width-table">
+                        <ng-container matColumnDef="nombre">
+                            <th mat-header-cell *matHeaderCellDef>Componente</th>
+                            <td mat-cell *matCellDef="let componente">{{ componente.nombre }}</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="estado">
+                            <th mat-header-cell *matHeaderCellDef>Estado</th>
+                            <td mat-cell *matCellDef="let componente">{{ componente.estado }}</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="ponderacion">
+                            <th mat-header-cell *matHeaderCellDef>Ponderación global</th>
+                            <td mat-cell *matCellDef="let componente">{{ componente.ponderacion }}%</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="acciones">
+                            <th mat-header-cell *matHeaderCellDef></th>
+                            <td mat-cell *matCellDef="let componente">
+                                <button mat-icon-button>
+                                    <mat-icon>edit</mat-icon>
+                                </button>
+                                <button mat-icon-button>
+                                    <mat-icon>lock</mat-icon>
+                                </button>
+                            </td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+                    </table>
+
+                    <!-- Botón para agregar nuevo componente -->
+                    <button mat-flat-button color="primary" (click)="agregarComponente()">Agregar componente</button>
+                    <button mat-flat-button color="warn" (click)="ocultarVistaComponente()">Cerrar</button>
+                </mat-card-content>
+            </mat-card>
+        </div>
+
+
+    </mat-card-content>
+</mat-card>
