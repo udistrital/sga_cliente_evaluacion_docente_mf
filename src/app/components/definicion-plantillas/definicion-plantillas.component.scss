@@ -1,0 +1,30 @@
+.form-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.form-field {
+    flex: 1 1 45%; /* Hace que el campo ocupe 45% del ancho */
+    min-width: 200px; /* Asegura que los campos no se vuelvan muy pequeños */
+}
+
+.add-btn {
+    flex: 1 1 10%; /* Ajusta el tamaño del botón */
+    align-self: center;
+}
+
+.mt-4 {
+    margin-top: 20px;
+}
+
+@media (max-width: 768px) {
+    .form-field {
+        flex: 1 1 100%; /* Hace que los campos ocupen el 100% del ancho en pantallas pequeñas */
+    }
+
+    .add-btn {
+        flex: 1 1 100%; /* Botón también ocupa todo el ancho */
+        justify-content: center;
+    }
+}

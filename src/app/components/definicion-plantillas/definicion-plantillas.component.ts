@@ -17,10 +17,9 @@ export class DefinicionPlantillasComponent {
   displayedColumnsComponente: string[] = [
     "numero",
     "nombre",
-    "estado",
     "ponderacion",
-    "acciones",
   ];
+
   formularios = [
     {
       numero: 1,
@@ -30,68 +29,41 @@ export class DefinicionPlantillasComponent {
       ponderacion: 100,
     },
   ];
+
   componentes = [
-    { numero: 1, nombre: "Componente 1", estado: "Activo", ponderacion: 20 },
-    { numero: 2, nombre: "Componente 2", estado: "Inactivo", ponderacion: 30 },
+    { numero: 1, nombre: "Componente 1", ponderacion: 20 },
+    { numero: 2, nombre: "Componente 2", ponderacion: 30 },
   ];
+
   mostrandoVistaComponente = false;
-  nuevoTitulo: string = "";
-  creandoFormulario = false;
-  editandoComponente = false;
-  mostrarOpcionesTipoRespuesta = false;
-  tipoRespuestaSeleccionada: string = ""; // Almacena el tipo de respuesta seleccionada
-  formularioSeleccionado: any = {};
-  textoOrientativo = "";
-  procesos = ["Heteroevaluación", "Autoevaluación", "Coevaluación"];
-  periodos = ["2024-1", "2024-2"];
-  roles = ["Administrador", "Docente", "Estudiante"];
+  mostrarTablaDos = false; // Para controlar la visibilidad de la tabla dos
+  formularioTitulo: string = "Formulario heteroevaluación"; // Título editable
+  nuevoPorcentaje: number = 0;  // Variable para el porcentaje
+  tiposDeRespuesta: string[] = ["Opción 1", "Opción 2", "Opción 3"];
 
-  constructor() {}
-
-  crearNuevoFormulario() {
-    this.creandoFormulario = true;
-  }
-
-  mostrarOpciones() {
-    this.mostrarOpcionesTipoRespuesta = !this.mostrarOpcionesTipoRespuesta;
-  }
-
-  seleccionarTipoRespuesta(tipo: string) {
-    this.tipoRespuestaSeleccionada = tipo;
-    this.mostrarOpcionesTipoRespuesta = false; // Cerrar las opciones después de seleccionar
-  }
-
-  cancelarCreacion() {
-    this.creandoFormulario = false;
-  }
-
-  guardarFormulario() {
-    console.log("Formulario guardado");
-  }
-
-  // Muestra la vista de componentes
+  // Muestra el formulario editable y el texto orientativo
   mostrarVistaComponente() {
     this.mostrandoVistaComponente = true;
   }
 
-  // Oculta la vista de componentes
-  ocultarVistaComponente() {
-    this.mostrandoVistaComponente = false;
+  // Muestra la segunda tabla de componentes
+  mostrarSegundaTabla() {
+    this.mostrarTablaDos = true;
   }
 
-  // Agregar texto orientativo
-  agregarTextoOrientativo() {
-    console.log("Texto orientativo agregado:", this.textoOrientativo);
-  }
-
-  // Agregar nuevo componente
+  // Función para agregar un nuevo componente con porcentaje
   agregarComponente() {
-    const nuevoComponente = {
-      numero: this.componentes.length + 1,
-      nombre: "Nuevo componente",
-      estado: "Activo",
-      ponderacion: 100,
-    };
-    this.componentes.push(nuevoComponente);
+    if (this.nuevoPorcentaje > 0) {
+      const nuevoComponente = {
+        numero: this.componentes.length + 1,
+        nombre: "Nuevo componente",
+        ponderacion: this.nuevoPorcentaje, // Añade el porcentaje aquí
+      };
+      this.componentes.push(nuevoComponente);
+      this.nuevoPorcentaje = 0; // Reiniciar el valor del porcentaje
+    } else {
+      console.error('El porcentaje debe ser mayor que 0.');
+    }
   }
 }
+
