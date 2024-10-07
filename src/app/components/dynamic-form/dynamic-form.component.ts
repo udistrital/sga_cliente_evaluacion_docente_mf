@@ -58,7 +58,7 @@ ngOnInit() {
   console.log("check if take the changes...")
   // Inicializar el formulario principal
   //this.stepperForm = this.fb.group({});
-  this.documentId = '74';
+  this.documentId = '5f479892-a735-43c7-9981-b812dbb6b927';
   // Seleccionar el formulario por defecto para la vista inicial
   //this.selectForm("heteroevaluacion"); // Se puede cambiar según las necesidades
 }
@@ -223,18 +223,21 @@ selectForm(tipo_formulario: string) {
   // Método para manejar el evento de submit
   submit() {
     if (this.stepperForm.valid) {
-      const respuestas = this.generateResponseData();
-      const jsonData = {
-        id_periodo: 1,
-        id_tercero: 1,
-        id_evaluado: 1,
-        proyecto_curricular: 123,
-        espacio_academico: 12,
-        plantilla_id: 456,
-        respuestas,
-      };
-      this.saveForm(jsonData);
-      console.log("Formulario guardado:", jsonData);
+      this.generateResponseData().then(respuestas => {
+        const jsonData = {
+          id_periodo: 1,
+          id_tercero: 1,
+          id_evaluado: 1,
+          proyecto_curricular: 123,
+          espacio_academico: 12,
+          plantilla_id: 456,
+          respuestas,
+        };
+        this.saveForm(jsonData);
+        console.log("Formulario guardado:", jsonData);
+      }).catch(error => {
+        console.error('Error al generar las respuestas:', error);
+      });;
     } else {
       console.log("Formulario inválido:", this.stepperForm);
       Swal.fire({
@@ -245,35 +248,40 @@ selectForm(tipo_formulario: string) {
     }
   }
 
-  generateResponseData(): Respuesta[] {
-    const respuestas: Respuesta[] = []; // Tipado explícito de la variable respuestas
-    this.todasSecciones.forEach((seccion, i) => {
-      seccion.items.forEach(async (pregunta:any, j:number) => {
+  async generateResponseData(): Promise<Respuesta[]> {
+    const respuestas: Respuesta[] = [];
+
+    const promesas = this.todasSecciones.map(seccion =>
+      seccion.items.map(async (pregunta: any) => {
         const controlName = this.generateControlName(seccion.id, pregunta.id);
-        const control = this.stepperForm.get(
-          `pregunta_${controlName}`
-        );
+        const control = this.stepperForm.get(`pregunta_${controlName}`);
 
         if (control?.value instanceof File) {
           console.log("Archivo cargado:", control.value);
-          await this.loadFile(control.value).then((resp) => {
-            const respuesta: Respuesta = {
-              item_id: pregunta.id,
-              valor: resp[0].res.Enlace,
-            };
-            respuestas.push(respuesta);
-          })
+          const resp = await this.loadFile(control.value);
+          this.documentId = resp[0].res.Enlace;
+          respuestas.push({
+            item_id: pregunta.id,
+            valor: resp[0].res.Enlace,
+          });
         } else {
-          const respuesta: Respuesta = {
+          respuestas.push({
             item_id: pregunta.id,
             valor: control?.value || "",
-          };
-          respuestas.push(respuesta);
+          });
         }
-        
-      });
-    });
+      })
+    );
+
+    await Promise.all(promesas.flat());
+
     return respuestas;
+  }
+
+  hasDocumentForDownload(pregunta: any) {
+    return pregunta != null && pregunta.campos != null
+      ? pregunta.campos.some((campo: any) => campo.tipo_campo == TIPOINPUT.FileDownload)
+      : false;
   }
 
   // Función para generar el nombre de un control
@@ -421,12 +429,10 @@ selectForm(tipo_formulario: string) {
 
   // Método para manejar la descarga 
   downloadDocument() {
-    const documentoId = '74';
-    if (documentoId) {
-      this.gestorDocumentalService.getByUUID(documentoId).subscribe(
+    if (this.documentId) {
+      this.gestorDocumentalService.getByUUID(this.documentId).subscribe(
         (fileUrl: string) => {
-          const sanitizedUrl = this.sanitizer.bypassSecurityTrustUrl(fileUrl);
-          this.triggerDownload(sanitizedUrl as string);
+          this.triggerDownload(fileUrl);
         },
         (error: any) => {
           console.error('Error downloading the document:', error);
