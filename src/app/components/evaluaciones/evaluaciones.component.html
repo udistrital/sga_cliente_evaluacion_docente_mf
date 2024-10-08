@@ -112,10 +112,9 @@
                                     <mat-label>{{ 'coevaluacion_ii.docente' | translate }}</mat-label>
                                     <mat-select formControlName="docenteNombre">
                                         <mat-option value="" disabled>Seleccione un docente</mat-option>
-                                        <mat-option value="docente1">{{ 'coevaluacion_ii.nombre_docente' | translate }}
-                                            1</mat-option>
-                                        <mat-option value="docente2">{{ 'coevaluacion_ii.nombre_docente' | translate }}
-                                            2</mat-option>
+                                        <mat-option *ngFor="let docente of docentes?.opciones" [value]="docente">
+                                            {{ docente.Nombre }}
+                                        </mat-option>
                                     </mat-select>
                                     <mat-error
                                         *ngIf="heteroForm.get('docenteNombre')?.hasError('required') && heteroForm.get('docenteNombre')?.touched">
@@ -226,8 +225,8 @@
                             <div class="form-col1">
                                 <mat-form-field style="width: 100%" appearance="outline">
                                     <mat-label>{{ 'autoevaluacion_i.espacio_academico' | translate }}</mat-label>
-                                    <mat-select (selectionChange)="onProyectoSelection($event)" required>
-                                        <mat-option *ngFor="let item of proyectos?.opciones" [value]="item">
+                                    <mat-select (selectionChange)="onEspacioSelection($event)" required>
+                                        <mat-option *ngFor="let item of espacios?.opciones" [value]="item">
                                             {{ item.Nombre }}
                                         </mat-option>
                                     </mat-select>
@@ -338,9 +337,9 @@
                             <div class="form-col1">
                                 <mat-form-field style="width: 100%" appearance="outline">
                                     <mat-label>{{ 'autoevaluacion_ii.espacio1' | translate }}</mat-label>
-                                    <mat-select formControlName="espacioAcademico" required>
+                                    <mat-select (selectionChange)="onEspacioSelection($event)" formControlName="espacioAcademico" required>
                                         <mat-option *ngFor="let espacio of espacios_academicos"
-                                            [value]="espacio.nombre">
+                                            [value]="espacio">
                                             {{ espacio.nombre }}
                                         </mat-option>
                                     </mat-select>
@@ -426,9 +425,9 @@
                             <div class="form-col1">
                                 <mat-form-field style="width: 100%" appearance="outline">
                                     <mat-label>{{ 'autoevaluacion_ii.espacio1' | translate }}</mat-label>
-                                    <mat-select formControlName="espacioAcademico" required>
+                                    <mat-select (selectionChange)="onEspacioSelection($event)" formControlName="espacioAcademico" required>
                                         <mat-option *ngFor="let espacio of espacios_academicos"
-                                            [value]="espacio.nombre">
+                                            [value]="espacio">
                                             {{ espacio.nombre }}
                                         </mat-option>
                                     </mat-select>
@@ -458,10 +457,10 @@
                                         }}</mat-label>
                                     <mat-select formControlName="grupoSeleccionado">
                                         <mat-option value="" disabled>Seleccione un grupo</mat-option>
-                                        <mat-option value="grupo1">{{ 'coevaluacion_i.grupo' | translate }}
-                                            1</mat-option>
-                                        <mat-option value="grupo2">{{ 'coevaluacion_i.grupo' | translate }}
-                                            2</mat-option>
+                                        <mat-option *ngFor="let grupo of grupos"
+                                            [value]="grupo.id">
+                                            {{ grupo.nombre }}
+                                        </mat-option>
                                     </mat-select>
                                     <mat-error
                                         *ngIf="coevaluacionIForm.get('grupoSeleccionado')?.hasError('required') && coevaluacionIForm.get('grupoSeleccionado')?.touched">
@@ -544,10 +543,9 @@
                         <mat-label>{{ 'coevaluacion_ii.docente' | translate }}</mat-label>
                         <mat-select formControlName="docenteNombre">
                             <mat-option value="" disabled>Seleccione un docente</mat-option>
-                            <mat-option value="docente1">{{ 'coevaluacion_ii.nombre_docente' | translate }}
-                                1</mat-option>
-                            <mat-option value="docente2">{{ 'coevaluacion_ii.nombre_docente' | translate }}
-                                2</mat-option>
+                            <mat-option *ngFor="let docente of docentes?.opciones" [value]="docente">
+                                {{ docente.Nombre }}
+                            </mat-option>
                         </mat-select>
                         <mat-error
                             *ngIf="coevaluacionIIForm.get('docenteNombre')?.hasError('required') && coevaluacionIIForm.get('docenteNombre')?.touched">
