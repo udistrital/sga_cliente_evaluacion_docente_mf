@@ -30,7 +30,8 @@
         "seleccionar": "Seleccionar",
         "error": "Error",
         "estado":"Estados",
-        "regresar": "Volver"
+        "regresar": "Volver",
+        "PONDERACION":"Ponderación"
     },
 
     "asignacion_fechas": {

@@ -1,30 +1,108 @@
-.form-container {
+/* General */
+.full-width {
+    width: 100%;
+  }
+  
+  .form-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Dos columnas de igual tamaño */
+    gap: 1rem; /* Espacio entre los campos */
+    margin-bottom: 1rem;
+  }
+  
+  .mat-card {
+    margin-bottom: 20px;
+  }
+  
+  /* Tablas y sus acciones */
+  .full-width-table {
+    width: 100%;
+    margin-bottom: 20px;
+    table-layout: fixed; /* Asegura el tamaño predefinido de las columnas */
+  }
+  
+  .full-width-table th, .full-width-table td {
+    padding: 8px;
+    text-align: left;
+  }
+  
+  /* Columnas de # y Estado con tamaños más pequeños */
+  .full-width-table th.mat-column-numero, 
+  .full-width-table td.mat-column-numero {
+    width: 50px; /* Tamaño reducido para la columna # */
+  }
+  
+  .full-width-table th.mat-column-estado, 
+  .full-width-table td.mat-column-estado {
+    width: 100px; /* Tamaño reducido para la columna Estado */
+  }
+  
+  /* Estilo de los campos en azul */
+  .full-width-table th {
+    background-color: var(--primary-light); /* Color de fondo para las cabeceras */
+    color: var(--primary); /* Color azul para el texto de las cabeceras */
+  }
+  
+  .full-width-table td {
+    color: black; /* Color negro para el texto de los registros */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  /* Botones de acción (iconos y colores) */
+  button.mat-icon-button, button.mat-mini-fab {
+    background-color: transparent; /* Sin fondo */
+    color: var(--primary); /* Color azul para los iconos */
+    margin-right: 10px;
+  }
+  
+  button.mat-icon-button.add-btn {
+    margin-right: 5px;
+  }
+  
+  button.mat-icon-button.delete-btn {
+    color: var(--danger-base); /* Rojo para el botón de eliminar */
+  }
+  
+  /* Alineación de los iconos */
+  button[mat-raised-button], button.mat-icon-button {
     display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-}
-
-.form-field {
-    flex: 1 1 45%; /* Hace que el campo ocupe 45% del ancho */
-    min-width: 200px; /* Asegura que los campos no se vuelvan muy pequeños */
-}
-
-.add-btn {
-    flex: 1 1 10%; /* Ajusta el tamaño del botón */
-    align-self: center;
-}
-
-.mt-4 {
+    align-items: center;
+    justify-content: center;
+    gap: 8px; /* Espacio entre icono y texto */
+  }
+  
+  /* Botón de guardar alineado a la izquierda */
+  .guardar-container {
+    display: flex;
+    justify-content: flex-start; /* Alineado a la izquierda */
     margin-top: 20px;
-}
-
-@media (max-width: 768px) {
-    .form-field {
-        flex: 1 1 100%; /* Hace que los campos ocupen el 100% del ancho en pantallas pequeñas */
+  }
+  
+  button[mat-raised-button] {
+    background-color: var(--primary); /* Azul para el botón de guardar */
+    color: white;
+  }
+  
+  /* Estilo del indicador de estado */
+  .status-indicator {
+    margin: 0.5rem;
+    font-weight: bold;
+    padding: 0.5rem;
+    border-radius: 4px;
+    text-align: center;
+    color: white;
+    &.active {
+      background-color: var(--success-accent);
     }
-
-    .add-btn {
-        flex: 1 1 100%; /* Botón también ocupa todo el ancho */
-        justify-content: center;
+    &.inactive {
+      background-color: var(--danger-base);
     }
-}
+  }
+  
+  /* Hover sobre las filas de la tabla */
+  .mat-mdc-row:hover .mat-mdc-cell {
+    background-color: var(--color100);
+  }
+  

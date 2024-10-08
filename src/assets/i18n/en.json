@@ -32,7 +32,8 @@
         "cancelar": "Cancel",
         "estado": "Status",
         "ver_general": "View scale",
-        "regresar": "Go back"
+        "regresar": "Go back",
+        "PONDERACION":"Ponderación"
     },
 
     "asignacion_fechas": {

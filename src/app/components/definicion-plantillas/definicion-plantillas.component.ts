@@ -6,7 +6,6 @@ import { EvaluacionDocenteService } from "src/app/services/evaluacion-docente-cr
 interface Campo {
   TipoCampoId: number;
   Nombre: string;
-  // Otras propiedades según tu JSON
 }
 
 interface Seccion {
@@ -66,8 +65,9 @@ export class DefinicionPlantillasComponent implements OnInit {
   preguntaControl = new FormControl();
   tituloSeccion: string = "";
   secciones: Seccion[] = [];
-  formularioSeleccionado: string = "heteroevaluacion"; // Valor por defecto
+  formularioSeleccionado: string = "heteroevaluacion";
   seccionSeleccionada: any = null;
+  porcentajeInvalido: boolean = false;
 
   constructor(private evaluacionDocenteService: EvaluacionDocenteService) {}
 
@@ -137,6 +137,15 @@ export class DefinicionPlantillasComponent implements OnInit {
       });
   }
 
+  // Método para validar que el porcentaje esté entre 1 y 100
+  validarPorcentaje() {
+    if (this.nuevoPorcentaje < 1 || this.nuevoPorcentaje > 100) {
+      this.porcentajeInvalido = true;
+    } else {
+      this.porcentajeInvalido = false;
+    }
+  }
+
   private _filterPreguntas(value: string): any[] {
     const filterValue = value.toLowerCase();
     const filtered = this.preguntasFiltradas.filter((option) =>
@@ -162,58 +171,57 @@ export class DefinicionPlantillasComponent implements OnInit {
   }
 
   agregarComponente() {
+    this.validarPorcentaje(); // Validar antes de agregar el componente
+
     if (
       this.nuevoPorcentaje > 0 &&
+      this.nuevoPorcentaje <= 100 &&
       this.preguntaSeleccionada &&
       this.preguntaSeleccionada.Nombre !== "No existe escala"
     ) {
       const nuevoComponente = {
         numero: this.seccionSeleccionada.componentes.length + 1,
-        nombre: this.preguntaSeleccionada ? this.preguntaSeleccionada.Nombre : "",
+        nombre: this.preguntaSeleccionada
+          ? this.preguntaSeleccionada.Nombre
+          : "",
         ponderacion: this.nuevoPorcentaje,
       };
-  
-      // Asegurarnos de que 'componentes' esté definido
+
       if (!this.seccionSeleccionada.componentes) {
         this.seccionSeleccionada.componentes = [];
       }
-  
-      // Insertar el nuevo componente en la sección seleccionada
+
       this.seccionSeleccionada.componentes.push(nuevoComponente);
-  
-      // Actualizamos el 'dataSource' de la tabla para reflejar el nuevo componente
-      this.seccionSeleccionada.componentes = [...this.seccionSeleccionada.componentes];
-  
-      // Reiniciar los valores del formulario para agregar componentes
+
+      this.seccionSeleccionada.componentes = [
+        ...this.seccionSeleccionada.componentes,
+      ];
+
       this.nuevoPorcentaje = 0;
       this.preguntaSeleccionada = null;
-  
-      // Opcional: Cerrar el panel de agregar componente después de la inserción
+
       this.seccionSeleccionada = null;
     } else {
       console.error(
-        "El porcentaje debe ser mayor que 0 o la pregunta seleccionada no es válida."
+        "El porcentaje debe estar entre 1 y 100 o la pregunta seleccionada no es válida."
       );
     }
-  }  
+  }
 
-  // Función para cambiar el proceso seleccionado en el menú desplegable
   cambiarProceso(form: any) {
     this.formularioSeleccionado = form.proceso;
     console.log("Proceso seleccionado:", this.formularioSeleccionado);
   }
 
-  // Función para agregar una nueva sección
   agregarSeccion() {
     if (this.tituloSeccion.trim()) {
-      // Aseguramos que cada nueva sección tenga la propiedad 'componentes' inicializada como un arreglo vacío
       this.secciones.push({ titulo: this.tituloSeccion, componentes: [] });
-      this.tituloSeccion = ""; // Limpiar el campo de entrada
+      this.tituloSeccion = "";
     }
   }
 
   eliminarSeccion(index: number) {
-    this.secciones.splice(index, 1); // Eliminar la sección seleccionada
+    this.secciones.splice(index, 1);
   }
 
   eliminarComponente(seccion: any, componente: any) {
@@ -223,27 +231,38 @@ export class DefinicionPlantillasComponent implements OnInit {
     }
   }
 
-    // Función para guardar el formulario
-    guardarFormulario() {
-      // Construimos la estructura del JSON con las secciones y los componentes
-      const formularioData = {
-        estructura: `Formulario ${this.formularioSeleccionado}`,
-        secciones: this.secciones.map((seccion: Seccion) => ({
-          nombre: seccion.titulo,
-          items: seccion.componentes.map((componente: Componente) => ({
-            nombre: componente.nombre,
-            porcentaje: componente.ponderacion
-          }))
-        }))
+  prepararAgregarComponenteDebajo(seccion: Seccion, componente: Componente) {
+    // Encuentra el índice del componente actual
+    const index = seccion.componentes.indexOf(componente);
+    
+    // Agrega un nuevo componente debajo del componente seleccionado
+    if (index >= 0) {
+      const nuevoComponente = {
+        numero: seccion.componentes.length + 1, // Actualiza el número según el tamaño actual de los componentes
+        nombre: 'Nuevo componente',
+        ponderacion: 0,
       };
-  
-      console.log("JSON generado:", formularioData);
-  
-      // Aquí puedes hacer algo con el JSON generado, por ejemplo, enviarlo a una API
-      // this.miServicio.guardarFormulario(formularioData).subscribe(response => {
-      //   console.log("Formulario guardado exitosamente:", response);
-      // });
+      
+      // Agregar el componente en la posición específica
+      seccion.componentes.splice(index + 1, 0, nuevoComponente);
+      
+      // Forzar la actualización de la vista
+      this.secciones = [...this.secciones];
     }
-  
+  }
 
+  guardarFormulario() {
+    const formularioData = {
+      estructura: `Formulario ${this.formularioSeleccionado}`,
+      secciones: this.secciones.map((seccion: Seccion) => ({
+        nombre: seccion.titulo,
+        items: seccion.componentes.map((componente: Componente) => ({
+          nombre: componente.nombre,
+          porcentaje: componente.ponderacion,
+        })),
+      })),
+    };
+
+    console.log("JSON generado:", formularioData);
+  }
 }
