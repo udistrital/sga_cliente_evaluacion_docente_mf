@@ -13,7 +13,18 @@
 
             <ng-container matColumnDef="proceso">
                 <th mat-header-cell *matHeaderCellDef>Proceso</th>
-                <td mat-cell *matCellDef="let form">{{ form.proceso }}</td>
+                <td mat-cell *matCellDef="let form">
+                    <!-- Menú desplegable para seleccionar proceso -->
+                    <mat-form-field appearance="fill" class="form-field">
+                        <mat-select [(value)]="form.proceso" (selectionChange)="cambiarProceso(form)">
+                            <mat-option value="heteroevaluacion">Heteroevaluación</mat-option>
+                            <mat-option value="coevaluacion">Coevaluación</mat-option>
+                            <mat-option value="coevaluacion_II">Coevaluación II</mat-option>
+                            <mat-option value="autoevaluacion_I">Autoevaluación I</mat-option>
+                            <mat-option value="autoevaluacion_II">Autoevaluación II</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </td>
             </ng-container>
 
             <ng-container matColumnDef="fecha">
@@ -58,83 +69,124 @@
         <div *ngIf="mostrandoVistaComponente">
             <mat-card>
                 <mat-card-header>
-                    <mat-card-title>Formulario heteroevaluación</mat-card-title>
+                    <!-- Título dinámico basado en la opción seleccionada del menú desplegable -->
+                    <mat-card-title>{{ 'Formulario ' + formularioSeleccionado | titlecase }}</mat-card-title>
                 </mat-card-header>
 
                 <mat-card-content>
-                    <!-- Flex container for responsive layout -->
                     <div class="form-container">
-                        <!-- Título editable -->
-                        <mat-form-field appearance="fill" class="form-field">
-                            <input matInput placeholder="Título del formulario" [(ngModel)]="formularioTitulo">
+                        <!-- Input para agregar el título de la sección -->
+                        <mat-form-field appearance="fill">
+                            <input matInput placeholder="Título de sección" [(ngModel)]="tituloSeccion">
                         </mat-form-field>
 
-                        <!-- Texto orientativo para usuarios administrativos -->
-                        <mat-card-subtitle class="form-field">
-                            <div class="texto-orientativo-administrativo">
-                                Texto orientativo a usuario administrativo del componente
-                            </div>
-                        </mat-card-subtitle>
-
-                        <!-- Texto orientativo para usuarios funcionales -->
-                        <mat-form-field appearance="fill" class="form-field">
-                            <textarea matInput placeholder="Texto orientativo a usuarios funcionales"></textarea>
-                        </mat-form-field>
-
-                        <!-- Botón para agregar la segunda tabla -->
-                        <button mat-icon-button class="add-btn" (click)="mostrarSegundaTabla()">
+                        <!-- Botón para agregar la sección -->
+                        <button mat-icon-button class="add-btn" (click)="agregarSeccion()">
                             <mat-icon>add</mat-icon>
                         </button>
                     </div>
 
-                    <!-- Tabla para mostrar componentes agregados -->
-                    <table mat-table *ngIf="mostrarTablaDos" [dataSource]="componentes" class="full-width-table mt-4">
-                        <ng-container matColumnDef="numero">
-                            <th mat-header-cell *matHeaderCellDef>#</th>
-                            <td mat-cell *matCellDef="let compo">{{ compo.numero }}</td>
-                        </ng-container>
+                    <!-- Tablas dinámicas para secciones -->
+                    <div *ngFor="let seccion of secciones; let i = index">
+                        <mat-card>
+                            <mat-card-header>
+                                <mat-card-title>{{ seccion.titulo }}</mat-card-title>
+                                <button mat-icon-button (click)="eliminarSeccion(i)">
+                                    <mat-icon>remove</mat-icon>
+                                </button>
+                            </mat-card-header>
 
-                        <ng-container matColumnDef="nombre">
-                            <th mat-header-cell *matHeaderCellDef>Componente</th>
-                            <td mat-cell *matCellDef="let compo">{{ compo.nombre }}</td>
-                        </ng-container>
+                            <mat-card-content>
+                                <table mat-table [dataSource]="seccion.componentes" class="full-width-table">
+                                    <ng-container matColumnDef="numero">
+                                        <th mat-header-cell *matHeaderCellDef>#</th>
+                                        <td mat-cell *matCellDef="let compo">{{ compo.numero }}</td>
+                                    </ng-container>
 
-                        <ng-container matColumnDef="ponderacion">
-                            <th mat-header-cell *matHeaderCellDef>Ponderación (%)</th>
-                            <td mat-cell *matCellDef="let compo">{{ compo.ponderacion }}%</td>
-                        </ng-container>
+                                    <ng-container matColumnDef="nombre">
+                                        <th mat-header-cell *matHeaderCellDef>Componente</th>
+                                        <td mat-cell *matCellDef="let compo">{{ compo.nombre }}</td>
+                                    </ng-container>
 
-                        <tr mat-header-row *matHeaderRowDef="displayedColumnsComponente"></tr>
-                        <tr mat-row *matRowDef="let row; columns: displayedColumnsComponente"></tr>
-                    </table>
-                </mat-card-content>
-            </mat-card>
+                                    <ng-container matColumnDef="ponderacion">
+                                        <th mat-header-cell *matHeaderCellDef>Ponderación (%)</th>
+                                        <td mat-cell *matCellDef="let compo">{{ compo.ponderacion }}%</td>
+                                    </ng-container>
 
-            <!-- Sección para agregar nuevo componente -->
-            <mat-card>
-                <mat-card-header>
-                    <mat-card-title>Agregar componente</mat-card-title>
-                </mat-card-header>
+                                    <ng-container matColumnDef="acciones">
+                                        <th mat-header-cell *matHeaderCellDef>Acciones</th>
+                                        <td mat-cell *matCellDef="let compo">
+                                            <button mat-icon-button>
+                                                <mat-icon>edit</mat-icon>
+                                            </button>
+                                            <button mat-icon-button>
+                                                <mat-icon>lock</mat-icon>
+                                            </button>
+                                            <button mat-icon-button>
+                                                <mat-icon>visibility</mat-icon>
+                                            </button>
+                                        </td>
+                                    </ng-container>
 
-                <mat-card-content>
-                    <div class="form-container">
-                        <!-- Sección de componente cuantitativo -->
-                        <mat-form-field class="form-field">
-                            <input matInput placeholder="Texto de la pregunta o acción">
-                        </mat-form-field>
-                        <mat-form-field class="form-field">
-                            <mat-select placeholder="Seleccione tipo de respuesta">
-                                <mat-option *ngFor="let tipo of tiposDeRespuesta" [value]="tipo">
-                                    {{ tipo }}
-                                </mat-option>
-                            </mat-select>
-                        </mat-form-field>
-                        <mat-form-field class="form-field">
-                            <input matInput placeholder="%" [(ngModel)]="nuevoPorcentaje">
-                        </mat-form-field>
-                        <button mat-icon-button (click)="agregarComponente()" class="add-btn">
-                            <mat-icon>add</mat-icon>
-                        </button>
+                                    <tr mat-header-row *matHeaderRowDef="displayedColumnsComponente"></tr>
+                                    <tr mat-row *matRowDef="let row; columns: displayedColumnsComponente"></tr>
+                                </table>
+
+                                <!-- Botón para agregar componente si la tabla está vacía o al final de la tabla -->
+                                <div *ngIf="seccion.componentes.length === 0 || true">
+                                    <button mat-icon-button (click)="prepararAgregarComponente(seccion)">
+                                        <mat-icon>add</mat-icon>
+                                    </button>
+                                </div>
+                            </mat-card-content>
+                        </mat-card>
+                    </div>
+
+                    <!-- Sección para agregar nuevo componente -->
+                    <mat-card *ngIf="seccionSeleccionada">
+                        <mat-card-header>
+                            <!-- El título dinámico para agregar componente según la sección -->
+                            <mat-card-title>Agregar componente a {{ seccionSeleccionada.titulo }}</mat-card-title>
+                        </mat-card-header>
+
+                        <mat-card-content>
+                            <div class="form-container">
+                                <!-- Select de Tipo de Campo (TipoCampoId) -->
+                                <mat-form-field appearance="fill" class="form-field">
+                                    <mat-select placeholder="Seleccione tipo de respuesta"
+                                        [(value)]="tipoCampoSeleccionado" (selectionChange)="filtrarPorTipo()">
+                                        <mat-option *ngFor="let campo of tipoCampos" [value]="campo.TipoCampoId">
+                                            {{ campo.label }}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+
+                                <!-- Autocompletado de "Texto de la pregunta o acción" -->
+                                <mat-form-field appearance="fill" class="form-field">
+                                    <input matInput placeholder="Texto de la pregunta o acción"
+                                        [(ngModel)]="preguntaSeleccionada" [matAutocomplete]="auto">
+                                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayNombre">
+                                        <mat-option *ngFor="let pregunta of preguntasFiltradas" [value]="pregunta">
+                                            {{ pregunta.Nombre }}
+                                        </mat-option>
+                                    </mat-autocomplete>
+                                </mat-form-field>
+
+                                <!-- Campo de porcentaje -->
+                                <mat-form-field class="form-field">
+                                    <input matInput placeholder="%" [(ngModel)]="nuevoPorcentaje">
+                                </mat-form-field>
+
+                                <!-- Botón para añadir -->
+                                <button mat-icon-button (click)="agregarComponente()" class="add-btn">
+                                    <mat-icon>add</mat-icon>
+                                </button>
+                            </div>
+                        </mat-card-content>
+                    </mat-card>
+                    <!-- Botón de guardar debajo de las tablas dinámicas -->
+                    <div class="guardar-container">
+                        <button mat-raised-button color="primary" (click)="guardarFormulario()">Guardar</button>
                     </div>
                 </mat-card-content>
             </mat-card>
