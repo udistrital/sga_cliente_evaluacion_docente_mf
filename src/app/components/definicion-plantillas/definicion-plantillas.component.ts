@@ -1,6 +1,7 @@
 import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import { FormControl } from "@angular/forms";
 import { startWith, map } from "rxjs";
+import { CdkDragDrop, moveItemInArray } from "@angular/cdk/drag-drop";
 import { EvaluacionDocenteService } from "src/app/services/evaluacion-docente-crud.service";
 
 interface Campo {
@@ -140,7 +141,6 @@ export class DefinicionPlantillasComponent implements OnInit {
       });
   }
 
-  // Método para validar que el porcentaje esté entre 1 y 100
   validarPorcentaje() {
     if (this.nuevoPorcentaje < 1 || this.nuevoPorcentaje > 100) {
       this.porcentajeInvalido = true;
@@ -151,10 +151,9 @@ export class DefinicionPlantillasComponent implements OnInit {
 
   private _filterPreguntas(value: string): any[] {
     const filterValue = value.toLowerCase();
-    const filtered = this.preguntasFiltradas.filter((option) =>
+    return this.preguntasFiltradas.filter((option) =>
       option.Nombre.toLowerCase().includes(filterValue)
     );
-    return filtered.length ? filtered : [{ Nombre: "No existe escala" }];
   }
 
   displayNombre(pregunta: any): string {
@@ -163,14 +162,6 @@ export class DefinicionPlantillasComponent implements OnInit {
 
   mostrarVistaComponente() {
     this.mostrandoVistaComponente = true;
-  }
-
-  mostrarSegundaTabla() {
-    this.mostrarTablaDos = true;
-  }
-
-  prepararAgregarComponente(seccion: any) {
-    this.seccionSeleccionada = seccion;
   }
 
   agregarSeccion() {
@@ -182,8 +173,8 @@ export class DefinicionPlantillasComponent implements OnInit {
   }
 
   agregarComponente() {
-    this.validarPorcentaje(); // Validar antes de agregar el componente
-  
+    this.validarPorcentaje();
+
     if (
       this.nuevoPorcentaje > 0 &&
       this.nuevoPorcentaje <= 100 &&
@@ -195,22 +186,20 @@ export class DefinicionPlantillasComponent implements OnInit {
         nombre: this.preguntaSeleccionada.Nombre,
         ponderacion: this.nuevoPorcentaje,
       };
-  
-      // Asegurarse de que la lista de componentes esté definida
+
       if (!this.seccionSeleccionada.componentes) {
         this.seccionSeleccionada.componentes = [];
       }
-  
-      // Añadir el nuevo componente a la sección seleccionada
+
       this.seccionSeleccionada.componentes.push(nuevoComponente);
-  
-      // Actualizar la lista de componentes para que Angular detecte los cambios
-      this.seccionSeleccionada.componentes = [...this.seccionSeleccionada.componentes];
-      this.secciones = [...this.secciones]; // Actualizar la vista
-  
+
+      this.seccionSeleccionada.componentes = [
+        ...this.seccionSeleccionada.componentes,
+      ];
+      this.secciones = [...this.secciones];
+
       this.cdr.detectChanges(); // Forzar la detección de cambios
-  
-      // Limpiar las variables para el siguiente uso
+
       this.nuevoPorcentaje = 0;
       this.preguntaSeleccionada = null;
       this.seccionSeleccionada = null;
@@ -219,11 +208,32 @@ export class DefinicionPlantillasComponent implements OnInit {
         "El porcentaje debe estar entre 1 y 100 o la pregunta seleccionada no es válida."
       );
     }
-  }  
+  }
+
+  dropComponentes(event: CdkDragDrop<Componente[]>, seccion: Seccion) {
+    // Mover el componente dentro del array a la nueva posición
+    moveItemInArray(
+      seccion.componentes,
+      event.previousIndex,
+      event.currentIndex
+    );
+
+    // Actualizar la lista para que Angular detecte el cambio
+    seccion.componentes = [...seccion.componentes];
+
+    // Forzar la detección de cambios inmediatamente después del reordenamiento
+    this.cdr.detectChanges();
+
+    console.log("Componentes reordenados: ", seccion.componentes);
+  }
 
   cambiarProceso(form: any) {
     this.formularioSeleccionado = form.proceso;
     console.log("Proceso seleccionado:", this.formularioSeleccionado);
+  }
+
+  prepararAgregarComponente(seccion: any) {
+    this.seccionSeleccionada = seccion;
   }
 
   eliminarSeccion(index: number) {
@@ -231,49 +241,14 @@ export class DefinicionPlantillasComponent implements OnInit {
   }
 
   eliminarComponente(seccion: any, componente: any) {
-    console.log("Sección recibida para eliminar:", seccion);
-    console.log("Componentes en la sección:", seccion ? seccion.componentes : 'Sección es null');
-  
-    if (!seccion || !seccion.componentes) {
-      console.error("Sección o componentes no están definidos.");
-      return; // Salir de la función si no están definidos
-    }
-  
     const index = seccion.componentes.indexOf(componente);
     if (index >= 0) {
-      // Eliminar el componente
-      seccion.componentes.splice(index, 1); 
-      
-      // Forzar reasignación para que Angular detecte el cambio
+      seccion.componentes.splice(index, 1);
       seccion.componentes = [...seccion.componentes];
-      this.secciones = [...this.secciones]; 
-  
-      // Forzar la detección de cambios en el próximo ciclo
-      this.cdr.markForCheck(); 
-  
-      console.log("Componente eliminado, tabla actualizada.");
+      this.secciones = [...this.secciones];
+      this.cdr.markForCheck();
     } else {
       console.error("No se pudo encontrar el componente para eliminar.");
-    }
-  }
-  
-  prepararAgregarComponenteDebajo(seccion: Seccion, componente: Componente) {
-    // Encuentra el índice del componente actual
-    const index = seccion.componentes.indexOf(componente);
-
-    // Agrega un nuevo componente debajo del componente seleccionado
-    if (index >= 0) {
-      const nuevoComponente = {
-        numero: seccion.componentes.length + 1, // Actualiza el número según el tamaño actual de los componentes
-        nombre: "Nuevo componente",
-        ponderacion: 0,
-      };
-
-      // Agregar el componente en la posición específica
-      seccion.componentes.splice(index + 1, 0, nuevoComponente);
-
-      // Forzar la actualización de la vista
-      this.secciones = [...this.secciones];
     }
   }
 
