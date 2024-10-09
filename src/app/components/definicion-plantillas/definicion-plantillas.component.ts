@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import { FormControl } from "@angular/forms";
 import { startWith, map } from "rxjs";
 import { EvaluacionDocenteService } from "src/app/services/evaluacion-docente-crud.service";
@@ -69,7 +69,10 @@ export class DefinicionPlantillasComponent implements OnInit {
   seccionSeleccionada: any = null;
   porcentajeInvalido: boolean = false;
 
-  constructor(private evaluacionDocenteService: EvaluacionDocenteService) {}
+  constructor(
+    private evaluacionDocenteService: EvaluacionDocenteService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit() {
     this.obtenerCamposActivos();
@@ -170,9 +173,17 @@ export class DefinicionPlantillasComponent implements OnInit {
     this.seccionSeleccionada = seccion;
   }
 
+  agregarSeccion() {
+    if (this.tituloSeccion.trim()) {
+      this.secciones.push({ titulo: this.tituloSeccion, componentes: [] });
+      this.tituloSeccion = "";
+      this.secciones = [...this.secciones]; // Actualizar vista
+    }
+  }
+
   agregarComponente() {
     this.validarPorcentaje(); // Validar antes de agregar el componente
-
+  
     if (
       this.nuevoPorcentaje > 0 &&
       this.nuevoPorcentaje <= 100 &&
@@ -181,43 +192,38 @@ export class DefinicionPlantillasComponent implements OnInit {
     ) {
       const nuevoComponente = {
         numero: this.seccionSeleccionada.componentes.length + 1,
-        nombre: this.preguntaSeleccionada
-          ? this.preguntaSeleccionada.Nombre
-          : "",
+        nombre: this.preguntaSeleccionada.Nombre,
         ponderacion: this.nuevoPorcentaje,
       };
-
+  
+      // Asegurarse de que la lista de componentes esté definida
       if (!this.seccionSeleccionada.componentes) {
         this.seccionSeleccionada.componentes = [];
       }
-
+  
+      // Añadir el nuevo componente a la sección seleccionada
       this.seccionSeleccionada.componentes.push(nuevoComponente);
-
-      this.seccionSeleccionada.componentes = [
-        ...this.seccionSeleccionada.componentes,
-      ];
-
+  
+      // Actualizar la lista de componentes para que Angular detecte los cambios
+      this.seccionSeleccionada.componentes = [...this.seccionSeleccionada.componentes];
+      this.secciones = [...this.secciones]; // Actualizar la vista
+  
+      this.cdr.detectChanges(); // Forzar la detección de cambios
+  
+      // Limpiar las variables para el siguiente uso
       this.nuevoPorcentaje = 0;
       this.preguntaSeleccionada = null;
-
       this.seccionSeleccionada = null;
     } else {
       console.error(
         "El porcentaje debe estar entre 1 y 100 o la pregunta seleccionada no es válida."
       );
     }
-  }
+  }  
 
   cambiarProceso(form: any) {
     this.formularioSeleccionado = form.proceso;
     console.log("Proceso seleccionado:", this.formularioSeleccionado);
-  }
-
-  agregarSeccion() {
-    if (this.tituloSeccion.trim()) {
-      this.secciones.push({ titulo: this.tituloSeccion, componentes: [] });
-      this.tituloSeccion = "";
-    }
   }
 
   eliminarSeccion(index: number) {
@@ -225,27 +231,47 @@ export class DefinicionPlantillasComponent implements OnInit {
   }
 
   eliminarComponente(seccion: any, componente: any) {
+    console.log("Sección recibida para eliminar:", seccion);
+    console.log("Componentes en la sección:", seccion ? seccion.componentes : 'Sección es null');
+  
+    if (!seccion || !seccion.componentes) {
+      console.error("Sección o componentes no están definidos.");
+      return; // Salir de la función si no están definidos
+    }
+  
     const index = seccion.componentes.indexOf(componente);
     if (index >= 0) {
-      seccion.componentes.splice(index, 1);
+      // Eliminar el componente
+      seccion.componentes.splice(index, 1); 
+      
+      // Forzar reasignación para que Angular detecte el cambio
+      seccion.componentes = [...seccion.componentes];
+      this.secciones = [...this.secciones]; 
+  
+      // Forzar la detección de cambios en el próximo ciclo
+      this.cdr.markForCheck(); 
+  
+      console.log("Componente eliminado, tabla actualizada.");
+    } else {
+      console.error("No se pudo encontrar el componente para eliminar.");
     }
   }
-
+  
   prepararAgregarComponenteDebajo(seccion: Seccion, componente: Componente) {
     // Encuentra el índice del componente actual
     const index = seccion.componentes.indexOf(componente);
-    
+
     // Agrega un nuevo componente debajo del componente seleccionado
     if (index >= 0) {
       const nuevoComponente = {
         numero: seccion.componentes.length + 1, // Actualiza el número según el tamaño actual de los componentes
-        nombre: 'Nuevo componente',
+        nombre: "Nuevo componente",
         ponderacion: 0,
       };
-      
+
       // Agregar el componente en la posición específica
       seccion.componentes.splice(index + 1, 0, nuevoComponente);
-      
+
       // Forzar la actualización de la vista
       this.secciones = [...this.secciones];
     }
