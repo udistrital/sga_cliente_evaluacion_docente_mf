@@ -17,6 +17,7 @@ interface Seccion {
 interface Componente {
   nombre: string;
   ponderacion: number;
+  numero?: number; // Propiedad opcional
 }
 
 @Component({
@@ -47,6 +48,7 @@ export class DefinicionPlantillasComponent implements OnInit {
       fecha: new Date(),
       estado: "Activo",
       ponderacion: 100,
+      
     },
   ];
 
@@ -56,19 +58,18 @@ export class DefinicionPlantillasComponent implements OnInit {
   ];
 
   mostrandoVistaComponente = false;
-  mostrarTablaDos = false;
-  formularioTitulo: string = "Formulario heteroevaluación";
+  tituloSeccion: string = "";
   nuevoPorcentaje: number = 0;
   tipoCampos: any[] = [];
   preguntasFiltradas: any[] = [];
   tipoCampoSeleccionado: number = 0;
   preguntaSeleccionada: any;
   preguntaControl = new FormControl();
-  tituloSeccion: string = "";
   secciones: Seccion[] = [];
   formularioSeleccionado: string = "heteroevaluacion";
   seccionSeleccionada: any = null;
   porcentajeInvalido: boolean = false;
+  
 
   constructor(
     private evaluacionDocenteService: EvaluacionDocenteService,
@@ -91,26 +92,9 @@ export class DefinicionPlantillasComponent implements OnInit {
     this.evaluacionDocenteService.getCamposActivos().subscribe(
       (response: any) => {
         if (Array.isArray(response.Data)) {
-          this.tipoCampos = response.Data.map((campo: Campo) => {
-            let label = "";
-            switch (campo.TipoCampoId) {
-              case 4668:
-                label = "Pregunta de opción múltiple con única respuesta";
-                break;
-              case 4674:
-                label = "Pregunta abierta";
-                break;
-              case 4672:
-                label = "Botón de descargar archivos";
-                break;
-              case 6686:
-                label = "Botón de cargar archivos";
-                break;
-              default:
-                label = "Desconocido";
-            }
-            return { TipoCampoId: campo.TipoCampoId, label: label };
-          });
+          this.tipoCampos = response.Data.map((campo: Campo) =>
+            this.mapTipoCampo(campo)
+          );
         } else {
           console.error(
             "Error: la respuesta de la API no es un arreglo.",
@@ -122,6 +106,19 @@ export class DefinicionPlantillasComponent implements OnInit {
         console.error("Error al obtener los campos activos:", error);
       }
     );
+  }
+
+  mapTipoCampo(campo: Campo) {
+    const tipos: { [key: number]: string } = {
+      4668: "Pregunta de opción múltiple con única respuesta",
+      4674: "Pregunta abierta",
+      4672: "Botón de descargar archivos",
+      6686: "Botón de cargar archivos"
+    };    
+    return {
+      TipoCampoId: campo.TipoCampoId,
+      label: tipos[campo.TipoCampoId] || "Desconocido",
+    };    
   }
 
   filtrarPorTipo() {
@@ -142,11 +139,8 @@ export class DefinicionPlantillasComponent implements OnInit {
   }
 
   validarPorcentaje() {
-    if (this.nuevoPorcentaje < 1 || this.nuevoPorcentaje > 100) {
-      this.porcentajeInvalido = true;
-    } else {
-      this.porcentajeInvalido = false;
-    }
+    this.porcentajeInvalido =
+      this.nuevoPorcentaje < 1 || this.nuevoPorcentaje > 100;
   }
 
   private _filterPreguntas(value: string): any[] {
@@ -157,7 +151,7 @@ export class DefinicionPlantillasComponent implements OnInit {
   }
 
   displayNombre(pregunta: any): string {
-    return pregunta && pregunta.Nombre ? pregunta.Nombre : "";
+    return pregunta?.Nombre || "";
   }
 
   mostrarVistaComponente() {
@@ -175,39 +169,44 @@ export class DefinicionPlantillasComponent implements OnInit {
   agregarComponente() {
     this.validarPorcentaje();
 
-    if (
-      this.nuevoPorcentaje > 0 &&
-      this.nuevoPorcentaje <= 100 &&
-      this.preguntaSeleccionada &&
-      this.preguntaSeleccionada.Nombre !== "No existe escala"
-    ) {
-      const nuevoComponente = {
-        numero: this.seccionSeleccionada.componentes.length + 1,
-        nombre: this.preguntaSeleccionada.Nombre,
-        ponderacion: this.nuevoPorcentaje,
-      };
-
-      if (!this.seccionSeleccionada.componentes) {
-        this.seccionSeleccionada.componentes = [];
-      }
-
+    if (this.esComponenteValido()) {
+      const nuevoComponente = this.crearNuevoComponente();
       this.seccionSeleccionada.componentes.push(nuevoComponente);
-
       this.seccionSeleccionada.componentes = [
         ...this.seccionSeleccionada.componentes,
       ];
       this.secciones = [...this.secciones];
-
-      this.cdr.detectChanges(); // Forzar la detección de cambios
-
-      this.nuevoPorcentaje = 0;
-      this.preguntaSeleccionada = null;
-      this.seccionSeleccionada = null;
+      this.resetComponente();
     } else {
       console.error(
         "El porcentaje debe estar entre 1 y 100 o la pregunta seleccionada no es válida."
       );
     }
+  }
+
+  crearNuevoComponente(): Componente {
+    return {
+      numero: this.seccionSeleccionada.componentes.length + 1,
+      nombre: this.preguntaSeleccionada.Nombre,
+      ponderacion: this.nuevoPorcentaje,
+    };
+  }
+  
+
+  resetComponente() {
+    this.nuevoPorcentaje = 0;
+    this.preguntaSeleccionada = null;
+    this.seccionSeleccionada = null;
+    this.cdr.detectChanges(); // Forzar la detección de cambios
+  }
+
+  esComponenteValido(): boolean {
+    return (
+      this.nuevoPorcentaje > 0 &&
+      this.nuevoPorcentaje <= 100 &&
+      this.preguntaSeleccionada &&
+      this.preguntaSeleccionada.Nombre !== "No existe escala"
+    );
   }
 
   dropComponentes(event: CdkDragDrop<Componente[]>, seccion: Seccion) {
@@ -221,7 +220,6 @@ export class DefinicionPlantillasComponent implements OnInit {
     console.log("Componentes reordenados: ", seccion.componentes);
   }
 
-  // Método para reordenar las secciones
   dropSecciones(event: CdkDragDrop<Seccion[]>) {
     moveItemInArray(this.secciones, event.previousIndex, event.currentIndex);
     this.secciones = [...this.secciones];
