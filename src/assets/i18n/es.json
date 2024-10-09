@@ -83,6 +83,12 @@
         "select_evaluacion": "Seleccionar evaluación"
     },
 
+    "definicion_plantillas": {
+        "alert1": "Recuerde que se puede arrastrar las casillas de las secciones o sus preguntas  ",
+        "alert2": "Evaluaciones",
+        "titulo": "titulo de sección"
+    },
+
     "definir_escalas": {
         "titulo_principal": "Definir Escalas",
         "aniadir_nueva_escala": "Añadir nueva escala",

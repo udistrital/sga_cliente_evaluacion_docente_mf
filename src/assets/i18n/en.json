@@ -51,6 +51,12 @@
         "ajustes_aplicados": "Changes applied successfully"
     },
 
+    "definicion_plantillas": {
+        "alert1": "Remember that you can drag the boxes of the sections or your questions.  ",
+        "alert2": "Evaluations",
+        "titulo": "section title"
+    },
+
     "definicion_formularios": {
         "titulo": "Define forms",
         "seleccionar_roles": "Select roles involved",

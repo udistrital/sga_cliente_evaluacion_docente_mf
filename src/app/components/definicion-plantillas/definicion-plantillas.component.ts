@@ -211,20 +211,22 @@ export class DefinicionPlantillasComponent implements OnInit {
   }
 
   dropComponentes(event: CdkDragDrop<Componente[]>, seccion: Seccion) {
-    // Mover el componente dentro del array a la nueva posición
     moveItemInArray(
       seccion.componentes,
       event.previousIndex,
       event.currentIndex
     );
-
-    // Actualizar la lista para que Angular detecte el cambio
     seccion.componentes = [...seccion.componentes];
-
-    // Forzar la detección de cambios inmediatamente después del reordenamiento
     this.cdr.detectChanges();
-
     console.log("Componentes reordenados: ", seccion.componentes);
+  }
+
+  // Método para reordenar las secciones
+  dropSecciones(event: CdkDragDrop<Seccion[]>) {
+    moveItemInArray(this.secciones, event.previousIndex, event.currentIndex);
+    this.secciones = [...this.secciones];
+    this.cdr.detectChanges();
+    console.log("Secciones reordenadas: ", this.secciones);
   }
 
   cambiarProceso(form: any) {
