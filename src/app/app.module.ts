@@ -57,6 +57,7 @@ import { EspaciosAcademicosService } from './services/espacios_academicos.servic
 import { DateService } from './services/date.service';
 import { SgaEvaluacionDocenteMidService } from './services/sga_evaluacion_docente_mid.service';
 import { EvaluacionDocenteService } from './services/evaluacion-docente-crud.service';
+import { DefinicionPlantillasComponent } from './components/definicion-plantillas/definicion-plantillas.component';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, environment.apiUrl + 'assets/i18n/', '.json');
@@ -68,6 +69,7 @@ export function createTranslateLoader(http: HttpClient) {
     DefinicionFormulariosComponent,
     AsignacionFechasComponent,
     DefinirEscalasComponent,
+    DefinicionPlantillasComponent,
     EvaluacionesComponent,
     NgIsGrantedDirective,
     MetricasComponent,
