@@ -16,13 +16,6 @@ import { AsignacionFechasComponent } from './components/asignacion-fechas/asigna
 import { DefinirEscalasComponent, DialogoConfirmacion } from './components/definir-escalas/definir-escalas.component';
 import { DynamicFormComponent } from './components/dynamic-form/dynamic-form.component';
 
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatInputModule } from '@angular/material/input';
-import { MatNativeDateModule } from '@angular/material/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatStepperModule } from '@angular/material/stepper'; 
 import { EvaluacionesComponent } from './components/evaluaciones/evaluaciones.component';
 import { NgIsGrantedDirective } from './directives/ng-is-granted.directive';
 import { UserService } from './services/user.service';
@@ -30,20 +23,7 @@ import { UserService } from './services/user.service';
 import { EventosService } from './services/eventos.service';
 import { ParametrosService } from './services/parametros.service';
 import { AnyService } from './services/any.service';
-import { MatExpansionModule } from '@angular/material/expansion';
 import { MetricasComponent } from './components/metricas/metricas.component';
-import { MatRadioModule } from '@angular/material/radio';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatCardModule } from '@angular/material/card';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatSelectModule } from '@angular/material/select';
-import { MatSortModule } from '@angular/material/sort';
-import { MatTableModule } from '@angular/material/table';
-import { MatTabsModule } from '@angular/material/tabs';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatMenuModule } from '@angular/material/menu';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { ResultadosComponent } from './components/resultados/resultados.component';
 import { NuxeoComponent } from './components/nuxeo/nuxeo.component';
@@ -87,45 +67,15 @@ export function createTranslateLoader(http: HttpClient) {
     MATERIAL_MODULES,
     HttpClientModule,
     SpinnerUtilModule,
-    MatRadioModule,
-    FormsModule,    
-    BrowserModule,
-    MatTabsModule,
-    MatIconModule,
-    MatStepperModule,
-    MatCardModule,
-    MatInputModule,
-    MatTableModule,
-    MatDialogModule,
-    MatSelectModule,
-    MatSnackBarModule,
-    AppRoutingModule,
-    MatCheckboxModule,
-    MatFormFieldModule,
-    MatPaginatorModule,
-    MatNativeDateModule,
+    FormsModule,
     ReactiveFormsModule,
-    MatDatepickerModule,
-    MatSortModule,
-    MatAutocompleteModule,
-    BrowserAnimationsModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
         useFactory: createTranslateLoader,
         deps: [HttpClient]
       }
-    }),
-    FormsModule,
-    MatDatepickerModule,
-    MatInputModule,
-    MatNativeDateModule,
-    MatButtonModule,
-    MatIconModule,
-    MatFormFieldModule,
-    MatStepperModule,
-    MatInputModule,
-    MatMenuModule  
+    })
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [
