@@ -1,0 +1,205 @@
+<mat-card>
+    <mat-card-header>
+        <mat-card-title>{{ "definicion_formularios.titulo_visualizador" | translate }}</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+        <!-- Tabla inicial -->
+        <table mat-table [dataSource]="formularios" class="full-width-table">
+            <ng-container matColumnDef="numero">
+                <th mat-header-cell *matHeaderCellDef>#</th>
+                <td mat-cell *matCellDef="let form">{{ form.numero }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="proceso">
+                <th mat-header-cell *matHeaderCellDef>{{ "definicion_formularios.sub_titulo_proceso" | translate }}</th>
+                <td mat-cell *matCellDef="let form">
+                    <mat-form-field appearance="fill" class="form-field">
+                        <mat-select [(value)]="form.proceso" (selectionChange)="cambiarProceso(form)">
+                            <mat-option value="heteroevaluacion">{{ "heteroevaluacion.titulo" | translate
+                                }}</mat-option>
+                            <mat-option value="coevaluacion">{{ "coevaluacion_i.titulo" | translate }}</mat-option>
+                            <mat-option value="coevaluacion_II">{{ "coevaluacion_ii.titulo" | translate }}</mat-option>
+                            <mat-option value="autoevaluacion_I">{{ "autoevaluacion_i.titulo" | translate
+                                }}</mat-option>
+                            <mat-option value="autoevaluacion_II">{{ "autoevaluacion_ii.titulo" | translate
+                                }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="fecha">
+                <th mat-header-cell *matHeaderCellDef>{{ "GLOBAL.estado" | translate }}</th>
+                <td mat-cell *matCellDef="let form">{{ form.fecha | date }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="estado">
+                <th mat-header-cell *matHeaderCellDef>{{ "GLOBAL.estado" | translate }}</th>
+                <td mat-cell *matCellDef="let form">{{ form.estado }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="ponderacion">
+                <th mat-header-cell *matHeaderCellDef>{{ "GLOBAL.PONDERACION" | translate }}</th>
+                <td mat-cell *matCellDef="let form">{{ form.ponderacion }}%</td>
+            </ng-container>
+
+            <ng-container matColumnDef="acciones">
+                <th mat-header-cell *matHeaderCellDef>
+                    <button mat-icon-button (click)="mostrarVistaComponente()">
+                        <mat-icon>add</mat-icon>
+                    </button>
+                </th>
+                <td mat-cell *matCellDef="let form">
+                    <button mat-icon-button><mat-icon>edit</mat-icon></button>
+                    <button mat-icon-button><mat-icon>lock</mat-icon></button>
+                    <button mat-icon-button><mat-icon>visibility</mat-icon></button>
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+
+        <div *ngIf="mostrandoVistaComponente">
+            <mat-card>
+                <mat-card-header>
+                    <mat-card-title>{{ "GLOBAL.FORMULARIO" | translate }} {{ formularioSeleccionado | titlecase
+                        }}</mat-card-title>
+                </mat-card-header>
+
+                <mat-card-content>
+                    <div class="form-container">
+                        <mat-form-field appearance="fill">
+                            <input matInput placeholder="{{ 'definicion_plantillas.alert1' | translate }}"
+                                [(ngModel)]="tituloSeccion">
+                        </mat-form-field>
+
+                        <!-- Alerta agregada justo debajo del input -->
+                        <div *ngIf="tituloSeccion.trim() === ''">
+                            <mat-card class="alert-card">
+                                <mat-card-content>
+                                    <mat-icon>error_outline</mat-icon>
+                                    {{ "definicion_plantillas.alert1" | translate }}
+                                </mat-card-content>
+                            </mat-card>
+                        </div>
+
+                        <button mat-icon-button class="add-btn" (click)="agregarSeccion()">
+                            <mat-icon>add</mat-icon>
+                        </button>
+                    </div>
+
+                    <!-- Lista para las secciones, que permite arrastrar y soltar -->
+                    <div cdkDropList [cdkDropListData]="secciones" (cdkDropListDropped)="dropSecciones($event)">
+                        <div *ngFor="let seccion of secciones; let i = index" cdkDrag>
+                            <mat-card>
+                                <mat-card-header>
+                                    <mat-card-title>Sección: {{ seccion.titulo }}</mat-card-title>
+                                    <button mat-icon-button (click)="eliminarSeccion(i)">
+                                        <mat-icon>delete</mat-icon>
+                                    </button>
+                                </mat-card-header>
+
+                                <mat-card-content>
+                                    <!-- Lista de componentes en cada sección -->
+                                    <div cdkDropList [cdkDropListData]="seccion.componentes"
+                                        (cdkDropListDropped)="dropComponentes($event, seccion)">
+                                        <table mat-table [dataSource]="seccion.componentes" class="full-width-table">
+                                            <ng-container matColumnDef="numero">
+                                                <th mat-header-cell *matHeaderCellDef>#</th>
+                                                <td mat-cell *matCellDef="let compo">{{ compo.numero }}</td>
+                                            </ng-container>
+
+                                            <ng-container matColumnDef="nombre">
+                                                <th mat-header-cell *matHeaderCellDef>{{ "GLOBAL.LISTA" | translate }}
+                                                </th>
+                                                <td mat-cell *matCellDef="let compo" cdkDrag>{{ compo.nombre }}</td>
+                                            </ng-container>
+
+                                            <ng-container matColumnDef="ponderacion">
+                                                <th mat-header-cell *matHeaderCellDef>{{ "GLOBAL.PONDERACION" |
+                                                    translate }}</th>
+                                                <td mat-cell *matCellDef="let compo">{{ compo.ponderacion }}%</td>
+                                            </ng-container>
+
+                                            <ng-container matColumnDef="acciones">
+                                                <th mat-header-cell *matHeaderCellDef>{{ "GLOBAL.ACCIONES" | translate
+                                                    }}</th>
+                                                <td mat-cell *matCellDef="let compo">
+                                                    <button mat-icon-button
+                                                        (click)="eliminarComponente(seccion, compo)">
+                                                        <mat-icon>delete</mat-icon>
+                                                    </button>
+                                                </td>
+                                            </ng-container>
+
+                                            <tr mat-header-row *matHeaderRowDef="displayedColumnsComponente"></tr>
+                                            <tr mat-row *matRowDef="let row; columns: displayedColumnsComponente"
+                                                cdkDrag></tr>
+                                        </table>
+                                    </div>
+
+                                    <div *ngIf="seccion.componentes.length === 0 || true">
+                                        <button mat-icon-button (click)="prepararAgregarComponente(seccion)">
+                                            <mat-icon>add</mat-icon>
+                                        </button>
+                                    </div>
+                                </mat-card-content>
+                            </mat-card>
+                        </div>
+                    </div>
+
+                    <!-- Sección para agregar nuevo componente -->
+                    <mat-card *ngIf="seccionSeleccionada">
+                        <mat-card-header>
+                            <mat-card-title>{{ "GLOBAL.AGREGAR" | translate }} pregunta a {{ seccionSeleccionada.titulo
+                                }}</mat-card-title>
+                        </mat-card-header>
+
+                        <mat-card-content>
+                            <div class="form-container">
+                                <mat-form-field appearance="fill" class="form-field">
+                                    <mat-select
+                                        placeholder="{{ 'definir_escalas.seleccionar_tipo_escala' | translate }}"
+                                        [(value)]="tipoCampoSeleccionado" (selectionChange)="filtrarPorTipo()">
+                                        <mat-option *ngFor="let campo of tipoCampos" [value]="campo.TipoCampoId">{{
+                                            campo.label }}</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+
+                                <mat-form-field appearance="fill" class="form-field">
+                                    <input matInput placeholder="{{ 'definir_escalas.tipo_input' | translate }}"
+                                        [(ngModel)]="preguntaSeleccionada" [matAutocomplete]="auto">
+                                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayNombre">
+                                        <mat-option *ngFor="let pregunta of preguntasFiltradas" [value]="pregunta">{{
+                                            pregunta.Nombre }}</mat-option>
+                                    </mat-autocomplete>
+                                </mat-form-field>
+
+                                <mat-form-field class="form-field">
+                                    <input matInput placeholder="%" type="number" [(ngModel)]="nuevoPorcentaje" min="1"
+                                        max="100" required (input)="validarPorcentaje()" />
+                                    <mat-error *ngIf="porcentajeInvalido">{{ "El porcentaje debe estar entre 1 y 100" |
+                                        translate }}</mat-error>
+                                </mat-form-field>
+
+                                <button mat-icon-button (click)="agregarComponente()" class="add-btn">
+                                    <mat-icon>add</mat-icon>
+                                </button>
+                            </div>
+                        </mat-card-content>
+                    </mat-card>
+
+                    <!-- Botón de guardar -->
+                    <div class="guardar-container">
+                        <button mat-raised-button color="primary" (click)="guardarFormulario()">
+                            <mat-icon>save</mat-icon>
+                            {{ "GLOBAL.GUARDAR" | translate }}
+                        </button>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+        </div>
+    </mat-card-content>
+</mat-card>

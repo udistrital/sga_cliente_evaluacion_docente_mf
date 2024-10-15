@@ -1,15 +1,5 @@
 {
-    
-    "GLOBAL": {
-        "atencion": "Atención",
-        "aceptar": "Aceptar",
-        "cancelar": "Cancelar",
-        "seleccionar": "Seleccionar",
-        "error": "Error"
-    },
 
-    
-    
     "HOME": {
         "TITLE": "SGA",
         "SELECT": "Seleccionar tipo de evaluación",
@@ -18,21 +8,30 @@
         "THEME": "Tema",
         "seleccione": "Seleccionar"
     },
+
     "GLOBAL":{
         "GUARDAR": "Guardar",
         "CANCELAR": "Cancelar",
         "ELIMINAR": "Eliminar",
         "EDITAR": "Editar",
         "AGREGAR": "Agregar",
+        "BUSCAR": "Buscar",
+        "LISTA": "Lista",
+        "FORMULARIO": "Formulario",
+        "ACCIONES": "Acciones",
         "proyecto_academico": "Proyecto Académico",
-        "seleccionar": "Seleccionar",
         "periodo": "Periodo",
         "continuar": "Continuar",
         "atras": "Atrás",
         "generar": "Generar",
         "atencion": "Atención",
         "aceptar": "Aceptar",
-        "cancelar": "Cancelar"
+        "cancelar": "Cancelar",
+        "seleccionar": "Seleccionar",
+        "error": "Error",
+        "estado":"Estados",
+        "regresar": "Volver",
+        "PONDERACION":"Ponderación"
     },
 
     "asignacion_fechas": {
@@ -72,7 +71,9 @@
         "guardar": "Guardar",
         "campo_requerido": "Campo requerido",
         "sin_permisos_titulo": "Acceso denegado",
-        "sin_permisos_mensaje": "No tienes los permisos necesarios para visualizar esta información. Por favor, contacta al administrador del sistema para obtener más detalles o para solicitar acceso."
+        "sin_permisos_mensaje": "No tienes los permisos necesarios para visualizar esta información. Por favor, contacta al administrador del sistema para obtener más detalles o para solicitar acceso.",
+        "aniadir_nueva_escala": "Añadir nueva escala",
+        "tipo_escala": "Tipo de Escala"
     },
 
     "evaluaciones": {
@@ -82,30 +83,39 @@
         "select_evaluacion": "Seleccionar evaluación"
     },
 
+    "definicion_plantillas": {
+        "alert1": "Recuerde que se puede arrastrar las casillas de las secciones o sus preguntas  ",
+        "alert2": "Evaluaciones",
+        "titulo": "titulo de sección"
+    },
+
     "definir_escalas": {
-        "titulo_cualitativa": "Definición de escala cualitativa",
-        "titulo_cuantitativo": "Definición de escala cuantitativa",
+        "titulo_principal": "Definir Escalas",
+        "aniadir_nueva_escala": "Añadir nueva escala",
+        "tipo_escala": "Tipo de Escala",
+        "descripcion": "Descripción",
+        "tipo_input": "Tipo de Input",
+        "formulario_creacion": "Formulario de Creación",
+        "sin_escalas": "No hay escalas disponibles",
+        "guardar": "Guardar",
+        "cancelar": "Cancelar",
+        "eliminar": "Eliminar",
+        "pregunta":"Definicion de escala",
+        "ver_general":"Vista de escala",
+        "vista_escala":"Vista de la escala",
+        "alerta_formulario1":"A continuación, deberá diligenciar el formulario de opcion multiple con unica respuesta, asignando una calificación numérica sido 1 el valor mas bajo y 5 el valor mas alto al desempeño de las opciones asignadas.",
+        "alerta_formulario2":"A continuación, deberá diligenciar la pregunta del formulario de texto, asignando una pregunta abierta, para una respuesta de campo abierto",
+        "alerta_formulario3":"A continuación, deberá diligenciar el formulario para el enunciado del boton de carga sobre uno o varios archivos",
+        "alerta_formulario4":"A continuación, deberá diligenciar el formulario para el enunciado del boton de descarga sobre uno o varios archivos)",
+        "alerta_formulario5": "A continuación, verá el listado de las preguntas habilitadas para las evaluaciones, en el cual podrá agregar más con el botón <strong>+</strong>. Podrá ver la pregunta o deshabilitarla con el botón de la columna de acciones. Si la deshabilita, se ELIMINARÁ automáticamente.",
         "seleccionar_tipo_escala": "Seleccionar tipo de escala",
-        "seleccione": "Seleccione",
-        "cualitativa": "Cualitativa",
-        "cuantitativa": "Cuantitativa",
-        "escala": "Escala",
-        "del_seud": "del SEUD",
-        "descripcion": "Define descripción u objetivos del mismo",
-        "agregar_elemento_escala": "Agregar elemento",
-        "estado": "Estado",
-        "descripcion_columna": "Descripción",
-        "visualizar": "visualizar",
-        "sub_titulo_cualitativa": "Permite clasificar el desempeño del docente usando categorías como 'Insuficiente', 'Necesita Mejorar', 'Bueno', etc.",
-        "sub_titulo_cuantitativo": "Permite calificar el desempeño del docente con valores numéricos, como del 1 al 5.",
-        "alerta_cualitativa": "A continuación, deberá diligenciar el formulario utilizando la escala cualitativa, seleccionando una categoría que mejor describa el desempeño del docente, como 'Excelente', 'Bueno', 'Aceptable', etc.",
-        "alerta_cuantitativa": "A continuación, deberá diligenciar el formulario utilizando la escala cuantitativa, asignando una calificación numérica al desempeño del docente, basada en su experiencia.",
-        "titulo_cualitativa_seud": "Escala cualitativa del SEUD",
-        "titulo_cuantitativa_seud": "Escala cuantitativa del SEUD",
-        "acciones": "Acciones",
-        "tipo": "Evaluación",
-        "valor": "Valor",
-        "criterios": "Criterios"
+        "tipo_Textarea": "Texto",
+        "tipo_LinkNuxeo": "Descargar archivo",
+        "tipo_ArchivoAnexo": "Cargar archivo",
+        "tipo_Radio": "Selección de única respuesta",
+        "previsualizar":"Previsualizar",
+        "ejemplo_escala":"Ejemplo vista de la escala"
+
     },
     
     "heteroevaluacion": {
@@ -120,7 +130,7 @@
         "proyecto_curricular": "Proyecto Curricular",
         "proyecto1": "Nombre del proyecto curricular 1",
         "proyecto2": "Nombre del proyecto curricular 2",
-        "descripcion_proceso": "Descripción del proceso",
+        "descripcion_proceso": "Descripción del proceso y orientación al usuario",
         "descripcion": "Descripción",
         "error_fecha_inicio": "Por favor, ingrese la fecha de inicio.",
         "error_fecha_fin": "Por favor, ingrese la fecha de fin.",
@@ -140,7 +150,7 @@
         "proyecto_curricular": "Proyecto Curricular",
         "proyecto1": "Nombre del proyecto curricular 1",
         "proyecto2": "Nombre del proyecto curricular 2",
-        "descripcion_proceso": "Descripción del proceso",
+        "descripcion_proceso": "Descripción del proceso y orientación al usuario",
         "descripcion": "Descripción",
         "error_fecha_inicio": "Por favor, ingrese la fecha de inicio.",
         "error_fecha_fin": "Por favor, ingrese la fecha de fin.",
@@ -168,8 +178,9 @@
         "grupo": "Grupo",
         "error_grupo": "Por favor, seleccione un grupo.",
         "descripcion_proceso": "Descripción del proceso",
-        "error_descripcion": "Por favor, ingrese la descripción del proceso."
-    },
+        "error_descripcion": "Por favor, ingrese la descripción del proceso.",
+        "guardar": "Guardar"
+      },
 
     "autoevaluacion_ii": {
         "titulo": "Autoevaluación II",
@@ -180,8 +191,14 @@
         "identificacion_docente": "Identificación del Docente",
         "identificacion": "Identificación",
         "proyecto_curricular": "Proyecto Curricular",
-        "espacio_academico": "Espacio Académico",
-        "descripcion_proceso": "Descripción del proceso",
+        "proyecto1": "Nombre del proyecto curricular 1",
+        "proyecto2": "Nombre del proyecto curricular 2",
+        "proyectoN": "Nombre del proyecto curricular n",
+        "espacios_academicos": "Espacios Académicos",
+        "espacio1": "Lista de espacios académicos asociados al docente y al proyecto curricular",
+        "espacio2": "Lista de espacios académicos asociados al docente y al proyecto curricular",
+        "espacioN": "Lista de n espacios académicos asociados al docente y al proyecto curricular",
+        "descripcion_proceso": "Descripción del proceso y orientación al usuario",
         "descripcion": "Descripción",
         "error_fecha_inicio": "Por favor, ingrese la fecha de inicio.",
         "error_fecha_fin": "Por favor, ingrese la fecha de fin.",

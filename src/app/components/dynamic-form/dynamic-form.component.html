@@ -26,58 +26,59 @@
                                 <!-- Ícono para hacer más llamativo el encabezado de la pregunta -->
                                 <mat-icon color="accent">help_outline</mat-icon> {{ pregunta.nombre }}
                             </mat-panel-title>
+                            <mat-panel-description *ngIf="hasDocumentForDownload(pregunta)">
+                                <button mat-icon-button (click)="downloadDocument()">
+                                  <mat-icon>cloud_download</mat-icon>
+                                </button>
+                              </mat-panel-description>
                         </mat-expansion-panel-header>
 
                         <div *ngIf="pregunta.campos !== null">
-                        <!-- Opción de única respuesta (radio buttons) -->
-                        <div *ngIf="pregunta.campos[0].tipo_campo === TIPOINPUT.Radio">
-                            <mat-radio-group [formControlName]="'pregunta_' + generateControlName(seccion.id, pregunta.id)"
-                                [ngClass]="{ 'vertical': !vertHorAllState, 'horizontal': vertHorAllState }">
-                                <mat-radio-button *ngFor="let option of pregunta.campos[0].escala" [value]="option.valor">
-                                    {{ option.nombre }}
-                                </mat-radio-button>
-                            </mat-radio-group>
-                        </div>
 
-                        <!-- Opción de respuesta abierta (input/textarea) -->
-                        <div *ngIf="pregunta.campos[0].tipo_campo === TIPOINPUT.Textarea">
-                            <mat-form-field style="width: 100%;" appearance="fill">
-                                <!-- <mat-label>{{ pregunta.nombre }}</mat-label> -->
-                                <textarea matInput [formControlName]="'pregunta_' + generateControlName(seccion.id, pregunta.id)"></textarea>
-                            </mat-form-field>
-                        </div>
+                            <div *ngFor="let campo of pregunta.campos">
+                                <!-- Opción de única respuesta (radio buttons) -->
+                                <div *ngIf="campo.tipo_campo === TIPOINPUT.Radio">
+                                    <mat-radio-group [formControlName]="'pregunta_' + generateControlName(seccion.id, pregunta.id)"
+                                        [ngClass]="{ 'vertical': !vertHorAllState, 'horizontal': vertHorAllState }">
+                                        <mat-radio-button *ngFor="let option of campo.escala" [value]="option.valor">
+                                            {{ option.nombre }}
+                                        </mat-radio-button>
+                                    </mat-radio-group>
+                                </div>
 
-                        <!-- Input para la carga de archivos -->
-                        <div *ngIf="pregunta.campos[0].tipo_campo === TIPOINPUT.File">
-                            <!-- <mat-form-field appearance="fill"> -->
-                                <mat-label>Cargar archivo</mat-label>
-                                <input type="file" accept=".jpg, .jpeg, .png, .pdf" (change)="handleFileInputChange($event, seccion.id, pregunta.id)">
-                            <!-- </mat-form-field> -->
-                        </div>
+                                <!-- Opción de respuesta abierta (input/textarea) -->
+                                <div *ngIf="campo.tipo_campo === TIPOINPUT.Textarea">
+                                    <mat-form-field style="width: 100%;" appearance="fill">
+                                        <!-- <mat-label>{{ pregunta.nombre }}</mat-label> -->
+                                        <textarea matInput [formControlName]="'pregunta_' + generateControlName(seccion.id, pregunta.id)"></textarea>
+                                    </mat-form-field>
+                                </div>
 
-                        <!-- Botón para descargar evidencias  -->
-                        <div *ngIf="pregunta.tipo === 'download'">
-                            <button mat-raised-button color="primary" (click)="downloadDocument()">
-                                <mat-icon>cloud_download</mat-icon> Descargar Evidencia
-                            </button>
-                        </div>
+                                <!-- Input para la carga de archivos -->
+                                <div *ngIf="campo.tipo_campo === TIPOINPUT.File">
+                                    <!-- <mat-form-field appearance="fill"> -->
+                                        <mat-label>Cargar archivo</mat-label>
+                                        <input type="file" accept=".jpg, .jpeg, .png, .pdf" (change)="handleFileInputChange($event, seccion.id, pregunta.id)">
+                                    <!-- </mat-form-field> -->
+                                </div>
 
-                        <!-- Botón para cargar evidencias justo después del enunciado -->
-                        <!-- <div
-                            *ngIf="pregunta.text === 'El cuerpo docente debe cargar el acta de co-evalaucion curricularen enste boton: '">
-                            <input type="file" (change)="handleFileInputChange($event)" />
-                            <button mat-raised-button color="primary" (click)="cargarEvidencias()">
-                                <mat-icon>upload</mat-icon> {{ coevaluacionI.botonCargarEvidencias }}
-                            </button>
-                        </div> -->
+                                <!-- Botón para cargar evidencias justo después del enunciado -->
+                                <!-- <div
+                                    *ngIf="pregunta.text === 'El cuerpo docente debe cargar el acta de co-evalaucion curricularen enste boton: '">
+                                    <input type="file" (change)="handleFileInputChange($event)" />
+                                    <button mat-raised-button color="primary" (click)="cargarEvidencias()">
+                                        <mat-icon>upload</mat-icon> {{ coevaluacionI.botonCargarEvidencias }}
+                                    </button>
+                                </div> -->
 
-                        <!-- Botón para cargar evidencias en Autoevaluación II debajo del enunciado específico -->
-                        <!-- <div *ngIf="pregunta.text === 'El cuerpo docente debe cargar las evidencias correspondientes:'">
-                            <input type="file" (change)="handleFileInputChange($event)" />
-                            <button mat-raised-button color="primary" (click)="cargarEvidencias()">
-                                <mat-icon>upload</mat-icon> Cargar Evidencias
-                            </button>
-                        </div> -->
+                                <!-- Botón para cargar evidencias en Autoevaluación II debajo del enunciado específico -->
+                                <!-- <div *ngIf="pregunta.text === 'El cuerpo docente debe cargar las evidencias correspondientes:'">
+                                    <input type="file" (change)="handleFileInputChange($event)" />
+                                    <button mat-raised-button color="primary" (click)="cargarEvidencias()">
+                                        <mat-icon>upload</mat-icon> Cargar Evidencias
+                                    </button>
+                                </div> -->
+                            </div>
                         </div>
 
                         <mat-action-row *ngIf="!expandAllState">
