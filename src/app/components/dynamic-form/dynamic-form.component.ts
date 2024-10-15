@@ -228,17 +228,20 @@ selectForm(tipo_formulario: string) {
   submit() {
     if (this.stepperForm.valid) {
       this.generateResponseData().then(respuestas => {
-        const jsonData = {
-          id_periodo: 1,
-          id_tercero: this.tercero,
-          id_evaluado: this.terceroEvaluado != null ? this.terceroEvaluado : this.tercero,
-          proyecto_curricular: this.proyecto,
-          espacio_academico: this.espacio,
-          plantilla_id: 456,
-          respuestas,
-        };
-        this.saveForm(jsonData);
-        console.log("Formulario guardado:", jsonData);
+        const proyectos = this.proyecto.split(',').map(Number);
+        proyectos.forEach((proy) => {
+          const jsonData = {
+            id_periodo: 1,
+            id_tercero: this.tercero,
+            id_evaluado: this.terceroEvaluado != null ? this.terceroEvaluado : this.tercero,
+            proyecto_curricular: proy,
+            espacio_academico: this.espacio,
+            plantilla_id: 456,
+            respuestas,
+          };
+          this.saveForm(jsonData);
+          console.log("Formulario guardado:", jsonData);
+        });
       }).catch(error => {
         console.error('Error al generar las respuestas:', error);
       });;
