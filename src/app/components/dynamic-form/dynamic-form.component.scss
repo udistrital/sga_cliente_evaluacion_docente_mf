@@ -1,0 +1,145 @@
+.full-width {
+    width: 100%;
+}
+
+.button-container {
+    margin-top: 20px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.comentario-input {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.enunciado {
+    margin-top: 20px;
+    font-style: italic;
+  color: #2a5d83; /* Puedes cambiar este color para que coincida con tu diseño */
+}
+
+mat-radio-group {  
+    &.vertical {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  
+    &.horizontal {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+    }
+  }
+
+mat-radio-button {
+    margin-bottom: 10px; /* Añade espacio entre los botones de opción */
+}
+
+.radio-vertical {
+    display: block;
+    margin-bottom: 8px;
+}
+
+.custom-expansion-panel::ng-deep .mat-expansion-panel-header {
+    border-bottom: 2px solid transparent;
+    transition: border-color 0.3s;
+}
+
+.custom-expansion-panel::ng-deep .mat-expansion-panel-header.mat-expanded {
+    border-bottom: 2px solid #2196F3; /* Azul estilo Material */
+}
+
+.mat-expansion-panel-header mat-icon {
+    margin-right: 8px;
+}
+
+
+.form-horizontal {
+    display: flex;
+    flex-direction: column;
+    .form-grid2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+    }
+    .form-col1 {
+        margin-bottom: 16px;
+    }
+}
+
+.evaluation-table, .instruction-table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #007bff;
+}
+
+.evaluation-table th, .evaluation-table td,
+.instruction-table th, .instruction-table td {
+    border: 1px solid #007bff;
+    padding: 8px;
+    text-align: left;
+}
+
+.evaluation-table th {
+    background-color: #cce7ff;
+}
+
+.evaluation-table td {
+    background-color: #f0f8ff;
+}
+
+.instruction-table th {
+    background-color: #e0f7e0;
+}
+
+.instruction-table td {
+    background-color: #f9fff9;
+}
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+.mat-card-title {
+    font-size: 1.5rem;
+    color: #007bff;
+}
+
+button {
+    margin-top: 16px;
+}
+
+.comentario-input {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 16px;
+}
+
+    th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+    }
+
+    th {
+        background-color: #f2f2f2;
+        text-align: center;
+    }
+
+    .left-align {
+        text-align: left;
+    }
+
+.custom-expansion-panel::ng-deep .mat-expansion-panel-header {
+    border-bottom: 2px solid transparent;
+    transition: border-color 0.3s;
+}
+
+.custom-expansion-panel::ng-deep .mat-expansion-panel-header.mat-expanded {
+    border-bottom: 2px solid #2196F3; /* Azul estilo Material */
+}
+
+.mat-expansion-panel-header mat-icon {
+    margin-right: 8px;
+}

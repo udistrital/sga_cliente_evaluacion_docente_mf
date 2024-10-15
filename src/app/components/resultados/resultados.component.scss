@@ -1,0 +1,139 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .card {
+    padding: 16px;
+  }
+  
+  .select-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  
+  .select-field {
+    flex: 1 1 200px; /* 33.33% width minus the gap */
+  }
+  
+.form-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  
+  .border-right {
+    border-right: 1px solid black;
+  }
+
+  
+  p{
+    margin-top: 20px;
+    margin-bottom: 20px;
+    display: block;
+    margin-top: 20px;
+  }
+  button {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    display: block;
+    margin-top: 20px;
+    width: 180px;
+  }
+  
+  .checklist-container {
+    margin-bottom: 20px;
+  }
+  
+  ::ng-deep .subHeaders {
+    background-color: var(--color4) !important;
+  }
+  
+  ::ng-deep .cuotas {
+    background-color: var(--color600) !important;
+  }
+  
+  ::ng-deep .blanco {
+    background-color: #ffffff !important;
+  }
+  
+  
+  ::ng-deep .azulOscuro {
+    background-color: var(--primary) !important;
+    color: #ffffff !important;
+  }
+  
+  ::ng-deep .azulClaro {
+    background-color: var(--color0) !important;
+  }
+  
+  .button-stepper {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .mat-cell,
+  .mat-header-cell {
+    width: auto;
+  }
+  
+  .scrollable-table {
+    overflow-x: none !important;
+  }
+  
+  .small-form-field {
+    width: 100px;
+    /* Ajusta este valor según tus necesidades */
+  }
+  
+  .action-container {
+    display: flex;
+    height: 100%;
+  }
+  
+  .button-container {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+  }
+
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #F0F4F8;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    text-align: center;
+    box-shadow: 0 0.5rem 1rem 0 rgba(44, 51, 73, 0.1);
+    max-width: 800px;
+  }
+  
+  .sad-face-icon {
+    margin-top: 20px;
+    color: var(--md-primary-700);
+    overflow: visible;
+  }
+  
+  .sad-icon {
+    font-size: 5rem;
+    display: inline-table;
+    line-height: 1;
+  }
+  
+  h2 {
+    font-size: 1.5em;
+    margin-bottom: 20px;
+    color: var(--md-primary-700);
+  }

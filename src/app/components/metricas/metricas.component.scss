@@ -1,0 +1,147 @@
+.form-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.w-100{
+  width: 99%;
+}
+
+.border-right {
+  border-right: 1px solid black;
+}
+
+p {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  display: block;
+  margin-top: 20px;
+}
+button {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  display: block;
+  margin-top: 20px;
+  width: 180px;
+}
+
+.checklist-container {
+  margin-bottom: 20px;
+}
+
+table {
+  width: 100%;
+  border-collapse: separate;
+
+  th {
+    text-align: center;
+    color: white;
+    background-color: var(--primary);
+  }
+
+  td {
+    text-align: center !important;
+    border-right: whitesmoke;
+    border-left: whitesmoke;
+  }
+}
+
+::ng-deep .subHeaders {
+  background-color: var(--color4) !important;
+}
+
+::ng-deep .cuotas {
+  background-color: var(--color600) !important;
+}
+
+::ng-deep .blanco {
+  background-color: #ffffff !important;
+}
+
+::ng-deep .azulOscuro {
+  background-color: var(--primary) !important;
+  color: #ffffff !important;
+}
+
+::ng-deep .azulClaro {
+  background-color: var(--color0) !important;
+}
+
+.button-stepper {
+  display: flex;
+  justify-content: space-between;
+}
+
+.mat-cell,
+.mat-header-cell {
+  width: auto;
+}
+
+.small-form-field {
+  width: 100px;
+  /* Ajusta este valor según tus necesidades */
+}
+
+.action-container {
+  display: flex;
+  height: 100%;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+}
+
+.spaced {
+  margin-top: 20px;
+}
+
+.mat-stepper-vertical {
+  margin-top: 8px;
+}
+
+.mat-mdc-form-field {
+  margin-top: 16px;
+}
+
+/* metricas.component.scss */
+
+.mat-step {
+  width: 100%; /* Ajusta el ancho según tus necesidades */
+}
+
+/* .form-container {
+  display: grid;
+  flex-direction: column;
+  width: 100%;
+} */
+
+.form-field {
+  width: 100%;
+  margin-bottom: 16px; /* Ajusta el margen según el diseño */
+}
+
+//HOVER SOBRE LAS FILAS
+.mat-mdc-row:hover .mat-mdc-cell {
+  background-color: var(--color100);
+}
+
+/* Estilos para el indicador de estado */
+.badge {
+  margin: 0.4em;
+  width: 0.5em;
+  height: 0.5em;
+  border-radius: 100%;
+}
+
+mat-form-field {
+  margin-right: 12px;
+}
+
+::ng-deep .mat-mdc-snack-bar-container {
+  --mdc-snackbar-container-color: #03678F;
+  --mdc-snackbar-supporting-text-color: rgba(255, 255, 255, 0.87);
+  --mat-snack-bar-button-color: #145a95;
+}
