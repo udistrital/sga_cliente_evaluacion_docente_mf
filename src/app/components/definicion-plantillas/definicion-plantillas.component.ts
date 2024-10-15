@@ -3,6 +3,8 @@ import { FormControl } from "@angular/forms";
 import { startWith, map } from "rxjs";
 import { CdkDragDrop, moveItemInArray } from "@angular/cdk/drag-drop";
 import { EvaluacionDocenteService } from "src/app/services/evaluacion-docente-crud.service";
+import { SgaEvaluacionDocenteMidService } from "src/app/services/sga_evaluacion_docente_mid.service";
+import { HttpClient } from "@angular/common/http";
 
 interface Campo {
   TipoCampoId: number;
@@ -17,7 +19,13 @@ interface Seccion {
 interface Componente {
   nombre: string;
   ponderacion: number;
-  numero?: number; // Propiedad opcional
+  numero?: number;
+  item_relacion_campo_id?: {
+    campo_id: number;
+    nombre: string;
+    formularioTitulo: string | null;
+    seccionTitulo: string | null;
+  };
 }
 
 @Component({
@@ -26,20 +34,8 @@ interface Componente {
   styleUrls: ["./definicion-plantillas.component.scss"],
 })
 export class DefinicionPlantillasComponent implements OnInit {
-  displayedColumns: string[] = [
-    "numero",
-    "proceso",
-    "fecha",
-    "estado",
-    "ponderacion",
-    "acciones",
-  ];
-  displayedColumnsComponente: string[] = [
-    "numero",
-    "nombre",
-    "ponderacion",
-    "acciones",
-  ];
+  displayedColumns: string[] = ["numero", "proceso", "fecha", "estado", "ponderacion", "acciones"];
+  displayedColumnsComponente: string[] = ["numero", "nombre", "ponderacion", "acciones"];
 
   formularios = [
     {
@@ -48,7 +44,6 @@ export class DefinicionPlantillasComponent implements OnInit {
       fecha: new Date(),
       estado: "Activo",
       ponderacion: 100,
-      
     },
   ];
 
@@ -69,12 +64,15 @@ export class DefinicionPlantillasComponent implements OnInit {
   formularioSeleccionado: string = "heteroevaluacion";
   seccionSeleccionada: any = null;
   porcentajeInvalido: boolean = false;
-  
+  camposCargarEvidencias: any[] = [];
+  campoRelacionado: any = null;
 
   constructor(
+    private httpClient: HttpClient,
     private evaluacionDocenteService: EvaluacionDocenteService,
+    private sgaEvaluacionDocenteMidService: SgaEvaluacionDocenteMidService,
     private cdr: ChangeDetectorRef
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.obtenerCamposActivos();
@@ -92,14 +90,14 @@ export class DefinicionPlantillasComponent implements OnInit {
     this.evaluacionDocenteService.getCamposActivos().subscribe(
       (response: any) => {
         if (Array.isArray(response.Data)) {
-          this.tipoCampos = response.Data.map((campo: Campo) =>
-            this.mapTipoCampo(campo)
+          this.tipoCampos = response.Data.map((campo: Campo) => this.mapTipoCampo(campo));
+
+          // Filtrar campos de tipo "carga de evidencias"
+          this.camposCargarEvidencias = response.Data.filter(
+            (campo: Campo) => campo.TipoCampoId === 6686 // Cargar evidencias
           );
         } else {
-          console.error(
-            "Error: la respuesta de la API no es un arreglo.",
-            response
-          );
+          console.error("Error: la respuesta de la API no es un arreglo.", response);
         }
       },
       (error) => {
@@ -108,39 +106,47 @@ export class DefinicionPlantillasComponent implements OnInit {
     );
   }
 
+  onTipoCampoChange() {
+    if (this.tipoCampoSeleccionado === 4672) { // Si se selecciona "descargar evidencias"
+      this.filtrarPorTipoCargarEvidencias();
+    }
+  }
+
+  filtrarPorTipoCargarEvidencias() {
+    this.campoRelacionado = null; // Reiniciar campo relacionado
+  }
+
+  seleccionarCampoRelacionado(campo: any) {
+    this.campoRelacionado = campo;
+  }
+
   mapTipoCampo(campo: Campo) {
     const tipos: { [key: number]: string } = {
       4668: "Pregunta de opción múltiple con única respuesta",
       4674: "Pregunta abierta",
       4672: "Botón de descargar archivos",
       6686: "Botón de cargar archivos"
-    };    
+    };
     return {
       TipoCampoId: campo.TipoCampoId,
       label: tipos[campo.TipoCampoId] || "Desconocido",
-    };    
+    };
   }
 
   filtrarPorTipo() {
-    this.evaluacionDocenteService
-      .getCamposActivos()
-      .subscribe((response: any) => {
-        if (Array.isArray(response.Data)) {
-          this.preguntasFiltradas = response.Data.filter(
-            (p: Campo) => p.TipoCampoId === this.tipoCampoSeleccionado
-          );
-        } else {
-          console.error(
-            "Error: la respuesta de la API no contiene un arreglo en la propiedad Data.",
-            response
-          );
-        }
-      });
+    this.evaluacionDocenteService.getCamposActivos().subscribe((response: any) => {
+      if (Array.isArray(response.Data)) {
+        this.preguntasFiltradas = response.Data.filter(
+          (p: Campo) => p.TipoCampoId === this.tipoCampoSeleccionado
+        );
+      } else {
+        console.error("Error: la respuesta de la API no contiene un arreglo en la propiedad Data.", response);
+      }
+    });
   }
 
   validarPorcentaje() {
-    this.porcentajeInvalido =
-      this.nuevoPorcentaje < 1 || this.nuevoPorcentaje > 100;
+    this.porcentajeInvalido = this.nuevoPorcentaje < 1 || this.nuevoPorcentaje > 100;
   }
 
   private _filterPreguntas(value: string): any[] {
@@ -171,16 +177,23 @@ export class DefinicionPlantillasComponent implements OnInit {
 
     if (this.esComponenteValido()) {
       const nuevoComponente = this.crearNuevoComponente();
+
+      // Relacionar el campo de descarga con el de carga de evidencias si corresponde
+      if (this.tipoCampoSeleccionado === 4672 && this.campoRelacionado) {
+        nuevoComponente.item_relacion_campo_id = {
+          campo_id: this.campoRelacionado.campo_id,
+          nombre: this.campoRelacionado.nombre,
+          formularioTitulo: this.campoRelacionado.formularioTitulo || null,
+          seccionTitulo: this.campoRelacionado.seccionTitulo || null
+        };
+      }
+
       this.seccionSeleccionada.componentes.push(nuevoComponente);
-      this.seccionSeleccionada.componentes = [
-        ...this.seccionSeleccionada.componentes,
-      ];
+      this.seccionSeleccionada.componentes = [...this.seccionSeleccionada.componentes];
       this.secciones = [...this.secciones];
       this.resetComponente();
     } else {
-      console.error(
-        "El porcentaje debe estar entre 1 y 100 o la pregunta seleccionada no es válida."
-      );
+      console.error("El porcentaje debe estar entre 1 y 100 o la pregunta seleccionada no es válida.");
     }
   }
 
@@ -189,9 +202,9 @@ export class DefinicionPlantillasComponent implements OnInit {
       numero: this.seccionSeleccionada.componentes.length + 1,
       nombre: this.preguntaSeleccionada.Nombre,
       ponderacion: this.nuevoPorcentaje,
+      item_relacion_campo_id: this.tipoCampoSeleccionado === 4672 ? this.campoRelacionado : null
     };
   }
-  
 
   resetComponente() {
     this.nuevoPorcentaje = 0;
@@ -201,20 +214,11 @@ export class DefinicionPlantillasComponent implements OnInit {
   }
 
   esComponenteValido(): boolean {
-    return (
-      this.nuevoPorcentaje > 0 &&
-      this.nuevoPorcentaje <= 100 &&
-      this.preguntaSeleccionada &&
-      this.preguntaSeleccionada.Nombre !== "No existe escala"
-    );
+    return this.nuevoPorcentaje > 0 && this.nuevoPorcentaje <= 100 && this.preguntaSeleccionada;
   }
 
   dropComponentes(event: CdkDragDrop<Componente[]>, seccion: Seccion) {
-    moveItemInArray(
-      seccion.componentes,
-      event.previousIndex,
-      event.currentIndex
-    );
+    moveItemInArray(seccion.componentes, event.previousIndex, event.currentIndex);
     seccion.componentes = [...seccion.componentes];
     this.cdr.detectChanges();
     console.log("Componentes reordenados: ", seccion.componentes);
@@ -259,11 +263,22 @@ export class DefinicionPlantillasComponent implements OnInit {
         nombre: seccion.titulo,
         items: seccion.componentes.map((componente: Componente) => ({
           nombre: componente.nombre,
-          porcentaje: componente.ponderacion,
+          ponderacion: componente.ponderacion,
+          item_relacion_campo_id: componente.item_relacion_campo_id || null,
         })),
       })),
     };
 
-    console.log("JSON generado:", formularioData);
+    console.log("Formulario data a enviar:", formularioData);
+
+    this.sgaEvaluacionDocenteMidService.post('formulario', formularioData)
+      .subscribe(
+        (response) => {
+          console.log('Formulario guardado con éxito:', response);
+        },
+        (error) => {
+          console.error('Error al guardar el formulario:', error);
+        }
+      );
   }
 }

@@ -90,7 +90,7 @@
                         </button>
                     </div>
 
-                    <!-- Lista para las secciones, que permite arrastrar y soltar -->
+                    <!-- Lista para las secciones -->
                     <div cdkDropList [cdkDropListData]="secciones" (cdkDropListDropped)="dropSecciones($event)">
                         <div *ngFor="let seccion of secciones; let i = index" cdkDrag>
                             <mat-card>
@@ -159,6 +159,7 @@
 
                         <mat-card-content>
                             <div class="form-container">
+                                <!-- Selección del tipo de campo -->
                                 <mat-form-field appearance="fill" class="form-field">
                                     <mat-select
                                         placeholder="{{ 'definir_escalas.seleccionar_tipo_escala' | translate }}"
@@ -168,6 +169,20 @@
                                     </mat-select>
                                 </mat-form-field>
 
+                                <!-- Selección de 'carga de evidencias' -->
+                                <mat-form-field appearance="fill" class="form-field"
+                                    *ngIf="tipoCampoSeleccionado === 4672">
+                                    <mat-select placeholder="Seleccionar campo de 'carga de evidencias'"
+                                        [(value)]="campoRelacionado"
+                                        (selectionChange)="seleccionarCampoRelacionado($event.value)">
+                                        <mat-option *ngFor="let campo of camposCargarEvidencias" [value]="campo">
+                                            {{ campo.nombre }} (Formulario: {{ campo.formularioTitulo || 'N/A' }},
+                                            Sección: {{ campo.seccionTitulo || 'N/A' }})
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+
+                                <!-- Selección de la pregunta -->
                                 <mat-form-field appearance="fill" class="form-field">
                                     <input matInput placeholder="{{ 'definir_escalas.tipo_input' | translate }}"
                                         [(ngModel)]="preguntaSeleccionada" [matAutocomplete]="auto">
@@ -177,6 +192,7 @@
                                     </mat-autocomplete>
                                 </mat-form-field>
 
+                                <!-- Campo para porcentaje -->
                                 <mat-form-field class="form-field">
                                     <input matInput placeholder="%" type="number" [(ngModel)]="nuevoPorcentaje" min="1"
                                         max="100" required (input)="validarPorcentaje()" />
