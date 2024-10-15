@@ -64,11 +64,19 @@ export class EvaluacionesComponent implements OnInit {
     this.coevaluacionIForm = this.fb.group({});
     this.autoevaluacionIIForm = this.fb.group({});
     this.autoevaluacionIForm = this.fb.group({});
+    this.persona = {
+      "id": 0,
+      "nombre": "",
+      "identificacion": "",
+    }
   }
 
   ngOnInit(): void {
+    console.log("COMPROBACIÓN ACTUALIZACION CLIENTE");
+    console.log(">>> Test actualización de bucket!!! <<<");
+    console.log(new Date(), "Prueba adicional!!!");
     console.log("EvaluacionesComponent initialized");
-    this.initializeForms();
+    this.initializeForms(this.persona);
 
     // Obtener roles del usuario
     this.userService.getUserRoles().then((roles) => {
@@ -123,15 +131,16 @@ export class EvaluacionesComponent implements OnInit {
   }
 
   // Inicializar formularios
-  initializeForms(): void {
+  initializeForms(persona: any): void {
     this.heteroForm = this.fb.group({
       inicioFecha: ["", Validators.required],
       finFecha: ["", Validators.required],
-      estudianteNombre: ["", Validators.required],
-      estudianteIdentificacion: ["", Validators.required],
+      estudianteNombre: [this.persona.nombre ? this.persona.nombre : "", Validators.required],
+      estudianteIdentificacion: [this.persona.identificacion ? this.persona.identificacion : "", Validators.required],
       proyectoCurricular: ["", Validators.required],
       docenteNombre: ["", Validators.required],
-      descripcionProceso: ["", Validators.required],
+      descripcionProceso: [`Estimado estudiantado: Por favor evalúe formativamente a su docente utilizando el formato dispuesto para ello. Los ítems 01 a 20 de selección múltiple con única respuesta son obligatorios. Puede realizar anotaciones de felicitación o de sugerencias respetuosas en los espacios destinados para tal fin. Utilice como referencia la siguiente escala para medir el grado de desempeño a evaluar:`, 
+        Validators.required],
     });
 
     this.coevaluacionIIForm = this.fb.group({
@@ -140,7 +149,7 @@ export class EvaluacionesComponent implements OnInit {
       proyectoCurricular: ["", Validators.required],
       docenteNombre: ["", Validators.required],
       espacioAcademico: ["", Validators.required],
-      descripcionProceso: ["", Validators.required],
+      descripcionProceso: [`Estimado Consejo Curricular: Por favor coevalúe con plan de mejoramiento su desempeño docente utilizando el formato dispuesto para ello. Los ítems PROMEDIO con única respuesta son obligatorios en cada dimensión.`, Validators.required],
     });
 
     this.coevaluacionIForm = this.fb.group({
@@ -148,29 +157,29 @@ export class EvaluacionesComponent implements OnInit {
       finFecha: ["", Validators.required],
       proyectoCurricular: ["", Validators.required],
       espacioAcademico: ["", Validators.required],
-      docenteNombre: ["", Validators.required],
+      docenteNombre: [this.persona.nombre ? this.persona.nombre : "", Validators.required],
       grupoSeleccionado: ["", Validators.required],
-      descripcionProceso: ["", Validators.required],
+      descripcionProceso: [`Estimado cuerpo docente y estudiantado: Por favor co-evalúen con compromisos mutuos su desempeño docente y el de sus estudiantes en este espacio curricular utilizando el formato dispuesto para ello. Por favor cargue el acta resultado de este ejercicio de coevaluación.`, Validators.required],
     });
 
     this.autoevaluacionIIForm = this.fb.group({
       inicioFecha: ["", Validators.required],
       finFecha: ["", Validators.required],
-      docenteNombre: ["", Validators.required],
-      docenteIdentificacion: ["", Validators.required],
+      docenteNombre: [this.persona.nombre ? this.persona.nombre : "", Validators.required],
+      docenteIdentificacion: [this.persona.identificacion ? this.persona.identificacion : "", Validators.required],
       proyectoCurricular: ["", Validators.required],
       espacioAcademico: ["", Validators.required],
-      descripcionProceso: ["", Validators.required],
+      descripcionProceso: [`Estimado cuerpo docente: Por favor autoevalúe con plan de mejoramiento su desempeño docente utilizando el formato dispuesto para ello. Los items 01 a 15 con única respuesta son obligatorios en cada dimensión.`, Validators.required],
     });
 
     this.autoevaluacionIForm = this.fb.group({
       inicioFecha: ["", Validators.required],
       finFecha: ["", Validators.required],
-      estudianteNombre: ["", Validators.required],
-      estudianteIdentificacion: ["", Validators.required],
+      estudianteNombre: [this.persona.nombre ? this.persona.nombre : "", Validators.required],
+      estudianteIdentificacion: [this.persona.identificacion ? this.persona.identificacion : "", Validators.required],
       proyectoCurricular: ["", Validators.required],
       proyectoCurricular2: ["", Validators.required],
-      descripcionProceso: ["", Validators.required],
+      descripcionProceso: [`Estimado estudiantado: Por favor autoevalúe su desempeño como estudiante en este espacio curricular. Los ítems 01 a 05 de selección múltiple con única respuesta son obligatorios. Puede realizar anotaciones de mejoramiento para conseguir sus resultados de aprendizaje en los espacios destinados para tal fin.`, Validators.required],
     });
   }
 
