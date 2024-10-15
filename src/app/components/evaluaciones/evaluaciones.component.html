@@ -1,5 +1,5 @@
 <mat-card
-    *ngIf="hasRole([ROLES.ADMIN_SGA, ROLES.DOCENTE, ROLES.ESTUDIANTE, ROLES.CONSEJO_CURRICULAR]); else noPermission">
+    *ngIf="hasRole([ROLES.ADMIN_SGA, ROLES.DOCENTE, ROLES.ESTUDIANTE, ROLES.CONSEJO_CURRICULAR, ROLES.COORDINADOR]); else noPermission">
     <mat-card-header>
         <mat-card-title>{{ "evaluaciones.titulo" | translate }}</mat-card-title>
         <mat-card-subtitle>{{ "evaluaciones.sub_titulo" | translate }}</mat-card-subtitle>
@@ -26,7 +26,7 @@
                     'autoevaluacion_i.titulo' | translate }}</mat-option>
                 <mat-option *ngIf="hasRole([ROLES.ADMIN_SGA, ROLES.DOCENTE])" value="autoevaluacion-ii">{{
                     'autoevaluacion_ii.titulo' | translate }}</mat-option>
-                <mat-option *ngIf="hasRole([ROLES.ADMIN_SGA, ROLES.DOCENTE])" value="coevaluacion-i">{{
+                <mat-option *ngIf="hasRole([ROLES.ADMIN_SGA, ROLES.DOCENTE, ROLES.COORDINADOR])" value="coevaluacion-i">{{
                     'coevaluacion_i.titulo' | translate }}</mat-option>
                 <mat-option *ngIf="hasRole([ROLES.ADMIN_SGA])" value="coevaluacion-ii">{{
                     'coevaluacion_ii.titulo' | translate }}</mat-option>
@@ -98,7 +98,7 @@
                                     <mat-label>{{ 'heteroevaluacion.proyecto_curricular' | translate }}</mat-label>
                                     <mat-select (selectionChange)="onProyectoSelection($event)" required>
                                         <mat-option *ngFor="let item of proyectos?.opciones" [value]="item">
-                                            {{ item.Nombre }}
+                                            {{ item.nombre }}
                                         </mat-option>
                                     </mat-select>
                                     <mat-error
@@ -110,10 +110,10 @@
                             <div class="form-col1">
                                 <mat-form-field style="width: 100%" appearance="outline">
                                     <mat-label>{{ 'coevaluacion_ii.docente' | translate }}</mat-label>
-                                    <mat-select formControlName="docenteNombre">
+                                    <mat-select formControlName="docenteNombre" (selectionChange)="onDocenteSelection($event)">
                                         <mat-option value="" disabled>Seleccione un docente</mat-option>
                                         <mat-option *ngFor="let docente of docentes?.opciones" [value]="docente">
-                                            {{ docente.Nombre }}
+                                            {{ docente.nombre }}
                                         </mat-option>
                                     </mat-select>
                                     <mat-error
@@ -137,7 +137,7 @@
 
                         </div>
                     </form>
-                    <ngx-dynamic-form [formtype]="'1'"></ngx-dynamic-form>
+                    <ngx-dynamic-form [formtype]="'1'" [tercero]="tercero" [terceroEvaluado]="terceroEvaluado" [proyecto]="proyecto" [espacio]="espacio"></ngx-dynamic-form>
                 </mat-card-content>
             </mat-card>
         </ng-container>
@@ -213,7 +213,7 @@
                                     <mat-label>{{ 'autoevaluacion_i.proyecto_curricular' | translate }}</mat-label>
                                     <mat-select (selectionChange)="onProyectoSelection($event)" required>
                                         <mat-option *ngFor="let item of proyectos?.opciones" [value]="item">
-                                            {{ item.Nombre }}
+                                            {{ item.nombre }}
                                         </mat-option>
                                     </mat-select>
                                     <mat-error
@@ -227,7 +227,7 @@
                                     <mat-label>{{ 'autoevaluacion_i.espacio_academico' | translate }}</mat-label>
                                     <mat-select (selectionChange)="onEspacioSelection($event)" required>
                                         <mat-option *ngFor="let item of espacios?.opciones" [value]="item">
-                                            {{ item.Nombre }}
+                                            {{ item.nombre }}
                                         </mat-option>
                                     </mat-select>
                                     <mat-error
@@ -250,7 +250,7 @@
                             </mat-form-field>
                         </div>
                     </form>
-                    <ngx-dynamic-form [formtype]="'2'"></ngx-dynamic-form>
+                    <ngx-dynamic-form [formtype]="'2'" [tercero]="tercero" [terceroEvaluado]="terceroEvaluado" [proyecto]="proyecto" [espacio]="espacio"></ngx-dynamic-form>
                 </mat-card-content>
             </mat-card>
         </ng-container>
@@ -325,7 +325,7 @@
                                     <mat-label>{{ 'heteroevaluacion.proyecto_curricular' | translate }}</mat-label>
                                     <mat-select (selectionChange)="onProyectoSelection($event)" required>
                                         <mat-option *ngFor="let item of proyectos?.opciones" [value]="item">
-                                            {{ item.Nombre }}
+                                            {{ item.nombre }}
                                         </mat-option>
                                     </mat-select>
                                     <mat-error
@@ -364,7 +364,7 @@
                             </mat-form-field>
                         </div>
                     </form>
-                    <ngx-dynamic-form [formtype]="'4'"></ngx-dynamic-form>
+                    <ngx-dynamic-form [formtype]="'4'" [tercero]="tercero" [terceroEvaluado]="terceroEvaluado" [proyecto]="proyecto" [espacio]="espacio"></ngx-dynamic-form>
                 </mat-card-content>
             </mat-card>
         </ng-container>
@@ -413,7 +413,7 @@
                                     <mat-label>{{ 'heteroevaluacion.proyecto_curricular' | translate }}</mat-label>
                                     <mat-select (selectionChange)="onProyectoSelection($event)" required>
                                         <mat-option *ngFor="let item of proyectos?.opciones" [value]="item">
-                                            {{ item.Nombre }}
+                                            {{ item.nombre }}
                                         </mat-option>
                                     </mat-select>
                                     <mat-error
@@ -482,14 +482,14 @@
                             </mat-form-field>
                         </div>
                     </form>
-                    <ngx-dynamic-form [formtype]="'3'"></ngx-dynamic-form>
+                    <ngx-dynamic-form [formtype]="'3'" [tercero]="tercero" [terceroEvaluado]="terceroEvaluado" [proyecto]="proyecto" [espacio]="espacio"></ngx-dynamic-form>
                 </mat-card-content>
             </mat-card>
         </ng-container>
 
         <!-- Formulario de Coevaluación II -->
     <ng-container *ngIf="selectedEvaluation === 'coevaluacion-ii'">
-        <mat-card *ngIf="hasRole([ROLES.CONSEJO_CURRICULAR, ROLES.DECANO, ROLES.ADMIN_SGA, ROLES.ADMIN_DOCENCIA]); else noPermission" class="form-container">
+        <mat-card *ngIf="hasRole([ROLES.CONSEJO_CURRICULAR, ROLES.DECANO, ROLES.ADMIN_SGA, ROLES.ADMIN_DOCENCIA, ROLES.COORDINADOR]); else noPermission" class="form-container">
             <mat-card-header style="padding-bottom: 1rem;">
                 <mat-card-title>{{ 'coevaluacion_ii.titulo' | translate }}</mat-card-title>
             </mat-card-header>
@@ -529,7 +529,7 @@
                         <mat-label>{{ 'heteroevaluacion.proyecto_curricular' | translate }}</mat-label>
                         <mat-select (selectionChange)="onProyectoSelection($event)" required>                                
                           <mat-option *ngFor="let item of proyectos?.opciones" [value]="item">
-                            {{ item.Nombre }}
+                            {{ item.nombre }}
                           </mat-option>
                         </mat-select>
                         <mat-error *ngIf="heteroForm.get('facultad')?.hasError('required') && heteroForm.get('facultad')?.touched">
@@ -541,10 +541,10 @@
                 <div class="form-col1">
                     <mat-form-field style="width: 100%" appearance="outline">
                         <mat-label>{{ 'coevaluacion_ii.docente' | translate }}</mat-label>
-                        <mat-select formControlName="docenteNombre">
+                        <mat-select formControlName="docenteNombre" (selectionChange)="onDocenteSelection($event)">
                             <mat-option value="" disabled>Seleccione un docente</mat-option>
                             <mat-option *ngFor="let docente of docentes?.opciones" [value]="docente">
-                                {{ docente.Nombre }}
+                                {{ docente.nombre }}
                             </mat-option>
                         </mat-select>
                         <mat-error
@@ -580,7 +580,7 @@
                     </mat-form-field>
                 </div>
             </form>
-            <ngx-dynamic-form [formtype]="'5'"></ngx-dynamic-form>
+            <ngx-dynamic-form [formtype]="'5'" [tercero]="tercero" [terceroEvaluado]="terceroEvaluado" [proyecto]="proyecto" [espacio]="espacio"></ngx-dynamic-form>
 
             </mat-card-content>
         </mat-card>

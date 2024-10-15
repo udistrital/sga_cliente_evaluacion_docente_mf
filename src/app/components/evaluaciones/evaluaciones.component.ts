@@ -13,6 +13,7 @@ import { PopUpManager } from 'src/app/managers/popUpManager';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { SgaEvaluacionDocenteMidService } from "src/app/services/sga_evaluacion_docente_mid.service";
+import { TercerosCrudService } from "src/app/services/terceros-crud.service";
 
 @Component({
   selector: "app-evaluaciones",
@@ -39,6 +40,10 @@ export class EvaluacionesComponent implements OnInit {
   espacios_academicos: any[] = [];
   grupos: any[] = [];
   dataSource!: MatTableDataSource<any>;
+  tercero!: string;
+  terceroEvaluado!: string;
+  proyecto!: string;
+  espacio!: string;
   
   @Input() formtype: string = '';  
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -51,7 +56,8 @@ export class EvaluacionesComponent implements OnInit {
     private espaciosAcademicosService: EspaciosAcademicosService,
     private popUpManager: PopUpManager,
     private dateService: DateService,
-    private evaluacionDocenteMidService: SgaEvaluacionDocenteMidService
+    private evaluacionDocenteMidService: SgaEvaluacionDocenteMidService,
+    private tercerosService: TercerosCrudService
   ) {
     this.heteroForm = this.fb.group({});
     this.coevaluacionIIForm = this.fb.group({});
@@ -59,7 +65,6 @@ export class EvaluacionesComponent implements OnInit {
     this.autoevaluacionIIForm = this.fb.group({});
     this.autoevaluacionIForm = this.fb.group({});
   }
-
 
   ngOnInit(): void {
     console.log("EvaluacionesComponent initialized");
@@ -74,6 +79,11 @@ export class EvaluacionesComponent implements OnInit {
           console.log('DateHeader:', this.dateHeader);
         },
         (error: any) => console.error('Error al obtener el encabezado de fecha:', error)
+      );
+      this.userService.getPersonaId().then(
+        (personaId) => {
+          this.tercero = String(personaId);
+        }
       );
       if (this.hasRole([ROLES.ESTUDIANTE])) {
         this.userService.getCodigoEstudiante().then((codigo) => {
@@ -228,7 +238,7 @@ export class EvaluacionesComponent implements OnInit {
       if (!proyectosMap.has(COD_PROYECTO)) {
         proyectosMap.set(COD_PROYECTO, {
           id: COD_PROYECTO,
-          Nombre: PROYECTO,
+          nombre: PROYECTO,
           docentes: [],
           asignaturas: []
         });
@@ -240,7 +250,7 @@ export class EvaluacionesComponent implements OnInit {
         if (!docenteExistente) {
           proyecto.docentes.push({
             id: DOC_DOCENTE,
-            Nombre: DOCENTE
+            nombre: DOCENTE
           });
         }
 
@@ -248,7 +258,7 @@ export class EvaluacionesComponent implements OnInit {
         if (!asignaturaExistente) {
           proyecto.asignaturas.push({
             id: COD_ESPACIO,
-            Nombre: ESPACIO
+            nombre: ESPACIO
           });
         }
       }
@@ -294,7 +304,7 @@ export class EvaluacionesComponent implements OnInit {
       if (!proyectosMap.has(CRA_COD)) {
         proyectosMap.set(CRA_COD, {
           id: CRA_COD,
-          Nombre: CARRERA,
+          nombre: CARRERA,
           asignaturas: []
         });
       }
@@ -313,7 +323,7 @@ export class EvaluacionesComponent implements OnInit {
         } else {
           proyecto.asignaturas.push({
             id: CODIGO_SIGNATURA,
-            Nombre: ASIGNATURA,
+            nombre: ASIGNATURA,
             grupos: [
               {
                 id: ID_GRUPO,
@@ -399,18 +409,19 @@ export class EvaluacionesComponent implements OnInit {
     const proyectoSeleccionado = event.value;
 
     if (proyectoSeleccionado) {
+      this.proyecto = proyectoSeleccionado.id;
       this.docentes.opciones = proyectoSeleccionado.docentes;
       this.espacios.opciones = proyectoSeleccionado.asignaturas;
       this.espacios_academicos = [];
       proyectoSeleccionado.asignaturas.forEach((espacio: any) => {
         this.espacios_academicos.push({
           id: espacio.id,
-          nombre: espacio.Nombre,
+          nombre: espacio.nombre,
           grupos: espacio.grupos
         });
       })
 
-      this.openSnackBar(`Proyecto seleccionado: ${proyectoSeleccionado.Nombre}`);
+      this.openSnackBar(`Proyecto seleccionado: ${proyectoSeleccionado.nombre}`);
     }
   }
 
@@ -418,6 +429,7 @@ export class EvaluacionesComponent implements OnInit {
     const espacioSeleccionado = event.value;
 
     if (espacioSeleccionado) {
+      this.espacio = espacioSeleccionado.id;
       this.grupos = espacioSeleccionado.grupos;
       this.openSnackBar(`Espacio seleccionado: ${espacioSeleccionado.nombre}`);
     }
@@ -437,6 +449,85 @@ export class EvaluacionesComponent implements OnInit {
           console.error('Error al cargar proyectos:', err);
         }
       });
+  }
+
+  onDocenteSelection(event: MatSelectChange): void {
+    const docenteSeleccionado = event.value;
+
+    this.consultarDocenteTercero(docenteSeleccionado).then(
+      (res) => {
+        if (res != null) {
+          this.terceroEvaluado = res.Id;
+        }
+      }
+    )
+  }
+
+  async consultarDocenteTercero(docente: any): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.tercerosService.get('datos_identificacion?query=Numero:' + docente.id + '&fields=TerceroId')
+        .subscribe(
+          (res: any) => {
+            if (res != null && res[0] != null) {
+              resolve(res[0]["TerceroId"]);
+            } else {
+              resolve(this.crearTercero(docente));
+            }
+          },
+          (error: any) => {
+            reject(error);
+          }
+        )
+      }
+    );
+  }
+
+  async crearTercero(docente: any): Promise<any> {
+    let nuevoTercero = {
+      NombreCompleto: docente.nombre,
+      Activo: true,
+      TipoContribuyenteId: {
+        Id: 2
+      }
+    }
+    return new Promise((resolve, reject) => {
+      this.tercerosService.post('tercero', nuevoTercero)
+        .subscribe(
+          (terceroCreado: any) => {
+            if (terceroCreado != null) {
+              this.asociarIdentificacionTercero(terceroCreado, docente.id);
+              resolve(terceroCreado);
+            }
+          },
+          (error: any) => {
+            reject(error);
+          }
+        )
+    });
+  }
+
+  async asociarIdentificacionTercero(tercero: any, documento: string): Promise<any> {
+    let datosIdentificacion = {
+      TipoDocumentoId: {
+        Id: 7
+      },
+      TerceroId: tercero,
+      Numero: documento,
+      Activo: true
+    }
+    return new Promise((resolve, reject) => {
+      this.tercerosService.post('datos_identificacion', datosIdentificacion)
+      .subscribe(
+        (res: any) => {
+          if (res != null) {
+            resolve(res);
+          }
+        },
+        (error: any) => {
+          reject(error);
+        }
+      )
+    });
   }
 
   openSnackBar(mensaje: string) {

@@ -43,6 +43,10 @@ export class DynamicFormComponent implements OnInit, OnChanges {
   @Input() inputData: any; // Define el @Input
 
   @Input() formtype!: string;
+  @Input() tercero!: string;
+  @Input() terceroEvaluado!: string;
+  @Input() proyecto!: string;
+  @Input() espacio: string = "1";
 
   constructor(
     private fb: FormBuilder,
@@ -69,7 +73,7 @@ ngOnChanges() {
 
 // Método para inicializar el formulario seleccionado
 selectForm(tipo_formulario: string) {
-  this.evaluacionDocenteMidService.get(`formulario_por_tipo?id_tipo_formulario=${tipo_formulario}&id_periodo=1&id_tercero=1&id_espacio=1`)
+  this.evaluacionDocenteMidService.get(`formulario_por_tipo?id_tipo_formulario=${tipo_formulario}&id_periodo=1&id_tercero=${this.tercero}&id_espacio=${this.espacio}`)
     .subscribe(response => {
       console.log(response);
       if (response.Success === true && response.Status === 200) {
@@ -226,10 +230,10 @@ selectForm(tipo_formulario: string) {
       this.generateResponseData().then(respuestas => {
         const jsonData = {
           id_periodo: 1,
-          id_tercero: 1,
-          id_evaluado: 1,
-          proyecto_curricular: 123,
-          espacio_academico: 12,
+          id_tercero: this.tercero,
+          id_evaluado: this.terceroEvaluado != null ? this.terceroEvaluado : this.tercero,
+          proyecto_curricular: this.proyecto,
+          espacio_academico: this.espacio,
           plantilla_id: 456,
           respuestas,
         };
