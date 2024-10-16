@@ -32,7 +32,8 @@
         "cancelar": "Cancel",
         "estado": "Status",
         "ver_general": "View scale",
-        "regresar": "Go back"
+        "regresar": "Go back",
+        "PONDERACION":"Ponderación"
     },
 
     "asignacion_fechas": {
@@ -48,6 +49,12 @@
         "guardar": "Save",
         "confirmacion_guardado": "Save Confirmation",
         "ajustes_aplicados": "Changes applied successfully"
+    },
+
+    "definicion_plantillas": {
+        "alert1": "Remember that you can drag the boxes of the sections or your questions.  ",
+        "alert2": "Evaluations",
+        "titulo": "section title"
     },
 
     "definicion_formularios": {

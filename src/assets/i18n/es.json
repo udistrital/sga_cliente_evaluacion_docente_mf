@@ -30,7 +30,8 @@
         "seleccionar": "Seleccionar",
         "error": "Error",
         "estado":"Estados",
-        "regresar": "Volver"
+        "regresar": "Volver",
+        "PONDERACION":"Ponderación"
     },
 
     "asignacion_fechas": {
@@ -80,6 +81,12 @@
         "sub_titulo": "Módulo para la presentación de las siguientes evaluaciones",
         "alerta": "A continuación, deberá seleccionar el tipo de evaluación que desea presentar.",
         "select_evaluacion": "Seleccionar evaluación"
+    },
+
+    "definicion_plantillas": {
+        "alert1": "Recuerde que se puede arrastrar las casillas de las secciones o sus preguntas  ",
+        "alert2": "Evaluaciones",
+        "titulo": "titulo de sección"
     },
 
     "definir_escalas": {
