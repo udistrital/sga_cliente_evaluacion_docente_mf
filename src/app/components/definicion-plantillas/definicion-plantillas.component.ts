@@ -20,12 +20,8 @@ interface Componente {
   nombre: string;
   ponderacion: number;
   numero?: number;
-  item_relacion_campo_id?: {
-    campo_id: number;
-    nombre: string;
-    formularioTitulo: string | null;
-    seccionTitulo: string | null;
-  };
+  campo_id?: number;
+  item_relacion_id?: number;
 }
 
 @Component({
@@ -76,6 +72,7 @@ export class DefinicionPlantillasComponent implements OnInit {
 
   ngOnInit() {
     this.obtenerCamposActivos();
+    this.obtenerCamposCargarEvidencias();
     this.preguntaControl.valueChanges
       .pipe(
         startWith(""),
@@ -86,16 +83,33 @@ export class DefinicionPlantillasComponent implements OnInit {
       });
   }
 
+  // Método para obtener los campos de "carga de evidencias"
+  obtenerCamposCargarEvidencias() {
+    this.evaluacionDocenteService.getCamposCargarEvidencias().subscribe(
+      (response: any) => {
+        if (Array.isArray(response.Data)) {
+          this.camposCargarEvidencias = response.Data.map((campo: any) => ({
+            campo_id: campo.Id || campo.campo_id,
+            nombre: campo.Nombre,
+            formularioTitulo: campo.formularioTitulo || 'N/A',
+            seccionTitulo: campo.seccionTitulo || 'N/A',
+          }));
+          this.cdr.detectChanges();  // Actualizar la vista
+        } else {
+          console.error("Error: la respuesta de la API no es un arreglo.", response);
+        }
+      },
+      (error) => {
+        console.error("Error al obtener los campos de evidencias:", error);
+      }
+    );
+  }
+
   obtenerCamposActivos() {
     this.evaluacionDocenteService.getCamposActivos().subscribe(
       (response: any) => {
         if (Array.isArray(response.Data)) {
           this.tipoCampos = response.Data.map((campo: Campo) => this.mapTipoCampo(campo));
-
-          // Filtrar campos de tipo "carga de evidencias"
-          this.camposCargarEvidencias = response.Data.filter(
-            (campo: Campo) => campo.TipoCampoId === 6686 // Cargar evidencias
-          );
         } else {
           console.error("Error: la respuesta de la API no es un arreglo.", response);
         }
@@ -116,6 +130,7 @@ export class DefinicionPlantillasComponent implements OnInit {
     this.campoRelacionado = null; // Reiniciar campo relacionado
   }
 
+  // Métodos relacionados a la selección de campos de evidencias
   seleccionarCampoRelacionado(campo: any) {
     this.campoRelacionado = campo;
   }
@@ -129,7 +144,7 @@ export class DefinicionPlantillasComponent implements OnInit {
     };
     return {
       TipoCampoId: campo.TipoCampoId,
-      label: tipos[campo.TipoCampoId] || "Desconocido",
+      label: tipos[campo.TipoCampoId] || "Desconocido"
     };
   }
 
@@ -180,12 +195,7 @@ export class DefinicionPlantillasComponent implements OnInit {
 
       // Relacionar el campo de descarga con el de carga de evidencias si corresponde
       if (this.tipoCampoSeleccionado === 4672 && this.campoRelacionado) {
-        nuevoComponente.item_relacion_campo_id = {
-          campo_id: this.campoRelacionado.campo_id,
-          nombre: this.campoRelacionado.nombre,
-          formularioTitulo: this.campoRelacionado.formularioTitulo || null,
-          seccionTitulo: this.campoRelacionado.seccionTitulo || null
-        };
+        nuevoComponente.item_relacion_id = this.campoRelacionado.campo_id;
       }
 
       this.seccionSeleccionada.componentes.push(nuevoComponente);
@@ -202,7 +212,8 @@ export class DefinicionPlantillasComponent implements OnInit {
       numero: this.seccionSeleccionada.componentes.length + 1,
       nombre: this.preguntaSeleccionada.Nombre,
       ponderacion: this.nuevoPorcentaje,
-      item_relacion_campo_id: this.tipoCampoSeleccionado === 4672 ? this.campoRelacionado : null
+      campo_id: this.tipoCampoSeleccionado === 4672 ? this.campoRelacionado.campo_id : undefined,
+      item_relacion_id: this.tipoCampoSeleccionado === 4672 ? this.campoRelacionado.campo_id : undefined
     };
   }
 
@@ -258,20 +269,24 @@ export class DefinicionPlantillasComponent implements OnInit {
 
   guardarFormulario() {
     const formularioData = {
-      estructura: `Formulario ${this.formularioSeleccionado}`,
-      secciones: this.secciones.map((seccion: Seccion) => ({
+      estructura: this.formularioSeleccionado,
+      proceso_id: 5, // Como en tu ejemplo, este valor es fijo
+      secciones: this.secciones.map((seccion: Seccion, indexSeccion) => ({
         nombre: seccion.titulo,
-        items: seccion.componentes.map((componente: Componente) => ({
+        orden: indexSeccion + 1,
+        items: seccion.componentes.map((componente: Componente, indexItem) => ({
           nombre: componente.nombre,
-          ponderacion: componente.ponderacion,
-          item_relacion_campo_id: componente.item_relacion_campo_id || null,
+          orden: indexItem + 1,
+          campo_id: componente.campo_id,
+          item_relacion_id: componente.item_relacion_id || null, // Relación de ítems
+          porcentaje: componente.ponderacion || null, // Solo si es relevante el porcentaje
         })),
       })),
     };
 
     console.log("Formulario data a enviar:", formularioData);
 
-    this.sgaEvaluacionDocenteMidService.post('formulario', formularioData)
+    this.sgaEvaluacionDocenteMidService.post('formulario_por_tipo/Coevaluacion', formularioData)
       .subscribe(
         (response) => {
           console.log('Formulario guardado con éxito:', response);
