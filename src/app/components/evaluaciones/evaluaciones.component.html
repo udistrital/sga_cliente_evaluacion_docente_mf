@@ -137,7 +137,11 @@
 
                         </div>
                     </form>
-                    <ngx-dynamic-form [formtype]="'1'" [tercero]="tercero" [terceroEvaluado]="terceroEvaluado" [proyecto]="proyecto" [espacio]="espacio"></ngx-dynamic-form>
+                    <div *ngIf="!mostrarEvaluacion" style="width: 100%; display: flex; justify-content: center">
+                        <button mat-raised-button color="primary" (click)="consultar()">Consultar</button>
+                    </div>
+
+                    <ngx-dynamic-form *ngIf="mostrarEvaluacion" [formtype]="'1'" [tercero]="tercero" [terceroEvaluado]="terceroEvaluado" [proyecto]="proyecto" [espacio]="espacio"></ngx-dynamic-form>
                 </mat-card-content>
             </mat-card>
         </ng-container>
@@ -250,7 +254,11 @@
                             </mat-form-field>
                         </div>
                     </form>
-                    <ngx-dynamic-form [formtype]="'2'" [tercero]="tercero" [terceroEvaluado]="terceroEvaluado" [proyecto]="proyecto" [espacio]="espacio"></ngx-dynamic-form>
+                    <div *ngIf="!mostrarEvaluacion" style="width: 100%; display: flex; justify-content: center">
+                        <button mat-raised-button color="primary" (click)="consultar()">Consultar</button>
+                    </div>
+
+                    <ngx-dynamic-form *ngIf="mostrarEvaluacion" [formtype]="'2'" [tercero]="tercero" [terceroEvaluado]="terceroEvaluado" [proyecto]="proyecto" [espacio]="espacio"></ngx-dynamic-form>
                 </mat-card-content>
             </mat-card>
         </ng-container>
@@ -337,7 +345,7 @@
                             <div class="form-col1">
                                 <mat-form-field style="width: 100%" appearance="outline">
                                     <mat-label>{{ 'autoevaluacion_ii.espacio1' | translate }}</mat-label>
-                                    <mat-select (selectionChange)="onEspacioSelection($event)" formControlName="espacioAcademico" required>
+                                    <mat-select (selectionChange)="onEspacioSelection($event)" formControlName="espacioAcademico" required multiple>
                                         <mat-option *ngFor="let espacio of espacios_academicos"
                                             [value]="espacio">
                                             {{ espacio.nombre }}
@@ -364,7 +372,11 @@
                             </mat-form-field>
                         </div>
                     </form>
-                    <ngx-dynamic-form [formtype]="'4'" [tercero]="tercero" [terceroEvaluado]="terceroEvaluado" [proyecto]="proyecto" [espacio]="espacio"></ngx-dynamic-form>
+                    <div *ngIf="!mostrarEvaluacion" style="width: 100%; display: flex; justify-content: center">
+                        <button mat-raised-button color="primary" (click)="consultar()">Consultar</button>
+                    </div>
+
+                    <ngx-dynamic-form *ngIf="mostrarEvaluacion" [formtype]="'4'" [tercero]="tercero" [terceroEvaluado]="terceroEvaluado" [proyecto]="proyecto" [espacio]="espacio"></ngx-dynamic-form>
                 </mat-card-content>
             </mat-card>
         </ng-container>
@@ -482,7 +494,11 @@
                             </mat-form-field>
                         </div>
                     </form>
-                    <ngx-dynamic-form [formtype]="'3'" [tercero]="tercero" [terceroEvaluado]="terceroEvaluado" [proyecto]="proyecto" [espacio]="espacio"></ngx-dynamic-form>
+                    <div *ngIf="!mostrarEvaluacion" style="width: 100%; display: flex; justify-content: center">
+                        <button mat-raised-button color="primary" (click)="consultar()">Consultar</button>
+                    </div>
+
+                    <ngx-dynamic-form *ngIf="mostrarEvaluacion" [formtype]="'3'" [tercero]="tercero" [terceroEvaluado]="terceroEvaluado" [proyecto]="proyecto" [espacio]="espacio"></ngx-dynamic-form>
                 </mat-card-content>
             </mat-card>
         </ng-container>
@@ -580,8 +596,11 @@
                     </mat-form-field>
                 </div>
             </form>
-            <ngx-dynamic-form [formtype]="'5'" [tercero]="tercero" [terceroEvaluado]="terceroEvaluado" [proyecto]="proyecto" [espacio]="espacio"></ngx-dynamic-form>
+            <div *ngIf="!mostrarEvaluacion" style="width: 100%; display: flex; justify-content: center">
+                <button mat-raised-button color="primary" (click)="consultar()">Consultar</button>
+            </div>
 
+            <ngx-dynamic-form *ngIf="mostrarEvaluacion" [formtype]="'5'" [tercero]="tercero" [terceroEvaluado]="terceroEvaluado" [proyecto]="proyecto" [espacio]="espacio"></ngx-dynamic-form>
             </mat-card-content>
         </mat-card>
     </ng-container>

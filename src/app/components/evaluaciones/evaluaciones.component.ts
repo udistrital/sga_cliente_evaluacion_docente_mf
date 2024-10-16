@@ -44,6 +44,7 @@ export class EvaluacionesComponent implements OnInit {
   terceroEvaluado!: string;
   proyecto!: string;
   espacio!: string;
+  mostrarEvaluacion: boolean = false;
   
   @Input() formtype: string = '';  
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -111,6 +112,16 @@ export class EvaluacionesComponent implements OnInit {
             });
 
             this.coevaluacionIForm.patchValue({
+              docenteNombre: response.nombre
+            });
+
+            this.proyectos.opciones = response.proyectos;
+          });
+        });
+      } else if (this.hasRole([ROLES.COORDINADOR])) {
+        this.userService.getUserDocument().then((documento) => {
+          this.consultarEspaciosAcademicos(documento).then((response: any) => {
+            this.coevaluacionIIForm.patchValue({
               docenteNombre: response.nombre
             });
 
@@ -355,6 +366,7 @@ export class EvaluacionesComponent implements OnInit {
   // Método que maneja la selección del menú desplegable
   onSelectChange(event: MatSelectChange) {
     this.selectedEvaluation = event.value;
+    this.mostrarEvaluacion = false;
   }
 
   // Detecta cambios en el valor de formtype y actualiza el formulario mostrado
@@ -408,7 +420,31 @@ export class EvaluacionesComponent implements OnInit {
   onProyectoSelection(event: MatSelectChange): void {
     const proyectoSeleccionado = event.value;
 
-    if (proyectoSeleccionado) {
+    if (Array.isArray(proyectoSeleccionado)) {
+      var idsProyectos: string = "";
+      var docentes: any[] = [];
+      var asignaturas: any[] = [];
+      proyectoSeleccionado.forEach((proy) => {
+        idsProyectos += proy.id + ",";
+        if (Array.isArray(proy.docentes)) {
+          docentes.push(...proy.docentes);
+        }
+        if (Array.isArray(proy.asignaturas)) {
+          asignaturas.push(...proy.asignaturas);
+        }
+      });
+      this.proyecto = idsProyectos.slice(0, -1);
+      this.docentes.opciones = docentes;
+      this.espacios.opciones = asignaturas;
+      this.espacios_academicos = [];
+      asignaturas.forEach((espacio: any) => {
+        this.espacios_academicos.push({
+          id: espacio.id,
+          nombre: espacio.nombre,
+          grupos: espacio.grupos
+        });
+      });
+    } else if (proyectoSeleccionado) {
       this.proyecto = proyectoSeleccionado.id;
       this.docentes.opciones = proyectoSeleccionado.docentes;
       this.espacios.opciones = proyectoSeleccionado.asignaturas;
@@ -419,7 +455,7 @@ export class EvaluacionesComponent implements OnInit {
           nombre: espacio.nombre,
           grupos: espacio.grupos
         });
-      })
+      });
 
       this.openSnackBar(`Proyecto seleccionado: ${proyectoSeleccionado.nombre}`);
     }
@@ -428,7 +464,17 @@ export class EvaluacionesComponent implements OnInit {
   onEspacioSelection(event: MatSelectChange): void {
     const espacioSeleccionado = event.value;
 
-    if (espacioSeleccionado) {
+    if (Array.isArray(espacioSeleccionado)) {
+      var idsEspacios: string = "";
+      var grupos: any[] = [];
+      espacioSeleccionado.forEach((esp) => {
+        idsEspacios += esp.id + ",";
+        if (Array.isArray(esp.grupos)) {
+          grupos.push(...esp.grupos);
+        }
+      });
+      this.espacio = idsEspacios.slice(0, -1);
+    } else if (espacioSeleccionado) {
       this.espacio = espacioSeleccionado.id;
       this.grupos = espacioSeleccionado.grupos;
       this.openSnackBar(`Espacio seleccionado: ${espacioSeleccionado.nombre}`);
@@ -528,6 +574,10 @@ export class EvaluacionesComponent implements OnInit {
         }
       )
     });
+  }
+
+  consultar(): void {
+    this.mostrarEvaluacion = true;
   }
 
   openSnackBar(mensaje: string) {

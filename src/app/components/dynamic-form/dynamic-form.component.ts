@@ -8,6 +8,7 @@ import {
 } from "@angular/forms";
 import { MatStepper } from "@angular/material/stepper";
 import { DomSanitizer } from "@angular/platform-browser";
+import { forkJoin } from "rxjs";
 import { TIPOINPUT } from "src/app/models/const_eva";
 import { GestorDocumentalService } from "src/app/services/gestor-documental.service";
 import { SgaEvaluacionDocenteMidService } from "src/app/services/sga_evaluacion_docente_mid.service";
@@ -203,45 +204,65 @@ selectForm(tipo_formulario: string) {
     }
   }
 
-  saveForm(jsonData: any) {
-    this.evaluacionDocenteMidService.post('respuesta_formulario', jsonData)
-    .subscribe(response =>
-       {
-        if(response.Status == 200 &&response.Success == true){
-          Swal.fire({
-            icon: 'success',
-            title: 'Formulario guardado',
-            text: 'El formulario ha sido guardado correctamente.',
-          });
+  saveForm(requests: any) {
+    forkJoin(requests).subscribe((responses: any) => {
+      let allSuccess = true;
+
+      responses.forEach((response: any) => {
+        if (response.Status !== 200 || response.Success !== true) {
+          allSuccess = false;
         }
-       },
-       error => {
+      });
+
+      if (allSuccess) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Formulario guardado',
+          text: 'El formulario ha sido guardado correctamente.',
+        });
+      } else {
         Swal.fire({
           icon: 'error',
           title: 'Error',
           text: 'Ocurrió un error al guardar el formulario.',
         });
-       });
+      }
+    },
+    error => {
+      console.error(error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Ocurrió un error al guardar el formulario.',
+      });
+    });
   }
 
   // Método para manejar el evento de submit
   submit() {
     if (this.stepperForm.valid) {
       this.generateResponseData().then(respuestas => {
-        const jsonData = {
-          id_periodo: 1,
-          id_tercero: this.tercero,
-          id_evaluado: this.terceroEvaluado != null ? this.terceroEvaluado : this.tercero,
-          proyecto_curricular: this.proyecto,
-          espacio_academico: this.espacio,
-          plantilla_id: 456,
-          respuestas,
-        };
-        this.saveForm(jsonData);
-        console.log("Formulario guardado:", jsonData);
+        const requests: any[] = [];
+        const espacios = this.espacio.split(',').map(Number);
+        espacios.forEach((esp) => {
+          const jsonData = {
+            id_periodo: 1,
+            id_tercero: this.tercero,
+            id_evaluado: this.terceroEvaluado != null ? this.terceroEvaluado : this.tercero,
+            proyecto_curricular: this.proyecto,
+            espacio_academico: esp,
+            plantilla_id: 456,
+            respuestas,
+          };
+          const request = this.evaluacionDocenteMidService.post('respuesta_formulario', jsonData);
+          requests.push(request);
+          console.log("Formulario guardado:", jsonData);
+        });
+
+        this.saveForm(requests);
       }).catch(error => {
         console.error('Error al generar las respuestas:', error);
-      });;
+      });
     } else {
       console.log("Formulario inválido:", this.stepperForm);
       Swal.fire({
@@ -261,7 +282,6 @@ selectForm(tipo_formulario: string) {
         const control = this.stepperForm.get(`pregunta_${controlName}`);
 
         if (control?.value instanceof File) {
-          console.log("Archivo cargado:", control.value);
           const resp = await this.loadFile(control.value);
           this.documentId = resp[0].res.Enlace;
           respuestas.push({
