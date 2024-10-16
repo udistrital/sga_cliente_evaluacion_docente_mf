@@ -264,7 +264,6 @@ selectForm(tipo_formulario: string) {
         const control = this.stepperForm.get(`pregunta_${controlName}`);
 
         if (control?.value instanceof File) {
-          console.log("Archivo cargado:", control.value);
           const resp = await this.loadFile(control.value);
           this.documentId = resp[0].res.Enlace;
           respuestas.push({
