@@ -29,6 +29,7 @@ interface Componente {
   templateUrl: "./definicion-plantillas.component.html",
   styleUrls: ["./definicion-plantillas.component.scss"],
 })
+
 export class DefinicionPlantillasComponent implements OnInit {
   displayedColumns: string[] = ["numero", "proceso", "fecha", "estado", "ponderacion", "acciones"];
   displayedColumnsComponente: string[] = ["numero", "nombre", "ponderacion", "acciones"];
@@ -83,7 +84,7 @@ export class DefinicionPlantillasComponent implements OnInit {
       });
   }
 
-  // Método para obtener los campos de "carga de evidencias"
+  // Obtener los campos de "carga de evidencias"
   obtenerCamposCargarEvidencias() {
     this.evaluacionDocenteService.getCamposCargarEvidencias().subscribe(
       (response: any) => {
@@ -94,7 +95,7 @@ export class DefinicionPlantillasComponent implements OnInit {
             formularioTitulo: campo.formularioTitulo || 'N/A',
             seccionTitulo: campo.seccionTitulo || 'N/A',
           }));
-          this.cdr.detectChanges();  // Actualizar la vista
+          this.cdr.detectChanges();
         } else {
           console.error("Error: la respuesta de la API no es un arreglo.", response);
         }
@@ -130,7 +131,6 @@ export class DefinicionPlantillasComponent implements OnInit {
     this.campoRelacionado = null; // Reiniciar campo relacionado
   }
 
-  // Métodos relacionados a la selección de campos de evidencias
   seleccionarCampoRelacionado(campo: any) {
     this.campoRelacionado = campo;
   }
@@ -160,10 +160,12 @@ export class DefinicionPlantillasComponent implements OnInit {
     });
   }
 
+  // Validación de porcentaje
   validarPorcentaje() {
     this.porcentajeInvalido = this.nuevoPorcentaje < 1 || this.nuevoPorcentaje > 100;
   }
 
+  // Filtrar preguntas
   private _filterPreguntas(value: string): any[] {
     const filterValue = value.toLowerCase();
     return this.preguntasFiltradas.filter((option) =>
@@ -187,6 +189,7 @@ export class DefinicionPlantillasComponent implements OnInit {
     }
   }
 
+  // Agregar componente relacionado
   agregarComponente() {
     this.validarPorcentaje();
 
@@ -207,13 +210,14 @@ export class DefinicionPlantillasComponent implements OnInit {
     }
   }
 
+  // Crear nuevo componente con la relación si aplica
   crearNuevoComponente(): Componente {
     return {
       numero: this.seccionSeleccionada.componentes.length + 1,
       nombre: this.preguntaSeleccionada.Nombre,
       ponderacion: this.nuevoPorcentaje,
-      campo_id: this.tipoCampoSeleccionado === 4672 ? this.campoRelacionado.campo_id : undefined,
-      item_relacion_id: this.tipoCampoSeleccionado === 4672 ? this.campoRelacionado.campo_id : undefined
+      campo_id: this.tipoCampoSeleccionado,
+      item_relacion_id: this.tipoCampoSeleccionado === 4672 ? this.campoRelacionado.campo_id : undefined,
     };
   }
 
@@ -221,7 +225,7 @@ export class DefinicionPlantillasComponent implements OnInit {
     this.nuevoPorcentaje = 0;
     this.preguntaSeleccionada = null;
     this.seccionSeleccionada = null;
-    this.cdr.detectChanges(); // Forzar la detección de cambios
+    this.cdr.detectChanges();
   }
 
   esComponenteValido(): boolean {
@@ -232,19 +236,16 @@ export class DefinicionPlantillasComponent implements OnInit {
     moveItemInArray(seccion.componentes, event.previousIndex, event.currentIndex);
     seccion.componentes = [...seccion.componentes];
     this.cdr.detectChanges();
-    console.log("Componentes reordenados: ", seccion.componentes);
   }
 
   dropSecciones(event: CdkDragDrop<Seccion[]>) {
     moveItemInArray(this.secciones, event.previousIndex, event.currentIndex);
     this.secciones = [...this.secciones];
     this.cdr.detectChanges();
-    console.log("Secciones reordenadas: ", this.secciones);
   }
 
   cambiarProceso(form: any) {
     this.formularioSeleccionado = form.proceso;
-    console.log("Proceso seleccionado:", this.formularioSeleccionado);
   }
 
   prepararAgregarComponente(seccion: any) {
@@ -262,15 +263,14 @@ export class DefinicionPlantillasComponent implements OnInit {
       seccion.componentes = [...seccion.componentes];
       this.secciones = [...this.secciones];
       this.cdr.markForCheck();
-    } else {
-      console.error("No se pudo encontrar el componente para eliminar.");
     }
   }
 
+  // Guardar formulario con el formato solicitado
   guardarFormulario() {
     const formularioData = {
       estructura: this.formularioSeleccionado,
-      proceso_id: 5, // Como en tu ejemplo, este valor es fijo
+      proceso_id: 5, // Proceso fijo
       secciones: this.secciones.map((seccion: Seccion, indexSeccion) => ({
         nombre: seccion.titulo,
         orden: indexSeccion + 1,
@@ -279,14 +279,15 @@ export class DefinicionPlantillasComponent implements OnInit {
           orden: indexItem + 1,
           campo_id: componente.campo_id,
           item_relacion_id: componente.item_relacion_id || null, // Relación de ítems
-          porcentaje: componente.ponderacion || null, // Solo si es relevante el porcentaje
+          porcentaje: componente.ponderacion || null,
         })),
       })),
     };
 
     console.log("Formulario data a enviar:", formularioData);
 
-    this.sgaEvaluacionDocenteMidService.post('formulario_por_tipo/Coevaluacion', formularioData)
+    // Hacer el POST con el servicio
+    this.sgaEvaluacionDocenteMidService.post('formulario_por_tipo', formularioData)
       .subscribe(
         (response) => {
           console.log('Formulario guardado con éxito:', response);
