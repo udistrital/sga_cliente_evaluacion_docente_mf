@@ -331,7 +331,7 @@
                             <div class="form-col1">
                                 <mat-form-field style="width: 100%" appearance="outline">
                                     <mat-label>{{ 'heteroevaluacion.proyecto_curricular' | translate }}</mat-label>
-                                    <mat-select (selectionChange)="onProyectoSelection($event)" required multiple>
+                                    <mat-select (selectionChange)="onProyectoSelection($event)" required>
                                         <mat-option *ngFor="let item of proyectos?.opciones" [value]="item">
                                             {{ item.nombre }}
                                         </mat-option>

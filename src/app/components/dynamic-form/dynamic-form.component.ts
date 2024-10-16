@@ -228,14 +228,14 @@ selectForm(tipo_formulario: string) {
   submit() {
     if (this.stepperForm.valid) {
       this.generateResponseData().then(respuestas => {
-        const proyectos = this.proyecto.split(',').map(Number);
-        proyectos.forEach((proy) => {
+        const espacios = this.espacio.split(',').map(Number);
+        espacios.forEach((esp) => {
           const jsonData = {
             id_periodo: 1,
             id_tercero: this.tercero,
             id_evaluado: this.terceroEvaluado != null ? this.terceroEvaluado : this.tercero,
-            proyecto_curricular: proy,
-            espacio_academico: this.espacio,
+            proyecto_curricular: this.proyecto,
+            espacio_academico: esp,
             plantilla_id: 456,
             respuestas,
           };
