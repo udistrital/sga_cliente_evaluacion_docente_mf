@@ -14,6 +14,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { SgaEvaluacionDocenteMidService } from "src/app/services/sga_evaluacion_docente_mid.service";
 import { TercerosCrudService } from "src/app/services/terceros-crud.service";
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: "app-evaluaciones",
@@ -58,7 +59,8 @@ export class EvaluacionesComponent implements OnInit {
     private popUpManager: PopUpManager,
     private dateService: DateService,
     private evaluacionDocenteMidService: SgaEvaluacionDocenteMidService,
-    private tercerosService: TercerosCrudService
+    private tercerosService: TercerosCrudService,
+    private translate: TranslateService
   ) {
     this.heteroForm = this.fb.group({});
     this.coevaluacionIIForm = this.fb.group({});
@@ -576,12 +578,12 @@ export class EvaluacionesComponent implements OnInit {
     });
   }
 
-  consultar(): void {
+  continuar(): void {
     this.mostrarEvaluacion = true;
   }
 
   openSnackBar(mensaje: string) {
-    this._snackBar.open(mensaje, 'Cerrar', {
+    this._snackBar.open(mensaje, this.translate.instant('GLOBAL.cerrar'), {
       duration: 3000,
       horizontalPosition: 'center',
       verticalPosition: 'bottom',
