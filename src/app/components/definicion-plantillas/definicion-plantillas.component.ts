@@ -3,7 +3,6 @@ import { FormControl } from "@angular/forms";
 import { startWith, map } from "rxjs";
 import { CdkDragDrop, moveItemInArray } from "@angular/cdk/drag-drop";
 import { EvaluacionDocenteService } from "src/app/services/evaluacion-docente-crud.service";
-import { SgaEvaluacionDocenteMidService } from "src/app/services/sga_evaluacion_docente_mid.service";
 import { HttpClient } from "@angular/common/http";
 
 interface Campo {
@@ -30,51 +29,38 @@ interface Componente {
   styleUrls: ["./definicion-plantillas.component.scss"],
 })
 export class DefinicionPlantillasComponent implements OnInit {
-  displayedColumns: string[] = ["numero", "proceso", "fecha", "estado", "ponderacion", "acciones"];
+  displayedColumns: string[] = ['numero', 'proceso', 'fecha', 'estado', 'ponderacion', 'acciones'];
   displayedColumnsComponente: string[] = ["numero", "nombre", "ponderacion", "acciones"];
 
-  formularios = [
-    {
-      numero: 1,
-      proceso: "Heteroevaluación",
-      fecha: new Date(),
-      estado: "Activo",
-      ponderacion: 100,
-    },
-  ];
+  formularios: any[] = []; // Almacenar los formularios obtenidos
+  secciones: any[] = []; // Almacenar las secciones obtenidas
+  tipoCampos: any[] = []; // Almacenar los tipos de campos obtenidos
 
-  componentes = [
-    { numero: 1, nombre: "Componente 1", ponderacion: 20 },
-    { numero: 2, nombre: "Componente 2", ponderacion: 30 },
-  ];
+  formularioSeleccionado: any = null; // Almacenar el formulario seleccionado
+  seccionSeleccionadaPrevia: any = null; // Almacenar la sección seleccionada
+  tipoCampoSeleccionadoPrevia: number = 0; // Almacenar el tipo de campo seleccionado
+  seccionSeleccionada: any = null;
+  porcentajeInvalido: boolean = false;
 
   mostrandoVistaComponente = false;
   tituloSeccion: string = "";
   nuevoPorcentaje: number = 0;
-  tipoCampos: any[] = [];
   preguntasFiltradas: any[] = [];
   tipoCampoSeleccionado: number = 0;
   preguntaSeleccionada: any;
   preguntaControl = new FormControl();
-  secciones: Seccion[] = [];
-  seccionSeleccionada: any = null;
-  porcentajeInvalido: boolean = false;
   camposCargarEvidencias: any[] = [];
   campoRelacionado: any = null;
-  formularioSeleccionado: any = {}; // Inicializar como un objeto vacío o con un valor adecuado
-  seccionSeleccionadaPrevia: any = {}; // Inicializa con un objeto vacío
-  tipoCampoSeleccionadoPrevia: number = 0; // o null dependiendo de tu lógica
 
   constructor(
     private httpClient: HttpClient,
     private evaluacionDocenteService: EvaluacionDocenteService,
-    private sgaEvaluacionDocenteMidService: SgaEvaluacionDocenteMidService,
     private cdr: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
     this.obtenerCamposActivos();
-    this.obtenerCamposCargarEvidencias();
+    this.obtenerFormularios();
     this.preguntaControl.valueChanges
       .pipe(
         startWith(""),
@@ -83,6 +69,119 @@ export class DefinicionPlantillasComponent implements OnInit {
       .subscribe((filtered) => {
         this.preguntasFiltradas = filtered;
       });
+  }
+
+  obtenerFormularios() {
+    this.evaluacionDocenteService.get('plantilla?limit=0').subscribe(
+      (response: any) => {
+        if (response && response.Data && response.Data.length > 0) {
+          // Asignar solo el primer formulario al array
+          this.formularios = [response.Data[0]];
+          this.cdr.detectChanges();
+        } else {
+          console.error("Error al obtener formularios", response);
+        }
+      },
+      (error) => {
+        console.error("Error al obtener formularios:", error);
+      }
+    );
+  }  
+
+  // Obtener las secciones según el formulario seleccionado
+  obtenerSecciones() {
+    if (!this.formularioSeleccionado) return;
+
+    this.evaluacionDocenteService.get(`plantilla?query=EstructuraId:${this.formularioSeleccionado}&sortby=FechaModificacion&order=desc&limit=100`)
+      .subscribe(
+        (response: any) => {
+          if (response && response.Data) {
+            this.secciones = response.Data.map((sec: any) => ({
+              SeccionId: sec.SeccionId.Id,
+              SeccionNombre: sec.SeccionId.Nombre,
+            }));
+            this.cdr.detectChanges();
+          } else {
+            console.error("Error al obtener secciones", response);
+          }
+        },
+        (error) => {
+          console.error("Error al obtener secciones:", error);
+        }
+      );
+  }
+
+  // Obtener los tipos de input según la sección seleccionada
+  obtenerTiposDeInput() {
+    if (!this.formularioSeleccionado || !this.seccionSeleccionadaPrevia) return;
+
+    this.evaluacionDocenteService.get(`plantilla?query=SeccionId.Id:${this.seccionSeleccionadaPrevia},EstructuraId:${this.formularioSeleccionado}&sortby=FechaModificacion&order=desc&limit=100`)
+      .subscribe(
+        (response: any) => {
+          if (response && response.Data) {
+            this.tipoCampos = response.Data.map((campo: any) => ({
+              TipoCampoId: campo.ItemId.Id,
+              Nombre: campo.ItemId.Nombre,
+            }));
+            this.cdr.detectChanges();
+          } else {
+            console.error("Error al obtener tipos de input", response);
+          }
+        },
+        (error) => {
+          console.error("Error al obtener tipos de input:", error);
+        }
+      );
+  }
+
+  // Métodos para corregir los errores
+
+  editarFormulario(form: any) {
+    console.log('Editando formulario:', form);
+    // Aquí puedes agregar la lógica para editar un formulario
+  }
+
+  obtenerCamposPorSeccion() {
+    const seccionId = this.seccionSeleccionadaPrevia?.SeccionId;
+    const estructuraId = this.formularioSeleccionado?.EstructuraId;
+
+    if (!seccionId || !estructuraId) {
+      console.error('No se puede obtener los campos, falta el ID de la sección o el formulario');
+      return;
+    }
+
+    this.evaluacionDocenteService.get(`plantilla?query=SeccionId.Id:${seccionId},EstructuraId:${estructuraId}&sortby=FechaModificacion&order=desc&limit=100`).subscribe(
+      (response: any) => {
+        if (response && response.Data) {
+          this.tipoCampos = response.Data.map((campo: any) => ({
+            TipoCampoId: campo.ItemId.Id,
+            label: campo.ItemId.Nombre
+          }));
+          this.cdr.detectChanges();
+        } else {
+          console.error("Error: no se pudo obtener campos por sección", response);
+        }
+      },
+      (error) => {
+        console.error("Error al obtener campos por sección:", error);
+      }
+    );
+  }
+
+  // Agregar componente anterior
+  agregarComponentePrevio() {
+    if (!this.formularioSeleccionado || !this.seccionSeleccionadaPrevia || !this.tipoCampoSeleccionadoPrevia) {
+      console.error('Formulario, Sección o Tipo de Campo no seleccionado');
+      return;
+    }
+
+    const nuevoComponente = {
+      nombre: `Pregunta del formulario ${this.formularioSeleccionado} en la sección ${this.seccionSeleccionadaPrevia}`,
+      campo_id: this.tipoCampoSeleccionadoPrevia
+    };
+
+    // Aquí puedes agregar la lógica de cómo quieres manejar este nuevo componente.
+    console.log("Nuevo componente agregado:", nuevoComponente);
   }
 
   // Obtener los campos de "carga de evidencias"
@@ -107,6 +206,7 @@ export class DefinicionPlantillasComponent implements OnInit {
     );
   }
 
+  // Obtener los campos activos
   obtenerCamposActivos() {
     this.evaluacionDocenteService.getCamposActivos().subscribe(
       (response: any) => {
@@ -120,20 +220,6 @@ export class DefinicionPlantillasComponent implements OnInit {
         console.error("Error al obtener los campos activos:", error);
       }
     );
-  }
-
-  onTipoCampoChange() {
-    if (this.tipoCampoSeleccionado === 4672) { // Si se selecciona "descargar evidencias"
-      this.filtrarPorTipoCargarEvidencias();
-    }
-  }
-
-  filtrarPorTipoCargarEvidencias() {
-    this.campoRelacionado = null; // Reiniciar campo relacionado
-  }
-
-  seleccionarCampoRelacionado(campo: any) {
-    this.campoRelacionado = campo;
   }
 
   mapTipoCampo(campo: Campo) {
@@ -159,40 +245,6 @@ export class DefinicionPlantillasComponent implements OnInit {
         console.error("Error: la respuesta de la API no contiene un arreglo en la propiedad Data.", response);
       }
     });
-  }
-
-  // Función para agregar componente de preguntas previas
-  agregarComponentePrevio() {
-    if (!this.formularioSeleccionado?.proceso) {
-      console.error('Formulario seleccionado inválido.');
-      return;
-    }
-
-    if (!this.seccionSeleccionadaPrevia?.titulo) {
-      console.error('Sección seleccionada previa inválida.');
-      return;
-    }
-
-    if (!this.tipoCampoSeleccionadoPrevia) {
-      console.error('Tipo de campo seleccionado inválido.');
-      return;
-    }
-
-    const nuevoComponente = {
-      numero: this.seccionSeleccionada?.componentes.length + 1, // Eliminamos ?? 1
-      nombre: `Pregunta de ${this.formularioSeleccionado.proceso} en ${this.seccionSeleccionadaPrevia?.titulo || 'Sección Desconocida'}`,
-      ponderacion: 100,
-      campo_id: this.tipoCampoSeleccionadoPrevia
-    };    
-
-    this.seccionSeleccionada.componentes.push(nuevoComponente);
-    this.seccionSeleccionada.componentes = [...this.seccionSeleccionada.componentes];
-    this.secciones = [...this.secciones];
-  }
-
-  // Validación de porcentaje
-  validarPorcentaje() {
-    this.porcentajeInvalido = this.nuevoPorcentaje < 1 || this.nuevoPorcentaje > 100;
   }
 
   // Filtrar preguntas
@@ -240,10 +292,9 @@ export class DefinicionPlantillasComponent implements OnInit {
     }
   }
 
-  // Crear nuevo componente con la relación si aplica
   crearNuevoComponente(): Componente {
     return {
-      numero: this.seccionSeleccionada?.componentes.length + 1, // Eliminamos ?? 1
+      numero: this.seccionSeleccionada?.componentes.length + 1,
       nombre: this.preguntaSeleccionada?.Nombre || 'Pregunta',
       ponderacion: this.nuevoPorcentaje,
       campo_id: this.tipoCampoSeleccionado,
@@ -256,6 +307,10 @@ export class DefinicionPlantillasComponent implements OnInit {
     this.preguntaSeleccionada = null;
     this.seccionSeleccionada = null;
     this.cdr.detectChanges();
+  }
+
+  validarPorcentaje() {
+    this.porcentajeInvalido = this.nuevoPorcentaje < 1 || this.nuevoPorcentaje > 100;
   }
 
   esComponenteValido(): boolean {
@@ -308,7 +363,7 @@ export class DefinicionPlantillasComponent implements OnInit {
           nombre: componente.nombre,
           orden: indexItem + 1,
           campo_id: componente.campo_id,
-          item_relacion_id: componente.item_relacion_id || null, // Relación de ítems
+          item_relacion_id: componente.item_relacion_id || null,
           porcentaje: componente.ponderacion || null,
         })),
       })),
@@ -317,7 +372,7 @@ export class DefinicionPlantillasComponent implements OnInit {
     console.log("Formulario data a enviar:", formularioData);
 
     // Hacer el POST con el servicio
-    this.sgaEvaluacionDocenteMidService.post('formulario_por_tipo', formularioData)
+    this.evaluacionDocenteService.post('formulario_por_tipo', formularioData)
       .subscribe(
         (response) => {
           console.log('Formulario guardado con éxito:', response);

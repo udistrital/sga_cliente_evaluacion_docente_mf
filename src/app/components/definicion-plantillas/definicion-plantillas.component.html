@@ -6,44 +6,47 @@
     <mat-card-content>
         <!-- Tabla inicial -->
         <table mat-table [dataSource]="formularios" class="full-width-table">
+            <!-- Número -->
             <ng-container matColumnDef="numero">
                 <th mat-header-cell *matHeaderCellDef>#</th>
-                <td mat-cell *matCellDef="let form">{{ form.numero }}</td>
+                <td mat-cell *matCellDef="let form; let i = index">{{ i + 1 }}</td>
             </ng-container>
 
+            <!-- Proceso (EstructuraId) -->
             <ng-container matColumnDef="proceso">
                 <th mat-header-cell *matHeaderCellDef>{{ "definicion_formularios.sub_titulo_proceso" | translate }}</th>
                 <td mat-cell *matCellDef="let form">
-                    <mat-form-field appearance="fill" class="form-field">
-                        <mat-select [(value)]="form.proceso" (selectionChange)="cambiarProceso(form)">
-                            <mat-option value="heteroevaluacion">{{ "heteroevaluacion.titulo" | translate
-                                }}</mat-option>
-                            <mat-option value="coevaluacion">{{ "coevaluacion_i.titulo" | translate }}</mat-option>
-                            <mat-option value="coevaluacion_II">{{ "coevaluacion_ii.titulo" | translate }}</mat-option>
-                            <mat-option value="autoevaluacion_I">{{ "autoevaluacion_i.titulo" | translate
-                                }}</mat-option>
-                            <mat-option value="autoevaluacion_II">{{ "autoevaluacion_ii.titulo" | translate
-                                }}</mat-option>
+                    <mat-form-field appearance="fill">
+                        <mat-select placeholder="Seleccionar Evaluación" [(value)]="formularioSeleccionado">
+                            <mat-option value="Heteroevaluacion">Heteroevaluación</mat-option>
+                            <mat-option value="Coevaluacion_I">Coevaluación I</mat-option>
+                            <mat-option value="Coevaluacion_II">Coevaluación II</mat-option>
+                            <mat-option value="Autoevaluacion_I">Autoevaluación I</mat-option>
+                            <mat-option value="Autoevaluacion_II">Autoevaluación II</mat-option>
                         </mat-select>
                     </mat-form-field>
                 </td>
             </ng-container>
 
+            <!-- Columna Fecha -->
             <ng-container matColumnDef="fecha">
-                <th mat-header-cell *matHeaderCellDef>{{ "GLOBAL.estado" | translate }}</th>
+                <th mat-header-cell *matHeaderCellDef> Fecha </th>
                 <td mat-cell *matCellDef="let form">{{ form.fecha | date }}</td>
             </ng-container>
 
+            <!-- Estado -->
             <ng-container matColumnDef="estado">
                 <th mat-header-cell *matHeaderCellDef>{{ "GLOBAL.estado" | translate }}</th>
                 <td mat-cell *matCellDef="let form">{{ form.estado }}</td>
             </ng-container>
 
+            <!-- Ponderación -->
             <ng-container matColumnDef="ponderacion">
                 <th mat-header-cell *matHeaderCellDef>{{ "GLOBAL.PONDERACION" | translate }}</th>
                 <td mat-cell *matCellDef="let form">{{ form.ponderacion }}%</td>
             </ng-container>
 
+            <!-- Acciones -->
             <ng-container matColumnDef="acciones">
                 <th mat-header-cell *matHeaderCellDef>
                     <button mat-icon-button (click)="mostrarVistaComponente()">
@@ -51,21 +54,23 @@
                     </button>
                 </th>
                 <td mat-cell *matCellDef="let form">
-                    <button mat-icon-button><mat-icon>edit</mat-icon></button>
+                    <button mat-icon-button (click)="editarFormulario(form)"><mat-icon>edit</mat-icon></button>
                     <button mat-icon-button><mat-icon>lock</mat-icon></button>
                     <button mat-icon-button><mat-icon>visibility</mat-icon></button>
                 </td>
             </ng-container>
 
+            <!-- Filas y encabezados -->
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
         </table>
-
+        <!-- Vista de componentes -->
         <div *ngIf="mostrandoVistaComponente">
             <mat-card>
                 <mat-card-header>
-                    <mat-card-title>{{ "GLOBAL.FORMULARIO" | translate }} {{ formularioSeleccionado | titlecase
-                        }}</mat-card-title>
+                    <mat-card-title>
+                        {{ "GLOBAL.FORMULARIO" | translate }} {{ formularioSeleccionado | titlecase }}
+                    </mat-card-title>
                 </mat-card-header>
 
                 <mat-card-content>
@@ -204,18 +209,20 @@
                                         <!-- Select para formularios -->
                                         <mat-form-field appearance="fill" class="form-field">
                                             <mat-label>{{ 'Seleccione un formulario' | translate }}</mat-label>
-                                            <mat-select [(value)]="formularioSeleccionado">
-                                                <mat-option *ngFor="let form of formularios" [value]="form">{{
-                                                    form.proceso }}</mat-option>
+                                            <mat-select [(value)]="formularioSeleccionado"
+                                                (selectionChange)="obtenerSecciones()">
+                                                <mat-option *ngFor="let form of formularios"
+                                                    [value]="form.EstructuraId">{{ form.EstructuraId }}</mat-option>
                                             </mat-select>
                                         </mat-form-field>
 
                                         <!-- Select para secciones -->
                                         <mat-form-field appearance="fill" class="form-field">
                                             <mat-label>{{ 'Seleccione una sección' | translate }}</mat-label>
-                                            <mat-select [(value)]="seccionSeleccionadaPrevia">
-                                                <mat-option *ngFor="let sec of secciones" [value]="sec">{{ sec.titulo
-                                                    }}</mat-option>
+                                            <mat-select [(value)]="seccionSeleccionadaPrevia"
+                                                (selectionChange)="obtenerTiposDeInput()">
+                                                <mat-option *ngFor="let sec of secciones" [value]="sec.SeccionId">{{
+                                                    sec.SeccionNombre }}</mat-option>
                                             </mat-select>
                                         </mat-form-field>
 
@@ -224,7 +231,7 @@
                                             <mat-label>{{ 'Seleccione un tipo de input' | translate }}</mat-label>
                                             <mat-select [(value)]="tipoCampoSeleccionadoPrevia">
                                                 <mat-option *ngFor="let tipo of tipoCampos"
-                                                    [value]="tipo.TipoCampoId">{{ tipo.label }}</mat-option>
+                                                    [value]="tipo.TipoCampoId">{{ tipo.Nombre }}</mat-option>
                                             </mat-select>
                                         </mat-form-field>
 
