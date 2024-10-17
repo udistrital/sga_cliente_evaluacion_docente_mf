@@ -29,7 +29,6 @@ interface Componente {
   templateUrl: "./definicion-plantillas.component.html",
   styleUrls: ["./definicion-plantillas.component.scss"],
 })
-
 export class DefinicionPlantillasComponent implements OnInit {
   displayedColumns: string[] = ["numero", "proceso", "fecha", "estado", "ponderacion", "acciones"];
   displayedColumnsComponente: string[] = ["numero", "nombre", "ponderacion", "acciones"];
@@ -58,11 +57,13 @@ export class DefinicionPlantillasComponent implements OnInit {
   preguntaSeleccionada: any;
   preguntaControl = new FormControl();
   secciones: Seccion[] = [];
-  formularioSeleccionado: string = "heteroevaluacion";
   seccionSeleccionada: any = null;
   porcentajeInvalido: boolean = false;
   camposCargarEvidencias: any[] = [];
   campoRelacionado: any = null;
+  formularioSeleccionado: any = {}; // Inicializar como un objeto vacío o con un valor adecuado
+  seccionSeleccionadaPrevia: any = {}; // Inicializa con un objeto vacío
+  tipoCampoSeleccionadoPrevia: number = 0; // o null dependiendo de tu lógica
 
   constructor(
     private httpClient: HttpClient,
@@ -160,6 +161,35 @@ export class DefinicionPlantillasComponent implements OnInit {
     });
   }
 
+  // Función para agregar componente de preguntas previas
+  agregarComponentePrevio() {
+    if (!this.formularioSeleccionado?.proceso) {
+      console.error('Formulario seleccionado inválido.');
+      return;
+    }
+
+    if (!this.seccionSeleccionadaPrevia?.titulo) {
+      console.error('Sección seleccionada previa inválida.');
+      return;
+    }
+
+    if (!this.tipoCampoSeleccionadoPrevia) {
+      console.error('Tipo de campo seleccionado inválido.');
+      return;
+    }
+
+    const nuevoComponente = {
+      numero: this.seccionSeleccionada?.componentes.length + 1, // Eliminamos ?? 1
+      nombre: `Pregunta de ${this.formularioSeleccionado.proceso} en ${this.seccionSeleccionadaPrevia?.titulo || 'Sección Desconocida'}`,
+      ponderacion: 100,
+      campo_id: this.tipoCampoSeleccionadoPrevia
+    };    
+
+    this.seccionSeleccionada.componentes.push(nuevoComponente);
+    this.seccionSeleccionada.componentes = [...this.seccionSeleccionada.componentes];
+    this.secciones = [...this.secciones];
+  }
+
   // Validación de porcentaje
   validarPorcentaje() {
     this.porcentajeInvalido = this.nuevoPorcentaje < 1 || this.nuevoPorcentaje > 100;
@@ -213,11 +243,11 @@ export class DefinicionPlantillasComponent implements OnInit {
   // Crear nuevo componente con la relación si aplica
   crearNuevoComponente(): Componente {
     return {
-      numero: this.seccionSeleccionada.componentes.length + 1,
-      nombre: this.preguntaSeleccionada.Nombre,
+      numero: this.seccionSeleccionada?.componentes.length + 1, // Eliminamos ?? 1
+      nombre: this.preguntaSeleccionada?.Nombre || 'Pregunta',
       ponderacion: this.nuevoPorcentaje,
       campo_id: this.tipoCampoSeleccionado,
-      item_relacion_id: this.tipoCampoSeleccionado === 4672 ? this.campoRelacionado.campo_id : undefined,
+      item_relacion_id: this.tipoCampoSeleccionado === 4672 ? this.campoRelacionado?.campo_id : undefined,
     };
   }
 

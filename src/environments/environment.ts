@@ -22,4 +22,3 @@ export const environment = {
     TERCEROS_CRUD:"http://pruebasapi.intranetoas.udistrital.edu.co:8121/v1/",
 
 };
-    

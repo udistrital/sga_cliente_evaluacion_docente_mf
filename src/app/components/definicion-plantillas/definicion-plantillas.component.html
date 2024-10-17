@@ -158,52 +158,83 @@
                         </mat-card-header>
 
                         <mat-card-content>
-                            <div class="form-container">
-                                <!-- Selección del tipo de campo -->
-                                <mat-form-field appearance="fill" class="form-field">
-                                    <mat-select
-                                        placeholder="{{ 'definir_escalas.seleccionar_tipo_escala' | translate }}"
-                                        [(value)]="tipoCampoSeleccionado" (selectionChange)="filtrarPorTipo()">
-                                        <mat-option *ngFor="let campo of tipoCampos" [value]="campo.TipoCampoId">{{
-                                            campo.label }}</mat-option>
-                                    </mat-select>
-                                </mat-form-field>
+                            <!-- Pestañas para las dos vistas -->
+                            <mat-tab-group>
+                                <!-- Pestaña Ajustar Pregunta -->
+                                <mat-tab label="Ajustar pregunta ({{ seccionSeleccionada.titulo }})">
+                                    <div class="form-container">
+                                        <!-- Aquí permanece la vista actual para agregar componente -->
+                                        <mat-form-field appearance="fill" class="form-field">
+                                            <mat-select
+                                                placeholder="{{ 'definir_escalas.seleccionar_tipo_escala' | translate }}"
+                                                [(value)]="tipoCampoSeleccionado" (selectionChange)="filtrarPorTipo()">
+                                                <mat-option *ngFor="let campo of tipoCampos"
+                                                    [value]="campo.TipoCampoId">{{ campo.label }}</mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
 
-                                <!-- Selección de 'carga de evidencias' -->
-                                <mat-form-field appearance="fill" class="form-field"
-                                    *ngIf="tipoCampoSeleccionado === 4672">
-                                    <mat-select placeholder="Seleccionar campo de 'carga de evidencias'"
-                                        [(value)]="campoRelacionado"
-                                        (selectionChange)="seleccionarCampoRelacionado($event.value)">
-                                        <mat-option *ngFor="let campo of camposCargarEvidencias" [value]="campo">
-                                            {{ campo.nombre }} (Formulario: {{ campo.formularioTitulo || 'N/A' }},
-                                            Sección: {{ campo.seccionTitulo || 'N/A' }})
-                                        </mat-option>
-                                    </mat-select>
-                                </mat-form-field>
+                                        <!-- Input para pregunta -->
+                                        <mat-form-field appearance="fill" class="form-field">
+                                            <input matInput placeholder="{{ 'definir_escalas.tipo_input' | translate }}"
+                                                [(ngModel)]="preguntaSeleccionada" [matAutocomplete]="auto">
+                                            <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayNombre">
+                                                <mat-option *ngFor="let pregunta of preguntasFiltradas"
+                                                    [value]="pregunta">{{ pregunta.Nombre }}</mat-option>
+                                            </mat-autocomplete>
+                                        </mat-form-field>
 
-                                <!-- Selección de la pregunta -->
-                                <mat-form-field appearance="fill" class="form-field">
-                                    <input matInput placeholder="{{ 'definir_escalas.tipo_input' | translate }}"
-                                        [(ngModel)]="preguntaSeleccionada" [matAutocomplete]="auto">
-                                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayNombre">
-                                        <mat-option *ngFor="let pregunta of preguntasFiltradas" [value]="pregunta">{{
-                                            pregunta.Nombre }}</mat-option>
-                                    </mat-autocomplete>
-                                </mat-form-field>
+                                        <!-- Campo para porcentaje -->
+                                        <mat-form-field class="form-field">
+                                            <input matInput placeholder="%" type="number" [(ngModel)]="nuevoPorcentaje"
+                                                min="1" max="100" required (input)="validarPorcentaje()" />
+                                            <mat-error *ngIf="porcentajeInvalido">{{ "El porcentaje debe estar entre 1 y
+                                                100" | translate }}</mat-error>
+                                        </mat-form-field>
 
-                                <!-- Campo para porcentaje -->
-                                <mat-form-field class="form-field">
-                                    <input matInput placeholder="%" type="number" [(ngModel)]="nuevoPorcentaje" min="1"
-                                        max="100" required (input)="validarPorcentaje()" />
-                                    <mat-error *ngIf="porcentajeInvalido">{{ "El porcentaje debe estar entre 1 y 100" |
-                                        translate }}</mat-error>
-                                </mat-form-field>
+                                        <!-- Botón para agregar el componente -->
+                                        <button mat-icon-button (click)="agregarComponente()" class="add-btn">
+                                            <mat-icon>add</mat-icon>
+                                        </button>
+                                    </div>
+                                </mat-tab>
 
-                                <button mat-icon-button (click)="agregarComponente()" class="add-btn">
-                                    <mat-icon>add</mat-icon>
-                                </button>
-                            </div>
+                                <!-- Pestaña Usar Preguntas Previas -->
+                                <mat-tab label="Usar preguntas previas">
+                                    <div class="form-container">
+                                        <!-- Select para formularios -->
+                                        <mat-form-field appearance="fill" class="form-field">
+                                            <mat-label>{{ 'Seleccione un formulario' | translate }}</mat-label>
+                                            <mat-select [(value)]="formularioSeleccionado">
+                                                <mat-option *ngFor="let form of formularios" [value]="form">{{
+                                                    form.proceso }}</mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+
+                                        <!-- Select para secciones -->
+                                        <mat-form-field appearance="fill" class="form-field">
+                                            <mat-label>{{ 'Seleccione una sección' | translate }}</mat-label>
+                                            <mat-select [(value)]="seccionSeleccionadaPrevia">
+                                                <mat-option *ngFor="let sec of secciones" [value]="sec">{{ sec.titulo
+                                                    }}</mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+
+                                        <!-- Select para tipo de input -->
+                                        <mat-form-field appearance="fill" class="form-field">
+                                            <mat-label>{{ 'Seleccione un tipo de input' | translate }}</mat-label>
+                                            <mat-select [(value)]="tipoCampoSeleccionadoPrevia">
+                                                <mat-option *ngFor="let tipo of tipoCampos"
+                                                    [value]="tipo.TipoCampoId">{{ tipo.label }}</mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+
+                                        <!-- Botón para agregar el componente previo -->
+                                        <button mat-icon-button (click)="agregarComponentePrevio()" class="add-btn">
+                                            <mat-icon>add</mat-icon>
+                                        </button>
+                                    </div>
+                                </mat-tab>
+                            </mat-tab-group>
                         </mat-card-content>
                     </mat-card>
 
