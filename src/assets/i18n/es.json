@@ -36,7 +36,15 @@
         "ver_general": "Ver general",
         "regresar": "Volver",
         "PONDERACION": "Ponderación",
-        "cerrar": "Cerrar"
+        "cerrar": "Cerrar",
+        "anterior": "Anterior",
+        "siguiente": "Siguiente",
+        "formulario_incompleto_titulo": "Formulario incompleto",
+        "formulario_incompleto_descripcion": "Por favor diligencie los campos obligatorios",
+        "selecionar_proyecto": "Seleccione un proyecto",
+        "selecionar_docente": "Seleccione un docente",
+        "selecionar_espacio": "Seleccione un espacio",
+        "selecionar_grupo": "Seleccione un grupo"
     },
 
     "asignacion_fechas": {

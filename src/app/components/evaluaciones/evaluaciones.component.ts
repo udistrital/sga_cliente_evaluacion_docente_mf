@@ -15,6 +15,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { SgaEvaluacionDocenteMidService } from "src/app/services/sga_evaluacion_docente_mid.service";
 import { TercerosCrudService } from "src/app/services/terceros-crud.service";
 import { TranslateService } from "@ngx-translate/core";
+import Swal from "sweetalert2";
 
 @Component({
   selector: "app-evaluaciones",
@@ -93,12 +94,16 @@ export class EvaluacionesComponent implements OnInit {
             this.consultarCargaAcademica(codigo).then((response: any) => {
               this.heteroForm.patchValue({
                 estudianteNombre: response.nombre,
-                estudianteIdentificacion: response.codigo_estudiante
+                estudianteIdentificacion: response.codigo_estudiante,
+                inicioFecha: new Date(),
+                finFecha: new Date()
               });
 
               this.autoevaluacionIForm.patchValue({
                 estudianteNombre: response.nombre,
-                estudianteIdentificacion: response.codigo_estudiante
+                estudianteIdentificacion: response.codigo_estudiante,
+                inicioFecha: new Date(),
+                finFecha: new Date()
               });
 
               this.proyectos.opciones = response.proyectos;
@@ -110,11 +115,15 @@ export class EvaluacionesComponent implements OnInit {
           this.consultarEspaciosAcademicos(documento).then((response: any) => {
             this.autoevaluacionIIForm.patchValue({
               docenteIdentificacion: response.identificacion,
-              docenteNombre: response.nombre
+              docenteNombre: response.nombre,
+              inicioFecha: new Date(),
+              finFecha: new Date()
             });
 
             this.coevaluacionIForm.patchValue({
-              docenteNombre: response.nombre
+              docenteNombre: response.nombre,
+              inicioFecha: new Date(),
+              finFecha: new Date()
             });
 
             this.proyectos.opciones = response.proyectos;
@@ -124,7 +133,9 @@ export class EvaluacionesComponent implements OnInit {
         this.userService.getUserDocument().then((documento) => {
           this.consultarEspaciosAcademicos(documento).then((response: any) => {
             this.coevaluacionIIForm.patchValue({
-              docenteNombre: response.nombre
+              docenteNombre: response.nombre,
+              inicioFecha: new Date(),
+              finFecha: new Date()
             });
 
             this.proyectos.opciones = response.proyectos;
@@ -578,8 +589,17 @@ export class EvaluacionesComponent implements OnInit {
     });
   }
 
-  continuar(): void {
-    this.mostrarEvaluacion = true;
+  continuar(form: FormGroup): void {
+    if (form.valid) {
+      this.mostrarEvaluacion = true;
+    } else {
+      form.markAllAsTouched();
+      Swal.fire({
+        icon: "error",
+        title: this.translate.instant("GLOBAL.formulario_incompleto_titulo"),
+        text: this.translate.instant("GLOBAL.formulario_incompleto_descripcion"),
+      });
+    }
   }
 
   openSnackBar(mensaje: string) {

@@ -36,7 +36,15 @@
         "ver_general": "View scale",
         "regresar": "Go back",
         "PONDERACION": "Ponderación",
-        "cerrar": "Close"
+        "cerrar": "Close",
+        "anterior": "Previus",
+        "siguiente": "Next",
+        "formulario_incompleto_titulo": "Incomplete form",
+        "formulario_incompleto_descripcion": "Please fill in the required fields",
+        "selecionar_proyecto": "Select Project",
+        "selecionar_docente": "Select Teacher",
+        "selecionar_espacio": "Select Space",
+        "selecionar_grupo": "Select group"
     },
 
     "asignacion_fechas": {
