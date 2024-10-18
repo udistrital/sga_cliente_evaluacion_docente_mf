@@ -96,7 +96,7 @@
                             <div class="form-col1">
                                 <mat-form-field style="width: 100%" appearance="outline">
                                     <mat-label>{{ 'heteroevaluacion.proyecto_curricular' | translate }}</mat-label>
-                                    <mat-select (selectionChange)="onProyectoSelection($event)" required>
+                                    <mat-select formControlName="proyectoCurricular" (selectionChange)="onProyectoSelection($event)" required>
                                         <mat-option value="" disabled>{{ 'GLOBAL.selecionar_proyecto' | translate }}</mat-option>
                                         <mat-option *ngFor="let item of proyectos?.opciones" [value]="item">
                                             {{ item.nombre }}
@@ -216,7 +216,7 @@
                             <div class="form-col1">
                                 <mat-form-field style="width: 100%" appearance="outline">
                                     <mat-label>{{ 'autoevaluacion_i.proyecto_curricular' | translate }}</mat-label>
-                                    <mat-select (selectionChange)="onProyectoSelection($event)" required>
+                                    <mat-select formControlName="proyectoCurricular" (selectionChange)="onProyectoSelection($event)" required>
                                         <mat-option value="" disabled>{{ 'GLOBAL.selecionar_proyecto' | translate }}</mat-option>
                                         <mat-option *ngFor="let item of proyectos?.opciones" [value]="item">
                                             {{ item.nombre }}
@@ -231,7 +231,7 @@
                             <div class="form-col1">
                                 <mat-form-field style="width: 100%" appearance="outline">
                                     <mat-label>{{ 'autoevaluacion_i.espacio_academico' | translate }}</mat-label>
-                                    <mat-select (selectionChange)="onEspacioSelection($event)" required>
+                                    <mat-select formControlName="espacioAcademico" (selectionChange)="onEspacioSelection($event)" required>
                                         <mat-option value="" disabled>{{ 'GLOBAL.selecionar_espacio' | translate }}</mat-option>
                                         <mat-option *ngFor="let item of espacios?.opciones" [value]="item">
                                             {{ item.nombre }}
@@ -334,7 +334,7 @@
                             <div class="form-col1">
                                 <mat-form-field style="width: 100%" appearance="outline">
                                     <mat-label>{{ 'heteroevaluacion.proyecto_curricular' | translate }}</mat-label>
-                                    <mat-select (selectionChange)="onProyectoSelection($event)" required>
+                                    <mat-select formControlName="proyectoCurricular" (selectionChange)="onProyectoSelection($event)" required>
                                         <mat-option value="" disabled>{{ 'GLOBAL.selecionar_proyecto' | translate }}</mat-option>
                                         <mat-option *ngFor="let item of proyectos?.opciones" [value]="item">
                                             {{ item.nombre }}
@@ -388,7 +388,7 @@
 
         <!-- Formulario de Coevaluación I -->
         <ng-container *ngIf="selectedEvaluation === 'coevaluacion-i'">
-            <mat-card *ngIf="hasRole([ROLES.DOCENTE, ROLES.ADMIN_SGA, ROLES.ADMIN_DOCENCIA]); else noPermission"
+            <mat-card *ngIf="hasRole([ROLES.DOCENTE, ROLES.ADMIN_SGA, ROLES.ADMIN_DOCENCIA, ROLES.COORDINADOR]); else noPermission"
                 class="form-container">
                 <mat-card-header style="padding-bottom: 1rem;">
                     <mat-card-title>{{ 'coevaluacion_i.titulo' | translate }}</mat-card-title>
@@ -428,7 +428,7 @@
                             <div class="form-col1">
                                 <mat-form-field style="width: 100%" appearance="outline">
                                     <mat-label>{{ 'heteroevaluacion.proyecto_curricular' | translate }}</mat-label>
-                                    <mat-select (selectionChange)="onProyectoSelection($event)" required>
+                                    <mat-select formControlName="proyectoCurricular" (selectionChange)="onProyectoSelection($event)" required>
                                         <mat-option value="" disabled>{{ 'GLOBAL.selecionar_proyecto' | translate }}</mat-option>
                                         <mat-option *ngFor="let item of proyectos?.opciones" [value]="item">
                                             {{ item.nombre }}
@@ -550,7 +550,7 @@
                 <div class="form-col1">
                     <mat-form-field style="width: 100%" appearance="outline">
                         <mat-label>{{ 'heteroevaluacion.proyecto_curricular' | translate }}</mat-label>
-                        <mat-select (selectionChange)="onProyectoSelection($event)" required>
+                        <mat-select formControlName="proyectoCurricular" (selectionChange)="onProyectoSelection($event)" required>
                             <mat-option value="" disabled>{{ 'GLOBAL.selecionar_proyecto' | translate }}</mat-option>
                           <mat-option *ngFor="let item of proyectos?.opciones" [value]="item">
                             {{ item.nombre }}

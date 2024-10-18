@@ -9,11 +9,15 @@ export class UserService {
     public getPersonaId(): Promise<number> {
         return new Promise((resolve, reject) => {
             const strcryptedId = localStorage.getItem('persona_id');
-            const strId = decrypt(strcryptedId);
-            if (strId) {
-                resolve(parseInt(strId, 10));
+            if (strcryptedId != null) {
+                const strId = decrypt(strcryptedId);
+                if (strId) {
+                    resolve(parseInt(strId, 10));
+                } else {
+                    reject(new Error('No id found'));
+                }
             } else {
-                reject(new Error('No id found'));
+                reject(new Error('No persona_id found'));
             }
         });
     }

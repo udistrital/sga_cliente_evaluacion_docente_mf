@@ -21,5 +21,7 @@ export const environment = {
     TERCEROS_SERVICE:"https://autenticacion.portaloas.udistrital.edu.co/apioas/terceros_crud/v1/",
     TERCEROS_CRUD:"http://pruebasapi.intranetoas.udistrital.edu.co:8121/v1/",
 
+    ACADEMICA_SERVICE: "https://autenticacion.portaloas.udistrital.edu.co/apioas/academica_jbpm/v2/",
+
 };
     

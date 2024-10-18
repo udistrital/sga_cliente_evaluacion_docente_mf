@@ -149,7 +149,8 @@
         "error_fecha_fin": "Please enter the end date.",
         "error_proyecto": "Please select a project.",
         "error_docente": "Please select a teacher.",
-        "error_descripcion": "Please enter a description."
+        "error_descripcion": "Please enter a description.",
+        "mensaje_confirmacion": "You are going to proceed with the self-evaluation of the teacher {nombre_docente} for the subject {nombre_asignatura}."
     },
 
     "autoevaluacion_i": {
@@ -168,7 +169,8 @@
         "error_fecha_inicio": "Please enter the start date.",
         "error_fecha_fin": "Please enter the end date.",
         "error_proyecto": "Please select a project.",
-        "error_descripcion": "Please enter a description."
+        "error_descripcion": "Please enter a description.",
+        "mensaje_confirmacion": "You are going to proceed with the self-evaluation of your performance for the subject {nombre_asignatura}."
     },
 
     "coevaluacion_i": {
@@ -191,7 +193,8 @@
         "error_grupo": "Please select a group.",
         "descripcion_proceso": "Process description",
         "error_descripcion": "Please enter a process description.",
-        "guardar": "Save"
+        "guardar": "Save",
+        "mensaje_confirmacion": "You are going to proceed with the co-evaluation of: - Academic space: {nombre_espacio}. - Student group: {grupo}."
     },
 
     "autoevaluacion_ii": {
@@ -216,7 +219,8 @@
         "error_fecha_fin": "Please enter the end date.",
         "error_proyecto": "Please select a project.",
         "error_espacio_academico": "Please select an academic space.",
-        "error_descripcion": "Please enter a description."
+        "error_descripcion": "Please enter a description.",
+        "mensaje_confirmacion": "You are going to proceed with the self-evaluation for the curricular project {nombre_proyecto}."
     },
 
     "coevaluacion_ii": {

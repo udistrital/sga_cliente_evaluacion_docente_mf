@@ -16,6 +16,7 @@ import { SgaEvaluacionDocenteMidService } from "src/app/services/sga_evaluacion_
 import { TercerosCrudService } from "src/app/services/terceros-crud.service";
 import { TranslateService } from "@ngx-translate/core";
 import Swal from "sweetalert2";
+import { AcademicaService } from "src/app/services/academica.service";
 
 @Component({
   selector: "app-evaluaciones",
@@ -61,6 +62,7 @@ export class EvaluacionesComponent implements OnInit {
     private dateService: DateService,
     private evaluacionDocenteMidService: SgaEvaluacionDocenteMidService,
     private tercerosService: TercerosCrudService,
+    private academicaService: AcademicaService,
     private translate: TranslateService
   ) {
     this.heteroForm = this.fb.group({});
@@ -76,73 +78,24 @@ export class EvaluacionesComponent implements OnInit {
     // Obtener roles del usuario
     this.userService.getUserRoles().then((roles) => {
       this.userRoles = roles;
-      this.dateService.getDateHeader().subscribe(
-        (date: string) => {
-          this.dateHeader = date;
-          console.log('DateHeader:', this.dateHeader);
-        },
-        (error: any) => console.error('Error al obtener el encabezado de fecha:', error)
-      );
-      this.userService.getPersonaId().then(
+    }).catch(error => console.error('Error al obtener los roles de usuario:', error));
+
+    this.dateService.getDateHeader().subscribe(
+      (date: string) => {
+        this.dateHeader = date;
+        console.log('DateHeader:', this.dateHeader);
+      },
+      (error: any) => console.error('Error al obtener el encabezado de fecha:', error)
+    );
+
+    this.userService.getPersonaId()
+      .then(
         (personaId) => {
           this.tercero = String(personaId);
         }
-      );
-      if (this.hasRole([ROLES.ESTUDIANTE])) {
-        this.userService.getCodigoEstudiante().then((codigo) => {
-          if (codigo != null) {
-            this.consultarCargaAcademica(codigo).then((response: any) => {
-              this.heteroForm.patchValue({
-                estudianteNombre: response.nombre,
-                estudianteIdentificacion: response.codigo_estudiante,
-                inicioFecha: new Date(),
-                finFecha: new Date()
-              });
-
-              this.autoevaluacionIForm.patchValue({
-                estudianteNombre: response.nombre,
-                estudianteIdentificacion: response.codigo_estudiante,
-                inicioFecha: new Date(),
-                finFecha: new Date()
-              });
-
-              this.proyectos.opciones = response.proyectos;
-            });
-          }
-        });
-      } else if (this.hasRole([ROLES.DOCENTE])) {
-        this.userService.getUserDocument().then((documento) => {
-          this.consultarEspaciosAcademicos(documento).then((response: any) => {
-            this.autoevaluacionIIForm.patchValue({
-              docenteIdentificacion: response.identificacion,
-              docenteNombre: response.nombre,
-              inicioFecha: new Date(),
-              finFecha: new Date()
-            });
-
-            this.coevaluacionIForm.patchValue({
-              docenteNombre: response.nombre,
-              inicioFecha: new Date(),
-              finFecha: new Date()
-            });
-
-            this.proyectos.opciones = response.proyectos;
-          });
-        });
-      } else if (this.hasRole([ROLES.COORDINADOR])) {
-        this.userService.getUserDocument().then((documento) => {
-          this.consultarEspaciosAcademicos(documento).then((response: any) => {
-            this.coevaluacionIIForm.patchValue({
-              docenteNombre: response.nombre,
-              inicioFecha: new Date(),
-              finFecha: new Date()
-            });
-
-            this.proyectos.opciones = response.proyectos;
-          });
-        });
-      }
-    }).catch(error => console.error('Error al obtener los roles de usuario:', error));
+      ).catch(error => {
+        console.error('Error:', error.message);
+      });
   }
 
   // Inicializar formularios
@@ -380,6 +333,62 @@ export class EvaluacionesComponent implements OnInit {
   onSelectChange(event: MatSelectChange) {
     this.selectedEvaluation = event.value;
     this.mostrarEvaluacion = false;
+    this.consultarDatos();
+  }
+
+  consultarDatos() {
+    if (this.hasRole([ROLES.ESTUDIANTE])) {
+      this.userService.getCodigoEstudiante().then((codigo) => {
+        if (codigo != null) {
+          this.consultarCargaAcademica(codigo).then((response: any) => {
+            if (this.selectedEvaluation == "heteroevaluacion") {
+              this.heteroForm.patchValue({
+                estudianteNombre: response.nombre,
+                estudianteIdentificacion: response.codigo_estudiante,
+                inicioFecha: new Date(),
+                finFecha: new Date()
+              });
+            } else if (this.selectedEvaluation == "autoevaluacion-i") {
+              this.autoevaluacionIForm.patchValue({
+                estudianteNombre: response.nombre,
+                estudianteIdentificacion: response.codigo_estudiante,
+                inicioFecha: new Date(),
+                finFecha: new Date()
+              });
+            }
+
+            this.proyectos.opciones = response.proyectos;
+          });
+        }
+      });
+    } else if (this.hasRole([ROLES.DOCENTE])) {
+      this.userService.getUserDocument().then((documento) => {
+        this.consultarEspaciosAcademicos(documento).then((response: any) => {
+          if (this.selectedEvaluation == "autoevaluacion-ii") {
+            this.autoevaluacionIIForm.patchValue({
+              docenteIdentificacion: response.identificacion,
+              docenteNombre: response.nombre,
+              inicioFecha: new Date(),
+              finFecha: new Date()
+            });
+          } else if (this.selectedEvaluation == "coevaluacion-i") {
+            this.coevaluacionIForm.patchValue({
+              docenteNombre: response.nombre,
+              inicioFecha: new Date(),
+              finFecha: new Date()
+            });
+          }
+
+          this.proyectos.opciones = response.proyectos;
+        });
+      });
+    } else if (this.hasRole([ROLES.COORDINADOR])) {
+      if (this.selectedEvaluation == "coevaluacion-ii") {
+        this.consultarProyectos().then((carreras) => {
+          this.proyectos.opciones = carreras;
+        });
+      }
+    }
   }
 
   // Detecta cambios en el valor de formtype y actualiza el formulario mostrado
@@ -561,7 +570,7 @@ export class EvaluacionesComponent implements OnInit {
           (error: any) => {
             reject(error);
           }
-        )
+        );
     });
   }
 
@@ -585,6 +594,30 @@ export class EvaluacionesComponent implements OnInit {
         (error: any) => {
           reject(error);
         }
+      );
+    });
+  }
+
+  async consultarProyectos(): Promise<string[]> {
+    return new Promise((resolve, reject) => {
+      this.academicaService.get('carreras/PREGRADO')
+      .subscribe(
+        (res: any) => {
+          if (res != null) {
+            if (res["carrerasCollection"] != null) {
+              const carreras = res["carrerasCollection"].carrera.map(({ codigo, nombre }: any) => ({
+                id: codigo,
+                nombre: codigo + "-" + nombre
+              }));
+              resolve(carreras);
+            } else {
+              reject([]);
+            }
+          }
+        },
+        (error: any) => {
+          reject(error);
+        }
       )
     });
   }
@@ -594,12 +627,22 @@ export class EvaluacionesComponent implements OnInit {
       this.mostrarEvaluacion = true;
     } else {
       form.markAllAsTouched();
+      this.markInvalidFields(form);
       Swal.fire({
         icon: "error",
         title: this.translate.instant("GLOBAL.formulario_incompleto_titulo"),
         text: this.translate.instant("GLOBAL.formulario_incompleto_descripcion"),
       });
     }
+  }
+
+  markInvalidFields(form: FormGroup) {
+    Object.keys(form.controls).forEach(field => {
+      const control = form.get(field);
+      if (control?.invalid) {
+        console.log(`El campo ${field} es inválido.`);
+      }
+    });
   }
 
   openSnackBar(mensaje: string) {
