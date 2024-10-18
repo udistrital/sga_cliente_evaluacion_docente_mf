@@ -37,6 +37,7 @@
         "regresar": "Volver",
         "PONDERACION": "Ponderación",
         "cerrar": "Cerrar",
+        "confirmacion": "Confirmación",
         "anterior": "Anterior",
         "siguiente": "Siguiente",
         "formulario_incompleto_titulo": "Formulario incompleto",
@@ -149,7 +150,7 @@
         "error_proyecto": "Por favor, seleccione un proyecto.",
         "error_docente": "Por favor, seleccione un docente.",
         "error_descripcion": "Por favor, ingrese una descripción.",
-        "mensaje_confirmacion": "Usted va a proceder con la autoevalución del/la docente {nombre_docente} de la asignatura {nombre_asignatura}"
+        "mensaje_confirmacion": "Usted va a proceder con la autoevalución del/la docente {{nombre_docente}} de la asignatura {{nombre_asignatura}}"
     },
 
     "autoevaluacion_i": {
@@ -170,7 +171,7 @@
         "error_proyecto": "Por favor, seleccione un proyecto.",
         "espacio_academico": "Espacio Académico",
         "error_descripcion": "Por favor, ingrese una descripción.",
-        "mensaje_confirmacion": "Usted va a proceder con la autoevaluación de su desempeño para la asignatura {nombre_asignatura}."
+        "mensaje_confirmacion": "Usted va a proceder con la autoevaluación de su desempeño para la asignatura {{nombre_asignatura}}."
     },
 
     "coevaluacion_i": {
@@ -194,7 +195,7 @@
         "descripcion_proceso": "Descripción del proceso",
         "error_descripcion": "Por favor, ingrese la descripción del proceso.",
         "guardar": "Guardar",
-        "mensaje_confirmacion": "Usted va a proceder con la coevalución de: - Espacio académico: {nombre_espacio}. - Grupo de estudiantes {grupo}"
+        "mensaje_confirmacion": "Usted va a proceder con la coevalución de: - Espacio académico: {{nombre_espacio}}. - Grupo de estudiantes {{grupo}}"
       },
 
     "autoevaluacion_ii": {
@@ -220,7 +221,7 @@
         "error_proyecto": "Por favor, seleccione un proyecto.",
         "error_espacio_academico": "Por favor, seleccione un espacio académico.",
         "error_descripcion": "Por favor, ingrese una descripción.",
-        "mensaje_confirmacion": "Usted va a proceder con la Autoevaluación para el proyecto curricular {nombre_proyecto}"
+        "mensaje_confirmacion": "Usted va a proceder con la Autoevaluación para el proyecto curricular {{nombre_proyecto}}"
     },
 
     "coevaluacion_ii": {
