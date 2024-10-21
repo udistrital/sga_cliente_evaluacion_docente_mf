@@ -475,6 +475,8 @@ export class EvaluacionesComponent implements OnInit {
 
       this.openSnackBar(`Proyecto seleccionado: ${proyectoSeleccionado.nombre}`);
     }
+
+    this.mostrarEvaluacion = false;
   }
 
   onEspacioSelection(event: MatSelectChange): void {
@@ -499,6 +501,8 @@ export class EvaluacionesComponent implements OnInit {
       this.grupos = espacioSeleccionado.grupos;
       this.openSnackBar(`Espacio seleccionado: ${espacioSeleccionado.nombre}`);
     }
+
+    this.mostrarEvaluacion = false;
   }
 
   loadProyectos(): void {
@@ -525,6 +529,8 @@ export class EvaluacionesComponent implements OnInit {
         if (res != null) {
           this.terceroEvaluado = res.Id;
           this.nombreDocente = res.NombreCompleto;
+
+          this.mostrarEvaluacion = false;
         }
       }
     )
@@ -682,6 +688,10 @@ export class EvaluacionesComponent implements OnInit {
         console.log(`El campo ${field} es inválido.`);
       }
     });
+  }
+
+  ocultarEvaluacion() {
+    this.mostrarEvaluacion = false;
   }
 
   openSnackBar(mensaje: string) {

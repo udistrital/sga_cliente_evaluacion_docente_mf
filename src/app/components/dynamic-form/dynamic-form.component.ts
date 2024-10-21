@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, ViewChild } from "@angular/core";
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild } from "@angular/core";
 import {
   AbstractControl,
   FormBuilder,
@@ -8,6 +8,7 @@ import {
 } from "@angular/forms";
 import { MatStepper } from "@angular/material/stepper";
 import { DomSanitizer } from "@angular/platform-browser";
+import { TranslateService } from "@ngx-translate/core";
 import { forkJoin } from "rxjs";
 import { TIPOINPUT } from "src/app/models/const_eva";
 import { GestorDocumentalService } from "src/app/services/gestor-documental.service";
@@ -49,13 +50,15 @@ export class DynamicFormComponent implements OnInit, OnChanges {
   @Input() proyecto!: number;
   @Input() espacio!: string;
 
+  @Output() evaluacionCompletada = new EventEmitter<void>();
+
   constructor(
     private fb: FormBuilder,
     private sanitizer: DomSanitizer,
     private evaluacionDocenteMidService: SgaEvaluacionDocenteMidService,
     private gestorService: GestorDocumentalService,
     private gestorDocumentalService: GestorDocumentalService,
-
+    private translateService: TranslateService
   ) { this.stepperForm = this.fb.group({});
 }
 
@@ -219,6 +222,8 @@ selectForm(tipo_formulario: string) {
           icon: 'success',
           title: 'Formulario guardado',
           text: 'El formulario ha sido guardado correctamente.',
+        }).then(() => {
+          this.evaluacionCompletada.emit();
         });
       } else {
         Swal.fire({
@@ -230,11 +235,21 @@ selectForm(tipo_formulario: string) {
     },
     error => {
       console.error(error);
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'Ocurrió un error al guardar el formulario.',
-      });
+      if (error.Message == null) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Ocurrió un error al guardar el formulario.',
+        });
+      } else {
+        Swal.fire({
+          icon: 'warning',
+          title: this.translateService.instant('GLOBAL.atencion'),
+          text: error.Message,
+        }).then(() => {
+          this.evaluacionCompletada.emit();
+        });
+      }
     });
   }
 
