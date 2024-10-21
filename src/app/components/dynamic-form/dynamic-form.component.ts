@@ -38,16 +38,16 @@ export class DynamicFormComponent implements OnInit, OnChanges {
   panelIndex: number[] = [];
 
   uploadedFileUid: string | null = null;
-  documentId: string | null = null;  
+  documentId: string | null = null;
 
   @ViewChild("mainStepper") mainStepper!: MatStepper;
   @Input() inputData: any; // Define el @Input
 
   @Input() formtype!: string;
-  @Input() tercero!: string;
-  @Input() terceroEvaluado!: string;
-  @Input() proyecto!: string;
-  @Input() espacio: string = "1";
+  @Input() tercero!: number;
+  @Input() terceroEvaluado!: number;
+  @Input() proyecto!: number;
+  @Input() espacio!: string;
 
   constructor(
     private fb: FormBuilder,
@@ -243,7 +243,7 @@ selectForm(tipo_formulario: string) {
     if (this.stepperForm.valid) {
       this.generateResponseData().then(respuestas => {
         const requests: any[] = [];
-        const espacios = this.espacio.split(',').map(Number);
+        const espacios = this.espacio.split(',');
         espacios.forEach((esp) => {
           const jsonData = {
             id_periodo: 1,
@@ -265,12 +265,23 @@ selectForm(tipo_formulario: string) {
       });
     } else {
       console.log("Formulario inválido:", this.stepperForm);
+      this.stepperForm.markAllAsTouched();
+      this.markInvalidFields(this.stepperForm);
       Swal.fire({
         icon: "error",
         title: "Formulario incompleto",
         text: "Por favor, complete todas las preguntas.",
       });
     }
+  }
+
+  markInvalidFields(form: FormGroup) {
+    Object.keys(form.controls).forEach(field => {
+      const control = form.get(field);
+      if (control?.invalid) {
+        console.log(`El campo ${field} es inválido.`);
+      }
+    });
   }
 
   async generateResponseData(): Promise<Respuesta[]> {

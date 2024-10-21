@@ -1,4 +1,5 @@
 {
+
     "HOME": {
         "TITLE": "SGA",
         "SELECT": "Select evaluation type",
@@ -30,14 +31,27 @@
         "atencion": "Attention",
         "aceptar": "Accept",
         "cancelar": "Cancel",
+        "error": "Error",
         "estado": "Status",
         "ver_general": "View scale",
         "regresar": "Go back",
-        "PONDERACION":"Ponderación"
+        "PONDERACION": "Ponderación",
+        "cerrar": "Close",
+        "confirmacion": "Confirmation",
+        "anterior": "Previus",
+        "siguiente": "Next",
+        "formulario_incompleto_titulo": "Incomplete form",
+        "formulario_incompleto_descripcion": "Please fill in the required fields",
+        "selecionar_proyecto": "Select Project",
+        "selecionar_docente": "Select Teacher",
+        "selecionar_espacio": "Select Space",
+        "selecionar_grupo": "Select group"
     },
 
     "asignacion_fechas": {
         "titulo": "Assignment of dates for processes",
+        "sub_titulo": "Module for the assignment of dates for the following processes",
+        "alerta": "Next, you must select the educational level and enter the required information about the dates.",
         "seleccionar_nivel_formacion": "Select the level of training to assign",
         "seleccionar": "Select",
         "pregrado": "Undergraduate",
@@ -59,6 +73,13 @@
 
     "definicion_formularios": {
         "titulo": "Define forms",
+        "titulo_roles": "Roles",
+        "titulo_visualizador": "Form Viewer",
+        "sub_titulo_visualizador": "Section for Form Viewing",
+        "sub_titulo_proceso": "Section for Process Selection",
+        "sub_titulo": "Module for the Definition of the Following Forms",
+        "sub_titulo_roles": "Section for Role Assignment",
+        "alerta": "Next, you will need to select the roles involved and the process, which can be Heteroevaluation, Student Self-Assessment, Peer Assessment I, Teacher Self-Assessment, or Peer Assessment II.",
         "seleccionar_roles": "Select roles involved",
         "seleccione": "Select",
         "administradores": "Administrators",
@@ -67,7 +88,19 @@
         "concejos_curriculares": "Curricular Councils",
         "visualizador_formulario": "Form viewer",
         "procesos_seleccionar": "Processes to select",
-        "guardar": "Save"
+        "guardar": "Save",
+        "campo_requerido": "Required field",
+        "sin_permisos_titulo": "Access denied",
+        "sin_permisos_mensaje": "You do not have the necessary permissions to view this information. Please contact the system administrator for more details or to request access.",
+        "aniadir_nueva_escala": "Add new scale",
+        "tipo_escala": "Scale Type"
+    },
+
+    "evaluaciones": {
+        "titulo": "Evaluations",
+        "sub_titulo": "Module for the presentation of the following evaluations.",
+        "alerta": "Next, you will need to select the type of evaluation you wish to present.",
+        "select_evaluacion": "Select evaluation"
     },
 
     "definir_escalas": {
@@ -95,8 +128,8 @@
         "tipo_LinkNuxeo": "Download file",
         "tipo_ArchivoAnexo": "Upload file",
         "tipo_Radio": "Single answer selection",
-        "previsualizar":"Preview",
-        "ejemplo_escala":"Example view of the scale"
+        "previsualizar": "Preview",
+        "ejemplo_escala": "Example view of the scale"
     },
 
     "heteroevaluacion": {
@@ -117,7 +150,8 @@
         "error_fecha_fin": "Please enter the end date.",
         "error_proyecto": "Please select a project.",
         "error_docente": "Please select a teacher.",
-        "error_descripcion": "Please enter a description."
+        "error_descripcion": "Please enter a description.",
+        "mensaje_confirmacion": "You are going to proceed with the self-evaluation of the teacher {{nombre_docente}} for the subject {{nombre_asignatura}}."
     },
 
     "autoevaluacion_i": {
@@ -136,11 +170,17 @@
         "error_fecha_inicio": "Please enter the start date.",
         "error_fecha_fin": "Please enter the end date.",
         "error_proyecto": "Please select a project.",
-        "error_descripcion": "Please enter a description."
+        "error_descripcion": "Please enter a description.",
+        "mensaje_confirmacion": "You are going to proceed with the self-evaluation of your performance for the subject {{nombre_asignatura}}."
     },
 
     "coevaluacion_i": {
         "titulo": "Co-evaluation I",
+        "formato": "SIGUD Code to be assigned.",
+        "actor": "Teaching staff and students.",
+        "cronograma": "Weeks 10 to 11 of the academic calendar.",
+        "documento": "Co-evaluation record of the curricular space.",
+        "instruccion": "Dear faculty and students: Please co-evaluate with mutual commitments your teaching performance and that of your students in this curricular space using the format provided for this purpose. Please upload the record resulting from this co-evaluation exercise.",
         "fechas": "Dates",
         "inicio": "Start",
         "fin": "End",
@@ -153,7 +193,9 @@
         "grupo": "Group",
         "error_grupo": "Please select a group.",
         "descripcion_proceso": "Process description",
-        "error_descripcion": "Please enter a process description."
+        "error_descripcion": "Please enter a process description.",
+        "guardar": "Save",
+        "mensaje_confirmacion": "You are going to proceed with the co-evaluation of: - Academic space: {{nombre_espacio}}. - Student group: {{grupo}}."
     },
 
     "autoevaluacion_ii": {
@@ -165,14 +207,21 @@
         "identificacion_docente": "Teacher Identification",
         "identificacion": "Identification",
         "proyecto_curricular": "Curricular Project",
-        "espacio_academico": "Academic Space",
+        "proyecto1": "Curricular Project Name 1",
+        "proyecto2": "Curricular Project Name 2",
+        "proyectoN": "Curricular Project Name n",
+        "espacios_academicos": "Academic Spaces",
+        "espacio1": "List of academic spaces associated with the teacher and the curricular project",
+        "espacio2": "List of academic spaces associated with the teacher and the curricular project",
+        "espacioN": "List of n academic spaces associated with the teacher and the curricular project",
         "descripcion_proceso": "Process description",
         "descripcion": "Description",
         "error_fecha_inicio": "Please enter the start date.",
         "error_fecha_fin": "Please enter the end date.",
         "error_proyecto": "Please select a project.",
         "error_espacio_academico": "Please select an academic space.",
-        "error_descripcion": "Please enter a description."
+        "error_descripcion": "Please enter a description.",
+        "mensaje_confirmacion": "You are going to proceed with the self-evaluation for the curricular project {{nombre_proyecto}}."
     },
 
     "coevaluacion_ii": {
@@ -202,6 +251,16 @@
         "facultad": "Faculty",
         "proyecto_curricular": "Curricular Project",
         "docentes": "Teachers",
-        "periodo_y_tipo_reporte": "Period and report type"
+        "periodo_y_tipo_reporte": "Period and report type",
+        "sub_titulo": "Select the period and the type of report to obtain the desired information.",
+        "seleccione_periodo_tipo": "Select the period and the type of report.",
+        "resultados": "Results",
+        "seleccione_filtro_reporte": "Select the filtering options you wish for the report.",
+        "global": "Global",
+        "mensaje_facultad": "Select the level for which you want to generate the report and the filtering options by Faculty.",
+        "mensaje_global": "Select the level for which you want to generate the report and the global filtering options.",
+        "periodo_academico": "Select Period",
+        "seleccionar_facultad": "Select Faculty",
+        "seleccionar_proyecto_curricular": "Select Curricular Project"
     }
 }
