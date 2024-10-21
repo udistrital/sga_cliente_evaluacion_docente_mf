@@ -43,10 +43,10 @@ export class EvaluacionesComponent implements OnInit {
   espacios_academicos: any[] = [];
   grupos: any[] = [];
   dataSource!: MatTableDataSource<any>;
-  tercero!: string;
-  terceroEvaluado!: string;
+  tercero!: number;
+  terceroEvaluado!: number;
   nombreDocente!: string;
-  proyecto!: string;
+  proyecto!: number;
   nombreProyecto!: string;
   espacio!: string;
   nombreEspacio!: string;
@@ -94,10 +94,10 @@ export class EvaluacionesComponent implements OnInit {
     this.userService.getPersonaId()
       .then(
         (personaId) => {
-          this.tercero = String(personaId);
+          this.tercero = personaId;
         }
       ).catch(error => {
-        this.tercero = "1";
+        this.tercero = 1;
         console.error('Error:', error.message);
       });
   }
@@ -111,6 +111,7 @@ export class EvaluacionesComponent implements OnInit {
       estudianteIdentificacion: ["", Validators.required],
       proyectoCurricular: ["", Validators.required],
       docenteNombre: ["", Validators.required],
+      espacioAcademico: ["", Validators.required],
       descripcionProceso: [`Estimado estudiantado: Por favor evalúe formativamente a su docente utilizando el formato dispuesto para ello. Los ítems 01 a 20 de selección múltiple con única respuesta son obligatorios. Puede realizar anotaciones de felicitación o de sugerencias respetuosas en los espacios destinados para tal fin. Utilice como referencia la siguiente escala para medir el grado de desempeño a evaluar:`, 
         Validators.required],
     });
@@ -149,7 +150,7 @@ export class EvaluacionesComponent implements OnInit {
       estudianteNombre: ["", Validators.required],
       estudianteIdentificacion: ["", Validators.required],
       proyectoCurricular: ["", Validators.required],
-      proyectoCurricular2: ["", Validators.required],
+      espacioAcademico: ["", Validators.required],
       descripcionProceso: [`Estimado estudiantado: Por favor autoevalúe su desempeño como estudiante en este espacio curricular. Los ítems 01 a 05 de selección múltiple con única respuesta son obligatorios. Puede realizar anotaciones de mejoramiento para conseguir sus resultados de aprendizaje en los espacios destinados para tal fin.`, Validators.required],
     });
   }
@@ -234,10 +235,10 @@ export class EvaluacionesComponent implements OnInit {
           });
         }
 
-        const asignaturaExistente = proyecto.asignaturas.some((asignatura: any) => asignatura.id === COD_ESPACIO);
+        const asignaturaExistente = proyecto.asignaturas.some((asignatura: any) => asignatura.id === String(COD_ESPACIO));
         if (!asignaturaExistente) {
           proyecto.asignaturas.push({
-            id: COD_ESPACIO,
+            id: String(COD_ESPACIO),
             nombre: ESPACIO
           });
         }
@@ -302,7 +303,7 @@ export class EvaluacionesComponent implements OnInit {
           }
         } else {
           proyecto.asignaturas.push({
-            id: CODIGO_SIGNATURA,
+            id: String(CODIGO_SIGNATURA),
             nombre: ASIGNATURA,
             grupos: [
               {
@@ -455,33 +456,6 @@ export class EvaluacionesComponent implements OnInit {
         this.docentes.opciones = docentes;
         this.proyecto = proyectoSeleccionado.id;
         this.nombreProyecto = proyectoSeleccionado.nombre;
-      });
-    } else if (Array.isArray(proyectoSeleccionado)) {
-      var idsProyectos: string = "";
-      var nombresProyectos: string = "";
-      var docentes: any[] = [];
-      var asignaturas: any[] = [];
-      proyectoSeleccionado.forEach((proy) => {
-        idsProyectos += proy.id + ",";
-        nombresProyectos += proy.nombre + ",";
-        if (Array.isArray(proy.docentes)) {
-          docentes.push(...proy.docentes);
-        }
-        if (Array.isArray(proy.asignaturas)) {
-          asignaturas.push(...proy.asignaturas);
-        }
-      });
-      this.proyecto = idsProyectos.slice(0, -1);
-      this.nombreProyecto = nombresProyectos.slice(0, -1);
-      this.docentes.opciones = docentes;
-      this.espacios.opciones = asignaturas;
-      this.espacios_academicos = [];
-      asignaturas.forEach((espacio: any) => {
-        this.espacios_academicos.push({
-          id: espacio.id,
-          nombre: espacio.nombre,
-          grupos: espacio.grupos
-        });
       });
     } else if (proyectoSeleccionado) {
       this.proyecto = proyectoSeleccionado.id;

@@ -125,6 +125,24 @@
                             </div>
                         </div>
 
+                        <div class="form-grid2">
+                            <div class="form-col1">
+                                <mat-form-field style="width: 100%" appearance="outline">
+                                    <mat-label>{{ 'autoevaluacion_i.espacio_academico' | translate }}</mat-label>
+                                    <mat-select formControlName="espacioAcademico" (selectionChange)="onEspacioSelection($event)" required>
+                                        <mat-option value="" disabled>{{ 'GLOBAL.selecionar_espacio' | translate }}</mat-option>
+                                        <mat-option *ngFor="let item of espacios?.opciones" [value]="item">
+                                            {{ item.nombre }}
+                                        </mat-option>
+                                    </mat-select>
+                                    <mat-error
+                                        *ngIf="heteroForm.get('facultad')?.hasError('required') && heteroForm.get('facultad')?.touched">
+                                        {{ 'heteroevaluacion.error_proyecto' | translate }}
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                        </div>
+
                         <div class="form-col1">
                             <mat-form-field style="width: 100%" appearance="outline">
                                 <mat-label>{{ 'heteroevaluacion.descripcion_proceso' | translate }}</mat-label>
@@ -472,7 +490,7 @@
                             </div>
                             <div class="form-col1">
                                 <mat-form-field style="width: 100%" appearance="outline">
-                                    <mat-label>{{ 'definicion_formularios.procesos_seleccionar' | translate
+                                    <mat-label>{{ 'GLOBAL.selecionar_grupo' | translate
                                         }}</mat-label>
                                     <mat-select formControlName="grupoSeleccionado">
                                         <mat-option value="" disabled>{{ 'GLOBAL.selecionar_grupo' | translate }}</mat-option>
