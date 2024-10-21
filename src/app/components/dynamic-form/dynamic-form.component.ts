@@ -38,7 +38,7 @@ export class DynamicFormComponent implements OnInit, OnChanges {
   panelIndex: number[] = [];
 
   uploadedFileUid: string | null = null;
-  documentId: string | null = null;  
+  documentId: string | null = null;
 
   @ViewChild("mainStepper") mainStepper!: MatStepper;
   @Input() inputData: any; // Define el @Input

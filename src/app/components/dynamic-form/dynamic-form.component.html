@@ -96,8 +96,8 @@
 
                 <!-- Botones Anterior y Siguiente para avanzar entre ámbitos -->
                 <div>
-                    <button mat-button matStepperPrevious [disabled]="i === 0">Anterior</button>
-                    <button mat-button matStepperNext [disabled]="i === (todasSecciones.length - 1)">Siguiente</button>
+                    <button mat-button matStepperPrevious [disabled]="i === 0">{{ "GLOBAL.anterior" | translate }}</button>
+                    <button mat-button matStepperNext [disabled]="i === (todasSecciones.length - 1)">{{ "GLOBAL.siguiente" | translate }}</button>
                 </div>
             </mat-step>
         </mat-vertical-stepper>
@@ -107,5 +107,5 @@
 
 <!-- Botón final para enviar -->
 <div style="width: 100%; display: flex; justify-content: center">
-    <button mat-raised-button color="primary" (click)="submit()">Guardar</button>
+    <button mat-raised-button color="primary" (click)="submit()">{{ "GLOBAL.GUARDAR" | translate }}</button>
 </div>
