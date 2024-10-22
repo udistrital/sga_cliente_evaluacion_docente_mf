@@ -8,7 +8,7 @@ export const environment = {
     ESPACIOS_ACADEMICOS_SERVICE:"https://autenticacion.portaloas.udistrital.edu.co/apioas/espacios_academicos_crud/v1/",
     ESPACIOS_ACADEMICOS_SERVICE_2: 'http://pruebasapi2.intranetoas.udistrital.edu.co:8530/',
     ESPACIO_ACADEMICO_MID_SERVICE: 'http://localhost:8095/v1/',
-    EVALUACION_DOCENTE_CRUD:'http://localhost:8080/v1/',
+    EVALUACION_DOCENTE_CRUD:'http://pruebasapi2.intranetoas.udistrital.edu.co:8566/v1/',
 
     PROYECTO_ACADEMICO_SERVICE:'https://autenticacion.portaloas.udistrital.edu.co/apioas/proyecto_academico_crud/v1/',
     PARAMETROS_CRUD: 'http://pruebasapi.intranetoas.udistrital.edu.co:8510/v1/',//'https://autenticacion.portaloas.udistrital.edu.co/apioas/parametros/v1/',
@@ -24,4 +24,3 @@ export const environment = {
     ACADEMICA_SERVICE: "https://autenticacion.portaloas.udistrital.edu.co/apioas/academica_jbpm/v2/",
 
 };
-    
