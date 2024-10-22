@@ -6,10 +6,13 @@
         "LOGIN": "Iniciar sesión",
         "LOGOUT": "Cerrar sesión",
         "THEME": "Tema",
-        "seleccione": "Seleccionar"
+        "seleccione": "Seleccionar",
+        "atencion": "Atención",
+        "aceptar": "Aceptar",
+        "cancelar": "Cancelar"
     },
 
-    "GLOBAL":{
+    "GLOBAL": {
         "GUARDAR": "Guardar",
         "CANCELAR": "Cancelar",
         "ELIMINAR": "Eliminar",
@@ -20,6 +23,7 @@
         "FORMULARIO": "Formulario",
         "ACCIONES": "Acciones",
         "proyecto_academico": "Proyecto Académico",
+        "seleccionar": "Seleccionar",
         "periodo": "Periodo",
         "continuar": "Continuar",
         "atras": "Atrás",
@@ -27,11 +31,21 @@
         "atencion": "Atención",
         "aceptar": "Aceptar",
         "cancelar": "Cancelar",
-        "seleccionar": "Seleccionar",
         "error": "Error",
-        "estado":"Estados",
+        "estado": "Estados",
+        "ver_general": "Ver general",
         "regresar": "Volver",
-        "PONDERACION":"Ponderación"
+        "PONDERACION": "Ponderación",
+        "cerrar": "Cerrar",
+        "confirmacion": "Confirmación",
+        "anterior": "Anterior",
+        "siguiente": "Siguiente",
+        "formulario_incompleto_titulo": "Formulario incompleto",
+        "formulario_incompleto_descripcion": "Por favor diligencie los campos obligatorios",
+        "selecionar_proyecto": "Seleccione un proyecto",
+        "selecionar_docente": "Seleccione un docente",
+        "selecionar_espacio": "Seleccione un espacio",
+        "selecionar_grupo": "Seleccione un grupo"
     },
 
     "asignacion_fechas": {
@@ -51,12 +65,18 @@
         "ajustes_aplicados": "Los ajustes fueron aplicados exitosamente"
     },
 
+    "definicion_plantillas": {
+        "alert1": "Recuerde que se puede arrastrar las casillas de las secciones o sus preguntas  ",
+        "alert2": "Evaluaciones",
+        "titulo": "titulo de sección"
+    },
+
     "definicion_formularios": {
         "titulo": "Definir formularios",
         "titulo_roles": "Roles",
-        "titulo_visualizador": "Visualizador de Formulario",        
-        "sub_titulo_visualizador": "Sección para la visualización del Formaulario",                
-        "sub_titulo_proceso": "Sección para la selección del Proceso",                
+        "titulo_visualizador": "Visualizador de Formulario",
+        "sub_titulo_visualizador": "Sección para la visualización del Formaulario",
+        "sub_titulo_proceso": "Sección para la selección del Proceso",
         "sub_titulo": "Módulo para la definición de los siguientes formularios",
         "sub_titulo_roles": "Sección para la asignación de Roles",
         "alerta": "A continuación, deberá seleccionar los roles que intervienen y el proceso, que puede ser Heteroevaluación, Autoevaluación de estudiantes, Coevaluación I, Autoevaluación docente, o Coevaluación II.",
@@ -83,12 +103,6 @@
         "select_evaluacion": "Seleccionar evaluación"
     },
 
-    "definicion_plantillas": {
-        "alert1": "Recuerde que se puede arrastrar las casillas de las secciones o sus preguntas  ",
-        "alert2": "Evaluaciones",
-        "titulo": "titulo de sección"
-    },
-
     "definir_escalas": {
         "titulo_principal": "Definir Escalas",
         "aniadir_nueva_escala": "Añadir nueva escala",
@@ -100,24 +114,23 @@
         "guardar": "Guardar",
         "cancelar": "Cancelar",
         "eliminar": "Eliminar",
-        "pregunta":"Definicion de escala",
-        "ver_general":"Vista de escala",
-        "vista_escala":"Vista de la escala",
-        "alerta_formulario1":"A continuación, deberá diligenciar el formulario de opcion multiple con unica respuesta, asignando una calificación numérica sido 1 el valor mas bajo y 5 el valor mas alto al desempeño de las opciones asignadas.",
-        "alerta_formulario2":"A continuación, deberá diligenciar la pregunta del formulario de texto, asignando una pregunta abierta, para una respuesta de campo abierto",
-        "alerta_formulario3":"A continuación, deberá diligenciar el formulario para el enunciado del boton de carga sobre uno o varios archivos",
-        "alerta_formulario4":"A continuación, deberá diligenciar el formulario para el enunciado del boton de descarga sobre uno o varios archivos)",
+        "pregunta": "Definicion de escala",
+        "ver_general": "Vista de escala",
+        "vista_escala": "Vista de la escala",
+        "alerta_formulario1": "A continuación, deberá diligenciar el formulario de opcion multiple con unica respuesta, asignando una calificación numérica sido 1 el valor mas bajo y 5 el valor mas alto al desempeño de las opciones asignadas.",
+        "alerta_formulario2": "A continuación, deberá diligenciar la pregunta del formulario de texto, asignando una pregunta abierta, para una respuesta de campo abierto",
+        "alerta_formulario3": "A continuación, deberá diligenciar el formulario para el enunciado del boton de carga sobre uno o varios archivos",
+        "alerta_formulario4": "A continuación, deberá diligenciar el formulario para el enunciado del boton de descarga sobre uno o varios archivos)",
         "alerta_formulario5": "A continuación, verá el listado de las preguntas habilitadas para las evaluaciones, en el cual podrá agregar más con el botón <strong>+</strong>. Podrá ver la pregunta o deshabilitarla con el botón de la columna de acciones. Si la deshabilita, se ELIMINARÁ automáticamente.",
         "seleccionar_tipo_escala": "Seleccionar tipo de escala",
         "tipo_Textarea": "Texto",
         "tipo_LinkNuxeo": "Descargar archivo",
         "tipo_ArchivoAnexo": "Cargar archivo",
         "tipo_Radio": "Selección de única respuesta",
-        "previsualizar":"Previsualizar",
-        "ejemplo_escala":"Ejemplo vista de la escala"
-
+        "previsualizar": "Previsualizar",
+        "ejemplo_escala": "Ejemplo vista de la escala"
     },
-    
+
     "heteroevaluacion": {
         "titulo": "Heteroevaluación",
         "fechas": "Fechas",
@@ -136,7 +149,8 @@
         "error_fecha_fin": "Por favor, ingrese la fecha de fin.",
         "error_proyecto": "Por favor, seleccione un proyecto.",
         "error_docente": "Por favor, seleccione un docente.",
-        "error_descripcion": "Por favor, ingrese una descripción."
+        "error_descripcion": "Por favor, ingrese una descripción.",
+        "mensaje_confirmacion": "Usted va a proceder con la autoevalución del/la docente {{nombre_docente}} de la asignatura {{nombre_asignatura}}"
     },
 
     "autoevaluacion_i": {
@@ -156,7 +170,8 @@
         "error_fecha_fin": "Por favor, ingrese la fecha de fin.",
         "error_proyecto": "Por favor, seleccione un proyecto.",
         "espacio_academico": "Espacio Académico",
-        "error_descripcion": "Por favor, ingrese una descripción."
+        "error_descripcion": "Por favor, ingrese una descripción.",
+        "mensaje_confirmacion": "Usted va a proceder con la autoevaluación de su desempeño para la asignatura {{nombre_asignatura}}."
     },
 
     "coevaluacion_i": {
@@ -179,7 +194,8 @@
         "error_grupo": "Por favor, seleccione un grupo.",
         "descripcion_proceso": "Descripción del proceso",
         "error_descripcion": "Por favor, ingrese la descripción del proceso.",
-        "guardar": "Guardar"
+        "guardar": "Guardar",
+        "mensaje_confirmacion": "Usted va a proceder con la coevalución de: - Espacio académico: {{nombre_asignatura}}. - Grupo de estudiantes {{grupo}}"
       },
 
     "autoevaluacion_ii": {
@@ -204,9 +220,10 @@
         "error_fecha_fin": "Por favor, ingrese la fecha de fin.",
         "error_proyecto": "Por favor, seleccione un proyecto.",
         "error_espacio_academico": "Por favor, seleccione un espacio académico.",
-        "error_descripcion": "Por favor, ingrese una descripción."
+        "error_descripcion": "Por favor, ingrese una descripción.",
+        "mensaje_confirmacion": "Usted va a proceder con la Autoevaluación para el proyecto curricular {{nombre_proyecto}}"
     },
-    
+
     "coevaluacion_ii": {
         "titulo": "Coevaluación II",
         "fechas": "Fechas",
@@ -242,7 +259,7 @@
         "global": "Global",
         "mensaje_facultad": "Seleccione el nivel para el cual desea generar el reporte y las opciones de filtrado por Facultad",
         "mensaje_global": "Seleccione el nivel para el cual desea generar el reporte y las opciones de filtrado Global",
-        "periodo_academico": "Seleccione el periodo académico",     
+        "periodo_academico": "Seleccione el periodo académico",
         "seleccionar_facultad": "Seleccione la facultad",
         "seleccionar_proyecto_curricular": "Seleccione el proyecto curricular"
     }

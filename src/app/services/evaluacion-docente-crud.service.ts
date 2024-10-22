@@ -30,8 +30,8 @@ export class EvaluacionDocenteService {
     }
 
     post(endpoint: string, element: any) {
-        console.log("Enviando datos al backend:", element);
-
+        
+        // Verifica si el TipoCampoId está presente y es válido
         if (!element.TipoCampoId || element.TipoCampoId === 0) {
             console.error("Error: El TipoCampoId no es válido antes del POST:", element.TipoCampoId);
         }
@@ -42,7 +42,9 @@ export class EvaluacionDocenteService {
 
     put(endpoint: string, element: any) {
         this.requestManager.setPath('EVALUACION_DOCENTE_CRUD');
-        console.log(`Realizando PUT a ${endpoint} con datos:`, element);
+    
+        // Añadir log para verificar que se esté enviando correctamente el PUT
+    
         return this.requestManager.put(endpoint, element);
     }
 

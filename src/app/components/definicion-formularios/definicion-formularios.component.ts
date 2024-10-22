@@ -51,7 +51,6 @@ export class DefinicionFormulariosComponent implements OnInit {
         (response) => {
           if (response && response.Data && response.Data.length) {
             this.periodosActivosDescripciones = response.Data.map((periodo: any) => periodo.Descripcion);
-            console.log('Descripciones de los periodos activos:', this.periodosActivosDescripciones);
           } else {
             console.error('No se encontraron periodos activos o la estructura de datos no es la esperada.');
           }
@@ -71,9 +70,9 @@ export class DefinicionFormulariosComponent implements OnInit {
 
   guardar() {
     if (this.form.valid) {
-      console.log('Los ajustes fueron aplicados');
+      //console.log('Los ajustes fueron aplicados');
     } else {
-      console.log('El formulario es inválido');
+      console.error('El formulario es inválido');
     }
   }
 

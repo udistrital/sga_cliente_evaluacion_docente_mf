@@ -16,7 +16,12 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import {MatToolbarModule} from '@angular/material/toolbar';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatStepperModule } from '@angular/material/stepper';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 export const MATERIAL_MODULES = [
     MatCardModule,
@@ -37,5 +42,10 @@ export const MATERIAL_MODULES = [
     MatDatepickerModule,
     MatTabsModule,
     MatSlideToggleModule,
-    MatToolbarModule
+    MatToolbarModule,
+    MatRadioModule,
+    MatStepperModule,
+    MatNativeDateModule,
+    MatMenuModule,
+    MatExpansionModule
 ];

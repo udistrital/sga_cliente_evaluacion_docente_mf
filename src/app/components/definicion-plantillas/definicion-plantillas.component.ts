@@ -369,13 +369,12 @@ export class DefinicionPlantillasComponent implements OnInit {
       })),
     };
 
-    console.log("Formulario data a enviar:", formularioData);
 
     // Hacer el POST con el servicio
     this.evaluacionDocenteService.post('formulario_por_tipo', formularioData)
       .subscribe(
         (response) => {
-          console.log('Formulario guardado con éxito:', response);
+          //console.log('Formulario guardado con éxito:', response);
         },
         (error) => {
           console.error('Error al guardar el formulario:', error);

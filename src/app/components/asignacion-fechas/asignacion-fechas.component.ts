@@ -84,7 +84,6 @@ export class AsignacionFechasComponent implements OnInit {
           if (response && response.Data && response.Data.length) {
             const descripciones = response.Data.map((periodo: any) => periodo.Descripcion);
             
-            console.log('Descripciones de los periodos activos:', descripciones);
           } else {
             console.error('No se encontraron periodos activos o la estructura de datos no es la esperada.');
           }

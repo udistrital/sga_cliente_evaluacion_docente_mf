@@ -9,11 +9,15 @@ export class UserService {
     public getPersonaId(): Promise<number> {
         return new Promise((resolve, reject) => {
             const strcryptedId = localStorage.getItem('persona_id');
-            const strId = decrypt(strcryptedId);
-            if (strId) {
-                resolve(parseInt(strId, 10));
+            if (strcryptedId != null) {
+                const strId = decrypt(strcryptedId);
+                if (strId) {
+                    resolve(parseInt(strId, 10));
+                } else {
+                    reject(new Error('No id found'));
+                }
             } else {
-                reject(new Error('No id found'));
+                reject(new Error('No persona_id found'));
             }
         });
     }
@@ -22,25 +26,17 @@ export class UserService {
     public getCodigoEstudiante(): Promise<string> {
         return new Promise((resolve, reject) => {
             try {
-                const userStr = localStorage.getItem('user'); // Obtener la cadena de 'user' del localStorage
-                if (!userStr) {
-                    reject(new Error("No user data in localStorage"));
-                    return;
-                }
-                const userObj = JSON.parse(atob(userStr)); // Desencriptar y parsear el usuario
-                console.log("Decoded user data:", userObj); // Imprimir datos decodificados para diagnóstico
-                
-                // Verificar si el código está en user o userService
-                const codigo = "20221025092" || userObj.user?.Codigo || userObj.userService?.Codigo || null;
-    
-                if (codigo) {
-                    resolve(codigo);
+                const { user, userService } = this.decodeUser();
+                ;
+                if (user.Codigo) {
+                    resolve(user.Codigo);
+                } else if (userService.Codigo) {
+                    resolve(userService.Codigo);
                 } else {
-                    reject(new Error(`No ha sido asignado un código al usuario`));
+                    reject(new Error("No Codigo found"));
                 }
             } catch (error) {
-                console.error("Error decoding user data:", error);
-                reject(new Error("Error processing user data"));
+                reject(error);
             }
         });
     }

@@ -13,6 +13,10 @@ import { PopUpManager } from 'src/app/managers/popUpManager';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { SgaEvaluacionDocenteMidService } from "src/app/services/sga_evaluacion_docente_mid.service";
+import { TercerosCrudService } from "src/app/services/terceros-crud.service";
+import { TranslateService } from "@ngx-translate/core";
+import Swal from "sweetalert2";
+import { AcademicaService } from "src/app/services/academica.service";
 
 @Component({
   selector: "app-evaluaciones",
@@ -39,6 +43,14 @@ export class EvaluacionesComponent implements OnInit {
   espacios_academicos: any[] = [];
   grupos: any[] = [];
   dataSource!: MatTableDataSource<any>;
+  tercero!: number;
+  terceroEvaluado!: number;
+  nombreDocente!: string;
+  proyecto!: number;
+  nombreProyecto!: string;
+  espacio!: string;
+  nombreEspacio!: string;
+  mostrarEvaluacion: boolean = false;
   
   @Input() formtype: string = '';  
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -51,7 +63,10 @@ export class EvaluacionesComponent implements OnInit {
     private espaciosAcademicosService: EspaciosAcademicosService,
     private popUpManager: PopUpManager,
     private dateService: DateService,
-    private evaluacionDocenteMidService: SgaEvaluacionDocenteMidService
+    private evaluacionDocenteMidService: SgaEvaluacionDocenteMidService,
+    private tercerosService: TercerosCrudService,
+    private academicaService: AcademicaService,
+    private translate: TranslateService
   ) {
     this.heteroForm = this.fb.group({});
     this.coevaluacionIIForm = this.fb.group({});
@@ -60,56 +75,30 @@ export class EvaluacionesComponent implements OnInit {
     this.autoevaluacionIForm = this.fb.group({});
   }
 
-
   ngOnInit(): void {
-    console.log("EvaluacionesComponent initialized");
     this.initializeForms();
 
     // Obtener roles del usuario
     this.userService.getUserRoles().then((roles) => {
       this.userRoles = roles;
-      this.dateService.getDateHeader().subscribe(
-        (date: string) => {
-          this.dateHeader = date;
-          console.log('DateHeader:', this.dateHeader);
-        },
-        (error: any) => console.error('Error al obtener el encabezado de fecha:', error)
-      );
-      if (this.hasRole([ROLES.ESTUDIANTE])) {
-        this.userService.getCodigoEstudiante().then((codigo) => {
-          if (codigo != null) {
-            this.consultarCargaAcademica(codigo).then((response: any) => {
-              this.heteroForm.patchValue({
-                estudianteNombre: response.nombre,
-                estudianteIdentificacion: response.codigo_estudiante
-              });
-
-              this.autoevaluacionIForm.patchValue({
-                estudianteNombre: response.nombre,
-                estudianteIdentificacion: response.codigo_estudiante
-              });
-
-              this.proyectos.opciones = response.proyectos;
-            });
-          }
-        });
-      } else if (this.hasRole([ROLES.DOCENTE])) {
-        this.userService.getUserDocument().then((documento) => {
-          this.consultarEspaciosAcademicos(documento).then((response: any) => {
-            this.autoevaluacionIIForm.patchValue({
-              docenteIdentificacion: response.identificacion,
-              docenteNombre: response.nombre
-            });
-
-            this.coevaluacionIForm.patchValue({
-              docenteNombre: response.nombre
-            });
-
-            this.proyectos.opciones = response.proyectos;
-          });
-        });
-      }
     }).catch(error => console.error('Error al obtener los roles de usuario:', error));
+
+    this.dateService.getDateHeader().subscribe(
+      (date: string) => {
+        this.dateHeader = date;
+      },
+      (error: any) => console.error('Error al obtener el encabezado de fecha:', error)
+    );
+
+    this.userService.getPersonaId()
+      .then(
+        (personaId) => {
+          this.tercero = personaId;
+        }
+      ).catch(error => {
+        this.tercero = 1;
+        console.error('Error:', error.message);
+      });
   }
 
   // Inicializar formularios
@@ -121,7 +110,9 @@ export class EvaluacionesComponent implements OnInit {
       estudianteIdentificacion: ["", Validators.required],
       proyectoCurricular: ["", Validators.required],
       docenteNombre: ["", Validators.required],
-      descripcionProceso: ["", Validators.required],
+      espacioAcademico: ["", Validators.required],
+      descripcionProceso: [`Estimado estudiantado: Por favor evalúe formativamente a su docente utilizando el formato dispuesto para ello. Los ítems 01 a 20 de selección múltiple con única respuesta son obligatorios. Puede realizar anotaciones de felicitación o de sugerencias respetuosas en los espacios destinados para tal fin. Utilice como referencia la siguiente escala para medir el grado de desempeño a evaluar:`, 
+        Validators.required],
     });
 
     this.coevaluacionIIForm = this.fb.group({
@@ -129,8 +120,7 @@ export class EvaluacionesComponent implements OnInit {
       finFecha: ["", Validators.required],
       proyectoCurricular: ["", Validators.required],
       docenteNombre: ["", Validators.required],
-      espacioAcademico: ["", Validators.required],
-      descripcionProceso: ["", Validators.required],
+      descripcionProceso: [`Estimado Consejo Curricular: Por favor coevalúe con plan de mejoramiento su desempeño docente utilizando el formato dispuesto para ello. Los ítems PROMEDIO con única respuesta son obligatorios en cada dimensión.`, Validators.required],
     });
 
     this.coevaluacionIForm = this.fb.group({
@@ -140,7 +130,7 @@ export class EvaluacionesComponent implements OnInit {
       espacioAcademico: ["", Validators.required],
       docenteNombre: ["", Validators.required],
       grupoSeleccionado: ["", Validators.required],
-      descripcionProceso: ["", Validators.required],
+      descripcionProceso: [`Estimado cuerpo docente y estudiantado: Por favor co-evalúen con compromisos mutuos su desempeño docente y el de sus estudiantes en este espacio curricular utilizando el formato dispuesto para ello. Por favor cargue el acta resultado de este ejercicio de coevaluación.`, Validators.required],
     });
 
     this.autoevaluacionIIForm = this.fb.group({
@@ -150,7 +140,7 @@ export class EvaluacionesComponent implements OnInit {
       docenteIdentificacion: ["", Validators.required],
       proyectoCurricular: ["", Validators.required],
       espacioAcademico: ["", Validators.required],
-      descripcionProceso: ["", Validators.required],
+      descripcionProceso: [`Estimado cuerpo docente: Por favor autoevalúe con plan de mejoramiento su desempeño docente utilizando el formato dispuesto para ello. Los items 01 a 15 con única respuesta son obligatorios en cada dimensión.`, Validators.required],
     });
 
     this.autoevaluacionIForm = this.fb.group({
@@ -159,8 +149,8 @@ export class EvaluacionesComponent implements OnInit {
       estudianteNombre: ["", Validators.required],
       estudianteIdentificacion: ["", Validators.required],
       proyectoCurricular: ["", Validators.required],
-      proyectoCurricular2: ["", Validators.required],
-      descripcionProceso: ["", Validators.required],
+      espacioAcademico: ["", Validators.required],
+      descripcionProceso: [`Estimado estudiantado: Por favor autoevalúe su desempeño como estudiante en este espacio curricular. Los ítems 01 a 05 de selección múltiple con única respuesta son obligatorios. Puede realizar anotaciones de mejoramiento para conseguir sus resultados de aprendizaje en los espacios destinados para tal fin.`, Validators.required],
     });
   }
 
@@ -223,12 +213,12 @@ export class EvaluacionesComponent implements OnInit {
     const proyectosMap = new Map<number, any>();
 
     lista.forEach((elemento) => {
-      const { COD_PROYECTO, DOCENTE, DOC_DOCENTE, PROYECTO, COD_ESPACIO, ESPACIO } = elemento;
+      const { COD_PROYECTO, DOCENTE, DOC_DOCENTE, PROYECTO, COD_ESPACIO, ESPACIO, GRUPO } = elemento;
 
       if (!proyectosMap.has(COD_PROYECTO)) {
         proyectosMap.set(COD_PROYECTO, {
           id: COD_PROYECTO,
-          Nombre: PROYECTO,
+          nombre: PROYECTO,
           docentes: [],
           asignaturas: []
         });
@@ -240,15 +230,17 @@ export class EvaluacionesComponent implements OnInit {
         if (!docenteExistente) {
           proyecto.docentes.push({
             id: DOC_DOCENTE,
-            Nombre: DOCENTE
+            nombre: DOCENTE
           });
         }
 
-        const asignaturaExistente = proyecto.asignaturas.some((asignatura: any) => asignatura.id === COD_ESPACIO);
+        const asignaturaExistente = proyecto.asignaturas.some((asignatura: any) => asignatura.id === String(COD_ESPACIO));
         if (!asignaturaExistente) {
           proyecto.asignaturas.push({
-            id: COD_ESPACIO,
-            Nombre: ESPACIO
+            id: String(COD_ESPACIO),
+            nombre: ESPACIO,
+            grupos: GRUPO,
+            docente: DOC_DOCENTE
           });
         }
       }
@@ -294,14 +286,14 @@ export class EvaluacionesComponent implements OnInit {
       if (!proyectosMap.has(CRA_COD)) {
         proyectosMap.set(CRA_COD, {
           id: CRA_COD,
-          Nombre: CARRERA,
+          nombre: CARRERA,
           asignaturas: []
         });
       }
 
       const proyecto = proyectosMap.get(CRA_COD);
       if (proyecto) {
-        const asignaturaExistente = proyecto.asignaturas.find((asignatura: any) => asignatura.id === CODIGO_SIGNATURA);
+        const asignaturaExistente = proyecto.asignaturas.find((asignatura: any) => asignatura.nombre === ASIGNATURA);
         if (asignaturaExistente) {
           const grupoExistente = asignaturaExistente.grupos.some((grupo: any) => grupo.id === ID_GRUPO);
           if (!grupoExistente) {
@@ -312,8 +304,8 @@ export class EvaluacionesComponent implements OnInit {
           }
         } else {
           proyecto.asignaturas.push({
-            id: CODIGO_SIGNATURA,
-            Nombre: ASIGNATURA,
+            id: String(CODIGO_SIGNATURA),
+            nombre: ASIGNATURA,
             grupos: [
               {
                 id: ID_GRUPO,
@@ -345,6 +337,68 @@ export class EvaluacionesComponent implements OnInit {
   // Método que maneja la selección del menú desplegable
   onSelectChange(event: MatSelectChange) {
     this.selectedEvaluation = event.value;
+    this.mostrarEvaluacion = false;
+    this.consultarDatos();
+  }
+
+  consultarDatos() {
+    if (this.hasRole([ROLES.ESTUDIANTE])) {
+      this.userService.getCodigoEstudiante().then((codigo) => {
+        if (codigo != null) {
+          this.consultarCargaAcademica(codigo).then((response: any) => {
+            if (this.selectedEvaluation == "heteroevaluacion") {
+              this.heteroForm.patchValue({
+                estudianteNombre: response.nombre,
+                estudianteIdentificacion: response.codigo_estudiante,
+                inicioFecha: new Date(),
+                finFecha: new Date()
+              });
+            } else if (this.selectedEvaluation == "autoevaluacion_i") {
+              this.autoevaluacionIForm.patchValue({
+                estudianteNombre: response.nombre,
+                estudianteIdentificacion: response.codigo_estudiante,
+                inicioFecha: new Date(),
+                finFecha: new Date()
+              });
+            }
+
+            this.proyectos.opciones = response.proyectos;
+          });
+        }
+      });
+    } else if (this.hasRole([ROLES.DOCENTE])) {
+      this.userService.getUserDocument().then((documento) => {
+        this.consultarEspaciosAcademicos(documento).then((response: any) => {
+          if (this.selectedEvaluation == "autoevaluacion_ii") {
+            this.autoevaluacionIIForm.patchValue({
+              docenteIdentificacion: response.identificacion,
+              docenteNombre: response.nombre,
+              inicioFecha: new Date(),
+              finFecha: new Date()
+            });
+          } else if (this.selectedEvaluation == "coevaluacion_i") {
+            this.coevaluacionIForm.patchValue({
+              docenteNombre: response.nombre,
+              inicioFecha: new Date(),
+              finFecha: new Date()
+            });
+          }
+
+          this.proyectos.opciones = response.proyectos;
+        });
+      });
+    } else if (this.hasRole([ROLES.COORDINADOR])) {
+      if (this.selectedEvaluation == "coevaluacion_ii") {
+        this.consultarProyectos().then((carreras) => {
+          this.coevaluacionIIForm.patchValue({
+            inicioFecha: new Date(),
+            finFecha: new Date()
+          });
+
+          this.proyectos.opciones = carreras;
+        });
+      }
+    }
   }
 
   // Detecta cambios en el valor de formtype y actualiza el formulario mostrado
@@ -356,14 +410,12 @@ export class EvaluacionesComponent implements OnInit {
 
   onGuardar(formValues?: any): void {
     if (formValues) {
-      console.log("Formulario recibido:", formValues);
       if (this.validateForm(formValues)) {
         const formattedValues = {
           ...formValues,
           inicioFecha: moment(formValues.inicioFecha, "DD/MM/YYYY").format("YYYY-MM-DD"),
           finFecha: moment(formValues.finFecha, "DD/MM/YYYY").format("YYYY-MM-DD"),
         };
-        console.log("Datos formateados para envío:", formattedValues);
       } else {
         console.error("El formulario no es válido. Por favor, completa todos los campos requeridos.");
       }
@@ -398,29 +450,59 @@ export class EvaluacionesComponent implements OnInit {
   onProyectoSelection(event: MatSelectChange): void {
     const proyectoSeleccionado = event.value;
 
-    if (proyectoSeleccionado) {
+    if (this.selectedEvaluation === "coevaluacion_ii") {
+      this.consultarDocentesPorProyecto(proyectoSeleccionado.id).then((docentes) => {
+        this.docentes.opciones = docentes;
+        this.proyecto = proyectoSeleccionado.id;
+        this.nombreProyecto = proyectoSeleccionado.nombre;
+      });
+    } else if (proyectoSeleccionado) {
+      this.proyecto = proyectoSeleccionado.id;
+      this.nombreProyecto = proyectoSeleccionado.nombre;
       this.docentes.opciones = proyectoSeleccionado.docentes;
       this.espacios.opciones = proyectoSeleccionado.asignaturas;
       this.espacios_academicos = [];
-      proyectoSeleccionado.asignaturas.forEach((espacio: any) => {
-        this.espacios_academicos.push({
-          id: espacio.id,
-          nombre: espacio.Nombre,
-          grupos: espacio.grupos
+      if (proyectoSeleccionado.asignaturas != null) {
+        proyectoSeleccionado.asignaturas.forEach((espacio: any) => {
+          this.espacios_academicos.push({
+            id: espacio.id,
+            nombre: espacio.nombre,
+            grupos: espacio.grupos,
+            docente: espacio.docente
+          });
         });
-      })
+      }
 
-      this.openSnackBar(`Proyecto seleccionado: ${proyectoSeleccionado.Nombre}`);
+      this.openSnackBar(`Proyecto seleccionado: ${proyectoSeleccionado.nombre}`);
     }
+
+    this.mostrarEvaluacion = false;
   }
 
   onEspacioSelection(event: MatSelectChange): void {
     const espacioSeleccionado = event.value;
 
-    if (espacioSeleccionado) {
+    if (Array.isArray(espacioSeleccionado)) {
+      var idsEspacios: string = "";
+      var nombresEspacios: string = "";
+      var grupos: any[] = [];
+      espacioSeleccionado.forEach((esp) => {
+        idsEspacios += esp.id + ",";
+        nombresEspacios += esp.nombre + ",";
+        if (Array.isArray(esp.grupos)) {
+          grupos.push(...esp.grupos);
+        }
+      });
+      this.espacio = idsEspacios.slice(0, -1);
+      this.nombreEspacio = nombresEspacios.slice(0, -1);
+    } else if (espacioSeleccionado) {
+      this.espacio = espacioSeleccionado.id;
+      this.nombreEspacio = espacioSeleccionado.nombre;
       this.grupos = espacioSeleccionado.grupos;
       this.openSnackBar(`Espacio seleccionado: ${espacioSeleccionado.nombre}`);
     }
+
+    this.mostrarEvaluacion = false;
   }
 
   loadProyectos(): void {
@@ -439,8 +521,186 @@ export class EvaluacionesComponent implements OnInit {
       });
   }
 
+  onDocenteSelection(event: MatSelectChange): void {
+    const docenteSeleccionado = event.value;
+
+    
+
+    this.espacios.opciones = this.espacios_academicos.filter((espacio) => espacio.docente === docenteSeleccionado.id);
+
+    this.consultarDocenteTercero(docenteSeleccionado).then(
+      (res) => {
+        if (res != null) {
+          this.terceroEvaluado = res.Id;
+          this.nombreDocente = res.NombreCompleto;
+
+          this.mostrarEvaluacion = false;
+        }
+      }
+    )
+  }
+
+  async consultarDocenteTercero(docente: any): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.tercerosService.get('datos_identificacion?query=Numero:' + docente.id + '&fields=TerceroId')
+        .subscribe(
+          (res: any) => {
+            if (res != null && res[0] != null) {
+              resolve(res[0]["TerceroId"]);
+            } else {
+              resolve(this.crearTercero(docente));
+            }
+          },
+          (error: any) => {
+            reject(error);
+          }
+        )
+      }
+    );
+  }
+
+  async crearTercero(docente: any): Promise<any> {
+    let nuevoTercero = {
+      NombreCompleto: docente.nombre,
+      Activo: true,
+      TipoContribuyenteId: {
+        Id: 2
+      }
+    }
+    return new Promise((resolve, reject) => {
+      this.tercerosService.post('tercero', nuevoTercero)
+        .subscribe(
+          (terceroCreado: any) => {
+            if (terceroCreado != null) {
+              this.asociarIdentificacionTercero(terceroCreado, docente.id);
+              resolve(terceroCreado);
+            }
+          },
+          (error: any) => {
+            reject(error);
+          }
+        );
+    });
+  }
+
+  async asociarIdentificacionTercero(tercero: any, documento: string): Promise<any> {
+    let datosIdentificacion = {
+      TipoDocumentoId: {
+        Id: 7
+      },
+      TerceroId: tercero,
+      Numero: documento,
+      Activo: true
+    }
+    return new Promise((resolve, reject) => {
+      this.tercerosService.post('datos_identificacion', datosIdentificacion)
+      .subscribe(
+        (res: any) => {
+          if (res != null) {
+            resolve(res);
+          }
+        },
+        (error: any) => {
+          reject(error);
+        }
+      );
+    });
+  }
+
+  async consultarProyectos(): Promise<string[]> {
+    return new Promise((resolve, reject) => {
+      this.academicaService.get('carreras/PREGRADO')
+      .subscribe(
+        (res: any) => {
+          if (res != null) {
+            if (res["carrerasCollection"] != null && res["carrerasCollection"].carrera != null) {
+              const carreras = res["carrerasCollection"].carrera.map(({ codigo, nombre }: any) => ({
+                id: codigo,
+                nombre: codigo + "-" + nombre
+              }));
+              resolve(carreras);
+            } else {
+              reject([]);
+            }
+          }
+        },
+        (error: any) => {
+          reject(error);
+        }
+      )
+    });
+  }
+
+  async consultarDocentesPorProyecto(idProyecto: number): Promise<string[]> {
+    return new Promise((resolve, reject) => {
+      this.academicaService.get('docentes_por_proyecto/' + idProyecto)
+      .subscribe(
+        (res: any) => {
+          if (res != null) {
+            if (res["docentesCollection"] != null && res["docentesCollection"].docentes != null) {
+              const docentes = res["docentesCollection"].docentes.map(({ identificacion, nombres, apellidos }: any) => ({
+                id: identificacion,
+                nombre: nombres + " " + apellidos
+              }));
+              resolve(docentes);
+            } else {
+              reject([]);
+            }
+          }
+        },
+        (error: any) => {
+          reject(error);
+        }
+      )
+    });
+  }
+
+  continuar(form: FormGroup): void {
+    if (form.valid) {
+      console.log(this.selectedEvaluation, this.nombreProyecto, this.nombreDocente, this.nombreEspacio, this.grupos);
+      Swal.fire({
+        title: this.translate.instant("GLOBAL.confirmacion"),
+        text: this.translate.instant(this.selectedEvaluation + ".mensaje_confirmacion", {
+          nombre_proyecto: this.nombreProyecto,
+          nombre_docente: this.nombreDocente,
+          nombre_asignatura: this.nombreEspacio,
+          grupo: this.grupos.map(item => item.nombre).join(", ")
+        }),
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: this.translate.instant("GLOBAL.aceptar"),
+        cancelButtonText: this.translate.instant("GLOBAL.cancelar"),
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.mostrarEvaluacion = true;
+        }
+      });
+    } else {
+      form.markAllAsTouched();
+      this.markInvalidFields(form);
+      Swal.fire({
+        icon: "error",
+        title: this.translate.instant("GLOBAL.formulario_incompleto_titulo"),
+        text: this.translate.instant("GLOBAL.formulario_incompleto_descripcion"),
+      });
+    }
+  }
+
+  markInvalidFields(form: FormGroup) {
+    Object.keys(form.controls).forEach(field => {
+      const control = form.get(field);
+      if (control?.invalid) {
+        console.error(`El campo ${field} es inválido.`);
+      }
+    });
+  }
+
+  ocultarEvaluacion() {
+    this.mostrarEvaluacion = false;
+  }
+
   openSnackBar(mensaje: string) {
-    this._snackBar.open(mensaje, 'Cerrar', {
+    this._snackBar.open(mensaje, this.translate.instant('GLOBAL.cerrar'), {
       duration: 3000,
       horizontalPosition: 'center',
       verticalPosition: 'bottom',

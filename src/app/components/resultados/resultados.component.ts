@@ -65,7 +65,7 @@ export class ResultadosComponent {
       this.dateService.getDateHeader().subscribe(
         (date: string) => {
           this.dateHeader = date;
-          console.log('DateHeader:', this.dateHeader);
+          //console.log('DateHeader:', this.dateHeader);
         },
         (error: any) => console.error('Error al obtener el encabezado de fecha:', error)
       );              
@@ -73,15 +73,15 @@ export class ResultadosComponent {
   }
 
   onSelect(data: any): void {
-    console.log('Item clicked', JSON.parse(JSON.stringify(data)));
+    //console.log('Item clicked', JSON.parse(JSON.stringify(data)));
   }
 
   onActivate(data: any): void {
-    console.log('Activate', JSON.parse(JSON.stringify(data)));
+    //console.log('Activate', JSON.parse(JSON.stringify(data)));
   }
 
   onDeactivate(data: any): void {
-    console.log('Deactivate', JSON.parse(JSON.stringify(data)));
+    //console.log('Deactivate', JSON.parse(JSON.stringify(data)));
   }
 
   hasRole(requiredRoles: string[]): boolean {

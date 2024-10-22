@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, ViewChild } from "@angular/core";
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild } from "@angular/core";
 import {
   AbstractControl,
   FormBuilder,
@@ -7,7 +7,8 @@ import {
   Validators,
 } from "@angular/forms";
 import { MatStepper } from "@angular/material/stepper";
-import { DomSanitizer } from "@angular/platform-browser";
+import { TranslateService } from "@ngx-translate/core";
+import { forkJoin } from "rxjs";
 import { TIPOINPUT } from "src/app/models/const_eva";
 import { GestorDocumentalService } from "src/app/services/gestor-documental.service";
 import { SgaEvaluacionDocenteMidService } from "src/app/services/sga_evaluacion_docente_mid.service";
@@ -37,30 +38,29 @@ export class DynamicFormComponent implements OnInit, OnChanges {
   panelIndex: number[] = [];
 
   uploadedFileUid: string | null = null;
-  documentId: string | null = null;  
+  documentId: string | null = null;
 
   @ViewChild("mainStepper") mainStepper!: MatStepper;
   @Input() inputData: any; // Define el @Input
 
   @Input() formtype!: string;
+  @Input() tercero!: number;
+  @Input() terceroEvaluado!: number;
+  @Input() proyecto!: number;
+  @Input() espacio!: string;
+
+  @Output() evaluacionCompletada = new EventEmitter<void>();
 
   constructor(
     private fb: FormBuilder,
-    private sanitizer: DomSanitizer,
     private evaluacionDocenteMidService: SgaEvaluacionDocenteMidService,
     private gestorService: GestorDocumentalService,
     private gestorDocumentalService: GestorDocumentalService,
-
+    private translateService: TranslateService
   ) { this.stepperForm = this.fb.group({});
 }
 
 ngOnInit() {
-  console.log("check if take the changes...")
-  // Inicializar el formulario principal
-  //this.stepperForm = this.fb.group({});
-  this.documentId = '5f479892-a735-43c7-9981-b812dbb6b927';
-  // Seleccionar el formulario por defecto para la vista inicial
-  //this.selectForm("heteroevaluacion"); // Se puede cambiar según las necesidades
 }
 
 ngOnChanges() {
@@ -69,9 +69,8 @@ ngOnChanges() {
 
 // Método para inicializar el formulario seleccionado
 selectForm(tipo_formulario: string) {
-  this.evaluacionDocenteMidService.get(`formulario_por_tipo?id_tipo_formulario=${tipo_formulario}&id_periodo=1&id_tercero=1&id_espacio=1`)
+  this.evaluacionDocenteMidService.get(`formulario_por_tipo?id_tipo_formulario=${tipo_formulario}&id_periodo=1&id_tercero=${this.tercero}&id_espacio=${this.espacio}`)
     .subscribe(response => {
-      console.log(response);
       if (response.Success === true && response.Status === 200) {
           this.todasSecciones = response.Data.seccion;
           this.todasSecciones.forEach((seccion, i) => {
@@ -89,10 +88,25 @@ selectForm(tipo_formulario: string) {
           this.vertHorAllState = false;
           this.panelIndex = Array(maxSecciones).fill(0);
       } else {
-        console.log('Error al obtener el formulario:', response.Message);
+        console.error('Error al obtener el formulario:', response.Message);
       }
     }, error => {
       console.error('Error validando la existencia de la evaluación:', error);
+      if (error.Message == null) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Ocurrió un error al consultar el formulario.',
+        });
+      } else {
+        Swal.fire({
+          icon: 'warning',
+          title: this.translateService.instant('GLOBAL.atencion'),
+          text: error.Message,
+        }).then(() => {
+          this.evaluacionCompletada.emit();
+        });
+      }
     });
 }
 
@@ -158,7 +172,6 @@ selectForm(tipo_formulario: string) {
     if (ambitoControl) {
       // Evitar obtener controles para preguntas de tipo 'download'
       if (controlName.includes("descarga_archivo_aqu")) {
-        console.log(`Control no necesario para descarga: ${controlName}`);
         return new FormControl(); // Retornamos un control vacío para evitar el error
       }
 
@@ -166,7 +179,7 @@ selectForm(tipo_formulario: string) {
       if (control) {
         return control;
       } else {
-        console.warn(`Control not found for ${controlName}`);
+        console.error(`Control not found for ${controlName}`);
         return new FormControl(); // Evitar errores retornando un control vacío
       }
     }
@@ -199,53 +212,95 @@ selectForm(tipo_formulario: string) {
     }
   }
 
-  saveForm(jsonData: any) {
-    this.evaluacionDocenteMidService.post('respuesta_formulario', jsonData)
-    .subscribe(response =>
-       {
-        if(response.Status == 200 &&response.Success == true){
-          Swal.fire({
-            icon: 'success',
-            title: 'Formulario guardado',
-            text: 'El formulario ha sido guardado correctamente.',
-          });
+  saveForm(requests: any) {
+    forkJoin(requests).subscribe((responses: any) => {
+      let allSuccess = true;
+
+      responses.forEach((response: any) => {
+        if (response.Status !== 200 || response.Success !== true) {
+          allSuccess = false;
         }
-       },
-       error => {
+      });
+
+      if (allSuccess) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Formulario guardado',
+          text: 'El formulario ha sido guardado correctamente.',
+        }).then(() => {
+          this.evaluacionCompletada.emit();
+        });
+      } else {
         Swal.fire({
           icon: 'error',
           title: 'Error',
           text: 'Ocurrió un error al guardar el formulario.',
         });
-       });
+      }
+    },
+    error => {
+      console.error(error);
+      if (error.Message == null) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Ocurrió un error al guardar el formulario.',
+        });
+      } else {
+        Swal.fire({
+          icon: 'warning',
+          title: this.translateService.instant('GLOBAL.atencion'),
+          text: error.Message,
+        }).then(() => {
+          this.evaluacionCompletada.emit();
+        });
+      }
+    });
   }
 
   // Método para manejar el evento de submit
   submit() {
     if (this.stepperForm.valid) {
       this.generateResponseData().then(respuestas => {
-        const jsonData = {
-          id_periodo: 1,
-          id_tercero: 1,
-          id_evaluado: 1,
-          proyecto_curricular: 123,
-          espacio_academico: 12,
-          plantilla_id: 456,
-          respuestas,
-        };
-        this.saveForm(jsonData);
-        console.log("Formulario guardado:", jsonData);
+        const requests: any[] = [];
+        const espacios = this.espacio.split(',');
+        espacios.forEach((esp) => {
+          const jsonData = {
+            id_periodo: 1,
+            id_tercero: this.tercero,
+            id_evaluado: this.terceroEvaluado != null ? this.terceroEvaluado : this.tercero,
+            proyecto_curricular: this.proyecto,
+            espacio_academico: esp,
+            plantilla_id: 456,
+            respuestas,
+          };
+          const request = this.evaluacionDocenteMidService.post('respuesta_formulario', jsonData);
+          requests.push(request);
+        });
+
+        this.saveForm(requests);
       }).catch(error => {
         console.error('Error al generar las respuestas:', error);
-      });;
+      });
     } else {
-      console.log("Formulario inválido:", this.stepperForm);
+      console.error("Formulario inválido:", this.stepperForm);
+      this.stepperForm.markAllAsTouched();
+      this.markInvalidFields(this.stepperForm);
       Swal.fire({
         icon: "error",
         title: "Formulario incompleto",
         text: "Por favor, complete todas las preguntas.",
       });
     }
+  }
+
+  markInvalidFields(form: FormGroup) {
+    Object.keys(form.controls).forEach(field => {
+      const control = form.get(field);
+      if (control?.invalid) {
+        console.error(`El campo ${field} es inválido.`);
+      }
+    });
   }
 
   async generateResponseData(): Promise<Respuesta[]> {
@@ -257,7 +312,6 @@ selectForm(tipo_formulario: string) {
         const control = this.stepperForm.get(`pregunta_${controlName}`);
 
         if (control?.value instanceof File) {
-          console.log("Archivo cargado:", control.value);
           const resp = await this.loadFile(control.value);
           this.documentId = resp[0].res.Enlace;
           respuestas.push({
@@ -302,7 +356,6 @@ selectForm(tipo_formulario: string) {
     };
     this.gestorService.uploadFiles([objetoFile]).subscribe({
       next: (resp) => {
-        console.log("Archivo cargado:", resp);
         resolve(resp);
         /* Swal.fire({
           icon: "success",
@@ -402,7 +455,6 @@ selectForm(tipo_formulario: string) {
   // Función para manejar la descarga de archivos
   onDownload(fileName: string) {
     // lógica para descargar el archivo
-    console.log(`Descargando archivo: ${fileName}`);
     // se puede hacer una petición HTTP para obtener el archivo y descargarlo
   }
 
@@ -417,13 +469,10 @@ selectForm(tipo_formulario: string) {
   }
 
   cambioPanel(index: number, sentido: boolean) {
-    console.log(index, sentido);
     if (sentido) {
       this.panelIndex[index] = this.panelIndex[index] + 1;
-      console.log("+",this.panelIndex[index]);
     } else {
       this.panelIndex[index] = this.panelIndex[index] - 1;
-      console.log("-",this.panelIndex[index]);
     }
   }
 

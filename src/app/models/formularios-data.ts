@@ -300,7 +300,7 @@ export const AUTOEVALUACION_I_AMBITO_01 = {
 };
 
 export const AUTOEVALUACION_I = {
-    tipo_formulario: "autoevaluacion-i", // Cambiado a autoevaluacion-i
+    tipo_formulario: "autoevaluacion_i", // Cambiado a autoevaluacion_i
     ambitos: [
         AUTOEVALUACION_I_AMBITO_01,
     ],
@@ -437,7 +437,7 @@ export const AUTOEVALUACION_II_AMBITO_03 = {
 
 // Estructura completa de Autoevaluación II
 export const AUTOEVALUACION_II = {
-    tipo_formulario: "autoevaluacion-ii",
+    tipo_formulario: "autoevaluacion_ii",
     ambitos: [
         AUTOEVALUACION_II_AMBITO_01, // Ámbito 01: La Docencia
         AUTOEVALUACION_II_AMBITO_02, // Ámbito 02: La Enseñanza
@@ -538,7 +538,7 @@ export const COEVALUACION_II_AMBITO_04 = {
 
 // Estructura completa del formulario Coevaluación II
 export const COEVALUACION_II = {
-    tipo_formulario: "coevaluacion-ii",
+    tipo_formulario: "coevaluacion_ii",
     ambitos: [
         COEVALUACION_II_AMBITO_01,
         COEVALUACION_II_AMBITO_02,
@@ -549,7 +549,7 @@ export const COEVALUACION_II = {
 
 // Formulario de Coevaluación I
 export const COEVALUACION_I = {
-    tipo_formulario: "coevaluacion-i",
+    tipo_formulario: "coevaluacion_i",
     ambitos: [
         {
             titulo: "Acta de Coevalaución",
