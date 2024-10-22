@@ -217,19 +217,16 @@ export class DefinicionPlantillasComponent implements OnInit {
     );
     seccion.componentes = [...seccion.componentes];
     this.cdr.detectChanges();
-    console.log("Componentes reordenados: ", seccion.componentes);
   }
 
   dropSecciones(event: CdkDragDrop<Seccion[]>) {
     moveItemInArray(this.secciones, event.previousIndex, event.currentIndex);
     this.secciones = [...this.secciones];
     this.cdr.detectChanges();
-    console.log("Secciones reordenadas: ", this.secciones);
   }
 
   cambiarProceso(form: any) {
     this.formularioSeleccionado = form.proceso;
-    console.log("Proceso seleccionado:", this.formularioSeleccionado);
   }
 
   prepararAgregarComponente(seccion: any) {
@@ -264,6 +261,5 @@ export class DefinicionPlantillasComponent implements OnInit {
       })),
     };
 
-    console.log("JSON generado:", formularioData);
   }
 }

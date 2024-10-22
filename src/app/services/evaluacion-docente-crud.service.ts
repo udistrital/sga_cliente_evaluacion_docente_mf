@@ -25,7 +25,6 @@ export class EvaluacionDocenteService {
 
     // Servicio con log adicional para verificar el objeto enviado
     post(endpoint: string, element: any) {
-        console.log("Enviando datos al backend:", element);
         
         // Verifica si el TipoCampoId está presente y es válido
         if (!element.TipoCampoId || element.TipoCampoId === 0) {
@@ -40,7 +39,6 @@ export class EvaluacionDocenteService {
         this.requestManager.setPath('EVALUACION_DOCENTE_CRUD');
     
         // Añadir log para verificar que se esté enviando correctamente el PUT
-        console.log(`Realizando PUT a ${endpoint} con datos:`, element);
     
         return this.requestManager.put(endpoint, element);
     }

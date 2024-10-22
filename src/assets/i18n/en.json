@@ -195,7 +195,7 @@
         "descripcion_proceso": "Process description",
         "error_descripcion": "Please enter a process description.",
         "guardar": "Save",
-        "mensaje_confirmacion": "You are going to proceed with the co-evaluation of: - Academic space: {{nombre_espacio}}. - Student group: {{grupo}}."
+        "mensaje_confirmacion": "You are going to proceed with the co-evaluation of: - Academic space: {{nombre_asignatura}}. - Student group: {{grupo}}."
     },
 
     "autoevaluacion_ii": {

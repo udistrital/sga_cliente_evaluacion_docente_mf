@@ -195,7 +195,7 @@
         "descripcion_proceso": "Descripción del proceso",
         "error_descripcion": "Por favor, ingrese la descripción del proceso.",
         "guardar": "Guardar",
-        "mensaje_confirmacion": "Usted va a proceder con la coevalución de: - Espacio académico: {{nombre_espacio}}. - Grupo de estudiantes {{grupo}}"
+        "mensaje_confirmacion": "Usted va a proceder con la coevalución de: - Espacio académico: {{nombre_asignatura}}. - Grupo de estudiantes {{grupo}}"
       },
 
     "autoevaluacion_ii": {

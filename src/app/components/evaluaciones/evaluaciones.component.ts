@@ -86,7 +86,6 @@ export class EvaluacionesComponent implements OnInit {
     this.dateService.getDateHeader().subscribe(
       (date: string) => {
         this.dateHeader = date;
-        console.log('DateHeader:', this.dateHeader);
       },
       (error: any) => console.error('Error al obtener el encabezado de fecha:', error)
     );
@@ -214,7 +213,7 @@ export class EvaluacionesComponent implements OnInit {
     const proyectosMap = new Map<number, any>();
 
     lista.forEach((elemento) => {
-      const { COD_PROYECTO, DOCENTE, DOC_DOCENTE, PROYECTO, COD_ESPACIO, ESPACIO } = elemento;
+      const { COD_PROYECTO, DOCENTE, DOC_DOCENTE, PROYECTO, COD_ESPACIO, ESPACIO, GRUPO } = elemento;
 
       if (!proyectosMap.has(COD_PROYECTO)) {
         proyectosMap.set(COD_PROYECTO, {
@@ -239,7 +238,9 @@ export class EvaluacionesComponent implements OnInit {
         if (!asignaturaExistente) {
           proyecto.asignaturas.push({
             id: String(COD_ESPACIO),
-            nombre: ESPACIO
+            nombre: ESPACIO,
+            grupos: GRUPO,
+            docente: DOC_DOCENTE
           });
         }
       }
@@ -292,7 +293,7 @@ export class EvaluacionesComponent implements OnInit {
 
       const proyecto = proyectosMap.get(CRA_COD);
       if (proyecto) {
-        const asignaturaExistente = proyecto.asignaturas.find((asignatura: any) => asignatura.id === CODIGO_SIGNATURA);
+        const asignaturaExistente = proyecto.asignaturas.find((asignatura: any) => asignatura.nombre === ASIGNATURA);
         if (asignaturaExistente) {
           const grupoExistente = asignaturaExistente.grupos.some((grupo: any) => grupo.id === ID_GRUPO);
           if (!grupoExistente) {
@@ -409,14 +410,12 @@ export class EvaluacionesComponent implements OnInit {
 
   onGuardar(formValues?: any): void {
     if (formValues) {
-      console.log("Formulario recibido:", formValues);
       if (this.validateForm(formValues)) {
         const formattedValues = {
           ...formValues,
           inicioFecha: moment(formValues.inicioFecha, "DD/MM/YYYY").format("YYYY-MM-DD"),
           finFecha: moment(formValues.finFecha, "DD/MM/YYYY").format("YYYY-MM-DD"),
         };
-        console.log("Datos formateados para envío:", formattedValues);
       } else {
         console.error("El formulario no es válido. Por favor, completa todos los campos requeridos.");
       }
@@ -468,7 +467,8 @@ export class EvaluacionesComponent implements OnInit {
           this.espacios_academicos.push({
             id: espacio.id,
             nombre: espacio.nombre,
-            grupos: espacio.grupos
+            grupos: espacio.grupos,
+            docente: espacio.docente
           });
         });
       }
@@ -523,6 +523,10 @@ export class EvaluacionesComponent implements OnInit {
 
   onDocenteSelection(event: MatSelectChange): void {
     const docenteSeleccionado = event.value;
+
+    
+
+    this.espacios.opciones = this.espacios_academicos.filter((espacio) => espacio.docente === docenteSeleccionado.id);
 
     this.consultarDocenteTercero(docenteSeleccionado).then(
       (res) => {
@@ -653,13 +657,14 @@ export class EvaluacionesComponent implements OnInit {
 
   continuar(form: FormGroup): void {
     if (form.valid) {
+      console.log(this.selectedEvaluation, this.nombreProyecto, this.nombreDocente, this.nombreEspacio, this.grupos);
       Swal.fire({
         title: this.translate.instant("GLOBAL.confirmacion"),
         text: this.translate.instant(this.selectedEvaluation + ".mensaje_confirmacion", {
           nombre_proyecto: this.nombreProyecto,
           nombre_docente: this.nombreDocente,
           nombre_asignatura: this.nombreEspacio,
-          grupo: this.grupos
+          grupo: this.grupos.map(item => item.nombre).join(", ")
         }),
         icon: "warning",
         showCancelButton: true,
@@ -685,7 +690,7 @@ export class EvaluacionesComponent implements OnInit {
     Object.keys(form.controls).forEach(field => {
       const control = form.get(field);
       if (control?.invalid) {
-        console.log(`El campo ${field} es inválido.`);
+        console.error(`El campo ${field} es inválido.`);
       }
     });
   }
