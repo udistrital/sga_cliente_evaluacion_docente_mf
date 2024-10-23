@@ -42,6 +42,7 @@ export class EvaluacionesComponent implements OnInit {
   displayedColumns: string[] = ['nombre', 'codigo', 'estado'];
   espacios_academicos: any[] = [];
   grupos: any[] = [];
+  grupo: any = null;
   dataSource!: MatTableDataSource<any>;
   tercero!: number;
   terceroEvaluado!: number;
@@ -505,6 +506,10 @@ export class EvaluacionesComponent implements OnInit {
     this.mostrarEvaluacion = false;
   }
 
+  onGrupoSelection(event: MatSelectChange): void {
+    this.grupo = event.value;
+  }
+
   loadProyectos(): void {
     this.proyectoAcademicoService.get('proyecto_academico_institucion?query=Activo:true&sortby=Nombre&order=asc&limit=0')
       .subscribe({
@@ -657,14 +662,13 @@ export class EvaluacionesComponent implements OnInit {
 
   continuar(form: FormGroup): void {
     if (form.valid) {
-      console.log(this.selectedEvaluation, this.nombreProyecto, this.nombreDocente, this.nombreEspacio, this.grupos);
       Swal.fire({
         title: this.translate.instant("GLOBAL.confirmacion"),
         text: this.translate.instant(this.selectedEvaluation + ".mensaje_confirmacion", {
           nombre_proyecto: this.nombreProyecto,
           nombre_docente: this.nombreDocente,
           nombre_asignatura: this.nombreEspacio,
-          grupo: this.grupos.map(item => item.nombre).join(", ")
+          grupo: this.selectedEvaluation === "coevaluacion_i" ? this.grupo.nombre : this.grupos,
         }),
         icon: "warning",
         showCancelButton: true,

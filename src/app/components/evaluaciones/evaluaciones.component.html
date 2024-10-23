@@ -492,10 +492,10 @@
                                 <mat-form-field style="width: 100%" appearance="outline">
                                     <mat-label>{{ 'GLOBAL.selecionar_grupo' | translate
                                         }}</mat-label>
-                                    <mat-select formControlName="grupoSeleccionado">
+                                    <mat-select formControlName="grupoSeleccionado" (selectionChange)="onGrupoSelection($event)">
                                         <mat-option value="" disabled>{{ 'GLOBAL.selecionar_grupo' | translate }}</mat-option>
                                         <mat-option *ngFor="let grupo of grupos"
-                                            [value]="grupo.id">
+                                            [value]="grupo">
                                             {{ grupo.nombre }}
                                         </mat-option>
                                     </mat-select>
