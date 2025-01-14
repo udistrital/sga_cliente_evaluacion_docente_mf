@@ -64,9 +64,9 @@ steps:
       from_secret: SONAR_HOST
     SONAR_TOKEN:
       from_secret: SONAR_TOKEN
+    SONAR_SCANNER_OPTS: "-Dsonar.working.directory=/tmp/.scannerwork"
   commands:
-    - sonar-scanner \
-        -Dsonar.working.directory=/drone/src/.scannerwork  
+    - sonar-scanner
   when:
     branch:
     - develop
