@@ -58,14 +58,14 @@ steps:
 #     - unitest
 
 - name: run_sonar_scanner
-  image: aosapps/drone-sonar-plugin
-  settings:
-    sonar_host:
+  image: sonarsource/sonar-scanner-cli:latest
+  environment:
+    SONAR_HOST_URL:
       from_secret: SONAR_HOST
-    sonar_token:
+    SONAR_TOKEN:
       from_secret: SONAR_TOKEN
-    ver: 1.0
-    exclusions: "**/node_modules/**,**/*.spec.ts,documentation/**"
+  commands:
+    - sonar-scanner
   when:
     branch:
     - develop
