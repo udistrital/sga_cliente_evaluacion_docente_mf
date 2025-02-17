@@ -182,10 +182,10 @@ export class EvaluacionesComponent implements OnInit {
     });
   }
 
-  async consultarCargaAcademica(codigo: string) {
+  async consultarCargaAcademica(documento: string) {
     let parametros = {
       parametros: {
-        codigo_estudiante: codigo
+        identificacion: documento
       }
     }
     return new Promise((resolve, reject) => {
@@ -263,9 +263,9 @@ export class EvaluacionesComponent implements OnInit {
           (response: any) => {
             if (response.Data != null) {
               resolve({
-                identificacion: response.Data[0].DOC_DOCENTE,
-                nombre: response.Data[0].DOCENTE,
-                proyectos: this.transformarDatosDocente(response.Data)
+                identificacion: response.Data.docente.carga[0].doc_docente,
+                nombre: response.Data.docente.carga[0].docente,
+                proyectos: this.transformarDatosDocente(response.Data.docente.carga)
               });
             } else {
               resolve(response);
@@ -282,35 +282,37 @@ export class EvaluacionesComponent implements OnInit {
     const proyectosMap = new Map<number, any>();
 
     lista.forEach((elemento) => {
-      const { CRA_COD, CARRERA, CODIGO_SIGNATURA, ASIGNATURA, ID_GRUPO, GRUPO } = elemento;
+      const { cod_proyecto, proyecto, cod_espacio, espacio, id_grupo, grupo } = elemento;
 
-      if (!proyectosMap.has(CRA_COD)) {
-        proyectosMap.set(CRA_COD, {
-          id: CRA_COD,
-          nombre: CARRERA,
+      if (!proyectosMap.has(cod_proyecto
+      )) {
+        proyectosMap.set(cod_proyecto
+          , {
+          id: cod_proyecto,
+          nombre: proyecto,
           asignaturas: []
         });
       }
 
-      const proyecto = proyectosMap.get(CRA_COD);
-      if (proyecto) {
-        const asignaturaExistente = proyecto.asignaturas.find((asignatura: any) => asignatura.nombre === ASIGNATURA);
+      const proy = proyectosMap.get(cod_proyecto);
+      if (proy) {
+        const asignaturaExistente = proy.asignaturas.find((asignatura: any) => asignatura.nombre === espacio);
         if (asignaturaExistente) {
-          const grupoExistente = asignaturaExistente.grupos.some((grupo: any) => grupo.id === ID_GRUPO);
+          const grupoExistente = asignaturaExistente.grupos.some((grupo: any) => grupo.id === id_grupo);
           if (!grupoExistente) {
             asignaturaExistente.grupos.push({
-              id: ID_GRUPO,
-              nombre: GRUPO
+              id: id_grupo,
+              nombre: grupo
             });
           }
         } else {
-          proyecto.asignaturas.push({
-            id: String(CODIGO_SIGNATURA),
-            nombre: ASIGNATURA,
+          proy.asignaturas.push({
+            id: String(cod_espacio),
+            nombre: espacio,
             grupos: [
               {
-                id: ID_GRUPO,
-                nombre: GRUPO
+                id: id_grupo,
+                nombre: grupo
               }
             ]
           });
@@ -344,13 +346,13 @@ export class EvaluacionesComponent implements OnInit {
 
   consultarDatos() {
     if (this.hasRole([ROLES.ESTUDIANTE])) {
-      this.userService.getCodigoEstudiante().then((codigo) => {
-        if (codigo != null) {
-          this.consultarCargaAcademica(codigo).then((response: any) => {
+      this.userService.getUserDocument().then((documento) => {
+        if (documento != null) {
+          this.consultarCargaAcademica(documento).then((response: any) => {
             if (this.selectedEvaluation == "heteroevaluacion") {
               this.heteroForm.patchValue({
                 estudianteNombre: response.nombre,
-                estudianteIdentificacion: response.codigo_estudiante,
+                estudianteIdentificacion: response.identificacion,
                 inicioFecha: new Date(),
                 finFecha: new Date()
               });
@@ -668,7 +670,7 @@ export class EvaluacionesComponent implements OnInit {
           nombre_proyecto: this.nombreProyecto,
           nombre_docente: this.nombreDocente,
           nombre_asignatura: this.nombreEspacio,
-          grupo: this.selectedEvaluation === "coevaluacion_i" ? this.grupo.nombre : this.grupos,
+          grupo: this.selectedEvaluation === "coevaluacion_i" ? this.grupos : this.grupos,
         }),
         icon: "warning",
         showCancelButton: true,
