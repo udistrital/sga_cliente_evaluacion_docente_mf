@@ -399,7 +399,7 @@
                         <button mat-raised-button color="primary" (click)="continuar(autoevaluacionIIForm)">{{ 'GLOBAL.continuar' | translate }}</button>
                     </div>
 
-                    <ngx-dynamic-form *ngIf="mostrarEvaluacion" [formtype]="'4'" [tercero]="tercero" [terceroEvaluado]="terceroEvaluado" [proyecto]="proyecto" [espacio]="espacio" (evaluacionCompletada)="ocultarEvaluacion()"></ngx-dynamic-form>
+                    <ngx-dynamic-form *ngIf="mostrarEvaluacion" [formtype]="'4'" [tercero]="tercero" [terceroEvaluado]="terceroEvaluado" [proyecto]="proyecto" [espacio]="espacio" [grupos]="grupos" (evaluacionCompletada)="ocultarEvaluacion()"></ngx-dynamic-form>
                 </mat-card-content>
             </mat-card>
         </ng-container>
@@ -523,7 +523,7 @@
                         <button mat-raised-button color="primary" (click)="continuar(coevaluacionIForm)">{{ 'GLOBAL.continuar' | translate }}</button>
                     </div>
 
-                    <ngx-dynamic-form *ngIf="mostrarEvaluacion" [formtype]="'3'" [tercero]="tercero" [terceroEvaluado]="terceroEvaluado" [proyecto]="proyecto" [espacio]="espacio" (evaluacionCompletada)="ocultarEvaluacion()"></ngx-dynamic-form>
+                    <ngx-dynamic-form *ngIf="mostrarEvaluacion" [formtype]="'3'" [tercero]="tercero" [terceroEvaluado]="terceroEvaluado" [proyecto]="proyecto" [espacio]="espacio" [grupo]="grupo" (evaluacionCompletada)="ocultarEvaluacion()"></ngx-dynamic-form>
                 </mat-card-content>
             </mat-card>
         </ng-container>

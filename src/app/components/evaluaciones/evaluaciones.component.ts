@@ -476,6 +476,8 @@ export class EvaluacionesComponent implements OnInit {
         });
       }
 
+      this.grupos = [];
+
       this.openSnackBar(`Proyecto seleccionado: ${proyectoSeleccionado.nombre}`);
     }
 
@@ -483,6 +485,7 @@ export class EvaluacionesComponent implements OnInit {
   }
 
   onEspacioSelection(event: MatSelectChange): void {
+    this.grupos = [];
     const espacioSeleccionado = event.value;
 
     if (Array.isArray(espacioSeleccionado)) {
@@ -493,7 +496,7 @@ export class EvaluacionesComponent implements OnInit {
         idsEspacios += esp.id + ",";
         nombresEspacios += esp.nombre + ",";
         if (Array.isArray(esp.grupos)) {
-          grupos.push(...esp.grupos);
+          this.grupos.push(...esp.grupos);
         }
       });
       this.espacio = idsEspacios.slice(0, -1);
@@ -617,24 +620,24 @@ export class EvaluacionesComponent implements OnInit {
   async consultarProyectos(): Promise<string[]> {
     return new Promise((resolve, reject) => {
       this.academicaService.get('carreras/PREGRADO')
-      .subscribe(
-        (res: any) => {
-          if (res != null) {
-            if (res["carrerasCollection"] != null && res["carrerasCollection"].carrera != null) {
-              const carreras = res["carrerasCollection"].carrera.map(({ codigo, nombre }: any) => ({
-                id: codigo,
-                nombre: codigo + "-" + nombre
-              }));
-              resolve(carreras);
-            } else {
-              reject([]);
+        .subscribe(
+          (res: any) => {
+            if (res != null) {
+              if (res["carrerasCollection"] != null && res["carrerasCollection"].carrera != null) {
+                const carreras = res["carrerasCollection"].carrera.map(({ codigo, nombre }: any) => ({
+                  id: codigo,
+                  nombre: codigo + "-" + nombre
+                }));
+                resolve(carreras);
+              } else {
+                reject([]);
+              }
             }
+          },
+          (error: any) => {
+            reject(error);
           }
-        },
-        (error: any) => {
-          reject(error);
-        }
-      )
+        )
     });
   }
 
