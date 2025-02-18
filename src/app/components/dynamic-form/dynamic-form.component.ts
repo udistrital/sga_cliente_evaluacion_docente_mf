@@ -269,7 +269,7 @@ selectForm(tipo_formulario: string) {
             id_periodo: 1,
             id_tercero: this.tercero,
             id_evaluado: this.terceroEvaluado != null ? this.terceroEvaluado : this.tercero,
-            proyecto_curricular: this.proyecto,
+            proyecto_curricular: Number(this.proyecto),
             espacio_academico: esp,
             plantilla_id: 456,
             respuestas,
