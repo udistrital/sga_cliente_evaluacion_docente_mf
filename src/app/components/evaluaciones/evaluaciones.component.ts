@@ -52,8 +52,8 @@ export class EvaluacionesComponent implements OnInit {
   espacio!: string;
   nombreEspacio!: string;
   mostrarEvaluacion: boolean = false;
-  
-  @Input() formtype: string = '';  
+
+  @Input() formtype: string = '';
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   constructor(
@@ -112,7 +112,7 @@ export class EvaluacionesComponent implements OnInit {
       proyectoCurricular: ["", Validators.required],
       docenteNombre: ["", Validators.required],
       espacioAcademico: ["", Validators.required],
-      descripcionProceso: [`Estimado estudiantado: Por favor evalúe formativamente a su docente utilizando el formato dispuesto para ello. Los ítems 01 a 20 de selección múltiple con única respuesta son obligatorios. Puede realizar anotaciones de felicitación o de sugerencias respetuosas en los espacios destinados para tal fin. Utilice como referencia la siguiente escala para medir el grado de desempeño a evaluar:`, 
+      descripcionProceso: [`Estimado estudiantado: Por favor evalúe formativamente a su docente utilizando el formato dispuesto para ello. Los ítems 01 a 20 de selección múltiple con única respuesta son obligatorios. Puede realizar anotaciones de felicitación o de sugerencias respetuosas en los espacios destinados para tal fin. Utilice como referencia la siguiente escala para medir el grado de desempeño a evaluar:`,
         Validators.required],
     });
 
@@ -121,6 +121,7 @@ export class EvaluacionesComponent implements OnInit {
       finFecha: ["", Validators.required],
       proyectoCurricular: ["", Validators.required],
       docenteNombre: ["", Validators.required],
+      espacioAcademico: ["", Validators.required],
       descripcionProceso: [`Estimado Consejo Curricular: Por favor coevalúe con plan de mejoramiento su desempeño docente utilizando el formato dispuesto para ello. Los ítems PROMEDIO con única respuesta son obligatorios en cada dimensión.`, Validators.required],
     });
 
@@ -164,9 +165,9 @@ export class EvaluacionesComponent implements OnInit {
     } catch (error) {
       this.popUpManager.showErrorToast('Error al cargar los espacios académicos: ' + error);
     }
-  } 
+  }
 
-   async cargarEspaciosAcademicos() {
+  async cargarEspaciosAcademicos() {
     return new Promise((resolve, reject) => {
       this.espaciosAcademicosService
         .get('espacio-academico?query=espacio_academico_padre,activo:true&limit=0')
@@ -250,6 +251,39 @@ export class EvaluacionesComponent implements OnInit {
     return Array.from(proyectosMap.values());
   }
 
+
+  filtrarEspaciosPorProyecto(data: any, codProyecto: Number) {
+    const espaciosMap = new Map<string, any>();
+
+    for (let i = 0; i < data.docente.carga.length; i++) {
+      let item = data.docente.carga[i];
+
+      if (item.cod_proyecto === codProyecto) {
+        let clave = item.cod_proyecto + "-" + item.cod_espacio + "-" + item.espacio;
+
+        if (!espaciosMap.has(clave)) {
+          // Crear la estructura base con los grupos en un array
+          espaciosMap.set(clave, {
+            id: item.cod_espacio,
+            nombre: item.espacio,
+            grupos: []
+          });
+        }
+
+        // Obtener la referencia del objeto en el mapa y agregar el grupo si aún no está
+        let entry = espaciosMap.get(clave);
+        if (!entry.grupos.some((g: any) => g.id === item.id_grupo)) {
+          entry.grupos.push({
+            id: item.id_grupo,
+            nombre: item.grupo
+          });
+        }
+      }
+    }
+
+    return Array.from(espaciosMap.values());
+  }
+
   async consultarEspaciosAcademicos(documento: string) {
     let parametros = {
       parametros: {
@@ -288,10 +322,10 @@ export class EvaluacionesComponent implements OnInit {
       )) {
         proyectosMap.set(cod_proyecto
           , {
-          id: cod_proyecto,
-          nombre: proyecto,
-          asignaturas: []
-        });
+            id: cod_proyecto,
+            nombre: proyecto,
+            asignaturas: []
+          });
       }
 
       const proy = proyectosMap.get(cod_proyecto);
@@ -392,13 +426,15 @@ export class EvaluacionesComponent implements OnInit {
       });
     } else if (this.hasRole([ROLES.COORDINADOR])) {
       if (this.selectedEvaluation == "coevaluacion_ii") {
-        this.consultarProyectos().then((carreras) => {
-          this.coevaluacionIIForm.patchValue({
-            inicioFecha: new Date(),
-            finFecha: new Date()
-          });
+        this.userService.getUserDocument().then((documento) => {
+          this.consultarProyectos(documento).then((carreras) => {
+            this.coevaluacionIIForm.patchValue({
+              inicioFecha: new Date(),
+              finFecha: new Date()
+            });
 
-          this.proyectos.opciones = carreras;
+            this.proyectos.opciones = carreras;
+          });
         });
       }
     }
@@ -534,7 +570,27 @@ export class EvaluacionesComponent implements OnInit {
   onDocenteSelection(event: MatSelectChange): void {
     const docenteSeleccionado = event.value;
 
-    
+    let parametros = {
+      parametros: {
+        identificacion: docenteSeleccionado.id
+      }
+    }
+    this.evaluacionDocenteMidService
+      .post('espacios_academicos', parametros)
+      .subscribe({
+        next: (response) => {
+          if (response.Data != null) {
+            let espaciosUnicos
+            espaciosUnicos = this.filtrarEspaciosPorProyecto(response.Data, this.proyecto);
+            this.espacios.opciones = espaciosUnicos;
+            console.log(espaciosUnicos);
+          } 
+        },
+        error: (err) => {
+          console.error('Error al cargar proyectos:', err);
+        }
+      }
+      );
 
     this.espacios.opciones = this.espacios_academicos.filter((espacio) => espacio.docente === docenteSeleccionado.id);
 
@@ -565,7 +621,7 @@ export class EvaluacionesComponent implements OnInit {
             reject(error);
           }
         )
-      }
+    }
     );
   }
 
@@ -604,31 +660,58 @@ export class EvaluacionesComponent implements OnInit {
     }
     return new Promise((resolve, reject) => {
       this.tercerosService.post('datos_identificacion', datosIdentificacion)
-      .subscribe(
-        (res: any) => {
-          if (res != null) {
-            resolve(res);
-          }
-        },
-        (error: any) => {
-          reject(error);
-        }
-      );
-    });
-  }
-
-  async consultarProyectos(): Promise<string[]> {
-    return new Promise((resolve, reject) => {
-      this.academicaService.get('carreras/PREGRADO')
         .subscribe(
           (res: any) => {
             if (res != null) {
-              if (res["carrerasCollection"] != null && res["carrerasCollection"].carrera != null) {
-                const carreras = res["carrerasCollection"].carrera.map(({ codigo, nombre }: any) => ({
-                  id: codigo,
-                  nombre: codigo + "-" + nombre
+              resolve(res);
+            }
+          },
+          (error: any) => {
+            reject(error);
+          }
+        );
+    });
+  }
+
+  async consultarProyectos(idCoordinador: any): Promise<string[]> {
+    return new Promise((resolve, reject) => {
+      this.academicaService.get('coordinador_carrera_snies/' + idCoordinador)
+        .subscribe(
+          (res: any) => {
+            if (res != null) {
+              if (res["coordinadorCollection"] != null && res["coordinadorCollection"].coordinador != null) {
+                console.log(res["coordinadorCollection"].coordinador);
+
+                const proyectos = res["coordinadorCollection"].coordinador.map(({ codigo_condor, nombre_proyecto_condor }: any) => ({
+                  id: codigo_condor,
+                  nombre: codigo_condor + "-" + nombre_proyecto_condor
                 }));
-                resolve(carreras);
+                resolve(proyectos);
+              } else {
+                reject([]);
+              }
+            }
+          },
+          (error: any) => {
+            reject(error);
+          }
+        )
+    });
+
+  }
+
+  async consultarDocentesPorProyecto(idProyecto: number): Promise<string[]> {
+    return new Promise((resolve, reject) => {
+      this.academicaService.get('docentes_por_proyecto/' + idProyecto)
+        .subscribe(
+          (res: any) => {
+            if (res != null) {
+              if (res["docentesCollection"] != null && res["docentesCollection"].docentes != null) {
+                const docentes = res["docentesCollection"].docentes.map(({ identificacion, nombres, apellidos }: any) => ({
+                  id: identificacion,
+                  nombre: nombres + " " + apellidos
+                }));
+                resolve(docentes);
               } else {
                 reject([]);
               }
@@ -641,30 +724,6 @@ export class EvaluacionesComponent implements OnInit {
     });
   }
 
-  async consultarDocentesPorProyecto(idProyecto: number): Promise<string[]> {
-    return new Promise((resolve, reject) => {
-      this.academicaService.get('docentes_por_proyecto/' + idProyecto)
-      .subscribe(
-        (res: any) => {
-          if (res != null) {
-            if (res["docentesCollection"] != null && res["docentesCollection"].docentes != null) {
-              const docentes = res["docentesCollection"].docentes.map(({ identificacion, nombres, apellidos }: any) => ({
-                id: identificacion,
-                nombre: nombres + " " + apellidos
-              }));
-              resolve(docentes);
-            } else {
-              reject([]);
-            }
-          }
-        },
-        (error: any) => {
-          reject(error);
-        }
-      )
-    });
-  }
-
   continuar(form: FormGroup): void {
     if (form.valid) {
       Swal.fire({
@@ -673,7 +732,7 @@ export class EvaluacionesComponent implements OnInit {
           nombre_proyecto: this.nombreProyecto,
           nombre_docente: this.nombreDocente,
           nombre_asignatura: this.nombreEspacio,
-          grupo: this.selectedEvaluation === "coevaluacion_i" ? this.grupos : this.grupos,
+          grupo: this.grupos,
         }),
         icon: "warning",
         showCancelButton: true,
