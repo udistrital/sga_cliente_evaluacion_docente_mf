@@ -196,9 +196,9 @@ export class EvaluacionesComponent implements OnInit {
           (response: any) => {
             if (response.Data != null) {
               resolve({
-                codigo_estudiante: response.Data[0].COD_ESTUDIANTE,
-                nombre: response.Data[0].ESTUDIANTE,
-                proyectos: this.transformarDatosEstudiante(response.Data)
+                identificacion: response.Data.estudiante.espacios[0].doc_estudiante,
+                nombre: response.Data.estudiante.espacios[0].nom_estudiante,
+                proyectos: this.transformarDatosEstudiante(response.Data.estudiante.espacios)
               });
             } else {
               resolve(response);
@@ -214,35 +214,39 @@ export class EvaluacionesComponent implements OnInit {
   transformarDatosEstudiante(lista: any[]): any[] {
     const proyectosMap = new Map<number, any>();
 
-    lista.forEach((elemento) => {
-      const { COD_PROYECTO, DOCENTE, DOC_DOCENTE, PROYECTO, COD_ESPACIO, ESPACIO, GRUPO } = elemento;
+    console.log(lista)
 
-      if (!proyectosMap.has(COD_PROYECTO)) {
-        proyectosMap.set(COD_PROYECTO, {
-          id: COD_PROYECTO,
-          nombre: PROYECTO,
+
+    lista.forEach((elemento) => {
+
+      const { cod_proyecto, nom_docente, doc_docente, nom_proyecto, cod_espacio, espacio_academico, grupo } = elemento;
+
+      if (!proyectosMap.has(cod_proyecto)) {
+        proyectosMap.set(cod_proyecto, {
+          id: cod_proyecto,
+          nombre: nom_proyecto,
           docentes: [],
           asignaturas: []
         });
       }
 
-      const proyecto = proyectosMap.get(COD_PROYECTO);
+      const proyecto = proyectosMap.get(cod_proyecto);
       if (proyecto) {
-        const docenteExistente = proyecto.docentes.some((docente: any) => docente.id === DOC_DOCENTE);
+        const docenteExistente = proyecto.docentes.some((docente: any) => docente.id === doc_docente);
         if (!docenteExistente) {
           proyecto.docentes.push({
-            id: DOC_DOCENTE,
-            nombre: DOCENTE
+            id: doc_docente,
+            nombre: nom_docente
           });
         }
 
-        const asignaturaExistente = proyecto.asignaturas.some((asignatura: any) => asignatura.id === String(COD_ESPACIO));
+        const asignaturaExistente = proyecto.asignaturas.some((asignatura: any) => asignatura.id === String(cod_espacio));
         if (!asignaturaExistente) {
           proyecto.asignaturas.push({
-            id: String(COD_ESPACIO),
-            nombre: ESPACIO,
-            grupos: GRUPO,
-            docente: DOC_DOCENTE
+            id: String(cod_espacio),
+            nombre: espacio_academico,
+            grupos: grupo,
+            docente: doc_docente
           });
         }
       }
@@ -373,6 +377,9 @@ export class EvaluacionesComponent implements OnInit {
 
   // Método que maneja la selección del menú desplegable
   onSelectChange(event: MatSelectChange) {
+    if (this.selectedEvaluation) {  
+      this
+    }
     this.selectedEvaluation = event.value;
     this.mostrarEvaluacion = false;
     this.consultarDatos();
@@ -496,6 +503,7 @@ export class EvaluacionesComponent implements OnInit {
         this.nombreProyecto = proyectoSeleccionado.nombre;
       });
     } else if (proyectoSeleccionado) {
+      console.log("entra ptyecto seleccionado")
       this.proyecto = proyectoSeleccionado.id;
       this.nombreProyecto = proyectoSeleccionado.nombre;
       this.docentes.opciones = proyectoSeleccionado.docentes;
@@ -568,42 +576,49 @@ export class EvaluacionesComponent implements OnInit {
   }
 
   onDocenteSelection(event: MatSelectChange): void {
-    const docenteSeleccionado = event.value;
+    if (this.selectedEvaluation === "heteroevaluacion") {
 
-    let parametros = {
-      parametros: {
-        identificacion: docenteSeleccionado.id
-      }
+
     }
-    this.evaluacionDocenteMidService
-      .post('espacios_academicos', parametros)
-      .subscribe({
-        next: (response) => {
-          if (response.Data != null) {
-            let espaciosUnicos
-            espaciosUnicos = this.filtrarEspaciosPorProyecto(response.Data, this.proyecto);
-            this.espacios.opciones = espaciosUnicos;
-            console.log(espaciosUnicos);
-          } 
-        },
-        error: (err) => {
-          console.error('Error al cargar proyectos:', err);
+    else {
+      const docenteSeleccionado = event.value;
+
+      let parametros = {
+        parametros: {
+          identificacion: docenteSeleccionado.id
         }
       }
-      );
-
-    this.espacios.opciones = this.espacios_academicos.filter((espacio) => espacio.docente === docenteSeleccionado.id);
-
-    this.consultarDocenteTercero(docenteSeleccionado).then(
-      (res) => {
-        if (res != null) {
-          this.terceroEvaluado = res.Id;
-          this.nombreDocente = res.NombreCompleto;
-
-          this.mostrarEvaluacion = false;
+      this.evaluacionDocenteMidService
+        .post('espacios_academicos', parametros)
+        .subscribe({
+          next: (response) => {
+            if (response.Data != null) {
+              let espaciosUnicos
+              espaciosUnicos = this.filtrarEspaciosPorProyecto(response.Data, this.proyecto);
+              this.espacios.opciones = espaciosUnicos;
+              console.log(espaciosUnicos);
+            }
+          },
+          error: (err) => {
+            console.error('Error al cargar proyectos:', err);
+          }
         }
-      }
-    )
+        );
+
+      this.espacios.opciones = this.espacios_academicos.filter((espacio) => espacio.docente === docenteSeleccionado.id);
+
+      this.consultarDocenteTercero(docenteSeleccionado).then(
+        (res) => {
+          if (res != null) {
+            this.terceroEvaluado = res.Id;
+            this.nombreDocente = res.NombreCompleto;
+
+            this.mostrarEvaluacion = false;
+          }
+        }
+      )
+    }
+
   }
 
   async consultarDocenteTercero(docente: any): Promise<any> {
