@@ -151,9 +151,9 @@ steps:
   image: appleboy/drone-telegram
   settings:
     token:
-      from_secret: telegram_token
+      from_secret: TELEGRAM_TOKEN
     to:
-      from_secret: telegram_to
+      from_secret: TELEGRAM_TO
     format: html
     message: >
       {{#success build.status}}
