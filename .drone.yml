@@ -61,9 +61,9 @@ steps:
   image: sonarsource/sonar-scanner-cli:latest
   environment:
     SONAR_HOST_URL:
-      from_secret: SONAR_HOST_2
+      from_secret: SONAR_HOST
     SONAR_TOKEN:
-      from_secret: SONAR_TOKEN_2
+      from_secret: SONAR_TOKEN
     SONAR_SCANNER_OPTS: "-Dsonar.working.directory=/tmp/.scannerwork"
   commands:
     - sonar-scanner
