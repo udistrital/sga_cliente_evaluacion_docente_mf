@@ -1,4 +1,7 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+import { NativeDateAdapter, DateAdapter, MAT_DATE_LOCALE as MAT_LOCALE } from '@angular/material/core';
+import { MatNativeDateModule } from '@angular/material/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -44,6 +47,18 @@ export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, environment.apiUrl + 'assets/i18n/', '.json');
 }
 
+export const CUSTOM_DATE_FORMATS = {
+  parse: {
+    dateInput: 'DD/MM/YYYY', 
+  },
+  display: {
+    dateInput: 'DD/MM/YYYY', 
+    monthYearLabel: 'MMMM YYYY',
+    dateA11yLabel: 'DD/MM/YYYY',
+    monthYearA11yLabel: 'MMMM YYYY',
+  },
+};
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -67,6 +82,7 @@ export function createTranslateLoader(http: HttpClient) {
     NgxChartsModule,
     CommonModule,
     BrowserAnimationsModule,
+    MatNativeDateModule,
     MATERIAL_MODULES,
     HttpClientModule,
     SpinnerUtilModule,
@@ -96,7 +112,9 @@ export function createTranslateLoader(http: HttpClient) {
     SgaEvaluacionDocenteMidService,
     EvaluacionDocenteService,
     AcademicaService,
-    { provide: HTTP_INTERCEPTORS, useClass: SpinnerUtilInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: SpinnerUtilInterceptor, multi: true },
+    { provide: MAT_DATE_LOCALE, useValue: 'es-ES' }, 
+    { provide: MAT_DATE_FORMATS, useValue: CUSTOM_DATE_FORMATS },
   ],
   bootstrap: [AppComponent]
 })

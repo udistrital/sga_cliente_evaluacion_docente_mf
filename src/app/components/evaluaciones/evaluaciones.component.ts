@@ -189,12 +189,24 @@ export class EvaluacionesComponent implements OnInit {
         identificacion: documento
       }
     }
+    var storedConsultaEstudiante = localStorage.getItem('data_evaluacion_estudiante');
+    if (storedConsultaEstudiante !== null) {
+      const dataParsed = JSON.parse(storedConsultaEstudiante);
+      console.log('consulta grande que guardo en storage: ', dataParsed);
+      return {
+        identificacion: dataParsed.Data.estudiante.espacios[0].doc_estudiante,
+        nombre: dataParsed.Data.estudiante.espacios[0].nom_estudiante,
+        proyectos: this.transformarDatosEstudiante(dataParsed.Data.estudiante.espacios)
+      };
+    }
+    else {
     return new Promise((resolve, reject) => {
       this.evaluacionDocenteMidService
         .post('carga_academica', parametros)
         .subscribe(
           (response: any) => {
             if (response.Data != null) {
+                localStorage.setItem('data_evaluacion_estudiante', JSON.stringify(response));
               resolve({
                 identificacion: response.Data.estudiante.espacios[0].doc_estudiante,
                 nombre: response.Data.estudiante.espacios[0].nom_estudiante,
@@ -209,6 +221,7 @@ export class EvaluacionesComponent implements OnInit {
           }
         );
     });
+    }
   }
 
   transformarDatosEstudiante(lista: any[]): any[] {
@@ -413,6 +426,7 @@ export class EvaluacionesComponent implements OnInit {
     } else if (this.hasRole([ROLES.DOCENTE])) {
       this.userService.getUserDocument().then((documento) => {
         this.consultarEspaciosAcademicos(documento).then((response: any) => {
+          localStorage.setItem('evaluacion_docente', JSON.stringify(response));
           if (this.selectedEvaluation == "autoevaluacion_ii") {
             this.autoevaluacionIIForm.patchValue({
               docenteIdentificacion: response.identificacion,
@@ -435,6 +449,7 @@ export class EvaluacionesComponent implements OnInit {
       if (this.selectedEvaluation == "coevaluacion_ii") {
         this.userService.getUserDocument().then((documento) => {
           this.consultarProyectos(documento).then((carreras) => {
+            localStorage.setItem('evaluacion_coordinador', JSON.stringify(carreras));
             this.coevaluacionIIForm.patchValue({
               inicioFecha: new Date(),
               finFecha: new Date()
@@ -527,6 +542,25 @@ export class EvaluacionesComponent implements OnInit {
 
     this.mostrarEvaluacion = false;
   }
+
+  /* INICIO FORMULARIO DE HETEROEVALUACION*/
+
+  onProyectoHetero(event: MatSelectChange): void {
+    const proyectoSeleccionado = event.value;
+    console.log("proyectoSeleccionadoNueva: ", proyectoSeleccionado);
+
+    this.proyecto = proyectoSeleccionado.id;
+    this.nombreProyecto = proyectoSeleccionado.nombre;
+
+    this.onDocenteHetero(proyectoSeleccionado.id);
+  }
+
+  onDocenteHetero(event: MatSelectChange): void {
+    const docenteSeleccionado = event.value;
+    console.log("docenteSeleccionadoNueva: ", docenteSeleccionado);
+  }
+
+  /* FIN FORMULARIO DE HETEROEVALUACION*/
 
   onEspacioSelection(event: MatSelectChange): void {
     this.grupos = [];

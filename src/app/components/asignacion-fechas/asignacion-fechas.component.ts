@@ -147,11 +147,11 @@ export class AsignacionFechasComponent implements OnInit {
   }
 
   guardar() {
-    if (!this.nivelFormacion || !this.periodoFormacion) {
+    /*if (!this.nivelFormacion || !this.periodoFormacion) {
       this.mensajeError =
         "Debe seleccionar el nivel de formación y el período antes de guardar.";
       return;
-    }
+    }*/
 
     this.guardado = false;
     this.evaluacionesGuardadas = [];
