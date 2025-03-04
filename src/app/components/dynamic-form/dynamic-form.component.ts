@@ -48,6 +48,8 @@ export class DynamicFormComponent implements OnInit, OnChanges {
   @Input() terceroEvaluado!: number;
   @Input() proyecto!: number;
   @Input() espacio!: string;
+  @Input() grupos!: any[];
+  @Input() grupo!: any;
 
   @Output() evaluacionCompletada = new EventEmitter<void>();
 
@@ -67,11 +69,13 @@ ngOnChanges() {
   this.selectForm(this.formtype);
 }
 
-// Método para inicializar el formulario seleccionado
-selectForm(tipo_formulario: string) {
-  this.evaluacionDocenteMidService.get(`formulario_por_tipo?id_tipo_formulario=${tipo_formulario}&id_periodo=1&id_tercero=${this.tercero}&id_espacio=${this.espacio}`)
-    .subscribe(response => {
-      if (response.Success === true && response.Status === 200) {
+  // Método para inicializar el formulario seleccionado
+  selectForm(tipo_formulario: string) {
+    let url;
+    this.grupos && this.grupos.length !== undefined ? url = `formulario_por_tipo?id_tipo_formulario=${tipo_formulario}&id_periodo=1&id_tercero=${this.tercero}&id_espacio=${this.espacio}` : url = `formulario_por_tipo?id_tipo_formulario=${tipo_formulario}&id_periodo=1&id_tercero=${this.tercero}&id_espacio=${this.espacio}&id_grupo=${this.grupo.id}`
+    this.evaluacionDocenteMidService.get(url)
+      .subscribe(response => {
+        if (response.Success === true && response.Status === 200) {
           this.todasSecciones = response.Data.seccion;
           this.todasSecciones.forEach((seccion, i) => {
             seccion.items.forEach((pregunta: any, j: number) => {
@@ -238,28 +242,30 @@ selectForm(tipo_formulario: string) {
         });
       }
     },
-    error => {
-      console.error(error);
-      if (error.Message == null) {
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'Ocurrió un error al guardar el formulario.',
-        });
-      } else {
-        Swal.fire({
-          icon: 'warning',
-          title: this.translateService.instant('GLOBAL.atencion'),
-          text: error.Message,
-        }).then(() => {
-          this.evaluacionCompletada.emit();
-        });
-      }
-    });
+      error => {
+        console.error(error);
+        if (error.Message == null) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Ocurrió un error al guardar el formulario.',
+          });
+        } else {
+          Swal.fire({
+            icon: 'warning',
+            title: this.translateService.instant('GLOBAL.atencion'),
+            text: error.Message,
+          }).then(() => {
+            this.evaluacionCompletada.emit();
+          });
+        }
+      });
   }
 
   // Método para manejar el evento de submit
   submit() {
+    let gruposJson
+    this.grupos && this.grupos.length !== undefined ? gruposJson = JSON.stringify(this.grupos) : gruposJson = JSON.stringify(this.grupo)
     if (this.stepperForm.valid) {
       this.generateResponseData().then(respuestas => {
         const requests: any[] = [];
@@ -269,9 +275,11 @@ selectForm(tipo_formulario: string) {
             id_periodo: 1,
             id_tercero: this.tercero,
             id_evaluado: this.terceroEvaluado != null ? this.terceroEvaluado : this.tercero,
-            proyecto_curricular: this.proyecto,
+            proyecto_curricular: Number(this.proyecto),
+            grupos: gruposJson,
             espacio_academico: esp,
             plantilla_id: 456,
+            plantilla_proceso_id: Number(this.formtype),
             respuestas,
           };
           const request = this.evaluacionDocenteMidService.post('respuesta_formulario', jsonData);

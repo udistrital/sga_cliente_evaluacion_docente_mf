@@ -1,5 +1,5 @@
 <mat-card
-    *ngIf="hasRole([ROLES.ADMIN_SGA, ROLES.DOCENTE, ROLES.ESTUDIANTE, ROLES.CONSEJO_CURRICULAR, ROLES.COORDINADOR]); else noPermission">
+    *ngIf="hasRole([ROLES.ADMIN_SGA, ROLES.DOCENTE, ROLES.ESTUDIANTE, ROLES.CONSEJO_CURRICULAR, ROLES.COORDINADOR, ROLES.DECANO]); else noPermission">
     <mat-card-header>
         <mat-card-title>{{ "evaluaciones.titulo" | translate }}</mat-card-title>
         <mat-card-subtitle>{{ "evaluaciones.sub_titulo" | translate }}</mat-card-subtitle>
@@ -96,8 +96,10 @@
                             <div class="form-col1">
                                 <mat-form-field style="width: 100%" appearance="outline">
                                     <mat-label>{{ 'heteroevaluacion.proyecto_curricular' | translate }}</mat-label>
-                                    <mat-select formControlName="proyectoCurricular" (selectionChange)="onProyectoSelection($event)" required>
-                                        <mat-option value="" disabled>{{ 'GLOBAL.selecionar_proyecto' | translate }}</mat-option>
+                                    <mat-select formControlName="proyectoCurricular"
+                                        (selectionChange)="onProyectoHetero($event)" required>
+                                        <mat-option value="" disabled>{{ 'GLOBAL.selecionar_proyecto' | translate
+                                            }}</mat-option>
                                         <mat-option *ngFor="let item of proyectos?.opciones" [value]="item">
                                             {{ item.nombre }}
                                         </mat-option>
@@ -111,8 +113,10 @@
                             <div class="form-col1">
                                 <mat-form-field style="width: 100%" appearance="outline">
                                     <mat-label>{{ 'coevaluacion_ii.docente' | translate }}</mat-label>
-                                    <mat-select formControlName="docenteNombre" (selectionChange)="onDocenteSelection($event)">
-                                        <mat-option value="" disabled>{{ 'GLOBAL.selecionar_docente' | translate }}</mat-option>
+                                    <mat-select formControlName="docenteNombre"
+                                        (selectionChange)="onDocenteSelection($event)">
+                                        <mat-option value="" disabled>{{ 'GLOBAL.selecionar_docente' | translate
+                                            }}</mat-option>
                                         <mat-option *ngFor="let docente of docentes?.opciones" [value]="docente">
                                             {{ docente.nombre }}
                                         </mat-option>
@@ -129,8 +133,10 @@
                             <div class="form-col1">
                                 <mat-form-field style="width: 100%" appearance="outline">
                                     <mat-label>{{ 'autoevaluacion_i.espacio_academico' | translate }}</mat-label>
-                                    <mat-select formControlName="espacioAcademico" (selectionChange)="onEspacioSelection($event)" required>
-                                        <mat-option value="" disabled>{{ 'GLOBAL.selecionar_espacio' | translate }}</mat-option>
+                                    <mat-select formControlName="espacioAcademico"
+                                        (selectionChange)="onEspacioSelection($event)" required>
+                                        <mat-option value="" disabled>{{ 'GLOBAL.selecionar_espacio' | translate
+                                            }}</mat-option>
                                         <mat-option *ngFor="let item of espacios?.opciones" [value]="item">
                                             {{ item.nombre }}
                                         </mat-option>
@@ -157,10 +163,13 @@
                         </div>
                     </form>
                     <div *ngIf="!mostrarEvaluacion" style="width: 100%; display: flex; justify-content: center">
-                        <button mat-raised-button color="primary" (click)="continuar(heteroForm)">{{ 'GLOBAL.continuar' | translate }}</button>
+                        <button mat-raised-button color="primary" (click)="continuar(heteroForm)">{{ 'GLOBAL.continuar'
+                            | translate }}</button>
                     </div>
 
-                    <ngx-dynamic-form *ngIf="mostrarEvaluacion" [formtype]="'1'" [tercero]="tercero" [terceroEvaluado]="terceroEvaluado" [proyecto]="proyecto" [espacio]="espacio" (evaluacionCompletada)="ocultarEvaluacion()"></ngx-dynamic-form>
+                    <ngx-dynamic-form *ngIf="mostrarEvaluacion" [formtype]="'1'" [tercero]="tercero"
+                        [terceroEvaluado]="terceroEvaluado" [proyecto]="proyecto" [espacio]="espacio"
+                        (evaluacionCompletada)="ocultarEvaluacion()"></ngx-dynamic-form>
                 </mat-card-content>
             </mat-card>
         </ng-container>
@@ -234,8 +243,10 @@
                             <div class="form-col1">
                                 <mat-form-field style="width: 100%" appearance="outline">
                                     <mat-label>{{ 'autoevaluacion_i.proyecto_curricular' | translate }}</mat-label>
-                                    <mat-select formControlName="proyectoCurricular" (selectionChange)="onProyectoSelection($event)" required>
-                                        <mat-option value="" disabled>{{ 'GLOBAL.selecionar_proyecto' | translate }}</mat-option>
+                                    <mat-select formControlName="proyectoCurricular"
+                                        (selectionChange)="onProyectoSelection($event)" required>
+                                        <mat-option value="" disabled>{{ 'GLOBAL.selecionar_proyecto' | translate
+                                            }}</mat-option>
                                         <mat-option *ngFor="let item of proyectos?.opciones" [value]="item">
                                             {{ item.nombre }}
                                         </mat-option>
@@ -249,8 +260,10 @@
                             <div class="form-col1">
                                 <mat-form-field style="width: 100%" appearance="outline">
                                     <mat-label>{{ 'autoevaluacion_i.espacio_academico' | translate }}</mat-label>
-                                    <mat-select formControlName="espacioAcademico" (selectionChange)="onEspacioSelection($event)" required>
-                                        <mat-option value="" disabled>{{ 'GLOBAL.selecionar_espacio' | translate }}</mat-option>
+                                    <mat-select formControlName="espacioAcademico"
+                                        (selectionChange)="onEspacioSelection($event)" required>
+                                        <mat-option value="" disabled>{{ 'GLOBAL.selecionar_espacio' | translate
+                                            }}</mat-option>
                                         <mat-option *ngFor="let item of espacios?.opciones" [value]="item">
                                             {{ item.nombre }}
                                         </mat-option>
@@ -276,10 +289,13 @@
                         </div>
                     </form>
                     <div *ngIf="!mostrarEvaluacion" style="width: 100%; display: flex; justify-content: center">
-                        <button mat-raised-button color="primary" (click)="continuar(autoevaluacionIForm)">{{ 'GLOBAL.continuar' | translate }}</button>
+                        <button mat-raised-button color="primary" (click)="continuar(autoevaluacionIForm)">{{
+                            'GLOBAL.continuar' | translate }}</button>
                     </div>
 
-                    <ngx-dynamic-form *ngIf="mostrarEvaluacion" [formtype]="'2'" [tercero]="tercero" [terceroEvaluado]="terceroEvaluado" [proyecto]="proyecto" [espacio]="espacio" (evaluacionCompletada)="ocultarEvaluacion()"></ngx-dynamic-form>
+                    <ngx-dynamic-form *ngIf="mostrarEvaluacion" [formtype]="'2'" [tercero]="tercero"
+                        [terceroEvaluado]="terceroEvaluado" [proyecto]="proyecto" [espacio]="espacio"
+                        (evaluacionCompletada)="ocultarEvaluacion()"></ngx-dynamic-form>
                 </mat-card-content>
             </mat-card>
         </ng-container>
@@ -352,8 +368,10 @@
                             <div class="form-col1">
                                 <mat-form-field style="width: 100%" appearance="outline">
                                     <mat-label>{{ 'heteroevaluacion.proyecto_curricular' | translate }}</mat-label>
-                                    <mat-select formControlName="proyectoCurricular" (selectionChange)="onProyectoSelection($event)" required>
-                                        <mat-option value="" disabled>{{ 'GLOBAL.selecionar_proyecto' | translate }}</mat-option>
+                                    <mat-select formControlName="proyectoCurricular"
+                                        (selectionChange)="onProyectoSelection($event)" required>
+                                        <mat-option value="" disabled>{{ 'GLOBAL.selecionar_proyecto' | translate
+                                            }}</mat-option>
                                         <mat-option *ngFor="let item of proyectos?.opciones" [value]="item">
                                             {{ item.nombre }}
                                         </mat-option>
@@ -367,10 +385,10 @@
                             <div class="form-col1">
                                 <mat-form-field style="width: 100%" appearance="outline">
                                     <mat-label>{{ 'autoevaluacion_ii.espacio1' | translate }}</mat-label>
-                                    <mat-select (selectionChange)="onEspacioSelection($event)" formControlName="espacioAcademico" required multiple>
+                                    <mat-select (selectionChange)="onEspacioSelection($event)"
+                                        formControlName="espacioAcademico" required multiple>
                                         <mat-option disabled>{{ 'GLOBAL.selecionar_espacio' | translate }}</mat-option>
-                                        <mat-option *ngFor="let espacio of espacios_academicos"
-                                            [value]="espacio">
+                                        <mat-option *ngFor="let espacio of espacios_academicos" [value]="espacio">
                                             {{ espacio.nombre }}
                                         </mat-option>
                                     </mat-select>
@@ -396,10 +414,13 @@
                         </div>
                     </form>
                     <div *ngIf="!mostrarEvaluacion" style="width: 100%; display: flex; justify-content: center">
-                        <button mat-raised-button color="primary" (click)="continuar(autoevaluacionIIForm)">{{ 'GLOBAL.continuar' | translate }}</button>
+                        <button mat-raised-button color="primary" (click)="continuar(autoevaluacionIIForm)">{{
+                            'GLOBAL.continuar' | translate }}</button>
                     </div>
 
-                    <ngx-dynamic-form *ngIf="mostrarEvaluacion" [formtype]="'4'" [tercero]="tercero" [terceroEvaluado]="terceroEvaluado" [proyecto]="proyecto" [espacio]="espacio" (evaluacionCompletada)="ocultarEvaluacion()"></ngx-dynamic-form>
+                    <ngx-dynamic-form *ngIf="mostrarEvaluacion" [formtype]="'4'" [tercero]="tercero"
+                        [terceroEvaluado]="terceroEvaluado" [proyecto]="proyecto" [espacio]="espacio" [grupos]="grupos"
+                        (evaluacionCompletada)="ocultarEvaluacion()"></ngx-dynamic-form>
                 </mat-card-content>
             </mat-card>
         </ng-container>
@@ -417,9 +438,10 @@
                             <div class="form-col1">
                                 <mat-form-field style="width: 100%" floatLabel="always" appearance="outline">
                                     <mat-label>{{ 'coevaluacion_i.fechas' | translate }}</mat-label>
-                                    <input matInput readonly [matDatepicker]="pickerInicio" formControlName="inicioFecha"
-                                        placeholder="dd/MM/yyyy">
-                                    <mat-datepicker-toggle matSuffix [for]="pickerInicio" disabled></mat-datepicker-toggle>
+                                    <input matInput readonly [matDatepicker]="pickerInicio"
+                                        formControlName="inicioFecha" placeholder="dd/MM/yyyy">
+                                    <mat-datepicker-toggle matSuffix [for]="pickerInicio"
+                                        disabled></mat-datepicker-toggle>
                                     <mat-datepicker #pickerInicio></mat-datepicker>
                                     <mat-error
                                         *ngIf="coevaluacionIForm.get('inicioFecha')?.hasError('required') && coevaluacionIForm.get('inicioFecha')?.touched">
@@ -446,8 +468,10 @@
                             <div class="form-col1">
                                 <mat-form-field style="width: 100%" appearance="outline">
                                     <mat-label>{{ 'heteroevaluacion.proyecto_curricular' | translate }}</mat-label>
-                                    <mat-select formControlName="proyectoCurricular" (selectionChange)="onProyectoSelection($event)" required>
-                                        <mat-option value="" disabled>{{ 'GLOBAL.selecionar_proyecto' | translate }}</mat-option>
+                                    <mat-select formControlName="proyectoCurricular"
+                                        (selectionChange)="onProyectoSelection($event)" required>
+                                        <mat-option value="" disabled>{{ 'GLOBAL.selecionar_proyecto' | translate
+                                            }}</mat-option>
                                         <mat-option *ngFor="let item of proyectos?.opciones" [value]="item">
                                             {{ item.nombre }}
                                         </mat-option>
@@ -461,10 +485,11 @@
                             <div class="form-col1">
                                 <mat-form-field style="width: 100%" appearance="outline">
                                     <mat-label>{{ 'autoevaluacion_ii.espacio1' | translate }}</mat-label>
-                                    <mat-select (selectionChange)="onEspacioSelection($event)" formControlName="espacioAcademico" required>
-                                        <mat-option value="" disabled>{{ 'GLOBAL.selecionar_espacio' | translate }}</mat-option>
-                                        <mat-option *ngFor="let espacio of espacios_academicos"
-                                            [value]="espacio">
+                                    <mat-select (selectionChange)="onEspacioSelection($event)"
+                                        formControlName="espacioAcademico" required>
+                                        <mat-option value="" disabled>{{ 'GLOBAL.selecionar_espacio' | translate
+                                            }}</mat-option>
+                                        <mat-option *ngFor="let espacio of espacios_academicos" [value]="espacio">
                                             {{ espacio.nombre }}
                                         </mat-option>
                                     </mat-select>
@@ -479,12 +504,12 @@
                         <div class="form-grid2">
                             <div class="form-col1">
                                 <mat-form-field style="width: 100%" appearance="outline">
-                                    <mat-label>{{ 'coevaluacion_ii.docente' | translate }}</mat-label>
+                                    <mat-label>{{ 'coevaluacion_i.docente' | translate }}</mat-label>
                                     <input matInput readonly type="text" formControlName="docenteNombre"
                                         placeholder="Nombre del docente">
                                     <mat-error
                                         *ngIf="coevaluacionIForm.get('docenteNombre')?.hasError('required') && coevaluacionIForm.get('docenteNombre')?.touched">
-                                        {{ 'coevaluacion_ii.error_docente' | translate }}
+                                        {{ 'coevaluacion_i.error_docente' | translate }}
                                     </mat-error>
                                 </mat-form-field>
                             </div>
@@ -492,10 +517,11 @@
                                 <mat-form-field style="width: 100%" appearance="outline">
                                     <mat-label>{{ 'GLOBAL.selecionar_grupo' | translate
                                         }}</mat-label>
-                                    <mat-select formControlName="grupoSeleccionado" (selectionChange)="onGrupoSelection($event)">
-                                        <mat-option value="" disabled>{{ 'GLOBAL.selecionar_grupo' | translate }}</mat-option>
-                                        <mat-option *ngFor="let grupo of grupos"
-                                            [value]="grupo">
+                                    <mat-select formControlName="grupoSeleccionado"
+                                        (selectionChange)="onGrupoSelection($event)">
+                                        <mat-option value="" disabled>{{ 'GLOBAL.selecionar_grupo' | translate
+                                            }}</mat-option>
+                                        <mat-option *ngFor="let grupo of grupos" [value]="grupo">
                                             {{ grupo.nombre }}
                                         </mat-option>
                                     </mat-select>
@@ -520,116 +546,134 @@
                         </div>
                     </form>
                     <div *ngIf="!mostrarEvaluacion" style="width: 100%; display: flex; justify-content: center">
-                        <button mat-raised-button color="primary" (click)="continuar(coevaluacionIForm)">{{ 'GLOBAL.continuar' | translate }}</button>
+                        <button mat-raised-button color="primary" (click)="continuar(coevaluacionIForm)">{{
+                            'GLOBAL.continuar' | translate }}</button>
                     </div>
 
-                    <ngx-dynamic-form *ngIf="mostrarEvaluacion" [formtype]="'3'" [tercero]="tercero" [terceroEvaluado]="terceroEvaluado" [proyecto]="proyecto" [espacio]="espacio" (evaluacionCompletada)="ocultarEvaluacion()"></ngx-dynamic-form>
+                    <ngx-dynamic-form *ngIf="mostrarEvaluacion" [formtype]="'3'" [tercero]="tercero"
+                        [terceroEvaluado]="terceroEvaluado" [proyecto]="proyecto" [espacio]="espacio" [grupo]="grupo"
+                        (evaluacionCompletada)="ocultarEvaluacion()"></ngx-dynamic-form>
                 </mat-card-content>
             </mat-card>
         </ng-container>
 
         <!-- Formulario de Coevaluación II -->
-    <ng-container *ngIf="selectedEvaluation === 'coevaluacion_ii'">
-        <mat-card *ngIf="hasRole([ROLES.CONSEJO_CURRICULAR, ROLES.DECANO, ROLES.ADMIN_SGA, ROLES.ADMIN_DOCENCIA, ROLES.COORDINADOR]); else noPermission" class="form-container">
-            <mat-card-header style="padding-bottom: 1rem;">
-                <mat-card-title>{{ 'coevaluacion_ii.titulo' | translate }}</mat-card-title>
-            </mat-card-header>
-            <mat-card-content>
-            <form [formGroup]="coevaluacionIIForm" (ngSubmit)="onGuardar()" class="evaluation-form">
-                <div class="form-grid2">
-                    <div class="form-col1">
-                        <mat-form-field style="width: 100%" floatLabel="always" appearance="outline">
-                            <mat-label>{{ 'coevaluacion_ii.fechas' | translate }}</mat-label>
-                            <input matInput readonly [matDatepicker]="pickerInicio" formControlName="inicioFecha"
-                                placeholder="dd/MM/yyyy">
-                            <mat-datepicker-toggle matSuffix [for]="pickerInicio" disabled></mat-datepicker-toggle>
-                            <mat-datepicker #pickerInicio></mat-datepicker>
-                            <mat-error
-                                *ngIf="coevaluacionIIForm.get('inicioFecha')?.hasError('required') && coevaluacionIIForm.get('inicioFecha')?.touched">
-                                {{ 'coevaluacion_ii.error_fecha_inicio' | translate }}
-                            </mat-error>
-                        </mat-form-field>
+        <ng-container *ngIf="selectedEvaluation === 'coevaluacion_ii'">
+            <mat-card
+                *ngIf="hasRole([ROLES.CONSEJO_CURRICULAR, ROLES.DECANO, ROLES.ADMIN_SGA, ROLES.ADMIN_DOCENCIA, ROLES.COORDINADOR]); else noPermission"
+                class="form-container">
+                <mat-card-header style="padding-bottom: 1rem;">
+                    <mat-card-title>{{ 'coevaluacion_ii.titulo' | translate }}</mat-card-title>
+                </mat-card-header>
+                <mat-card-content>
+                    <form [formGroup]="coevaluacionIIForm" (ngSubmit)="onGuardar()" class="evaluation-form">
+                        <div class="form-grid2">
+                            <div class="form-col1">
+                                <mat-form-field style="width: 100%" floatLabel="always" appearance="outline">
+                                    <mat-label>{{ 'coevaluacion_ii.fechas' | translate }}</mat-label>
+                                    <input matInput readonly [matDatepicker]="pickerInicio"
+                                        formControlName="inicioFecha" placeholder="dd/MM/yyyy">
+                                    <mat-datepicker-toggle matSuffix [for]="pickerInicio"
+                                        disabled></mat-datepicker-toggle>
+                                    <mat-datepicker #pickerInicio></mat-datepicker>
+                                    <mat-error
+                                        *ngIf="coevaluacionIIForm.get('inicioFecha')?.hasError('required') && coevaluacionIIForm.get('inicioFecha')?.touched">
+                                        {{ 'coevaluacion_ii.error_fecha_inicio' | translate }}
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                            <div class="form-col1">
+                                <mat-form-field style="width: 100%" floatLabel="always" appearance="outline">
+                                    <mat-label>{{ 'coevaluacion_ii.fechas' | translate }}</mat-label>
+                                    <input matInput readonly [matDatepicker]="pickerFin" formControlName="finFecha"
+                                        placeholder="dd/MM/yyyy">
+                                    <mat-datepicker-toggle matSuffix [for]="pickerFin" disabled></mat-datepicker-toggle>
+                                    <mat-datepicker #pickerFin></mat-datepicker>
+                                    <mat-error
+                                        *ngIf="coevaluacionIIForm.get('finFecha')?.hasError('required') && coevaluacionIIForm.get('finFecha')?.touched">
+                                        {{ 'coevaluacion_ii.error_fecha_fin' | translate }}
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+                        </div>
+
+                        <div class="form-col1">
+                            <mat-form-field style="width: 100%" appearance="outline">
+                                <mat-label>{{ 'heteroevaluacion.proyecto_curricular' | translate }}</mat-label>
+                                <mat-select formControlName="proyectoCurricular"
+                                    (selectionChange)="onProyectoSelection($event)" required>
+                                    <mat-option value="" disabled>{{ 'GLOBAL.selecionar_proyecto' | translate
+                                        }}</mat-option>
+                                    <mat-option *ngFor="let item of proyectos?.opciones" [value]="item">
+                                        {{ item.nombre }}
+                                    </mat-option>
+                                </mat-select>
+                                <mat-error
+                                    *ngIf="heteroForm.get('facultad')?.hasError('required') && heteroForm.get('facultad')?.touched">
+                                    {{ 'coevaluacion_ii.error_proyecto' | translate }}
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+
+                        <div class="form-col1">
+                            <mat-form-field style="width: 100%" appearance="outline">
+                                <mat-label>{{ 'coevaluacion_ii.docente' | translate }}</mat-label>
+                                <mat-select formControlName="docenteNombre"
+                                    (selectionChange)="onDocenteSelection($event)" required>
+                                    <mat-option value="" disabled>{{ 'GLOBAL.selecionar_docente' | translate
+                                        }}</mat-option>
+                                    <mat-option *ngFor="let docente of docentes?.opciones" [value]="docente">
+                                        {{ docente.nombre }}
+                                    </mat-option>
+                                </mat-select>
+                                <mat-error
+                                    *ngIf="coevaluacionIIForm.get('docenteNombre')?.hasError('required') && coevaluacionIIForm.get('docenteNombre')?.touched">
+                                    {{ 'coevaluacion_ii.error_docente' | translate }}
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+
+                        <div class="form-col1">
+                            <mat-form-field style="width: 100%" floatLabel="always">
+                                <mat-label>{{ 'coevaluacion_ii.espacio' | translate }}</mat-label>
+                                <mat-select formControlName="espacioAcademico"
+                                    (selectionChange)="onEspacioSelection($event)" required>
+                                    <mat-option value="" disabled>{{ 'GLOBAL.selecionar_espacio' | translate
+                                        }}</mat-option>
+                                    <mat-option *ngFor="let item of espacios?.opciones" [value]="item">
+                                        {{ item.nombre }}
+                                    </mat-option>
+                                </mat-select>
+                                <mat-error
+                                    *ngIf="autoevaluacionIIForm.get('espacioAcademico')?.hasError('required') && autoevaluacionIIForm.get('espacioAcademico')?.touched">
+                                    {{ 'coevaluacion_ii.error_espacio' | translate }}
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+
+                        <div class="form-col1">
+                            <mat-form-field style="width: 100%" appearance="outline">
+                                <mat-label>{{ 'coevaluacion_ii.descripcion_proceso' | translate }}</mat-label>
+                                <textarea matInput formControlName="descripcionProceso"
+                                    placeholder="Descripción del proceso" rows="3" readonly></textarea>
+                                <mat-error
+                                    *ngIf="coevaluacionIIForm.get('descripcionProceso')?.hasError('required') && coevaluacionIIForm.get('descripcionProceso')?.touched">
+                                    {{ 'coevaluacion_ii.error_descripcion' | translate }}
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                    </form>
+                    <div *ngIf="!mostrarEvaluacion" style="width: 100%; display: flex; justify-content: center">
+                        <button mat-raised-button color="primary" (click)="continuar(coevaluacionIIForm)">{{
+                            'GLOBAL.continuar' | translate }}</button>
                     </div>
-                    <div class="form-col1">
-                        <mat-form-field style="width: 100%" floatLabel="always" appearance="outline">
-                            <mat-label>{{ 'coevaluacion_ii.fechas' | translate }}</mat-label>
-                            <input matInput readonly [matDatepicker]="pickerFin" formControlName="finFecha"
-                                placeholder="dd/MM/yyyy">
-                            <mat-datepicker-toggle matSuffix [for]="pickerFin" disabled></mat-datepicker-toggle>
-                            <mat-datepicker #pickerFin></mat-datepicker>
-                            <mat-error
-                                *ngIf="coevaluacionIIForm.get('finFecha')?.hasError('required') && coevaluacionIIForm.get('finFecha')?.touched">
-                                {{ 'coevaluacion_ii.error_fecha_fin' | translate }}
-                            </mat-error>
-                        </mat-form-field>
-                    </div>
-                </div>
 
-                <div class="form-col1">
-                    <mat-form-field style="width: 100%" appearance="outline">
-                        <mat-label>{{ 'heteroevaluacion.proyecto_curricular' | translate }}</mat-label>
-                        <mat-select formControlName="proyectoCurricular" (selectionChange)="onProyectoSelection($event)" required>
-                            <mat-option value="" disabled>{{ 'GLOBAL.selecionar_proyecto' | translate }}</mat-option>
-                          <mat-option *ngFor="let item of proyectos?.opciones" [value]="item">
-                            {{ item.nombre }}
-                          </mat-option>
-                        </mat-select>
-                        <mat-error *ngIf="heteroForm.get('facultad')?.hasError('required') && heteroForm.get('facultad')?.touched">
-                          {{ 'heteroevaluacion.error_proyecto' | translate }}
-                        </mat-error>
-                      </mat-form-field>
-                </div>
-
-                <div class="form-col1">
-                    <mat-form-field style="width: 100%" appearance="outline">
-                        <mat-label>{{ 'coevaluacion_ii.docente' | translate }}</mat-label>
-                        <mat-select formControlName="docenteNombre" (selectionChange)="onDocenteSelection($event)">
-                            <mat-option value="" disabled>{{ 'GLOBAL.selecionar_docente' | translate }}</mat-option>
-                            <mat-option *ngFor="let docente of docentes?.opciones" [value]="docente">
-                                {{ docente.nombre }}
-                            </mat-option>
-                        </mat-select>
-                        <mat-error
-                            *ngIf="coevaluacionIIForm.get('docenteNombre')?.hasError('required') && coevaluacionIIForm.get('docenteNombre')?.touched">
-                            {{ 'coevaluacion_ii.error_docente' | translate }}
-                        </mat-error>
-                    </mat-form-field>
-                </div>
-
-<!--                 <div class="form-col1">
-                    <mat-form-field style="width: 100%" floatLabel="always">
-                        <mat-label>{{ 'autoevaluacion_ii.espacio1' | translate }}</mat-label>
-                        <mat-select formControlName="espacioAcademico" required>
-                          <mat-option *ngFor="let espacio of espacios_academicos" [value]="espacio.nombre">
-                            {{ espacio.nombre }}
-                          </mat-option>
-                        </mat-select>
-                        <mat-error *ngIf="autoevaluacionIIForm.get('espacioAcademico')?.hasError('required') && autoevaluacionIIForm.get('espacioAcademico')?.touched">
-                          {{ 'autoevaluacion_ii.error_espacio1' | translate }}
-                        </mat-error>
-                      </mat-form-field>
-                </div> -->
-
-                <div class="form-col1">
-                    <mat-form-field style="width: 100%" appearance="outline">
-                        <mat-label>{{ 'coevaluacion_ii.descripcion_proceso' | translate }}</mat-label>
-                        <textarea matInput formControlName="descripcionProceso"
-                            placeholder="Descripción del proceso" rows="3" readonly></textarea>
-                        <mat-error
-                            *ngIf="coevaluacionIIForm.get('descripcionProceso')?.hasError('required') && coevaluacionIIForm.get('descripcionProceso')?.touched">
-                            {{ 'coevaluacion_ii.error_descripcion' | translate }}
-                        </mat-error>
-                    </mat-form-field>
-                </div>
-            </form>
-            <div *ngIf="!mostrarEvaluacion" style="width: 100%; display: flex; justify-content: center">
-                <button mat-raised-button color="primary" (click)="continuar(coevaluacionIIForm)">{{ 'GLOBAL.continuar' | translate }}</button>
-            </div>
-
-            <ngx-dynamic-form *ngIf="mostrarEvaluacion" [formtype]="'5'" [tercero]="tercero" [terceroEvaluado]="terceroEvaluado" [proyecto]="proyecto" [espacio]="espacio" (evaluacionCompletada)="ocultarEvaluacion()"></ngx-dynamic-form>
-            </mat-card-content>
-        </mat-card>
-    </ng-container>
+                    <ngx-dynamic-form *ngIf="mostrarEvaluacion" [formtype]="'5'" [tercero]="tercero"
+                        [terceroEvaluado]="terceroEvaluado" [proyecto]="proyecto" [espacio]="espacio" [grupos]="grupos"
+                        (evaluacionCompletada)="ocultarEvaluacion()"></ngx-dynamic-form>
+                </mat-card-content>
+            </mat-card>
+        </ng-container>
 
     </mat-card-content>
 </mat-card>

@@ -23,6 +23,7 @@ export class AsignacionFechasComponent implements OnInit {
 
   procesos: any[] = [
     {
+      idProceso: "1",
       nombre: "Heteroevaluación",
       fechaInicio: "",
       fechaFin: "",
@@ -30,6 +31,7 @@ export class AsignacionFechasComponent implements OnInit {
       showIcon: false,
     },
     {
+      idProceso: "2",
       nombre: "Autoevaluación estudiantes",
       fechaInicio: "",
       fechaFin: "",
@@ -37,6 +39,7 @@ export class AsignacionFechasComponent implements OnInit {
       showIcon: false,
     },
     {
+      idProceso: "3",
       nombre: "Coevaluación I",
       fechaInicio: "",
       fechaFin: "",
@@ -44,13 +47,31 @@ export class AsignacionFechasComponent implements OnInit {
       showIcon: false,
     },
     {
-      nombre: "Autoevaluación docente",
+      idProceso: "4",
+      nombre: "Autoevaluación docente - parte 1",
       fechaInicio: "",
       fechaFin: "",
       editando: false,
       showIcon: false,
     },
     {
+      idProceso: "5",
+      nombre: "Autoevaluación docente - parte 2",
+      fechaInicio: "",
+      fechaFin: "",
+      editando: false,
+      showIcon: false,
+    },
+    {
+      idProceso: "6",
+      nombre: "Autoevaluación docente - parte 3",
+      fechaInicio: "",
+      fechaFin: "",
+      editando: false,
+      showIcon: false,
+    },
+    {
+      idProceso: "7",
       nombre: "Coevaluación II",
       fechaInicio: "",
       fechaFin: "",
@@ -67,6 +88,8 @@ export class AsignacionFechasComponent implements OnInit {
   evaluaciones: any[] = [];
   errorPut: boolean = false;
   dateHeader: string | undefined;
+  guardarHabilitado!: boolean;
+  fechaPatternHtml = "\\d{1,2}/\\d{1,2}/\\d{4}";
 
   constructor(
     private userService: UserService,
@@ -113,23 +136,55 @@ export class AsignacionFechasComponent implements OnInit {
         "La fecha de inicio y la fecha de fin no pueden ser iguales"
       );
       proceso.fechaFin = "";
-      return;
-    }
-
-    if (fechaInicio > fechaFin) {
+    } else if (fechaInicio > fechaFin) {
       this.popUpManager.showErrorAlert(
         "La fecha de inicio no puede ser posterior a la fecha de fin"
       );
       proceso.fechaFin = "";
-      return;
     }
 
-    if (fechaFin < fechaInicio) {
-      this.popUpManager.showErrorAlert(
-        "La fecha de fin no puede ser anterior a la fecha de inicio"
-      );
+    if (!this.esFechaValida(proceso.fechaInicio) || !this.esFechaValida(proceso.fechaFin)) {
+      this.popUpManager.showErrorAlert("Fecha inválida. Ingrese una fecha correcta en formato dd/MM/yyyy.");
+      proceso.fechaInicio = "";
       proceso.fechaFin = "";
       return;
+    }
+    //this.actualizarEstadoBoton();
+    this.esGuardarHabilitado();
+  }
+
+  /*actualizarEstadoBoton() {
+    this.guardarHabilitado = this.esGuardarHabilitado();
+  }*/
+
+  esGuardarHabilitado(): boolean {
+    return this.procesos.every(proceso => proceso.fechaInicio && proceso.fechaFin);
+  }
+
+  esFechaValida(fechaStr: string): boolean {
+    const regex = /^(0?[1-9]|[12][0-9]|3[01])\/(0?[1-9]|1[0-2])\/(\d{4})$/;
+    const match = fechaStr.match(regex);
+  
+    if (!match) return false; 
+  
+    const dia = Number(match[1]);
+    const mes = Number(match[2]);
+    const año = Number(match[3]);
+    
+    if (match[3].length !== 4 || año < 1000 || año > 9999) return false;
+
+    if (mes < 1 || mes > 12) return false;
+    if (dia < 1 || dia > new Date(año, mes, 0).getDate()) return false;
+
+    return true;
+  }
+
+  validarEntrada(event: KeyboardEvent) {
+    const charCode = event.key;
+    const regex = /^[0-9/]$/; 
+  
+    if (!regex.test(charCode)) {
+      event.preventDefault(); 
     }
   }
 
@@ -147,6 +202,12 @@ export class AsignacionFechasComponent implements OnInit {
   }
 
   guardar() {
+    for (let proceso of this.procesos) {
+      console.log("proceso: ", proceso);
+    }
+  }
+
+  /*guardar() {
     if (!this.nivelFormacion || !this.periodoFormacion) {
       this.mensajeError =
         "Debe seleccionar el nivel de formación y el período antes de guardar.";
@@ -159,6 +220,7 @@ export class AsignacionFechasComponent implements OnInit {
     let descripcionIndex = 1;
 
     for (let proceso of this.procesos) {
+      console.log("proceso: ", proceso);
       if (proceso.fechaInicio && proceso.fechaFin) {
         const descripcion = `Evaluación ${descripcionIndex}`;
         const fechaInicio = new Date(proceso.fechaInicio).toISOString();
@@ -201,7 +263,7 @@ export class AsignacionFechasComponent implements OnInit {
         descripcionIndex++;
       }
     }
-  }
+  }*/
 
   crearNuevaEvaluacion(proceso: any, descripcionIndex: number) {
     const calendarioEvento = {

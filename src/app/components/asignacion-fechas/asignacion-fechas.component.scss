@@ -104,6 +104,14 @@
     mat-icon {
       font-size: 24px;
     }
+
+    &:disabled,
+    &[disabled] {
+      background-color: #b0b0b0; 
+      color: #ffffff;
+      cursor: not-allowed;
+      opacity: 0.6; 
+    }
   }
 }
 
