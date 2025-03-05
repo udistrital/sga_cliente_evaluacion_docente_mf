@@ -44,8 +44,8 @@ export class EvaluacionesComponent implements OnInit {
   grupos: any[] = [];
   grupo: any = null;
   dataSource!: MatTableDataSource<any>;
-  tercero!: number;
-  terceroEvaluado!: number;
+  evaluador!: number;
+  evaluado!: number;
   nombreDocente!: string;
   proyecto!: number;
   nombreProyecto!: string;
@@ -94,10 +94,10 @@ export class EvaluacionesComponent implements OnInit {
     this.userService.getPersonaId()
       .then(
         (personaId) => {
-          this.tercero = personaId;
+          this.evaluador = personaId;
         }
       ).catch(error => {
-        this.tercero = 1;
+        this.evaluador = 1;
         console.error('Error:', error.message);
       });
   }
@@ -644,7 +644,7 @@ export class EvaluacionesComponent implements OnInit {
       this.consultarDocenteTercero(docenteSeleccionado).then(
         (res) => {
           if (res != null) {
-            this.terceroEvaluado = res.Id;
+            this.evaluado = res.Id;
             this.nombreDocente = res.NombreCompleto;
 
             this.mostrarEvaluacion = false;

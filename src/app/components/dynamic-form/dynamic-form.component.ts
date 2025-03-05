@@ -44,8 +44,8 @@ export class DynamicFormComponent implements OnInit, OnChanges {
   @Input() inputData: any; // Define el @Input
 
   @Input() formtype!: string;
-  @Input() tercero!: number;
-  @Input() terceroEvaluado!: number;
+  @Input() evaluador!: number;
+  @Input() evaluado!: number;
   @Input() proyecto!: number;
   @Input() espacio!: string;
   @Input() grupos!: any[];
@@ -72,7 +72,7 @@ ngOnChanges() {
   // Método para inicializar el formulario seleccionado
   selectForm(tipo_formulario: string) {
     let url;
-    this.grupos && this.grupos.length !== undefined ? url = `formulario_por_tipo?id_tipo_formulario=${tipo_formulario}&id_periodo=1&id_tercero=${this.tercero}&id_espacio=${this.espacio}` : url = `formulario_por_tipo?id_tipo_formulario=${tipo_formulario}&id_periodo=1&id_tercero=${this.tercero}&id_espacio=${this.espacio}&id_grupo=${this.grupo.id}`
+    this.grupos && this.grupos.length !== undefined ? url = `formulario_por_tipo?id_tipo_formulario=${tipo_formulario}&id_periodo=1&id_evaluador=${this.evaluador}&id_espacio=${this.espacio}` : url = `formulario_por_tipo?id_tipo_formulario=${tipo_formulario}&id_periodo=1&id_evaluador=${this.evaluador}&id_espacio=${this.espacio}&id_grupo=${this.grupo.id}`
     this.evaluacionDocenteMidService.get(url)
       .subscribe(response => {
         if (response.Success === true && response.Status === 200) {
@@ -273,8 +273,8 @@ ngOnChanges() {
         espacios.forEach((esp) => {
           const jsonData = {
             id_periodo: 1,
-            id_tercero: this.tercero,
-            id_evaluado: this.terceroEvaluado != null ? this.terceroEvaluado : this.tercero,
+            id_tercero: this.evaluador,
+            id_evaluado: this.evaluado != null ? this.evaluado : this.evaluador,
             proyecto_curricular: Number(this.proyecto),
             grupos: gruposJson,
             espacio_academico: esp,
