@@ -58,7 +58,7 @@ steps:
 #     - unitest
 
 - name: run_sonar_scanner
-  image: aosapps/drone-sonar-plugin
+  image: sonarsource/sonar-scanner-cli:latest
   settings:
     sonar_host:
       from_secret: SONAR_HOST
