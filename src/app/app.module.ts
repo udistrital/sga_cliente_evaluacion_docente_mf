@@ -36,6 +36,7 @@ import { DocenteCrudService } from './services/docente-crud.service';
 import { ProyectoAcademicoService } from './services/proyecto_academico.service';
 import { OikosService } from 'src/app/services/oikos.service';
 import { EspaciosAcademicosService } from './services/espacios_academicos.service';
+import { ProcesoParametroService } from './services/proceso-parametro.service';
 
 import { DateService } from './services/date.service';
 import { SgaEvaluacionDocenteMidService } from './services/sga_evaluacion_docente_mid.service';
@@ -109,12 +110,15 @@ export const CUSTOM_DATE_FORMATS = {
     OikosService,
     DateService,
     EspaciosAcademicosService,
+    ProcesoParametroService,
     SgaEvaluacionDocenteMidService,
     EvaluacionDocenteService,
     AcademicaService,
     { provide: HTTP_INTERCEPTORS, useClass: SpinnerUtilInterceptor, multi: true },
-    { provide: MAT_DATE_LOCALE, useValue: 'es-ES' }, 
+    { provide: MAT_DATE_LOCALE, useValue: 'es-CO' }, 
     { provide: MAT_DATE_FORMATS, useValue: CUSTOM_DATE_FORMATS },
+    { provide: DateAdapter, useClass: NativeDateAdapter },
+    { provide: MAT_LOCALE, useValue: 'es-CO' },
   ],
   bootstrap: [AppComponent]
 })

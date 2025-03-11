@@ -45,7 +45,8 @@
         "selecionar_proyecto": "Seleccione un proyecto",
         "selecionar_docente": "Seleccione un docente",
         "selecionar_espacio": "Seleccione un espacio",
-        "selecionar_grupo": "Seleccione un grupo"
+        "selecionar_grupo": "Seleccione un grupo",
+        "operacion_exitosa": "Operación exitosa"
     },
 
     "asignacion_fechas": {

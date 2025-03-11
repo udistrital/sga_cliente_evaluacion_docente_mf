@@ -71,6 +71,12 @@
           position: relative;
           right: -8px;
         }
+
+        mat-error {
+          color: red !important;
+          font-weight: bold;
+          font-size: 14px;
+        }
       }
 
       .selected-dates {
