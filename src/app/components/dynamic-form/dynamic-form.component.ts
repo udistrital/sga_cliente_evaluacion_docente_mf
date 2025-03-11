@@ -46,7 +46,8 @@ export class DynamicFormComponent implements OnInit, OnChanges {
   @Input() formtype!: string;
   @Input() evaluador!: number;
   @Input() evaluado!: number;
-  @Input() proyecto!: number;
+  @Input() proyectoEspacio!: number;
+  @Input() proyectoEvaluador!: number;
   @Input() espacio!: string;
   @Input() grupos!: any[];
   @Input() grupo!: any;
@@ -273,13 +274,14 @@ ngOnChanges() {
         espacios.forEach((esp) => {
           const jsonData = {
             id_periodo: 1,
-            id_tercero: this.evaluador,
-            id_evaluado: this.evaluado != null ? this.evaluado : this.evaluador,
-            proyecto_curricular: Number(this.proyecto),
+            id_evaluador: String(this.evaluador),
+            id_evaluado: this.evaluado != null ? String(this.evaluado) : String(this.evaluador),
+            proyecto_curricular_espacio: String(this.proyectoEspacio),
+            proyecto_curricular_evaluador: String(this.proyectoEvaluador),
             grupos: gruposJson,
             espacio_academico: esp,
             plantilla_id: 456,
-            plantilla_proceso_id: Number(this.formtype),
+            proceso_id: Number(this.formtype),
             respuestas,
           };
           const request = this.evaluacionDocenteMidService.post('respuesta_formulario', jsonData);
