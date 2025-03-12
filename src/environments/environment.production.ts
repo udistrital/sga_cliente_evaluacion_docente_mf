@@ -8,4 +8,5 @@ export const environment = {
     ACADEMICA_SERVICE: "https://autenticacion.portaloas.udistrital.edu.co/apioas/academica_jbpm/v2/",
     EVENTOS_CRUD: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/sesiones_crud/v2/',
     PARAMETROS_CRUD: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/parametros/v1/',
+    EVALUACION_DOCENTE_CRUD:'https://autenticacion.portaloas.udistrital.edu.co/apioas/evaluacion_docente_crud/v1/',
 };
