@@ -44,16 +44,16 @@ export class EvaluacionesComponent implements OnInit {
   grupos: any[] = [];
   grupo: any = null;
   dataSource!: MatTableDataSource<any>;
-  tercero!: number;
-  terceroEvaluado!: number;
+  evaluador!: number;
+  evaluado!: number;
   nombreDocente!: string;
   proyecto!: number;
   nombreProyecto!: string;
   espacio!: string;
   nombreEspacio!: string;
   mostrarEvaluacion: boolean = false;
-  
-  @Input() formtype: string = '';  
+
+  @Input() formtype: string = '';
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   constructor(
@@ -94,10 +94,10 @@ export class EvaluacionesComponent implements OnInit {
     this.userService.getPersonaId()
       .then(
         (personaId) => {
-          this.tercero = personaId;
+          this.evaluador = personaId;
         }
       ).catch(error => {
-        this.tercero = 1;
+        this.evaluador = 1;
         console.error('Error:', error.message);
       });
   }
@@ -112,7 +112,7 @@ export class EvaluacionesComponent implements OnInit {
       proyectoCurricular: ["", Validators.required],
       docenteNombre: ["", Validators.required],
       espacioAcademico: ["", Validators.required],
-      descripcionProceso: [`Estimado estudiantado: Por favor evalúe formativamente a su docente utilizando el formato dispuesto para ello. Los ítems 01 a 20 de selección múltiple con única respuesta son obligatorios. Puede realizar anotaciones de felicitación o de sugerencias respetuosas en los espacios destinados para tal fin. Utilice como referencia la siguiente escala para medir el grado de desempeño a evaluar:`, 
+      descripcionProceso: [`Estimado estudiantado: Por favor evalúe formativamente a su docente utilizando el formato dispuesto para ello. Los ítems 01 a 20 de selección múltiple con única respuesta son obligatorios. Puede realizar anotaciones de felicitación o de sugerencias respetuosas en los espacios destinados para tal fin. Utilice como referencia la siguiente escala para medir el grado de desempeño a evaluar:`,
         Validators.required],
     });
 
@@ -121,6 +121,7 @@ export class EvaluacionesComponent implements OnInit {
       finFecha: ["", Validators.required],
       proyectoCurricular: ["", Validators.required],
       docenteNombre: ["", Validators.required],
+      espacioAcademico: ["", Validators.required],
       descripcionProceso: [`Estimado Consejo Curricular: Por favor coevalúe con plan de mejoramiento su desempeño docente utilizando el formato dispuesto para ello. Los ítems PROMEDIO con única respuesta son obligatorios en cada dimensión.`, Validators.required],
     });
 
@@ -164,9 +165,9 @@ export class EvaluacionesComponent implements OnInit {
     } catch (error) {
       this.popUpManager.showErrorToast('Error al cargar los espacios académicos: ' + error);
     }
-  } 
+  }
 
-   async cargarEspaciosAcademicos() {
+  async cargarEspaciosAcademicos() {
     return new Promise((resolve, reject) => {
       this.espaciosAcademicosService
         .get('espacio-academico?query=espacio_academico_padre,activo:true&limit=0')
@@ -182,22 +183,34 @@ export class EvaluacionesComponent implements OnInit {
     });
   }
 
-  async consultarCargaAcademica(codigo: string) {
+  async consultarCargaAcademica(documento: string) {
     let parametros = {
       parametros: {
-        codigo_estudiante: codigo
+        identificacion: documento
       }
     }
+    var storedConsultaEstudiante = localStorage.getItem('data_evaluacion_estudiante');
+    if (storedConsultaEstudiante !== null) {
+      const dataParsed = JSON.parse(storedConsultaEstudiante);
+      console.log('consulta grande que guardo en storage: ', dataParsed);
+      return {
+        identificacion: dataParsed.Data.estudiante.espacios[0].doc_estudiante,
+        nombre: dataParsed.Data.estudiante.espacios[0].nom_estudiante,
+        proyectos: this.transformarDatosEstudiante(dataParsed.Data.estudiante.espacios)
+      };
+    }
+    else {
     return new Promise((resolve, reject) => {
       this.evaluacionDocenteMidService
         .post('carga_academica', parametros)
         .subscribe(
           (response: any) => {
             if (response.Data != null) {
+                localStorage.setItem('data_evaluacion_estudiante', JSON.stringify(response));
               resolve({
-                codigo_estudiante: response.Data[0].COD_ESTUDIANTE,
-                nombre: response.Data[0].ESTUDIANTE,
-                proyectos: this.transformarDatosEstudiante(response.Data)
+                identificacion: response.Data.estudiante.espacios[0].doc_estudiante,
+                nombre: response.Data.estudiante.espacios[0].nom_estudiante,
+                proyectos: this.transformarDatosEstudiante(response.Data.estudiante.espacios)
               });
             } else {
               resolve(response);
@@ -208,46 +221,84 @@ export class EvaluacionesComponent implements OnInit {
           }
         );
     });
+    }
   }
 
   transformarDatosEstudiante(lista: any[]): any[] {
     const proyectosMap = new Map<number, any>();
 
-    lista.forEach((elemento) => {
-      const { COD_PROYECTO, DOCENTE, DOC_DOCENTE, PROYECTO, COD_ESPACIO, ESPACIO, GRUPO } = elemento;
+    console.log(lista)
 
-      if (!proyectosMap.has(COD_PROYECTO)) {
-        proyectosMap.set(COD_PROYECTO, {
-          id: COD_PROYECTO,
-          nombre: PROYECTO,
+
+    lista.forEach((elemento) => {
+
+      const { cod_proyecto, nom_docente, doc_docente, nom_proyecto, cod_espacio, espacio_academico, grupo } = elemento;
+
+      if (!proyectosMap.has(cod_proyecto)) {
+        proyectosMap.set(cod_proyecto, {
+          id: cod_proyecto,
+          nombre: nom_proyecto,
           docentes: [],
           asignaturas: []
         });
       }
 
-      const proyecto = proyectosMap.get(COD_PROYECTO);
+      const proyecto = proyectosMap.get(cod_proyecto);
       if (proyecto) {
-        const docenteExistente = proyecto.docentes.some((docente: any) => docente.id === DOC_DOCENTE);
+        const docenteExistente = proyecto.docentes.some((docente: any) => docente.id === doc_docente);
         if (!docenteExistente) {
           proyecto.docentes.push({
-            id: DOC_DOCENTE,
-            nombre: DOCENTE
+            id: doc_docente,
+            nombre: nom_docente
           });
         }
 
-        const asignaturaExistente = proyecto.asignaturas.some((asignatura: any) => asignatura.id === String(COD_ESPACIO));
+        const asignaturaExistente = proyecto.asignaturas.some((asignatura: any) => asignatura.id === String(cod_espacio));
         if (!asignaturaExistente) {
           proyecto.asignaturas.push({
-            id: String(COD_ESPACIO),
-            nombre: ESPACIO,
-            grupos: GRUPO,
-            docente: DOC_DOCENTE
+            id: String(cod_espacio),
+            nombre: espacio_academico,
+            grupos: grupo,
+            docente: doc_docente
           });
         }
       }
     });
 
     return Array.from(proyectosMap.values());
+  }
+
+
+  filtrarEspaciosPorProyecto(data: any, codProyecto: Number) {
+    const espaciosMap = new Map<string, any>();
+
+    for (let i = 0; i < data.docente.carga.length; i++) {
+      let item = data.docente.carga[i];
+
+      if (item.cod_proyecto === codProyecto) {
+        let clave = item.cod_proyecto + "-" + item.cod_espacio + "-" + item.espacio;
+
+        if (!espaciosMap.has(clave)) {
+          // Crear la estructura base con los grupos en un array
+          espaciosMap.set(clave, {
+            id: item.cod_espacio,
+            nombre: item.espacio,
+            grupos: []
+          });
+        }
+
+        // Obtener la referencia del objeto en el mapa y agregar el grupo si aún no está
+        let entry = espaciosMap.get(clave);
+        if (!entry.grupos.some((g: any) => g.id === item.id_grupo)) {
+          entry.grupos.push({
+            id: item.id_grupo,
+            nombre: item.grupo
+          });
+        }
+      }
+    }
+
+    return Array.from(espaciosMap.values());
   }
 
   async consultarEspaciosAcademicos(documento: string) {
@@ -263,9 +314,9 @@ export class EvaluacionesComponent implements OnInit {
           (response: any) => {
             if (response.Data != null) {
               resolve({
-                identificacion: response.Data[0].DOC_DOCENTE,
-                nombre: response.Data[0].DOCENTE,
-                proyectos: this.transformarDatosDocente(response.Data)
+                identificacion: response.Data.docente.carga[0].doc_docente,
+                nombre: response.Data.docente.carga[0].docente,
+                proyectos: this.transformarDatosDocente(response.Data.docente.carga)
               });
             } else {
               resolve(response);
@@ -282,35 +333,37 @@ export class EvaluacionesComponent implements OnInit {
     const proyectosMap = new Map<number, any>();
 
     lista.forEach((elemento) => {
-      const { CRA_COD, CARRERA, CODIGO_SIGNATURA, ASIGNATURA, ID_GRUPO, GRUPO } = elemento;
+      const { cod_proyecto, proyecto, cod_espacio, espacio, id_grupo, grupo } = elemento;
 
-      if (!proyectosMap.has(CRA_COD)) {
-        proyectosMap.set(CRA_COD, {
-          id: CRA_COD,
-          nombre: CARRERA,
-          asignaturas: []
-        });
+      if (!proyectosMap.has(cod_proyecto
+      )) {
+        proyectosMap.set(cod_proyecto
+          , {
+            id: cod_proyecto,
+            nombre: proyecto,
+            asignaturas: []
+          });
       }
 
-      const proyecto = proyectosMap.get(CRA_COD);
-      if (proyecto) {
-        const asignaturaExistente = proyecto.asignaturas.find((asignatura: any) => asignatura.nombre === ASIGNATURA);
+      const proy = proyectosMap.get(cod_proyecto);
+      if (proy) {
+        const asignaturaExistente = proy.asignaturas.find((asignatura: any) => asignatura.nombre === espacio);
         if (asignaturaExistente) {
-          const grupoExistente = asignaturaExistente.grupos.some((grupo: any) => grupo.id === ID_GRUPO);
+          const grupoExistente = asignaturaExistente.grupos.some((grupo: any) => grupo.id === id_grupo);
           if (!grupoExistente) {
             asignaturaExistente.grupos.push({
-              id: ID_GRUPO,
-              nombre: GRUPO
+              id: id_grupo,
+              nombre: grupo
             });
           }
         } else {
-          proyecto.asignaturas.push({
-            id: String(CODIGO_SIGNATURA),
-            nombre: ASIGNATURA,
+          proy.asignaturas.push({
+            id: String(cod_espacio),
+            nombre: espacio,
             grupos: [
               {
-                id: ID_GRUPO,
-                nombre: GRUPO
+                id: id_grupo,
+                nombre: grupo
               }
             ]
           });
@@ -337,6 +390,9 @@ export class EvaluacionesComponent implements OnInit {
 
   // Método que maneja la selección del menú desplegable
   onSelectChange(event: MatSelectChange) {
+    if (this.selectedEvaluation) {  
+      this
+    }
     this.selectedEvaluation = event.value;
     this.mostrarEvaluacion = false;
     this.consultarDatos();
@@ -344,13 +400,13 @@ export class EvaluacionesComponent implements OnInit {
 
   consultarDatos() {
     if (this.hasRole([ROLES.ESTUDIANTE])) {
-      this.userService.getCodigoEstudiante().then((codigo) => {
-        if (codigo != null) {
-          this.consultarCargaAcademica(codigo).then((response: any) => {
+      this.userService.getUserDocument().then((documento) => {
+        if (documento != null) {
+          this.consultarCargaAcademica(documento).then((response: any) => {
             if (this.selectedEvaluation == "heteroevaluacion") {
               this.heteroForm.patchValue({
                 estudianteNombre: response.nombre,
-                estudianteIdentificacion: response.codigo_estudiante,
+                estudianteIdentificacion: response.identificacion,
                 inicioFecha: new Date(),
                 finFecha: new Date()
               });
@@ -370,6 +426,7 @@ export class EvaluacionesComponent implements OnInit {
     } else if (this.hasRole([ROLES.DOCENTE])) {
       this.userService.getUserDocument().then((documento) => {
         this.consultarEspaciosAcademicos(documento).then((response: any) => {
+          localStorage.setItem('evaluacion_docente', JSON.stringify(response));
           if (this.selectedEvaluation == "autoevaluacion_ii") {
             this.autoevaluacionIIForm.patchValue({
               docenteIdentificacion: response.identificacion,
@@ -390,13 +447,16 @@ export class EvaluacionesComponent implements OnInit {
       });
     } else if (this.hasRole([ROLES.COORDINADOR])) {
       if (this.selectedEvaluation == "coevaluacion_ii") {
-        this.consultarProyectos().then((carreras) => {
-          this.coevaluacionIIForm.patchValue({
-            inicioFecha: new Date(),
-            finFecha: new Date()
-          });
+        this.userService.getUserDocument().then((documento) => {
+          this.consultarProyectos(documento).then((carreras) => {
+            localStorage.setItem('evaluacion_coordinador', JSON.stringify(carreras));
+            this.coevaluacionIIForm.patchValue({
+              inicioFecha: new Date(),
+              finFecha: new Date()
+            });
 
-          this.proyectos.opciones = carreras;
+            this.proyectos.opciones = carreras;
+          });
         });
       }
     }
@@ -458,6 +518,7 @@ export class EvaluacionesComponent implements OnInit {
         this.nombreProyecto = proyectoSeleccionado.nombre;
       });
     } else if (proyectoSeleccionado) {
+      console.log("entra ptyecto seleccionado")
       this.proyecto = proyectoSeleccionado.id;
       this.nombreProyecto = proyectoSeleccionado.nombre;
       this.docentes.opciones = proyectoSeleccionado.docentes;
@@ -474,13 +535,35 @@ export class EvaluacionesComponent implements OnInit {
         });
       }
 
+      this.grupos = [];
+
       this.openSnackBar(`Proyecto seleccionado: ${proyectoSeleccionado.nombre}`);
     }
 
     this.mostrarEvaluacion = false;
   }
 
+  /* INICIO FORMULARIO DE HETEROEVALUACION*/
+
+  onProyectoHetero(event: MatSelectChange): void {
+    const proyectoSeleccionado = event.value;
+    console.log("proyectoSeleccionadoNueva: ", proyectoSeleccionado);
+
+    this.proyecto = proyectoSeleccionado.id;
+    this.nombreProyecto = proyectoSeleccionado.nombre;
+
+    this.onDocenteHetero(proyectoSeleccionado.id);
+  }
+
+  onDocenteHetero(event: MatSelectChange): void {
+    const docenteSeleccionado = event.value;
+    console.log("docenteSeleccionadoNueva: ", docenteSeleccionado);
+  }
+
+  /* FIN FORMULARIO DE HETEROEVALUACION*/
+
   onEspacioSelection(event: MatSelectChange): void {
+    this.grupos = [];
     const espacioSeleccionado = event.value;
 
     if (Array.isArray(espacioSeleccionado)) {
@@ -491,7 +574,7 @@ export class EvaluacionesComponent implements OnInit {
         idsEspacios += esp.id + ",";
         nombresEspacios += esp.nombre + ",";
         if (Array.isArray(esp.grupos)) {
-          grupos.push(...esp.grupos);
+          this.grupos.push(...esp.grupos);
         }
       });
       this.espacio = idsEspacios.slice(0, -1);
@@ -527,22 +610,49 @@ export class EvaluacionesComponent implements OnInit {
   }
 
   onDocenteSelection(event: MatSelectChange): void {
-    const docenteSeleccionado = event.value;
+    if (this.selectedEvaluation === "heteroevaluacion") {
 
-    
 
-    this.espacios.opciones = this.espacios_academicos.filter((espacio) => espacio.docente === docenteSeleccionado.id);
+    }
+    else {
+      const docenteSeleccionado = event.value;
 
-    this.consultarDocenteTercero(docenteSeleccionado).then(
-      (res) => {
-        if (res != null) {
-          this.terceroEvaluado = res.Id;
-          this.nombreDocente = res.NombreCompleto;
-
-          this.mostrarEvaluacion = false;
+      let parametros = {
+        parametros: {
+          identificacion: docenteSeleccionado.id
         }
       }
-    )
+      this.evaluacionDocenteMidService
+        .post('espacios_academicos', parametros)
+        .subscribe({
+          next: (response) => {
+            if (response.Data != null) {
+              let espaciosUnicos
+              espaciosUnicos = this.filtrarEspaciosPorProyecto(response.Data, this.proyecto);
+              this.espacios.opciones = espaciosUnicos;
+              console.log(espaciosUnicos);
+            }
+          },
+          error: (err) => {
+            console.error('Error al cargar proyectos:', err);
+          }
+        }
+        );
+
+      this.espacios.opciones = this.espacios_academicos.filter((espacio) => espacio.docente === docenteSeleccionado.id);
+
+      this.consultarDocenteTercero(docenteSeleccionado).then(
+        (res) => {
+          if (res != null) {
+            this.evaluado = res.Id;
+            this.nombreDocente = res.NombreCompleto;
+
+            this.mostrarEvaluacion = false;
+          }
+        }
+      )
+    }
+
   }
 
   async consultarDocenteTercero(docente: any): Promise<any> {
@@ -560,7 +670,7 @@ export class EvaluacionesComponent implements OnInit {
             reject(error);
           }
         )
-      }
+    }
     );
   }
 
@@ -599,64 +709,67 @@ export class EvaluacionesComponent implements OnInit {
     }
     return new Promise((resolve, reject) => {
       this.tercerosService.post('datos_identificacion', datosIdentificacion)
-      .subscribe(
-        (res: any) => {
-          if (res != null) {
-            resolve(res);
+        .subscribe(
+          (res: any) => {
+            if (res != null) {
+              resolve(res);
+            }
+          },
+          (error: any) => {
+            reject(error);
           }
-        },
-        (error: any) => {
-          reject(error);
-        }
-      );
+        );
     });
   }
 
-  async consultarProyectos(): Promise<string[]> {
+  async consultarProyectos(idCoordinador: any): Promise<string[]> {
     return new Promise((resolve, reject) => {
-      this.academicaService.get('carreras/PREGRADO')
-      .subscribe(
-        (res: any) => {
-          if (res != null) {
-            if (res["carrerasCollection"] != null && res["carrerasCollection"].carrera != null) {
-              const carreras = res["carrerasCollection"].carrera.map(({ codigo, nombre }: any) => ({
-                id: codigo,
-                nombre: codigo + "-" + nombre
-              }));
-              resolve(carreras);
-            } else {
-              reject([]);
+      this.academicaService.get('coordinador_carrera_snies/' + idCoordinador)
+        .subscribe(
+          (res: any) => {
+            if (res != null) {
+              if (res["coordinadorCollection"] != null && res["coordinadorCollection"].coordinador != null) {
+                console.log(res["coordinadorCollection"].coordinador);
+
+                const proyectos = res["coordinadorCollection"].coordinador.map(({ codigo_condor, nombre_proyecto_condor }: any) => ({
+                  id: codigo_condor,
+                  nombre: codigo_condor + "-" + nombre_proyecto_condor
+                }));
+                resolve(proyectos);
+              } else {
+                reject([]);
+              }
             }
+          },
+          (error: any) => {
+            reject(error);
           }
-        },
-        (error: any) => {
-          reject(error);
-        }
-      )
+        )
     });
+
   }
 
   async consultarDocentesPorProyecto(idProyecto: number): Promise<string[]> {
     return new Promise((resolve, reject) => {
       this.academicaService.get('docentes_por_proyecto/' + idProyecto)
-      .subscribe(
-        (res: any) => {
-          if (res != null) {
-            if (res["docentesCollection"] != null && res["docentesCollection"].docentes != null) {
-              const docentes = res["docentesCollection"].docentes.map(({ identificacion, nombres, apellidos }: any) => ({
-                id: identificacion,
-                nombre: nombres + " " + apellidos
-              }));
-              resolve(docentes);
-            } else {
-              reject([]);
+        .subscribe(
+          (res: any) => {
+            if (res != null) {
+              if (res["docentesCollection"] != null && res["docentesCollection"].docentes != null) {
+                const docentes = res["docentesCollection"].docentes.map(({ identificacion, nombres, apellidos }: any) => ({
+                  id: identificacion,
+                  nombre: nombres + " " + apellidos
+                }));
+                resolve(docentes);
+              } else {
+                reject([]);
+              }
             }
+          },
+          (error: any) => {
+            reject(error);
           }
-        },
-        (error: any) => {
-          reject(error);
-        }
-      )
+        )
     });
   }
 
@@ -668,7 +781,7 @@ export class EvaluacionesComponent implements OnInit {
           nombre_proyecto: this.nombreProyecto,
           nombre_docente: this.nombreDocente,
           nombre_asignatura: this.nombreEspacio,
-          grupo: this.selectedEvaluation === "coevaluacion_i" ? this.grupo.nombre : this.grupos,
+          grupo: this.grupos,
         }),
         icon: "warning",
         showCancelButton: true,

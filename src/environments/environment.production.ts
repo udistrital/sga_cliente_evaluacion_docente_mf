@@ -7,4 +7,5 @@ export const environment = {
     TERCEROS_CRUD: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/terceros_crud/v1/',
     ACADEMICA_SERVICE: "https://autenticacion.portaloas.udistrital.edu.co/apioas/academica_jbpm/v2/",
     EVENTOS_CRUD: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/sesiones_crud/v2/',
+    PARAMETROS_CRUD: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/parametros/v1/',
 };

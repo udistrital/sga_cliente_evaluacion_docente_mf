@@ -1,4 +1,7 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+import { NativeDateAdapter, DateAdapter, MAT_DATE_LOCALE as MAT_LOCALE } from '@angular/material/core';
+import { MatNativeDateModule } from '@angular/material/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -33,6 +36,7 @@ import { DocenteCrudService } from './services/docente-crud.service';
 import { ProyectoAcademicoService } from './services/proyecto_academico.service';
 import { OikosService } from 'src/app/services/oikos.service';
 import { EspaciosAcademicosService } from './services/espacios_academicos.service';
+import { ProcesoParametroService } from './services/proceso-parametro.service';
 
 import { DateService } from './services/date.service';
 import { SgaEvaluacionDocenteMidService } from './services/sga_evaluacion_docente_mid.service';
@@ -43,6 +47,18 @@ import { AcademicaService } from './services/academica.service';
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, environment.apiUrl + 'assets/i18n/', '.json');
 }
+
+export const CUSTOM_DATE_FORMATS = {
+  parse: {
+    dateInput: 'DD/MM/YYYY', 
+  },
+  display: {
+    dateInput: 'DD/MM/YYYY', 
+    monthYearLabel: 'MMMM YYYY',
+    dateA11yLabel: 'DD/MM/YYYY',
+    monthYearA11yLabel: 'MMMM YYYY',
+  },
+};
 
 @NgModule({
   declarations: [
@@ -67,6 +83,7 @@ export function createTranslateLoader(http: HttpClient) {
     NgxChartsModule,
     CommonModule,
     BrowserAnimationsModule,
+    MatNativeDateModule,
     MATERIAL_MODULES,
     HttpClientModule,
     SpinnerUtilModule,
@@ -93,10 +110,15 @@ export function createTranslateLoader(http: HttpClient) {
     OikosService,
     DateService,
     EspaciosAcademicosService,
+    ProcesoParametroService,
     SgaEvaluacionDocenteMidService,
     EvaluacionDocenteService,
     AcademicaService,
-    { provide: HTTP_INTERCEPTORS, useClass: SpinnerUtilInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: SpinnerUtilInterceptor, multi: true },
+    { provide: MAT_DATE_LOCALE, useValue: 'es-CO' }, 
+    { provide: MAT_DATE_FORMATS, useValue: CUSTOM_DATE_FORMATS },
+    { provide: DateAdapter, useClass: NativeDateAdapter },
+    { provide: MAT_LOCALE, useValue: 'es-CO' },
   ],
   bootstrap: [AppComponent]
 })

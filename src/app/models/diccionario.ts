@@ -33,3 +33,8 @@ export const ROLES = Object.freeze({
     RECTORIA: 'RECTORIA',
     COORDINADOR: 'COORDINADOR'
 })
+
+export const ROLES_ASIGNACION_FECHAS = Object.freeze({
+    ADMIN_SGA: 'ADMIN_SGA',
+    CONSEJO_CURRICULAR: 'CONSEJO_CURRICULAR'
+})
