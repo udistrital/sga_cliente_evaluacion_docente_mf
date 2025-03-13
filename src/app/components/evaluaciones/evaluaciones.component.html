@@ -20,16 +20,19 @@
                 <mat-option value=null>
                     -- {{ 'GLOBAL.seleccionar' | translate }} --</mat-option>
                 <!-- Admin SGA puede ver todas las evaluaciones -->
-                <mat-option *ngIf="hasRole([ROLES.ADMIN_SGA, ROLES.ESTUDIANTE])" value="heteroevaluacion">{{
+                <!--<mat-option id="1" *ngIf="hasRole([ROLES.ADMIN_SGA, ROLES.ESTUDIANTE])" value="heteroevaluacion">{{
                     'heteroevaluacion.titulo' | translate }}</mat-option>
-                <mat-option *ngIf="hasRole([ROLES.ADMIN_SGA, ROLES.ESTUDIANTE])" value="autoevaluacion_i">{{
+                <mat-option id="2" *ngIf="hasRole([ROLES.ADMIN_SGA, ROLES.ESTUDIANTE])" value="autoevaluacion_i">{{
                     'autoevaluacion_i.titulo' | translate }}</mat-option>
-                <mat-option *ngIf="hasRole([ROLES.ADMIN_SGA, ROLES.DOCENTE])" value="autoevaluacion_ii">{{
+                <mat-option id="3" *ngIf="hasRole([ROLES.ADMIN_SGA, ROLES.DOCENTE])" value="autoevaluacion_ii">{{
                     'autoevaluacion_ii.titulo' | translate }}</mat-option>
-                <mat-option *ngIf="hasRole([ROLES.ADMIN_SGA, ROLES.DOCENTE])" value="coevaluacion_i">{{
+                <mat-option id="4" *ngIf="hasRole([ROLES.ADMIN_SGA, ROLES.DOCENTE])" value="coevaluacion_i">{{
                     'coevaluacion_i.titulo' | translate }}</mat-option>
-                <mat-option *ngIf="hasRole([ROLES.ADMIN_SGA, ROLES.COORDINADOR, ROLES.DECANO])" value="coevaluacion_ii">{{
-                    'coevaluacion_ii.titulo' | translate }}</mat-option>
+                <mat-option id="5" *ngIf="hasRole([ROLES.ADMIN_SGA, ROLES.COORDINADOR, ROLES.DECANO])" value="coevaluacion_ii">{{
+                    'coevaluacion_ii.titulo' | translate }}</mat-option>-->
+                <mat-option *ngFor="let proceso of procesosEvaluacion" [value]="proceso.Id" >
+                    {{ proceso.Nombre }}
+                </mat-option>
             </mat-select>
         </mat-form-field>
 
