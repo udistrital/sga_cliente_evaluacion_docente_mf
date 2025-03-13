@@ -19,6 +19,7 @@ import { AcademicaService } from "src/app/services/academica.service";
 import { ParametrosService } from "src/app/services/parametros.service";
 import { environment } from '../../../environments/environment';
 import { ROLES, ROLES_HETEROEVALUACION, ROLES_AUTOEVALUACION_UNO, ROLES_AUTOEVALUACION_DOS, ROLES_COEVALUACION_UNO, ROLES_COEVALUACION_DOS } from "src/app/models/diccionario";
+import { EvaluacionDocenteService } from "src/app/services/evaluacion-docente-crud.service";
 
 @Component({
   selector: "app-evaluaciones",
@@ -56,11 +57,16 @@ export class EvaluacionesComponent implements OnInit {
   evaluado!: number;
   nombreDocente!: string;
   proyecto!: number;
+  proyectoEspacio!: number;
   nombreProyecto!: string;
   espacio!: string;
   nombreEspacio!: string;
   mostrarEvaluacion: boolean = false;
   procesosEvaluacion: any[] = [];
+
+  auxEspaciosHetero: any[] = [];
+  fechas: any = null; // Campo para guardar las fechas de inicio y fin para todos los tipos de evaluacion
+  formularioHabilitado: boolean = false; // Campo para habilitado e inhanilitar formulario (rango de fechas)
 
   @Input() formtype: string = '';
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -74,6 +80,7 @@ export class EvaluacionesComponent implements OnInit {
     private popUpManager: PopUpManager,
     private dateService: DateService,
     private evaluacionDocenteMidService: SgaEvaluacionDocenteMidService,
+    private evaluacionDocenteService: EvaluacionDocenteService,
     private tercerosService: TercerosCrudService,
     private academicaService: AcademicaService,
     private parametrosService: ParametrosService,
@@ -211,7 +218,8 @@ export class EvaluacionesComponent implements OnInit {
       console.log("No selecciono procesoSeleccionado.")
     }
     this.mostrarEvaluacion = false;
-    this.consultarDatos();
+    this.getFechas(this.selectedEvaluationId);
+    // this.consultarDatos();
   }
 
   consultarDatos() {
@@ -220,22 +228,25 @@ export class EvaluacionesComponent implements OnInit {
         if (documento != null) {
           this.consultarCargaAcademica(documento).then((response: any) => {
             if (this.selectedEvaluation == "Heteroevaluación") {
+              this.evaluador = response.cod_estudiante;
+              this.proyecto = response.proyectos[0].id;
               this.heteroForm.patchValue({
                 estudianteNombre: response.nombre,
                 estudianteIdentificacion: response.identificacion,
-                inicioFecha: new Date(),
-                finFecha: new Date()
+                inicioFecha: this.convertirFechaSinZonaHoraria(this.fechas[this.selectedEvaluationId].fechaInicio),
+                finFecha: this.convertirFechaSinZonaHoraria(this.fechas[this.selectedEvaluationId].fechaFin),
               });
+              this.proyectos.opciones = response.proyectosHetero;
             } else if (this.selectedEvaluation == "Autoevaluación I") {
+              this.evaluador = response.cod_estudiante;
               this.autoevaluacionIForm.patchValue({
                 estudianteNombre: response.nombre,
-                estudianteIdentificacion: response.codigo_estudiante,
-                inicioFecha: new Date(),
-                finFecha: new Date()
+                estudianteIdentificacion: response.identificacion,
+                inicioFecha: this.convertirFechaSinZonaHoraria(this.fechas[this.selectedEvaluationId].fechaInicio),
+                finFecha: this.convertirFechaSinZonaHoraria(this.fechas[this.selectedEvaluationId].fechaFin),
               });
+              this.proyectos.opciones = response.proyectos;
             }
-
-            this.proyectos.opciones = response.proyectos;
           });
         }
       });
@@ -243,7 +254,6 @@ export class EvaluacionesComponent implements OnInit {
       this.userService.getUserDocument().then((documento) => {
         this.consultarEspaciosAcademicos(documento).then((response: any) => {
           localStorage.setItem('evaluacion_docente', JSON.stringify(response));
-          //if (this.selectedEvaluation == "autoevaluacion_ii") {
           if (this.selectedEvaluation == "Autoevaluación II 1") {
             this.autoevaluacionIIForm.patchValue({
               docenteIdentificacion: response.identificacion,
@@ -278,6 +288,75 @@ export class EvaluacionesComponent implements OnInit {
       }
     }
   }
+
+  // consultarDatos() {
+  //   if (this.hasRole([ROLES.ESTUDIANTE])) {
+  //     this.userService.getUserDocument().then((documento) => {
+  //       if (documento != null) {
+  //         this.consultarCargaAcademica(documento).then((response: any) => {
+  //           console.log("consultarDatos", response);
+          
+  //           if (this.selectedEvaluation == "heteroevaluacion") {
+  //             this.evaluador = response.cod_estudiante;
+  //             this.proyecto = response.proyectos[0].id;
+  //             this.heteroForm.patchValue({
+  //               estudianteNombre: response.nombre,
+  //               estudianteIdentificacion: response.identificacion,
+  //               inicioFecha: this.convertirFechaSinZonaHoraria(this.fechas[6999].fechaInicio),
+  //               finFecha: this.convertirFechaSinZonaHoraria(this.fechas[6999].fechaFin),
+  //             });
+  //             this.proyectos.opciones = response.proyectosHetero;
+  //           } else if (this.selectedEvaluation == "autoevaluacion_i") {
+  //             this.evaluador = response.cod_estudiante;
+  //             this.autoevaluacionIForm.patchValue({
+  //               estudianteNombre: response.nombre,
+  //               estudianteIdentificacion: response.identificacion,
+  //               inicioFecha: this.convertirFechaSinZonaHoraria(this.fechas[6998].fechaInicio),
+  //               finFecha: this.convertirFechaSinZonaHoraria(this.fechas[6998].fechaFin),
+  //             });
+  //             this.proyectos.opciones = response.proyectos;
+  //           }
+  //         });
+  //       }
+  //     });
+  //   } else if (this.hasRole([ROLES.DOCENTE])) {
+  //     this.userService.getUserDocument().then((documento) => {
+  //       this.consultarEspaciosAcademicos(documento).then((response: any) => {
+  //         localStorage.setItem('evaluacion_docente', JSON.stringify(response));
+  //         if (this.selectedEvaluation == "autoevaluacion_ii") {
+  //           this.autoevaluacionIIForm.patchValue({
+  //             docenteIdentificacion: response.identificacion,
+  //             docenteNombre: response.nombre,
+  //             inicioFecha: new Date(),
+  //             finFecha: new Date()
+  //           });
+  //         } else if (this.selectedEvaluation == "coevaluacion_i") {
+  //           this.coevaluacionIForm.patchValue({
+  //             docenteNombre: response.nombre,
+  //             inicioFecha: new Date(),
+  //             finFecha: new Date()
+  //           });
+  //         }
+
+  //         this.proyectos.opciones = response.proyectos;
+  //       });
+  //     });
+  //   } else if (this.hasRole([ROLES.COORDINADOR])) {
+  //     if (this.selectedEvaluation == "coevaluacion_ii") {
+  //       this.userService.getUserDocument().then((documento) => {
+  //         this.consultarProyectos(documento).then((carreras) => {
+  //           localStorage.setItem('evaluacion_coordinador', JSON.stringify(carreras));
+  //           this.coevaluacionIIForm.patchValue({
+  //             inicioFecha: new Date(),
+  //             finFecha: new Date()
+  //           });
+
+  //           this.proyectos.opciones = carreras;
+  //         });
+  //       });
+  //     }
+  //   }
+  // }
 
   // Método para cargar espacios académicos
   async loadEspaciosAcademicos() {
@@ -352,9 +431,11 @@ export class EvaluacionesComponent implements OnInit {
       const dataParsed = JSON.parse(storedConsultaEstudiante);
       console.log('consulta grande que guardo en storage: ', dataParsed);
       return {
+        cod_estudiante: dataParsed.Data.estudiante.espacios[0].cod_estudiante, //Valor necesario para el evaluador
         identificacion: dataParsed.Data.estudiante.espacios[0].doc_estudiante,
         nombre: dataParsed.Data.estudiante.espacios[0].nom_estudiante,
-        proyectos: this.transformarDatosEstudiante(dataParsed.Data.estudiante.espacios)
+        proyectos: this.transformarDatosEstudiante(dataParsed.Data.estudiante.espacios),
+        proyectosHetero: this.transformarDatosEstudianteHet(dataParsed.Data.estudiante.espacios)
       };
     }
     else {
@@ -366,9 +447,11 @@ export class EvaluacionesComponent implements OnInit {
               if (response.Data != null) {
                 localStorage.setItem('data_evaluacion_estudiante', JSON.stringify(response));
                 resolve({
+                  cod_estudiante: response.Data.estudiante.espacios[0].cod_estudiante, //Valor necesario para el evaluador
                   identificacion: response.Data.estudiante.espacios[0].doc_estudiante,
                   nombre: response.Data.estudiante.espacios[0].nom_estudiante,
-                  proyectos: this.transformarDatosEstudiante(response.Data.estudiante.espacios)
+                  proyectos: this.transformarDatosEstudiante(response.Data.estudiante.espacios),
+                  proyectosHetero: this.transformarDatosEstudianteHet(response.Data.estudiante.espacios)
                 });
               } else {
                 resolve(response);
@@ -426,6 +509,50 @@ export class EvaluacionesComponent implements OnInit {
     return Array.from(proyectosMap.values());
   }
 
+  transformarDatosEstudianteHet(lista: any[]): any[] {
+    const proyectosMap = new Map<number, any>();
+
+    console.log(lista)
+
+
+    lista.forEach((elemento) => {
+
+      const { nom_docente, doc_docente, proyecto, cod_espacio, espacio_academico, grupo, cra_curso } = elemento;
+
+      if (!proyectosMap.has(cra_curso)) {
+        proyectosMap.set(cra_curso, {
+          id: cra_curso,
+          nombre: proyecto,
+          docentes: [],
+          asignaturas: []
+        });
+      }
+
+      const proyectoGeneral = proyectosMap.get(cra_curso);
+      if (proyectoGeneral) {
+        const docenteExistente = proyectoGeneral.docentes.some((docente: any) => docente.id === doc_docente);
+        if (!docenteExistente) {
+          proyectoGeneral.docentes.push({
+            id: doc_docente,
+            nombre: nom_docente
+          });
+        }
+
+        const asignaturaExistente = proyectoGeneral.asignaturas.some((asignatura: any) => asignatura.id === String(cod_espacio));
+        if (!asignaturaExistente) {
+          proyectoGeneral.asignaturas.push({
+            id: String(cod_espacio),
+            nombre: espacio_academico,
+            grupos: grupo,
+            docente: doc_docente
+          });
+        }
+      }
+    });
+
+    return Array.from(proyectosMap.values());
+  }
+
 
   filtrarEspaciosPorProyecto(data: any, codProyecto: Number) {
     const espaciosMap = new Map<string, any>();
@@ -447,10 +574,10 @@ export class EvaluacionesComponent implements OnInit {
 
         // Obtener la referencia del objeto en el mapa y agregar el grupo si aún no está
         let entry = espaciosMap.get(clave);
-        if (!entry.grupos.some((g: any) => g.id === item.id_grupo)) {
+        if (!entry.grupos.some((g: any) => g.id_grupo === item.id_grupo)) {
           entry.grupos.push({
-            id: item.id_grupo,
-            nombre: item.grupo
+            id_grupo: item.id_grupo,
+            grupo: item.grupo
           });
         }
       }
@@ -564,6 +691,73 @@ export class EvaluacionesComponent implements OnInit {
     this.selectedEvaluation = formType;
   }
 
+  // Tranformar fechas para obtener las fechas por Id del tipo de evaluación
+  // Ejemplo: [ 1234: { fechainicio: '2021-01-01', fechafin: '2021-01-15' }... ]
+  transformarFechas = (arr: any[]) => {
+    return arr.reduce((acc, item) => {
+      acc[item.ProcesoId] = {
+        fechaInicio: item.FechaInicio,
+        fechaFin: item.FechaFin,
+      };
+      return acc;
+    }, {} as Record<number, { fechainicio: string; fechafin: string }>);
+  };
+
+  // Petición para obtener fechas de inicio y fin de los procesos de evaluación
+  getFechas(idEvaluacion: string) {
+    // const tipoEvaluacion: any = {
+    //   "Heteroevaluacion": 6999,
+    //   "Autoevaluación I": 6998
+    // }
+    // const idTipoEvaluacion = tipoEvaluacion[evaluacion];
+
+    // Si ya se realizo una primera consulta 
+    // (aplica cuando se va a seleccionar otro tipo de evaluacion despues de haber seleccionado uno anteriormente)
+    if (this.fechas) {
+      const fechaInicio = new Date(this.fechas[idEvaluacion].fechaInicio);
+      const fechaFin = new Date(this.fechas[idEvaluacion].fechaFin);
+      this.validarFechas(fechaInicio, fechaFin);
+    } else { // Al seleccionar por primera vez un tipo de evaluacion
+      this.evaluacionDocenteService
+        .get(`proceso_parametro?query=Activo:true&limit=0`)
+        .subscribe(
+          (response: any) => {
+            if (response.Data != null) {
+              this.fechas = this.transformarFechas(response.Data );
+              const fechaInicio = new Date(this.fechas[idEvaluacion].fechaInicio);
+              const fechaFin = new Date(this.fechas[idEvaluacion].fechaFin);
+              this.validarFechas(fechaInicio, fechaFin);
+            } 
+          },
+          (error) => {
+            console.log(error);
+          }
+        );
+    }
+  }
+
+  // Validr las fechas, habilitar formulario y consultar datos iniciales
+  // o mostrar mensaje de error si la fecha actual no está en el rango
+  validarFechas(fechaInicio: Date, fechaFin: Date) {
+    const fechaActual = new Date();
+    if (fechaActual >= fechaInicio && fechaActual <= fechaFin) {
+      this.formularioHabilitado = true;
+      this.consultarDatos();
+    } else {
+      this.formularioHabilitado = false;
+      Swal.fire({
+        icon: "error",
+        title: this.translate.instant("GLOBAL.error"),
+        text: this.translate.instant("asignacion_fechas.fuera_rango"),
+      });
+    }
+  }
+
+  convertirFechaSinZonaHoraria(fechaString: string): Date {
+    const partes = fechaString.split(/[- :]/);
+    return new Date(Number(partes[0]), Number(partes[1]) - 1, Number(partes[2]), Number(partes[3]), Number(partes[4]), Number(partes[5]));
+  }
+
   // Detecta cambios en el valor de formtype y actualiza el formulario mostrado
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['formtype']) {
@@ -645,24 +839,102 @@ export class EvaluacionesComponent implements OnInit {
     this.mostrarEvaluacion = false;
   }
 
-  /* INICIO FORMULARIO DE HETEROEVALUACION*/
-
+  // --------------------- INICIO HETEROEVALUACION ---------------------
   onProyectoHetero(event: MatSelectChange): void {
     const proyectoSeleccionado = event.value;
-    console.log("proyectoSeleccionadoNueva: ", proyectoSeleccionado);
+    console.log("onProyectoHetero", proyectoSeleccionado);
+    
 
-    this.proyecto = proyectoSeleccionado.id;
+    // this.proyecto = proyectoSeleccionado.id;
+    this.proyectoEspacio = proyectoSeleccionado.id;
     this.nombreProyecto = proyectoSeleccionado.nombre;
-
-    this.onDocenteHetero(proyectoSeleccionado.id);
+    this.docentes.opciones = proyectoSeleccionado.docentes;
+    this.auxEspaciosHetero = proyectoSeleccionado.asignaturas; //Auxiliar de asignaturas del estudiante
+    this.grupos = [];
+    this.openSnackBar(`Proyecto seleccionado: ${proyectoSeleccionado.nombre}`);
   }
 
   onDocenteHetero(event: MatSelectChange): void {
     const docenteSeleccionado = event.value;
-    console.log("docenteSeleccionadoNueva: ", docenteSeleccionado);
+    console.log("onDocenteHetero", docenteSeleccionado);
+
+    this.nombreDocente = docenteSeleccionado.nombre;
+    this.evaluado = docenteSeleccionado.id;
+    
+    let parametros = {parametros: { identificacion: docenteSeleccionado.id}}
+    this.evaluacionDocenteMidService
+      .post('espacios_academicos', parametros)
+      .subscribe({
+        next: (response) => {
+          if (response.Data != null) {
+            const espaciosPorProyecto = this.filtrarEspaciosPorProyecto(response.Data, this.proyectoEspacio);
+            const espaciosGenerales = espaciosPorProyecto.filter(
+              item1 => this.auxEspaciosHetero.some(item2 => item1.id === item2.id)
+            );
+            this.espacios.opciones = espaciosGenerales;
+          }
+        },
+        error: (err) => {
+          console.error('Error al cargar proyectos:', err);
+        }
+      }
+      );
+    this.mostrarEvaluacion = false;
   }
 
-  /* FIN FORMULARIO DE HETEROEVALUACION*/
+  onEspacioHetero(event: MatSelectChange){
+    this.grupos = [];
+    const espacioSeleccionado = event.value;
+    console.log("onEspacioHetero", espacioSeleccionado);
+    
+    this.espacio = espacioSeleccionado.id;
+    this.nombreEspacio = espacioSeleccionado.nombre;
+    this.grupos = espacioSeleccionado.grupos;
+    this.openSnackBar(`Espacio seleccionado: ${espacioSeleccionado.nombre}`);
+    this.mostrarEvaluacion = false;
+  }
+  // --------------------- FIN HETEROEVALUACION ---------------------
+
+
+
+  // ---------------------- INICIO AUTOEVALUACION I ----------------------
+  onProyectoAutI(event: MatSelectChange): void {
+    const proyectoSeleccionado = event.value;
+    console.log("onProyectoAutI", proyectoSeleccionado);
+    
+    this.proyecto = proyectoSeleccionado.id;
+    this.nombreProyecto = proyectoSeleccionado.nombre;
+    this.docentes.opciones = proyectoSeleccionado.docentes;
+    this.espacios.opciones = proyectoSeleccionado.asignaturas;
+    // this.espacios_academicos = [];
+    // if (proyectoSeleccionado.asignaturas != null) {
+    //   proyectoSeleccionado.asignaturas.forEach((espacio: any) => {
+    //     this.espacios_academicos.push({
+    //       id: espacio.id,
+    //       nombre: espacio.nombre,
+    //       grupos: espacio.grupos,
+    //       docente: espacio.docente
+    //     });
+    //   });
+    // }
+    this.grupos = [];
+    this.openSnackBar(`Proyecto seleccionado: ${proyectoSeleccionado.nombre}`);
+    this.mostrarEvaluacion = false;
+  }
+
+  onEspacioAutI(event: MatSelectChange): void {
+    this.grupos = [];
+    const espacioSeleccionado = event.value;
+    console.log("onEspacioAutI", espacioSeleccionado);
+    
+    this.espacio = espacioSeleccionado.id;
+    this.nombreEspacio = espacioSeleccionado.nombre;
+    this.grupo = { id_grupo: espacioSeleccionado.id, grupo: espacioSeleccionado.grupos };
+    this.evaluado = espacioSeleccionado.docente;
+    this.openSnackBar(`Espacio seleccionado: ${espacioSeleccionado.nombre}`);
+    this.mostrarEvaluacion = false;
+  }
+  // ---------------------- FIN AUTOEVALUACION I ----------------------
 
   onEspacioSelection(event: MatSelectChange): void {
     this.grupos = [];

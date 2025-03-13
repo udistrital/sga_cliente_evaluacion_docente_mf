@@ -63,7 +63,8 @@
         "fecha_fin_seleccionada": "Fecha fin seleccionada",
         "guardar": "Guardar",
         "confirmacion_guardado": "Confirmación de guardado",
-        "ajustes_aplicados": "Los ajustes fueron aplicados exitosamente"
+        "ajustes_aplicados": "Los ajustes fueron aplicados exitosamente",
+        "fuera_rango": "La fecha esta por fuera del rango permitido"
     },
 
     "definicion_plantillas": {
