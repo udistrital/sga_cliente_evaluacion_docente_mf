@@ -170,7 +170,7 @@
                             | translate }}</button>
                     </div>
 
-                    <ngx-dynamic-form *ngIf="mostrarEvaluacion" [formtype]="'1'" [evaluador]="evaluador"
+                    <ngx-dynamic-form *ngIf="mostrarEvaluacion" [formtype]="selectedEvaluationId" [evaluador]="evaluador"
                         [evaluado]="evaluado" [proyectoEspacio]="proyecto" [espacio]="espacio"
                         (evaluacionCompletada)="ocultarEvaluacion()"></ngx-dynamic-form>
                 </mat-card-content>
@@ -296,7 +296,7 @@
                             'GLOBAL.continuar' | translate }}</button>
                     </div>
 
-                    <ngx-dynamic-form *ngIf="mostrarEvaluacion" [formtype]="'2'" [evaluador]="evaluador"
+                    <ngx-dynamic-form *ngIf="mostrarEvaluacion" [formtype]="selectedEvaluationId" [evaluador]="evaluador"
                         [evaluado]="evaluado" [proyectoEspacio]="proyecto" [espacio]="espacio"
                         (evaluacionCompletada)="ocultarEvaluacion()"></ngx-dynamic-form>
                 </mat-card-content>
@@ -421,7 +421,7 @@
                             'GLOBAL.continuar' | translate }}</button>
                     </div>
 
-                    <ngx-dynamic-form *ngIf="mostrarEvaluacion" [formtype]="'4'" [evaluador]="evaluador"
+                    <ngx-dynamic-form *ngIf="mostrarEvaluacion" [formtype]="selectedEvaluationId" [evaluador]="evaluador"
                         [evaluado]="evaluado" [proyectoEspacio]="proyecto" [espacio]="espacio" [grupos]="grupos"
                         (evaluacionCompletada)="ocultarEvaluacion()"></ngx-dynamic-form>
                 </mat-card-content>
@@ -553,7 +553,7 @@
                             'GLOBAL.continuar' | translate }}</button>
                     </div>
 
-                    <ngx-dynamic-form *ngIf="mostrarEvaluacion" [formtype]="'4926'" [evaluador]="evaluador"
+                    <ngx-dynamic-form *ngIf="mostrarEvaluacion" [formtype]="selectedEvaluationId" [evaluador]="evaluador"
                         [evaluado]="evaluado" [proyectoEspacio]="proyecto" [espacio]="espacio" [grupo]="grupo"
                         (evaluacionCompletada)="ocultarEvaluacion()"></ngx-dynamic-form>
                 </mat-card-content>
@@ -671,7 +671,7 @@
                             'GLOBAL.continuar' | translate }}</button>
                     </div>
 
-                    <ngx-dynamic-form *ngIf="mostrarEvaluacion" [formtype]="'5'" [evaluador]="evaluador"
+                    <ngx-dynamic-form *ngIf="mostrarEvaluacion" [formtype]="selectedEvaluationId" [evaluador]="evaluador"
                         [evaluado]="evaluado" [proyectoEspacio]="proyecto" [espacio]="espacio" [grupos]="grupos"
                         (evaluacionCompletada)="ocultarEvaluacion()"></ngx-dynamic-form>
                 </mat-card-content>
