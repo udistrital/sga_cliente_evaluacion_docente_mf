@@ -28,6 +28,7 @@ import { ROLES, ROLES_HETEROEVALUACION, ROLES_AUTOEVALUACION_UNO, ROLES_AUTOEVAL
 export class EvaluacionesComponent implements OnInit {
   showTerms = false;
   selectedEvaluation: string = "";
+  selectedEvaluationId: string = "";
   showModal = false;
   userRoles: string[] = [];
   ROLES = ROLES;
@@ -202,11 +203,13 @@ export class EvaluacionesComponent implements OnInit {
 
   // Método que maneja la selección del menú desplegable
   onSelectChange(event: MatSelectChange) {
-    console.log("proceso.Id: ", event);
-    if (this.selectedEvaluation) {
-      this
+    const procesoSeleccionado = this.procesosEvaluacion.find(proceso => proceso.Id === event.value);
+    if (procesoSeleccionado) {
+      this.selectedEvaluation = procesoSeleccionado.Nombre;
+      this.selectedEvaluationId = procesoSeleccionado.Id;
+    } else {
+      console.log("No selecciono procesoSeleccionado.")
     }
-    this.selectedEvaluation = event.value;
     this.mostrarEvaluacion = false;
     this.consultarDatos();
   }
@@ -216,14 +219,14 @@ export class EvaluacionesComponent implements OnInit {
       this.userService.getUserDocument().then((documento) => {
         if (documento != null) {
           this.consultarCargaAcademica(documento).then((response: any) => {
-            if (this.selectedEvaluation == "heteroevaluacion") {
+            if (this.selectedEvaluation == "Heteroevaluación") {
               this.heteroForm.patchValue({
                 estudianteNombre: response.nombre,
                 estudianteIdentificacion: response.identificacion,
                 inicioFecha: new Date(),
                 finFecha: new Date()
               });
-            } else if (this.selectedEvaluation == "autoevaluacion_i") {
+            } else if (this.selectedEvaluation == "Autoevaluación I") {
               this.autoevaluacionIForm.patchValue({
                 estudianteNombre: response.nombre,
                 estudianteIdentificacion: response.codigo_estudiante,
@@ -240,14 +243,15 @@ export class EvaluacionesComponent implements OnInit {
       this.userService.getUserDocument().then((documento) => {
         this.consultarEspaciosAcademicos(documento).then((response: any) => {
           localStorage.setItem('evaluacion_docente', JSON.stringify(response));
-          if (this.selectedEvaluation == "autoevaluacion_ii") {
+          //if (this.selectedEvaluation == "autoevaluacion_ii") {
+          if (this.selectedEvaluation == "Autoevaluación II 1") {
             this.autoevaluacionIIForm.patchValue({
               docenteIdentificacion: response.identificacion,
               docenteNombre: response.nombre,
               inicioFecha: new Date(),
               finFecha: new Date()
             });
-          } else if (this.selectedEvaluation == "coevaluacion_i") {
+          } else if (this.selectedEvaluation == "Coevaluación I") {
             this.coevaluacionIForm.patchValue({
               docenteNombre: response.nombre,
               inicioFecha: new Date(),
@@ -259,7 +263,7 @@ export class EvaluacionesComponent implements OnInit {
         });
       });
     } else if (this.hasRole([ROLES.COORDINADOR])) {
-      if (this.selectedEvaluation == "coevaluacion_ii") {
+      if (this.selectedEvaluation == "Coevaluación II") {
         this.userService.getUserDocument().then((documento) => {
           this.consultarProyectos(documento).then((carreras) => {
             localStorage.setItem('evaluacion_coordinador', JSON.stringify(carreras));
@@ -609,7 +613,7 @@ export class EvaluacionesComponent implements OnInit {
   onProyectoSelection(event: MatSelectChange): void {
     const proyectoSeleccionado = event.value;
 
-    if (this.selectedEvaluation === "coevaluacion_ii") {
+    if (this.selectedEvaluation === "Coevaluación II") {
       this.consultarDocentesPorProyecto(proyectoSeleccionado.id).then((docentes) => {
         this.docentes.opciones = docentes;
         this.proyecto = proyectoSeleccionado.id;
@@ -708,7 +712,7 @@ export class EvaluacionesComponent implements OnInit {
   }
 
   onDocenteSelection(event: MatSelectChange): void {
-    if (this.selectedEvaluation === "heteroevaluacion") {
+    if (this.selectedEvaluation === "Heteroevaluación") {
 
 
     }
