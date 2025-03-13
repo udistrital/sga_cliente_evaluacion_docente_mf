@@ -20,7 +20,7 @@
                 <mat-option value=null>
                     -- {{ 'GLOBAL.seleccionar' | translate }} --</mat-option>
                 <!-- Admin SGA puede ver todas las evaluaciones -->
-                <!--<mat-option id="1" *ngIf="hasRole([ROLES.ADMIN_SGA, ROLES.ESTUDIANTE])" value="heteroevaluacion">{{
+                <!-- <mat-option id="1" *ngIf="hasRole([ROLES.ADMIN_SGA, ROLES.ESTUDIANTE])" value="heteroevaluacion">{{
                     'heteroevaluacion.titulo' | translate }}</mat-option>
                 <mat-option id="2" *ngIf="hasRole([ROLES.ADMIN_SGA, ROLES.ESTUDIANTE])" value="autoevaluacion_i">{{
                     'autoevaluacion_i.titulo' | translate }}</mat-option>
@@ -37,7 +37,7 @@
         </mat-form-field>
 
         <!-- Formulario de Heteroevaluación -->
-        <ng-container *ngIf="selectedEvaluation === 'heteroevaluacion'">
+        <ng-container *ngIf="selectedEvaluation === 'Heteroevaluación'">
             <mat-card *ngIf="hasRole([ROLES.ESTUDIANTE, ROLES.ADMIN_SGA, ROLES.ADMIN_DOCENCIA]); else noPermission"
                 class="form-container">
                 <mat-card-header style="padding-bottom: 1rem;">
@@ -178,7 +178,7 @@
         </ng-container>
 
         <!-- Formulario de Autoevaluación I -->
-        <ng-container *ngIf="selectedEvaluation === 'autoevaluacion_i'">
+        <ng-container *ngIf="selectedEvaluation === 'Autoevaluación I'">
             <mat-card *ngIf="hasRole([ROLES.ESTUDIANTE, ROLES.ADMIN_SGA, ROLES.ADMIN_DOCENCIA]); else noPermission"
                 class="form-container">
                 <mat-card-header style="padding-bottom: 1rem;">
@@ -304,7 +304,7 @@
         </ng-container>
 
         <!-- Formulario de Autoevaluación II -->
-        <ng-container *ngIf="selectedEvaluation === 'autoevaluacion_ii'">
+        <ng-container *ngIf="selectedEvaluation === 'Autoevaluación II 1'">
             <mat-card *ngIf="hasRole([ROLES.DOCENTE, ROLES.ADMIN_SGA, ROLES.ADMIN_DOCENCIA]); else noPermission"
                 class="form-container">
                 <mat-card-header style="padding-bottom: 1rem;">
@@ -429,7 +429,7 @@
         </ng-container>
 
         <!-- Formulario de Coevaluación I -->
-        <ng-container *ngIf="selectedEvaluation === 'coevaluacion_i'">
+        <ng-container *ngIf="selectedEvaluation === 'Coevaluación I'">
             <mat-card *ngIf="hasRole([ROLES.DOCENTE, ROLES.ADMIN_SGA, ROLES.ADMIN_DOCENCIA]); else noPermission"
                 class="form-container">
                 <mat-card-header style="padding-bottom: 1rem;">
@@ -561,7 +561,7 @@
         </ng-container>
 
         <!-- Formulario de Coevaluación II -->
-        <ng-container *ngIf="selectedEvaluation === 'coevaluacion_ii'">
+        <ng-container *ngIf="selectedEvaluation === 'Coevaluación II'">
             <mat-card
                 *ngIf="hasRole([ROLES.CONSEJO_CURRICULAR, ROLES.DECANO, ROLES.ADMIN_SGA, ROLES.ADMIN_DOCENCIA, ROLES.COORDINADOR]); else noPermission"
                 class="form-container">
