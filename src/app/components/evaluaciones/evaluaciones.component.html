@@ -171,9 +171,12 @@
                                 | translate }}</button>
                         </div>
 
-                        <ngx-dynamic-form *ngIf="mostrarEvaluacion" [formtype]="selectedEvaluationId" [evaluador]="evaluador"
-                            [evaluado]="evaluado" [proyectoEspacio]="proyectoEspacio" [proyectoEvaluador]="proyecto" [espacio]="espacio" [grupos]="grupos"
-                            (evaluacionCompletada)="ocultarEvaluacion()"></ngx-dynamic-form>
+                        <ngx-dynamic-form *ngIf="mostrarEvaluacion" [formtype]="selectedEvaluationId" 
+                            [evaluador]="evaluador" [evaluado]="evaluado" 
+                            [proyectoEspacio]="proyectoEspacio" [proyectoEvaluador]="proyecto" 
+                            [espacio]="espacio" [grupo]="grupo"
+                            (evaluacionCompletada)="ocultarEvaluacion()">
+                        </ngx-dynamic-form>
                     </mat-card-content>
                 </mat-card>
             </ng-container>
@@ -297,9 +300,12 @@
                                 'GLOBAL.continuar' | translate }}</button>
                         </div>
 
-                        <ngx-dynamic-form *ngIf="mostrarEvaluacion" [formtype]="selectedEvaluationId" [evaluador]="evaluador"
-                            [evaluado]="evaluado" [proyectoEspacio]="proyecto" [espacio]="espacio" [grupos]="grupos"
-                            (evaluacionCompletada)="ocultarEvaluacion()"></ngx-dynamic-form>
+                        <ngx-dynamic-form *ngIf="mostrarEvaluacion" [formtype]="selectedEvaluationId" 
+                            [evaluador]="evaluador" [evaluado]="evaluado" 
+                            [proyectoEspacio]="proyectoEspacio" [proyectoEvaluador]="proyecto" 
+                            [espacio]="espacio" [grupo]="grupo"
+                            (evaluacionCompletada)="ocultarEvaluacion()">
+                        </ngx-dynamic-form>
                     </mat-card-content>
                 </mat-card>
             </ng-container>
