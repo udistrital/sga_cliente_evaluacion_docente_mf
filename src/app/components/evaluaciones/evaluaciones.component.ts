@@ -1,5 +1,4 @@
 import { Component, OnInit, Input, SimpleChanges, ViewChild } from "@angular/core";
-import { ROLES } from "src/app/models/diccionario";
 import { UserService } from "src/app/services/user.service";
 import { MatSelectChange } from "@angular/material/select";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
@@ -17,6 +16,9 @@ import { TercerosCrudService } from "src/app/services/terceros-crud.service";
 import { TranslateService } from "@ngx-translate/core";
 import Swal from "sweetalert2";
 import { AcademicaService } from "src/app/services/academica.service";
+import { ParametrosService } from "src/app/services/parametros.service";
+import { environment } from '../../../environments/environment';
+import { ROLES, ROLES_HETEROEVALUACION, ROLES_AUTOEVALUACION_UNO, ROLES_AUTOEVALUACION_DOS, ROLES_COEVALUACION_UNO, ROLES_COEVALUACION_DOS } from "src/app/models/diccionario";
 
 @Component({
   selector: "app-evaluaciones",
@@ -29,6 +31,11 @@ export class EvaluacionesComponent implements OnInit {
   showModal = false;
   userRoles: string[] = [];
   ROLES = ROLES;
+  ROLES_HETEROEVALUACION = ROLES_HETEROEVALUACION;
+  ROLES_AUTOEVALUACION_UNO = ROLES_AUTOEVALUACION_UNO;
+  ROLES_AUTOEVALUACION_DOS = ROLES_AUTOEVALUACION_DOS;
+  ROLES_COEVALUACION_UNO = ROLES_COEVALUACION_UNO;
+  ROLES_COEVALUACION_DOS = ROLES_COEVALUACION_DOS;
   heteroForm: FormGroup;
   coevaluacionIIForm: FormGroup;
   coevaluacionIForm: FormGroup;
@@ -52,6 +59,7 @@ export class EvaluacionesComponent implements OnInit {
   espacio!: string;
   nombreEspacio!: string;
   mostrarEvaluacion: boolean = false;
+  procesosEvaluacion: any[] = [];
 
   @Input() formtype: string = '';
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -67,6 +75,7 @@ export class EvaluacionesComponent implements OnInit {
     private evaluacionDocenteMidService: SgaEvaluacionDocenteMidService,
     private tercerosService: TercerosCrudService,
     private academicaService: AcademicaService,
+    private parametrosService: ParametrosService,
     private translate: TranslateService
   ) {
     this.heteroForm = this.fb.group({});
@@ -78,6 +87,7 @@ export class EvaluacionesComponent implements OnInit {
 
   ngOnInit(): void {
     this.initializeForms();
+    this.consultaIniciaParametrosForm();
 
     // Obtener roles del usuario
     this.userService.getUserRoles().then((roles) => {
@@ -156,6 +166,115 @@ export class EvaluacionesComponent implements OnInit {
     });
   }
 
+  consultaIniciaParametrosForm(): void {
+    this.parametrosService.get('parametro?query=tipo_parametro_id:' + environment.TIPO_PARAMETRO_ID.PROCESO_EVALUACION_ID).subscribe(
+      (responseParametro: any) => {
+        if (responseParametro && responseParametro.Data && responseParametro.Data.length) {
+          this.procesosEvaluacion = responseParametro.Data
+          .filter((item: any) => this.validarRol(item.Nombre)) 
+          .map((item: any) => ({
+            Id: item.Id,
+            Nombre: item.Nombre
+          })); 
+        } else {
+          this.popUpManager.showErrorAlert(`No se encontraron parámetros.`);
+        }
+      },
+      (error) => {
+        this.popUpManager.showErrorAlert(`Error al obtener los parámetros.`);
+      }
+    );
+  }
+
+  validarRol(nombreProceso: string): boolean {
+    const rolesEvaluacion: { [key: string]: string[] } = {
+      'Heteroevaluación': Object.values(this.ROLES_HETEROEVALUACION),
+      'Autoevaluación I': Object.values(this.ROLES_AUTOEVALUACION_UNO),
+      'Autoevaluación II 1': Object.values(this.ROLES_AUTOEVALUACION_DOS),
+      'Autoevaluación II 2': Object.values(this.ROLES_AUTOEVALUACION_DOS),
+      'Autoevaluación II 3': Object.values(this.ROLES_AUTOEVALUACION_DOS),
+      'Coevaluación I': Object.values(this.ROLES_COEVALUACION_UNO),
+      'Coevaluación II': Object.values(this.ROLES_COEVALUACION_DOS)
+    };
+
+    return rolesEvaluacion[nombreProceso]?.some(rol => this.hasRole([rol])) ?? false;
+  }
+
+  // Método que maneja la selección del menú desplegable
+  onSelectChange(event: MatSelectChange) {
+    console.log("proceso.Id: ", event);
+    if (this.selectedEvaluation) {
+      this
+    }
+    this.selectedEvaluation = event.value;
+    this.mostrarEvaluacion = false;
+    this.consultarDatos();
+  }
+
+  consultarDatos() {
+    if (this.hasRole([ROLES.ESTUDIANTE])) {
+      this.userService.getUserDocument().then((documento) => {
+        if (documento != null) {
+          this.consultarCargaAcademica(documento).then((response: any) => {
+            if (this.selectedEvaluation == "heteroevaluacion") {
+              this.heteroForm.patchValue({
+                estudianteNombre: response.nombre,
+                estudianteIdentificacion: response.identificacion,
+                inicioFecha: new Date(),
+                finFecha: new Date()
+              });
+            } else if (this.selectedEvaluation == "autoevaluacion_i") {
+              this.autoevaluacionIForm.patchValue({
+                estudianteNombre: response.nombre,
+                estudianteIdentificacion: response.codigo_estudiante,
+                inicioFecha: new Date(),
+                finFecha: new Date()
+              });
+            }
+
+            this.proyectos.opciones = response.proyectos;
+          });
+        }
+      });
+    } else if (this.hasRole([ROLES.DOCENTE])) {
+      this.userService.getUserDocument().then((documento) => {
+        this.consultarEspaciosAcademicos(documento).then((response: any) => {
+          localStorage.setItem('evaluacion_docente', JSON.stringify(response));
+          if (this.selectedEvaluation == "autoevaluacion_ii") {
+            this.autoevaluacionIIForm.patchValue({
+              docenteIdentificacion: response.identificacion,
+              docenteNombre: response.nombre,
+              inicioFecha: new Date(),
+              finFecha: new Date()
+            });
+          } else if (this.selectedEvaluation == "coevaluacion_i") {
+            this.coevaluacionIForm.patchValue({
+              docenteNombre: response.nombre,
+              inicioFecha: new Date(),
+              finFecha: new Date()
+            });
+          }
+
+          this.proyectos.opciones = response.proyectos;
+        });
+      });
+    } else if (this.hasRole([ROLES.COORDINADOR])) {
+      if (this.selectedEvaluation == "coevaluacion_ii") {
+        this.userService.getUserDocument().then((documento) => {
+          this.consultarProyectos(documento).then((carreras) => {
+            localStorage.setItem('evaluacion_coordinador', JSON.stringify(carreras));
+            this.coevaluacionIIForm.patchValue({
+              inicioFecha: new Date(),
+              finFecha: new Date()
+            });
+
+            this.proyectos.opciones = carreras;
+          });
+        });
+      }
+    }
+  }
+
   // Método para cargar espacios académicos
   async loadEspaciosAcademicos() {
     try {
@@ -183,6 +302,41 @@ export class EvaluacionesComponent implements OnInit {
     });
   }
 
+  // -- POSIBLE CAMBIO PARA QUE GUARDE EN LOCALSTORAGE LA CONSULTA, FALTA PROBAR -- //
+  /*async cargarEspaciosAcademicos() {
+    var storedConsulEspaciosAcade = localStorage.getItem('data_espacios_academicos');
+    if (storedConsulEspaciosAcade !== null) {
+      const dataParsed = JSON.parse(storedConsulEspaciosAcade);
+      console.log('consulta grande que guardo en storage: ', dataParsed);
+      return {
+        identificacion: dataParsed.Data.estudiante.espacios[0].doc_estudiante,
+        nombre: dataParsed.Data.estudiante.espacios[0].nom_estudiante,
+        proyectos: this.transformarDatosEstudiante(dataParsed.Data.estudiante.espacios)
+      };
+    } else {
+      return new Promise((resolve, reject) => {
+        this.espaciosAcademicosService
+          .get('espacio-academico?query=espacio_academico_padre,activo:true&limit=0')
+          .subscribe(
+            (response: any) => {
+              if (response.Data != null) {
+                console.log('Guardo en storage: ', JSON.stringify(response));
+                localStorage.setItem('data_espacios_academicos', JSON.stringify(response));
+                resolve(this.espacios_academicos = response['Data']);
+              } else {
+                console.log('LLEGO AL ELSE: ');
+                this.espacios_academicos = response['Data'];
+                resolve(true);
+              }
+            },
+            (error) => {
+              reject(error);
+            }
+          );
+      });
+    }
+  }*/
+
   async consultarCargaAcademica(documento: string) {
     let parametros = {
       parametros: {
@@ -200,27 +354,27 @@ export class EvaluacionesComponent implements OnInit {
       };
     }
     else {
-    return new Promise((resolve, reject) => {
-      this.evaluacionDocenteMidService
-        .post('carga_academica', parametros)
-        .subscribe(
-          (response: any) => {
-            if (response.Data != null) {
+      return new Promise((resolve, reject) => {
+        this.evaluacionDocenteMidService
+          .post('carga_academica', parametros)
+          .subscribe(
+            (response: any) => {
+              if (response.Data != null) {
                 localStorage.setItem('data_evaluacion_estudiante', JSON.stringify(response));
-              resolve({
-                identificacion: response.Data.estudiante.espacios[0].doc_estudiante,
-                nombre: response.Data.estudiante.espacios[0].nom_estudiante,
-                proyectos: this.transformarDatosEstudiante(response.Data.estudiante.espacios)
-              });
-            } else {
-              resolve(response);
+                resolve({
+                  identificacion: response.Data.estudiante.espacios[0].doc_estudiante,
+                  nombre: response.Data.estudiante.espacios[0].nom_estudiante,
+                  proyectos: this.transformarDatosEstudiante(response.Data.estudiante.espacios)
+                });
+              } else {
+                resolve(response);
+              }
+            },
+            (error) => {
+              reject(error);
             }
-          },
-          (error) => {
-            reject(error);
-          }
-        );
-    });
+          );
+      });
     }
   }
 
@@ -301,32 +455,48 @@ export class EvaluacionesComponent implements OnInit {
     return Array.from(espaciosMap.values());
   }
 
+  /* -- -- INICIO FORMULARIO DE AUTOEVALUACION II -- -- */
+
   async consultarEspaciosAcademicos(documento: string) {
     let parametros = {
       parametros: {
         identificacion: documento
       }
     }
-    return new Promise((resolve, reject) => {
-      this.evaluacionDocenteMidService
-        .post('espacios_academicos', parametros)
-        .subscribe(
-          (response: any) => {
-            if (response.Data != null) {
-              resolve({
-                identificacion: response.Data.docente.carga[0].doc_docente,
-                nombre: response.Data.docente.carga[0].docente,
-                proyectos: this.transformarDatosDocente(response.Data.docente.carga)
-              });
-            } else {
-              resolve(response);
+    var storedConsultaEspaciosAcademicos = localStorage.getItem('data_consulta_espacios_academicos');
+    if (storedConsultaEspaciosAcademicos !== null) {
+      const dataParsed = JSON.parse(storedConsultaEspaciosAcademicos);
+      console.log('CONSULTA grande que consulta en storage: ', dataParsed);
+      return {
+        identificacion: dataParsed.Data.docente.carga[0].doc_docente,
+        nombre: dataParsed.Data.docente.carga[0].docente,
+        proyectos: this.transformarDatosDocente(dataParsed.Data.docente.carga)
+      };
+    }
+    else {
+      return new Promise((resolve, reject) => {
+        this.evaluacionDocenteMidService
+          .post('espacios_academicos', parametros)
+          .subscribe(
+            (response: any) => {
+              if (response.Data != null) {
+                localStorage.setItem('data_consulta_espacios_academicos', JSON.stringify(response));
+                console.log('guardo en storage data_consulta_espacios_academicos: ', JSON.stringify(response));
+                resolve({
+                  identificacion: response.Data.docente.carga[0].doc_docente,
+                  nombre: response.Data.docente.carga[0].docente,
+                  proyectos: this.transformarDatosDocente(response.Data.docente.carga)
+                });
+              } else {
+                resolve(response);
+              }
+            },
+            (error) => {
+              reject(error);
             }
-          },
-          (error) => {
-            reject(error);
-          }
-        );
-    });
+          );
+      });
+    }
   }
 
   transformarDatosDocente(lista: any[]): any[] {
@@ -374,6 +544,8 @@ export class EvaluacionesComponent implements OnInit {
     return Array.from(proyectosMap.values());
   }
 
+  /* -- -- FIN FORMULARIO DE AUTOEVALUACION II -- -- */
+
   // Método para aplicar filtro en la tabla de espacios académicos
   aplicarFiltro(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
@@ -386,80 +558,6 @@ export class EvaluacionesComponent implements OnInit {
 
   selectForm(formType: string) {
     this.selectedEvaluation = formType;
-  }
-
-  // Método que maneja la selección del menú desplegable
-  onSelectChange(event: MatSelectChange) {
-    if (this.selectedEvaluation) {  
-      this
-    }
-    this.selectedEvaluation = event.value;
-    this.mostrarEvaluacion = false;
-    this.consultarDatos();
-  }
-
-  consultarDatos() {
-    if (this.hasRole([ROLES.ESTUDIANTE])) {
-      this.userService.getUserDocument().then((documento) => {
-        if (documento != null) {
-          this.consultarCargaAcademica(documento).then((response: any) => {
-            if (this.selectedEvaluation == "heteroevaluacion") {
-              this.heteroForm.patchValue({
-                estudianteNombre: response.nombre,
-                estudianteIdentificacion: response.identificacion,
-                inicioFecha: new Date(),
-                finFecha: new Date()
-              });
-            } else if (this.selectedEvaluation == "autoevaluacion_i") {
-              this.autoevaluacionIForm.patchValue({
-                estudianteNombre: response.nombre,
-                estudianteIdentificacion: response.codigo_estudiante,
-                inicioFecha: new Date(),
-                finFecha: new Date()
-              });
-            }
-
-            this.proyectos.opciones = response.proyectos;
-          });
-        }
-      });
-    } else if (this.hasRole([ROLES.DOCENTE])) {
-      this.userService.getUserDocument().then((documento) => {
-        this.consultarEspaciosAcademicos(documento).then((response: any) => {
-          localStorage.setItem('evaluacion_docente', JSON.stringify(response));
-          if (this.selectedEvaluation == "autoevaluacion_ii") {
-            this.autoevaluacionIIForm.patchValue({
-              docenteIdentificacion: response.identificacion,
-              docenteNombre: response.nombre,
-              inicioFecha: new Date(),
-              finFecha: new Date()
-            });
-          } else if (this.selectedEvaluation == "coevaluacion_i") {
-            this.coevaluacionIForm.patchValue({
-              docenteNombre: response.nombre,
-              inicioFecha: new Date(),
-              finFecha: new Date()
-            });
-          }
-
-          this.proyectos.opciones = response.proyectos;
-        });
-      });
-    } else if (this.hasRole([ROLES.COORDINADOR])) {
-      if (this.selectedEvaluation == "coevaluacion_ii") {
-        this.userService.getUserDocument().then((documento) => {
-          this.consultarProyectos(documento).then((carreras) => {
-            localStorage.setItem('evaluacion_coordinador', JSON.stringify(carreras));
-            this.coevaluacionIIForm.patchValue({
-              inicioFecha: new Date(),
-              finFecha: new Date()
-            });
-
-            this.proyectos.opciones = carreras;
-          });
-        });
-      }
-    }
   }
 
   // Detecta cambios en el valor de formtype y actualiza el formulario mostrado

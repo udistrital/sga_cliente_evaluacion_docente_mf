@@ -23,4 +23,7 @@ export const environment = {
 
     ACADEMICA_SERVICE: "https://autenticacion.portaloas.udistrital.edu.co/apioas/academica_jbpm/v2/",
 
+    TIPO_PARAMETRO_ID: {
+        PROCESO_EVALUACION_ID: 152,
+    }
 };
