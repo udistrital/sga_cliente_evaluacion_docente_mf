@@ -262,14 +262,16 @@ export class EvaluacionesComponent implements OnInit {
               finFecha: new Date()
             });
           } else if (this.selectedEvaluation == "Coevaluación I") {
+            this.evaluador = response.identificacion;
+            this.evaluado = response.identificacion;
             this.coevaluacionIForm.patchValue({
               docenteNombre: response.nombre,
-              inicioFecha: new Date(),
-              finFecha: new Date()
+              inicioFecha: this.convertirFechaSinZonaHoraria(this.fechas[this.selectedEvaluationId].fechaInicio),
+              finFecha: this.convertirFechaSinZonaHoraria(this.fechas[this.selectedEvaluationId].fechaFin),
             });
           }
 
-          this.proyectos.opciones = response.proyectos;
+          this.proyectos.opciones = response.proyectosCoevI;
         });
       });
     } else if (this.hasRole([ROLES.COORDINADOR])) {
@@ -601,7 +603,8 @@ export class EvaluacionesComponent implements OnInit {
       return {
         identificacion: dataParsed.Data.docente.carga[0].doc_docente,
         nombre: dataParsed.Data.docente.carga[0].docente,
-        proyectos: this.transformarDatosDocente(dataParsed.Data.docente.carga)
+        proyectos: this.transformarDatosDocente(dataParsed.Data.docente.carga),
+        proyectosCoevI: this.transformarDatosDocenteCoevI(dataParsed.Data.docente.carga)
       };
     }
     else {
@@ -616,7 +619,8 @@ export class EvaluacionesComponent implements OnInit {
                 resolve({
                   identificacion: response.Data.docente.carga[0].doc_docente,
                   nombre: response.Data.docente.carga[0].docente,
-                  proyectos: this.transformarDatosDocente(response.Data.docente.carga)
+                  proyectos: this.transformarDatosDocente(response.Data.docente.carga),
+                  proyectosCoevI: this.transformarDatosDocenteCoevI(response.Data.docente.carga)
                 });
               } else {
                 resolve(response);
@@ -1197,4 +1201,103 @@ export class EvaluacionesComponent implements OnInit {
       verticalPosition: 'bottom',
     });
   }
+
+  /* -------------------------------------------------------------------------- */
+  /*               Funciones para el formulario de Coevaluación I               */
+  /* -------------------------------------------------------------------------- */
+  transformarDatosDocenteCoevI(lista: any[]): any[] {
+    const proyectosMap = new Map<number, any>();
+
+    lista.forEach((elemento) => {
+      const { cod_proyecto, proyecto, cod_espacio, espacio, id_grupo, grupo } = elemento;
+
+      if (!proyectosMap.has(cod_proyecto
+      )) {
+        proyectosMap.set(cod_proyecto
+          , {
+            id: cod_proyecto,
+            nombre: proyecto,
+            asignaturas: []
+          });
+      }
+
+      const proy = proyectosMap.get(cod_proyecto);
+      if (proy) {
+        const asignaturaExistente = proy.asignaturas.find((asignatura: any) => asignatura.nombre === espacio);
+        if (asignaturaExistente) {
+          const grupoExistente = asignaturaExistente.grupos.some((grupo: any) => grupo.id === id_grupo);
+          if (!grupoExistente) {
+            asignaturaExistente.grupos.push({
+              id: id_grupo,
+              nombre: grupo
+            });
+          }
+        } else {
+          proy.asignaturas.push({
+            id: String(cod_espacio),
+            nombre: espacio,
+            grupos: [
+              {
+                id: id_grupo,
+                nombre: grupo
+              }
+            ]
+          });
+        }
+      }
+    });
+
+    return Array.from(proyectosMap.values());
+  }
+
+  onProyectoCoevI(event: MatSelectChange): void {
+    const proyectoSeleccionado = event.value;
+    console.log("onProyectoCoevI", proyectoSeleccionado);
+    // this.proyecto = proyectoSeleccionado.id;
+    this.proyectoEspacio = proyectoSeleccionado.id;
+    this.proyecto = proyectoSeleccionado.id;
+    this.nombreProyecto = proyectoSeleccionado.nombre;
+    this.docentes.opciones = proyectoSeleccionado.docentes;
+    this.espacios.opciones = proyectoSeleccionado.asignaturas;
+    this.espacios_academicos = [];
+    if (proyectoSeleccionado.asignaturas != null) {
+      proyectoSeleccionado.asignaturas.forEach((espacio: any) => {
+        this.espacios_academicos.push({
+          id: espacio.id,
+          nombre: espacio.nombre,
+          grupos: espacio.grupos,
+          docente: espacio.docente
+        });
+      });
+    }
+  }
+
+  onEspacioCoevI(event: MatSelectChange): void {
+    const espacioSeleccionado = event.value;
+    this.espacio = espacioSeleccionado.id;
+    this.nombreEspacio = espacioSeleccionado.nombre;
+    this.grupos = espacioSeleccionado.grupos;
+    this.openSnackBar(`Espacio seleccionado: ${espacioSeleccionado.nombre}`);
+  }
+
+  onGrupoCoevI(event: MatSelectChange): void {
+    this.grupo = {
+      "id_grupo": event.value.id,
+      "grupo": event.value.nombre
+    };
+  }
+
+
+  /* -------------------------------------------------------------------------- */
+  /*                      Fin formulario de Coevaluación I                      */
+  /* -------------------------------------------------------------------------- */
+
+  /* -------------------------------------------------------------------------- */
+  /*               Funciones para el formulario de Coevaluación II              */
+  /* -------------------------------------------------------------------------- */
+
+  /* -------------------------------------------------------------------------- */
+  /*                      Fin formulario de Coevaluación II                     */
+  /* -------------------------------------------------------------------------- */
+
 }
