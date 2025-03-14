@@ -240,7 +240,9 @@
         "docente": "Docente",
         "error_docente": "Por favor, ingrese el nombre del docente.",
         "descripcion_proceso": "Descripción del proceso",
-        "error_descripcion": "Por favor, ingrese la descripción del proceso."
+        "error_descripcion": "Por favor, ingrese la descripción del proceso.",
+        "validacion_coordinador": "El usuario no puede ser el mismo docente evaluado",
+        "mensaje_confirmacion": "Usted va a proceder con la Coevaluacion II para el docente {{nombre_docente}}"
     },
 
     "metricas":{

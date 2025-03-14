@@ -20,6 +20,11 @@ import { ParametrosService } from "src/app/services/parametros.service";
 import { environment } from '../../../environments/environment';
 import { ROLES, ROLES_HETEROEVALUACION, ROLES_AUTOEVALUACION_UNO, ROLES_AUTOEVALUACION_DOS, ROLES_COEVALUACION_UNO, ROLES_COEVALUACION_DOS } from "src/app/models/diccionario";
 import { EvaluacionDocenteService } from "src/app/services/evaluacion-docente-crud.service";
+import { CoreService } from "src/app/services/core.service";
+import { OikosService } from "src/app/services/oikos.service";
+import { CumplidosDveService } from "src/app/services/cumplidos_dve.service";
+import { HomologacionDependenciasService } from "src/app/services/homologacion_dependencias.service";
+
 
 @Component({
   selector: "app-evaluaciones",
@@ -84,7 +89,11 @@ export class EvaluacionesComponent implements OnInit {
     private tercerosService: TercerosCrudService,
     private academicaService: AcademicaService,
     private parametrosService: ParametrosService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private coreService: CoreService,
+    private oikosService: OikosService,
+    private cumplidosDveService: CumplidosDveService,
+    private homologacionDependenciasService: HomologacionDependenciasService
   ) {
     this.heteroForm = this.fb.group({});
     this.coevaluacionIIForm = this.fb.group({});
@@ -274,19 +283,70 @@ export class EvaluacionesComponent implements OnInit {
           this.proyectos.opciones = response.proyectosCoevI;
         });
       });
-    } else if (this.hasRole([ROLES.COORDINADOR])) {
+    } else if (this.hasRole([ROLES.COORDINADOR, ROLES.DECANO])) {
       if (this.selectedEvaluation == "Coevaluación II") {
-        this.userService.getUserDocument().then((documento) => {
-          this.consultarProyectos(documento).then((carreras) => {
-            localStorage.setItem('evaluacion_coordinador', JSON.stringify(carreras));
-            this.coevaluacionIIForm.patchValue({
-              inicioFecha: new Date(),
-              finFecha: new Date()
-            });
-
-            this.proyectos.opciones = carreras;
-          });
+        this.coevaluacionIIForm.patchValue({
+          inicioFecha: this.convertirFechaSinZonaHoraria(this.fechas[this.selectedEvaluationId].fechaInicio),
+          finFecha: this.convertirFechaSinZonaHoraria(this.fechas[this.selectedEvaluationId].fechaFin),
         });
+        if ((this.hasRole([ROLES.COORDINADOR]))) {
+          this.userService.getUserDocument().then((documento) => {
+            this.evaluador = Number(documento)
+            this.consultarProyectos(documento).then((carreras) => {
+              // localStorage.setItem('evaluacion_coordinador', JSON.stringify(carreras));
+              this.proyectos.opciones = carreras;
+              console.log("carreras", carreras);
+            });
+          });
+        } else if ((this.hasRole([ROLES.DECANO]))) {
+          // se obtiene de terceros el id tercero del decano
+          this.userService.getUserDocument()
+            .then(
+              (personaId) => {
+                this.evaluador = Number(personaId);
+                // se consulta en core la facultad del decano (id dependencia)
+                console.log("personaId", personaId);
+                // let fecha = new Date().toISOString().split('T')[0];
+                let fecha = '2024-06-06'
+                let url = `jefe_dependencia?query=FechaFin__gte:${fecha},FechaInicio__lte:${fecha},TerceroId:${personaId}`;
+                this.coreService.get(url)
+                  .subscribe({
+                    next: (responseFacultad) => {
+                      if (responseFacultad != null) {
+                        console.log("response", responseFacultad[0].DependenciaId);
+                        // se obtienen los proyectos por facultad
+                        let url2 = `proyecto_curricular/get_all_proyectos_by_facultad_id/${responseFacultad[0].DependenciaId}`;
+                        this.oikosService.get(url2)
+                          .subscribe({
+                            next: (responseProyectos) => {
+                              console.log("response", responseProyectos.Body[0].Opciones);
+                              //Obtener id de proyecto homologado con academica
+                              const proyectos = responseProyectos.Body[0].Opciones.map(({ Id, Nombre }: any) => ({
+                                id: Id,
+                                nombre: Id + "-" + Nombre
+                              }));
+                              // Falta homologarlos con academica
+                              this.proyectos.opciones = proyectos;
+                            },
+                            error: (err) => {
+                              console.error('Error al cargar proyectos:', err);
+                            }
+                          }
+                          );
+                      }
+                    },
+                    error: (err) => {
+                      console.error('Error al cargar proyectos:', err);
+                    }
+                  }
+                  );
+
+              }
+            ).catch(error => {
+              this.evaluador = 1;
+              console.error('Error:', error.message);
+            });
+        }
       }
     }
   }
@@ -562,7 +622,7 @@ export class EvaluacionesComponent implements OnInit {
     for (let i = 0; i < data.docente.carga.length; i++) {
       let item = data.docente.carga[i];
 
-      if (item.cod_proyecto === codProyecto) {
+      if (item.cod_proyecto == codProyecto) {
         let clave = item.cod_proyecto + "-" + item.cod_espacio + "-" + item.espacio;
 
         if (!espaciosMap.has(clave)) {
@@ -1019,7 +1079,7 @@ export class EvaluacionesComponent implements OnInit {
 
       this.espacios.opciones = this.espacios_academicos.filter((espacio) => espacio.docente === docenteSeleccionado.id);
 
-      this.consultarDocenteTercero(docenteSeleccionado).then(
+      this.consultarTercero(docenteSeleccionado).then(
         (res) => {
           if (res != null) {
             this.evaluado = res.Id;
@@ -1033,7 +1093,7 @@ export class EvaluacionesComponent implements OnInit {
 
   }
 
-  async consultarDocenteTercero(docente: any): Promise<any> {
+  async consultarTercero(docente: any): Promise<any> {
     return new Promise((resolve, reject) => {
       this.tercerosService.get('datos_identificacion?query=Numero:' + docente.id + '&fields=TerceroId')
         .subscribe(
@@ -1295,7 +1355,156 @@ export class EvaluacionesComponent implements OnInit {
   /* -------------------------------------------------------------------------- */
   /*               Funciones para el formulario de Coevaluación II              */
   /* -------------------------------------------------------------------------- */
+  onProyectoCoevII(event: MatSelectChange): void {
+    const proyectoSeleccionado = event.value;
+    if ((this.hasRole([ROLES.DECANO]))) {
+      // consulta coordinador del proyecto seleccionado
+      let url = `informacion_academica/informacion_coordinador/${proyectoSeleccionado.id}`
+      this.cumplidosDveService.get(url)
+        .subscribe({
+          next: (resCoordinador: any) => {
+            if (resCoordinador != null) {
+              console.log(resCoordinador.Data.carreraSniesCollection.carreraSnies[0]);
+              const docentes = [{
+                id: resCoordinador.Data.carreraSniesCollection.carreraSnies[0].numero_documento_coordinador,
+                nombre: resCoordinador.Data.carreraSniesCollection.carreraSnies[0].nombre_coordinador
+              }]
+              this.docentes.opciones = docentes;
+              this.nombreProyecto = proyectoSeleccionado.nombre;
+              // se homologa proyecto seleccionado
+              let url2 = `proyecto_curricular_oikos/${proyectoSeleccionado.id}`
+              this.homologacionDependenciasService.get(url2)
+                .subscribe({
+                  next: (resHomologacion: any) => {
+                    if (resHomologacion != null) {
+                      this.proyectoEspacio = resHomologacion.homologacion.codigo_proyecto;
+                      this.proyecto = resHomologacion.homologacion.codigo_proyecto;
+                    }
+                  },
+                  error: (err) => {
+                    console.error('Error al cargar proyectos:', err);
+                  }
+                }
+                );
 
+            }
+          },
+          error: (err) => {
+            console.error('Error al cargar proyectos:', err);
+          }
+        }
+        );
+    } else {
+      this.consultarDocentesPorProyecto(proyectoSeleccionado.id).then((docentes) => {
+        this.docentes.opciones = docentes;
+        this.proyectoEspacio = proyectoSeleccionado.id;
+        this.proyecto = proyectoSeleccionado.id;
+        this.nombreProyecto = proyectoSeleccionado.nombre;
+      });
+    }
+
+  }
+
+  onDocenteCoevII(event: MatSelectChange): void {
+    console.log("Selecciona docente")
+    console.log(this.proyecto);
+
+    const docenteSeleccionado = event.value;
+    this.userService.getUserDocument().then((documento) => {
+      if (documento == docenteSeleccionado.id) {
+        Swal.fire({
+          icon: "warning",
+          title: this.translate.instant("GLOBAL.atencion"),
+          text: this.translate.instant("coevaluacion_ii.validacion_coordinador"),
+        })
+      }
+      else {
+        this.evaluado = docenteSeleccionado.id;
+        console.log("docenteSeleccionado", docenteSeleccionado);
+        let parametros = {
+          parametros: {
+            identificacion: docenteSeleccionado.id
+          }
+        }
+        this.evaluacionDocenteMidService
+          .post('espacios_academicos', parametros)
+          .subscribe({
+            next: (response) => {
+              if (response.Data != null) {
+                let espaciosUnicos
+                espaciosUnicos = this.filtrarEspaciosPorProyecto(response.Data, this.proyecto);
+                this.espacios.opciones = espaciosUnicos;
+                console.log(espaciosUnicos);
+              }
+            },
+            error: (err) => {
+              console.error('Error al cargar proyectos:', err);
+            }
+          }
+          );
+        this.espacios.opciones = this.espacios_academicos.filter((espacio) => espacio.docente === docenteSeleccionado.id);
+        // this.consultarDocenteTercero(docenteSeleccionado).then(
+        //   (res) => {
+        //     if (res != null) {
+        //       this.evaluado = res.Id;
+        //       this.nombreDocente = res.NombreCompleto;
+        //       this.mostrarEvaluacion = false;
+        //     }
+        //   }
+        // )
+      }
+    });
+  }
+
+  onEspacioCoevII(event: MatSelectChange): void {
+    this.grupos = [];
+    const espacioSeleccionado = event.value;
+
+    if (Array.isArray(espacioSeleccionado)) {
+      var idsEspacios: string = "";
+      var nombresEspacios: string = "";
+      espacioSeleccionado.forEach((esp) => {
+        idsEspacios += esp.id + ",";
+        nombresEspacios += esp.nombre + ",";
+        if (Array.isArray(esp.grupos)) {
+          this.grupos.push(...esp.grupos);
+        }
+      });
+      this.espacio = idsEspacios.slice(0, -1);
+      this.nombreEspacio = nombresEspacios.slice(0, -1);
+    } else if (espacioSeleccionado) {
+      this.espacio = espacioSeleccionado.id;
+      this.nombreEspacio = espacioSeleccionado.nombre;
+      this.grupos = espacioSeleccionado.grupos;
+      this.openSnackBar(`Espacio seleccionado: ${espacioSeleccionado.nombre}`);
+    }
+    this.mostrarEvaluacion = false;
+  }
+
+  async consultarProyectosFacultad(idDependencia: any): Promise<string[]> {
+    return new Promise((resolve, reject) => {
+      this.academicaService.get('coordinador_carrera_snies/' + idDependencia)
+        .subscribe(
+          (res: any) => {
+            if (res != null) {
+              if (res["coordinadorCollection"] != null && res["coordinadorCollection"].coordinador != null) {
+                console.log(res["coordinadorCollection"].coordinador);
+                const proyectos = res["coordinadorCollection"].coordinador.map(({ codigo_condor, nombre_proyecto_condor }: any) => ({
+                  id: codigo_condor,
+                  nombre: codigo_condor + "-" + nombre_proyecto_condor
+                }));
+                resolve(proyectos);
+              } else {
+                reject([]);
+              }
+            }
+          },
+          (error: any) => {
+            reject(error);
+          }
+        )
+    });
+  }
   /* -------------------------------------------------------------------------- */
   /*                      Fin formulario de Coevaluación II                     */
   /* -------------------------------------------------------------------------- */
