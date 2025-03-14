@@ -201,7 +201,7 @@
       },
 
     "autoevaluacion_ii": {
-        "titulo": "Autoevaluación II",
+        "titulo": "Autoevaluación II 1",
         "fechas": "Fechas",
         "inicio": "Inicio",
         "fin": "Fin",
@@ -224,6 +224,14 @@
         "error_espacio_academico": "Por favor, seleccione un espacio académico.",
         "error_descripcion": "Por favor, ingrese una descripción.",
         "mensaje_confirmacion": "Usted va a proceder con la Autoevaluación para el proyecto curricular {{nombre_proyecto}}"
+    },
+
+    "autoevaluacion_ii_dos": {
+        "titulo": "Autoevaluación II 2"
+    },
+
+    "autoevaluacion_ii_tres": {
+        "titulo": "Autoevaluación II 3"
     },
 
     "coevaluacion_ii": {

@@ -42,6 +42,8 @@ export class EvaluacionesComponent implements OnInit {
   coevaluacionIIForm: FormGroup;
   coevaluacionIForm: FormGroup;
   autoevaluacionIIForm: FormGroup;
+  autoevaluacionIIDosForm: FormGroup;
+  autoevaluacionIITresForm: FormGroup;
   autoevaluacionIForm: FormGroup;
   dateHeader: string | undefined;
   proyectos: { select: any, opciones: any[] } = { select: undefined, opciones: [] };
@@ -90,6 +92,8 @@ export class EvaluacionesComponent implements OnInit {
     this.coevaluacionIIForm = this.fb.group({});
     this.coevaluacionIForm = this.fb.group({});
     this.autoevaluacionIIForm = this.fb.group({});
+    this.autoevaluacionIIDosForm = this.fb.group({});
+    this.autoevaluacionIITresForm = this.fb.group({});
     this.autoevaluacionIForm = this.fb.group({});
   }
 
@@ -154,6 +158,26 @@ export class EvaluacionesComponent implements OnInit {
     });
 
     this.autoevaluacionIIForm = this.fb.group({
+      inicioFecha: ["", Validators.required],
+      finFecha: ["", Validators.required],
+      docenteNombre: ["", Validators.required],
+      docenteIdentificacion: ["", Validators.required],
+      proyectoCurricular: ["", Validators.required],
+      espacioAcademico: ["", Validators.required],
+      descripcionProceso: [`Estimado cuerpo docente: Por favor autoevalúe con plan de mejoramiento su desempeño docente utilizando el formato dispuesto para ello. Los items 01 a 15 con única respuesta son obligatorios en cada dimensión.`, Validators.required],
+    });
+
+    this.autoevaluacionIIDosForm = this.fb.group({
+      inicioFecha: ["", Validators.required],
+      finFecha: ["", Validators.required],
+      docenteNombre: ["", Validators.required],
+      docenteIdentificacion: ["", Validators.required],
+      proyectoCurricular: ["", Validators.required],
+      espacioAcademico: ["", Validators.required],
+      descripcionProceso: [`Estimado cuerpo docente: Por favor autoevalúe con plan de mejoramiento su desempeño docente utilizando el formato dispuesto para ello. Los items 01 a 15 con única respuesta son obligatorios en cada dimensión.`, Validators.required],
+    });
+
+    this.autoevaluacionIITresForm = this.fb.group({
       inicioFecha: ["", Validators.required],
       finFecha: ["", Validators.required],
       docenteNombre: ["", Validators.required],
@@ -256,6 +280,20 @@ export class EvaluacionesComponent implements OnInit {
           localStorage.setItem('evaluacion_docente', JSON.stringify(response));
           if (this.selectedEvaluation == "Autoevaluación II 1") {
             this.autoevaluacionIIForm.patchValue({
+              docenteIdentificacion: response.identificacion,
+              docenteNombre: response.nombre,
+              inicioFecha: new Date(),
+              finFecha: new Date()
+            });
+          } else if (this.selectedEvaluation == "Autoevaluación II 2") {
+            this.autoevaluacionIIDosForm.patchValue({
+              docenteIdentificacion: response.identificacion,
+              docenteNombre: response.nombre,
+              inicioFecha: new Date(),
+              finFecha: new Date()
+            });
+          } else if (this.selectedEvaluation == "Autoevaluación II 3") {
+            this.autoevaluacionIITresForm.patchValue({
               docenteIdentificacion: response.identificacion,
               docenteNombre: response.nombre,
               inicioFecha: new Date(),
