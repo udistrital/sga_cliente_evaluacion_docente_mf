@@ -43,6 +43,9 @@ import { SgaEvaluacionDocenteMidService } from './services/sga_evaluacion_docent
 import { EvaluacionDocenteService } from './services/evaluacion-docente-crud.service';
 import { DefinicionPlantillasComponent } from './components/definicion-plantillas/definicion-plantillas.component';
 import { AcademicaService } from './services/academica.service';
+import { CoreService } from './services/core.service';
+import { CumplidosDveService } from './services/cumplidos_dve.service';
+import { HomologacionDependenciasService } from './services/homologacion_dependencias.service';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, environment.apiUrl + 'assets/i18n/', '.json');
@@ -114,6 +117,9 @@ export const CUSTOM_DATE_FORMATS = {
     SgaEvaluacionDocenteMidService,
     EvaluacionDocenteService,
     AcademicaService,
+    CoreService,
+    CumplidosDveService,
+    HomologacionDependenciasService,
     { provide: HTTP_INTERCEPTORS, useClass: SpinnerUtilInterceptor, multi: true },
     { provide: MAT_DATE_LOCALE, useValue: 'es-CO' }, 
     { provide: MAT_DATE_FORMATS, useValue: CUSTOM_DATE_FORMATS },

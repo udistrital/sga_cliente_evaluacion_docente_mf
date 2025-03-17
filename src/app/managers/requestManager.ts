@@ -24,7 +24,7 @@ export class RequestManager {
     if (acces_token !== null) {
       this.httpOptions = {
         headers: new HttpHeaders({
-          'Content-Type': 'application/json',
+          // 'Content-Type': 'application/json',
           'Authorization': `Bearer ${acces_token}`,
         }),
       };
