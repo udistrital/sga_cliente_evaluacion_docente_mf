@@ -403,7 +403,7 @@
                                     <mat-form-field style="width: 100%" appearance="outline">
                                         <mat-label>{{ 'autoevaluacion_ii.espacio1' | translate }}</mat-label>
                                         <mat-select (selectionChange)="onEspacioSelection($event)"
-                                            formControlName="espacioAcademico" required multiple>
+                                            formControlName="espacioAcademico" required>
                                             <mat-option disabled>{{ 'GLOBAL.selecionar_espacio' | translate
                                                 }}</mat-option>
                                             <mat-option *ngFor="let espacio of espacios_academicos" [value]="espacio">
@@ -437,7 +437,7 @@
                         </div>
 
                         <ngx-dynamic-form *ngIf="mostrarEvaluacion" [formtype]="selectedEvaluationId"
-                            [evaluador]="evaluador" [evaluado]="evaluado" [proyectoEspacio]="proyecto"
+                            [evaluador]="evaluador" [evaluado]="evaluado" [proyectoEspacio]="proyectoEspacio" [proyectoEvaluador]="proyecto"
                             [espacio]="espacio" [grupos]="grupos"
                             (evaluacionCompletada)="ocultarEvaluacion()"></ngx-dynamic-form>
                     </mat-card-content>
@@ -532,7 +532,7 @@
                                     <mat-form-field style="width: 100%" appearance="outline">
                                         <mat-label>{{ 'autoevaluacion_ii.espacio1' | translate }}</mat-label>
                                         <mat-select (selectionChange)="onEspacioSelection($event)"
-                                            formControlName="espacioAcademico" required multiple>
+                                            formControlName="espacioAcademico" required>
                                             <mat-option disabled>{{ 'GLOBAL.selecionar_espacio' | translate
                                                 }}</mat-option>
                                             <mat-option *ngFor="let espacio of espacios_academicos" [value]="espacio">
@@ -566,7 +566,7 @@
                         </div>
 
                         <ngx-dynamic-form *ngIf="mostrarEvaluacion" [formtype]="selectedEvaluationId"
-                            [evaluador]="evaluador" [evaluado]="evaluado" [proyectoEspacio]="proyecto"
+                            [evaluador]="evaluador" [evaluado]="evaluado" [proyectoEspacio]="proyectoEspacio" [proyectoEvaluador]="proyecto"
                             [espacio]="espacio" [grupos]="grupos"
                             (evaluacionCompletada)="ocultarEvaluacion()"></ngx-dynamic-form>
                     </mat-card-content>
@@ -661,7 +661,7 @@
                                     <mat-form-field style="width: 100%" appearance="outline">
                                         <mat-label>{{ 'autoevaluacion_ii.espacio1' | translate }}</mat-label>
                                         <mat-select (selectionChange)="onEspacioSelection($event)"
-                                            formControlName="espacioAcademico" required multiple>
+                                            formControlName="espacioAcademico" required>
                                             <mat-option disabled>{{ 'GLOBAL.selecionar_espacio' | translate
                                                 }}</mat-option>
                                             <mat-option *ngFor="let espacio of espacios_academicos" [value]="espacio">
@@ -695,7 +695,7 @@
                         </div>
 
                         <ngx-dynamic-form *ngIf="mostrarEvaluacion" [formtype]="selectedEvaluationId"
-                            [evaluador]="evaluador" [evaluado]="evaluado" [proyectoEspacio]="proyecto"
+                            [evaluador]="evaluador" [evaluado]="evaluado" [proyectoEspacio]="proyectoEspacio" [proyectoEvaluador]="proyecto"
                             [espacio]="espacio" [grupos]="grupos"
                             (evaluacionCompletada)="ocultarEvaluacion()"></ngx-dynamic-form>
                     </mat-card-content>
