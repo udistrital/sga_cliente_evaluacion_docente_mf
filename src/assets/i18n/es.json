@@ -63,7 +63,8 @@
         "fecha_fin_seleccionada": "Fecha fin seleccionada",
         "guardar": "Guardar",
         "confirmacion_guardado": "Confirmación de guardado",
-        "ajustes_aplicados": "Los ajustes fueron aplicados exitosamente"
+        "ajustes_aplicados": "Los ajustes fueron aplicados exitosamente",
+        "fuera_rango": "La fecha esta por fuera del rango permitido"
     },
 
     "definicion_plantillas": {
@@ -200,7 +201,7 @@
       },
 
     "autoevaluacion_ii": {
-        "titulo": "Autoevaluación II",
+        "titulo": "Autoevaluación II 1",
         "fechas": "Fechas",
         "inicio": "Inicio",
         "fin": "Fin",
@@ -225,6 +226,14 @@
         "mensaje_confirmacion": "Usted va a proceder con la Autoevaluación para el proyecto curricular {{nombre_proyecto}}"
     },
 
+    "autoevaluacion_ii_dos": {
+        "titulo": "Autoevaluación II 2"
+    },
+
+    "autoevaluacion_ii_tres": {
+        "titulo": "Autoevaluación II 3"
+    },
+
     "coevaluacion_ii": {
         "titulo": "Coevaluación II",
         "fechas": "Fechas",
@@ -239,7 +248,9 @@
         "docente": "Docente",
         "error_docente": "Por favor, ingrese el nombre del docente.",
         "descripcion_proceso": "Descripción del proceso",
-        "error_descripcion": "Por favor, ingrese la descripción del proceso."
+        "error_descripcion": "Por favor, ingrese la descripción del proceso.",
+        "validacion_coordinador": "El usuario no puede ser el mismo docente evaluado",
+        "mensaje_confirmacion": "Usted va a proceder con la Coevaluacion II para el docente {{nombre_docente}}"
     },
 
     "metricas":{

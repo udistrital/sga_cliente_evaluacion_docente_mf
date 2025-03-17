@@ -95,16 +95,14 @@ export class AsignacionFechasComponent implements OnInit {
     const fechaInicio = new Date(proceso.fechaInicio);
     const fechaFin = new Date(proceso.fechaFin);
   
-    if (!fechaInicio) {
+    if (isNaN(fechaInicio.getTime())) {
       proceso.errorFecha = "Fecha de inicio inválida.";
-      proceso.fechaInicio = "";
       this.verificarHabilitarGuardar();
       return;
     }
   
-    if (!fechaFin) {
+    if (isNaN(fechaFin.getTime())) {
       proceso.errorFecha = "Fecha de fin inválida.";
-      proceso.fechaFin = "";
       this.verificarHabilitarGuardar();
       return;
     }
@@ -120,7 +118,11 @@ export class AsignacionFechasComponent implements OnInit {
   }
   
   verificarHabilitarGuardar() {
-    this.guardarHabilitado = this.procesos.every(proceso => proceso.fechaInicio && proceso.fechaFin && !proceso.errorFecha);
+    this.guardarHabilitado = this.procesos.every(proceso => 
+      proceso.fechaInicio && 
+      proceso.fechaFin && 
+      !proceso.errorFecha
+    );
   }
   
   guardar() {
@@ -156,9 +158,7 @@ export class AsignacionFechasComponent implements OnInit {
 
           if (procesosActualizados + erroresActualizacion === totalProcesos) {
             this.mostrarPopUp(procesosActualizados, erroresActualizacion);
-          } else {
-            this.popUpManager.showErrorAlert(`Se genero un error inesperado actualizando las fechas.`); 
-          }
+          } 
         },
         (error) => {
           this.popUpManager.showErrorAlert(`Se genero un error actualizando el proceso de ${proceso.nombre}.`); 

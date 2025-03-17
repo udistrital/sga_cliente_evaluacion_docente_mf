@@ -62,7 +62,8 @@
         "fecha_fin_seleccionada": "End date selected",
         "guardar": "Save",
         "confirmacion_guardado": "Save Confirmation",
-        "ajustes_aplicados": "Changes applied successfully"
+        "ajustes_aplicados": "Changes applied successfully",
+        "fuera_rango": "The date is outside the allowed range"
     },
 
     "definicion_plantillas": {

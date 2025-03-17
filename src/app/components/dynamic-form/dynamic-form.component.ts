@@ -11,6 +11,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { forkJoin } from "rxjs";
 import { TIPOINPUT } from "src/app/models/const_eva";
 import { GestorDocumentalService } from "src/app/services/gestor-documental.service";
+import { ParametrosService } from "src/app/services/parametros.service";
 import { SgaEvaluacionDocenteMidService } from "src/app/services/sga_evaluacion_docente_mid.service";
 import Swal from "sweetalert2";
 
@@ -36,6 +37,7 @@ export class DynamicFormComponent implements OnInit, OnChanges {
   expandAllState: boolean = false;
   vertHorAllState: boolean = false;
   panelIndex: number[] = [];
+  periodoActual!: number;
 
   uploadedFileUid: string | null = null;
   documentId: string | null = null;
@@ -59,16 +61,34 @@ export class DynamicFormComponent implements OnInit, OnChanges {
     private evaluacionDocenteMidService: SgaEvaluacionDocenteMidService,
     private gestorService: GestorDocumentalService,
     private gestorDocumentalService: GestorDocumentalService,
-    private translateService: TranslateService
-  ) { this.stepperForm = this.fb.group({});
-}
+    private translateService: TranslateService,
+    private parametrosService: ParametrosService
 
-ngOnInit() {
-}
+  ) {
+    this.stepperForm = this.fb.group({});
+  }
 
-ngOnChanges() {
-  this.selectForm(this.formtype);
-}
+  ngOnInit() {
+    //consulta el periodo actual
+    let anioActual = new Date().getFullYear().toString();
+    this.parametrosService.get('periodo?query=year:' + anioActual + ',activo:true,codigo_abreviacion:PA').subscribe(
+      (responsePeriodo: any) => {
+        if (responsePeriodo && responsePeriodo.Data && responsePeriodo.Data.length) {
+          console.log('Periodo actual:', responsePeriodo.Data[0].Id);
+          this.periodoActual = responsePeriodo.Data[0].Id;
+        } else {
+          console.error('Error al obtener el periodo actual:', responsePeriodo.Message);
+        }
+      },
+      (error) => {
+        console.error('Error al obtener el periodo actual:', error);
+      }
+    );
+  }
+
+  ngOnChanges() {
+    this.selectForm(this.formtype);
+  }
 
   // Método para inicializar el formulario seleccionado
   selectForm(tipo_formulario: string) {
@@ -273,7 +293,7 @@ ngOnChanges() {
         const espacios = this.espacio.split(',');
         espacios.forEach((esp) => {
           const jsonData = {
-            id_periodo: 1,
+            id_periodo: this.periodoActual,
             id_evaluador: String(this.evaluador),
             id_evaluado: this.evaluado != null ? String(this.evaluado) : String(this.evaluador),
             proyecto_curricular_espacio: String(this.proyectoEspacio),

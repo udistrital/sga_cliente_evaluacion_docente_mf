@@ -9,4 +9,8 @@ export const environment = {
     EVENTOS_CRUD: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/sesiones_crud/v2/',
     PARAMETROS_CRUD: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/parametros/v1/',
     EVALUACION_DOCENTE_CRUD:'https://autenticacion.portaloas.udistrital.edu.co/apioas/evaluacion_docente_crud/v1/',
+
+    TIPO_PARAMETRO_ID: {
+        PROCESO_EVALUACION_ID: 98,
+    }
 };
