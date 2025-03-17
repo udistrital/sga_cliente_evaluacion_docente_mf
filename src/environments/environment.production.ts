@@ -10,6 +10,11 @@ export const environment = {
     PARAMETROS_CRUD: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/parametros/v1/',
     EVALUACION_DOCENTE_CRUD:'https://autenticacion.portaloas.udistrital.edu.co/apioas/evaluacion_docente_crud/v1/',
 
+    CRUD_CORE: "https://autenticacion.portaloas.udistrital.edu.co/apioas/core_amazon_crud/v1/",
+    CUMPLIDOS_DVE_MID: "https://autenticacion.portaloas.udistrital.edu.co/apioas/cumplidos_dve_mid/v1/",
+    HOMOLOGACION_DEPENDENCIAS: "https://autenticacion.portaloas.udistrital.edu.co/apioas/dependencias_api/v1/",
+
+
     TIPO_PARAMETRO_ID: {
         PROCESO_EVALUACION_ID: 98,
     }
