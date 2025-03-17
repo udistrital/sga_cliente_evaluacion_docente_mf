@@ -282,22 +282,22 @@ export class EvaluacionesComponent implements OnInit {
             this.autoevaluacionIIForm.patchValue({
               docenteIdentificacion: response.identificacion,
               docenteNombre: response.nombre,
-              inicioFecha: new Date(),
-              finFecha: new Date()
+              inicioFecha: this.convertirFechaSinZonaHoraria(this.fechas[this.selectedEvaluationId].fechaInicio),
+              finFecha: this.convertirFechaSinZonaHoraria(this.fechas[this.selectedEvaluationId].fechaFin)
             });
           } else if (this.selectedEvaluation == "Autoevaluación II 2") {
             this.autoevaluacionIIDosForm.patchValue({
               docenteIdentificacion: response.identificacion,
               docenteNombre: response.nombre,
-              inicioFecha: new Date(),
-              finFecha: new Date()
+              inicioFecha: this.convertirFechaSinZonaHoraria(this.fechas[this.selectedEvaluationId].fechaInicio),
+              finFecha: this.convertirFechaSinZonaHoraria(this.fechas[this.selectedEvaluationId].fechaFin)
             });
           } else if (this.selectedEvaluation == "Autoevaluación II 3") {
             this.autoevaluacionIITresForm.patchValue({
               docenteIdentificacion: response.identificacion,
               docenteNombre: response.nombre,
-              inicioFecha: new Date(),
-              finFecha: new Date()
+              inicioFecha: this.convertirFechaSinZonaHoraria(this.fechas[this.selectedEvaluationId].fechaInicio),
+              finFecha: this.convertirFechaSinZonaHoraria(this.fechas[this.selectedEvaluationId].fechaFin)
             });
           } else if (this.selectedEvaluation == "Coevaluación I") {
             this.coevaluacionIForm.patchValue({
