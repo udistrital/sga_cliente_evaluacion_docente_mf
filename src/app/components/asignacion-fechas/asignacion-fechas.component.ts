@@ -5,6 +5,7 @@ import { ParametrosService } from "src/app/services/parametros.service";
 import { ProcesoParametroService } from "src/app/services/proceso-parametro.service";
 import { ProcesoParametro } from "src/app/models/proceso-parametro";
 import { PopUpManager } from "src/app/managers/popUpManager";
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: "app-asignacion-fechas",
@@ -23,6 +24,7 @@ export class AsignacionFechasComponent implements OnInit {
     private parametrosService: ParametrosService,
     private procesoParametroService: ProcesoParametroService,
     private popUpManager: PopUpManager,
+    private translate: TranslateService,
   ) { }
 
   ngOnInit(): void {
@@ -43,7 +45,8 @@ export class AsignacionFechasComponent implements OnInit {
                       if (procesoEncontrado) {
                         this.procesos.push({
                           id: String(item.Id),
-                          nombre: procesoEncontrado.Nombre,
+                          nombre: this.homologarNombre(procesoEncontrado.Nombre),
+                          descripcion: this.buscarDescripcion(procesoEncontrado.Nombre),
                           fechaInicio: item.FechaInicio ? this.convertirFechaSinZonaHoraria(item.FechaInicio) : "",
                           fechaFin: item.FechaFin ? this.convertirFechaSinZonaHoraria(item.FechaFin) : "",
                           idProceso: String(item.ProcesoId),
@@ -186,5 +189,61 @@ export class AsignacionFechasComponent implements OnInit {
     return `${fecha.getFullYear()}-${pad(fecha.getMonth() + 1)}-${pad(fecha.getDate())} ` +
            `${pad(fecha.getHours())}:${pad(fecha.getMinutes())}:${pad(fecha.getSeconds())}`;
   }  
+
+  homologarNombre(procesoNombre: string): string {
+    switch (procesoNombre) {
+      case "Heteroevaluación":
+        return this.translate.instant('heteroevaluacion.titulo');
+  
+      case "Autoevaluación I":
+        return this.translate.instant('autoevaluacion_i.titulo');
+  
+      case "Autoevaluación II 1":
+        return this.translate.instant('autoevaluacion_ii.titulo');
+      
+      case "Autoevaluación II 2":
+        return this.translate.instant('autoevaluacion_ii_dos.titulo');
+      
+      case "Autoevaluación II 3":
+        return this.translate.instant('autoevaluacion_ii_tres.titulo');
+  
+      case "Coevaluación I":
+        return this.translate.instant('coevaluacion_i.titulo');
+  
+      case "Coevaluación II":
+        return this.translate.instant('coevaluacion_ii.titulo');
+  
+      default:
+        return "";
+    }
+  }
+
+  buscarDescripcion(procesoNombre: string): string {
+    switch (procesoNombre) {
+      case "Heteroevaluación":
+        return this.translate.instant('heteroevaluacion.descripcion');
+  
+      case "Autoevaluación I":
+        return this.translate.instant('autoevaluacion_i.descripcion');
+  
+      case "Autoevaluación II 1":
+        return this.translate.instant('autoevaluacion_ii.descripcion');
+      
+      case "Autoevaluación II 2":
+        return this.translate.instant('autoevaluacion_ii_dos.descripcion');
+      
+      case "Autoevaluación II 3":
+        return this.translate.instant('autoevaluacion_ii_tres.descripcion');
+  
+      case "Coevaluación I":
+        return this.translate.instant('coevaluacion_i.descripcion');
+  
+      case "Coevaluación II":
+        return this.translate.instant('coevaluacion_ii.descripcion');
+  
+      default:
+        return "";
+    }
+  }
 
 }
