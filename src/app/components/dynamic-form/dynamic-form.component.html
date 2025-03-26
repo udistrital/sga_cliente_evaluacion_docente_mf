@@ -7,14 +7,14 @@
         <ng-template matStepLabel >{{ seccion.nombre }}</ng-template>
 
                 <!-- Botón para colapsar/expandir todas las preguntas con ícono de ojo -->
-                <div style="width: 100%; display: flex; justify-content: flex-end; padding-bottom: 1rem;">
+                <!--<div style="width: 100%; display: flex; justify-content: flex-end; padding-bottom: 1rem;">
                     <button mat-button color="primary" (click)="toggleAll(i)">
                         <mat-icon>visibility</mat-icon> {{ expandAllState ? 'Colapsar todo' : 'Expandir todo' }}
                     </button>
                     <button mat-button color="primary" (click)="toggleLayout(i)">
                         <mat-icon>grid_view</mat-icon> {{ vertHorAllState ? 'Vertical' : 'Horizontal' }}
                     </button>
-                </div>
+                </div>-->
 
                 <!-- Preguntas dentro de los ámbitos usando mat-accordion -->
                 <mat-accordion [multi]="expandAllState">
@@ -44,6 +44,11 @@
                                             {{ option.nombre }}
                                         </mat-radio-button>
                                     </mat-radio-group>
+                                     <!-- Mensaje de error si el campo es obligatorio y está vacío -->
+                                    <mat-error *ngIf="stepperForm.get('pregunta_' + generateControlName(seccion.id, pregunta.id))?.invalid 
+                                        && stepperForm.get('pregunta_' + generateControlName(seccion.id, pregunta.id))?.touched">
+                                        Debes seleccionar una opción.
+                                    </mat-error>
                                 </div>
 
                                 <!-- Opción de respuesta abierta (input/textarea) -->
@@ -51,16 +56,33 @@
                                     <mat-form-field style="width: 100%;" appearance="fill">
                                         <!-- <mat-label>{{ pregunta.nombre }}</mat-label> -->
                                         <textarea matInput [formControlName]="'pregunta_' + generateControlName(seccion.id, pregunta.id)"></textarea>
+                                        <mat-error *ngIf="stepperForm.get('pregunta_' + generateControlName(seccion.id, pregunta.id))?.invalid 
+                                            && stepperForm.get('pregunta_' + generateControlName(seccion.id, pregunta.id))?.touched">
+                                            Este campo no puede estar vacío.
+                                        </mat-error>
                                     </mat-form-field>
                                 </div>
 
                                 <!-- Input para la carga de archivos -->
+                                <!--<div *ngIf="campo.tipo_campo === TIPOINPUT.File">
+                                    <mat-label>Cargar archivo</mat-label>
+                                    <input type="file" accept=".jpg, .jpeg, .png, .pdf" (change)="handleFileInputChange($event, seccion.id, pregunta.id)">
+                                </div>-->
+
+                                <!-- Input para la carga de archivos -->
                                 <div *ngIf="campo.tipo_campo === TIPOINPUT.File">
-                                    <!-- <mat-form-field appearance="fill"> -->
-                                        <mat-label>Cargar archivo</mat-label>
-                                        <input type="file" accept=".jpg, .jpeg, .png, .pdf" (change)="handleFileInputChange($event, seccion.id, pregunta.id)">
-                                    <!-- </mat-form-field> -->
+                                    <mat-label>Cargar archivo</mat-label>
+                                    <input type="file" accept=".pdf"
+                                        [formControlName]="'pregunta_' + generateControlName(seccion.id, pregunta.id)"
+                                        (change)="handleFileInputChange($event, seccion.id, pregunta.id)">
+
+                                    <!-- Mensaje de error si el archivo no es válido -->
+                                    <mat-error *ngIf="stepperForm.get('pregunta_' + generateControlName(seccion.id, pregunta.id))?.invalid 
+                                                    && stepperForm.get('pregunta_' + generateControlName(seccion.id, pregunta.id))?.touched">
+                                        Debes subir un archivo válido (.pdf).
+                                    </mat-error>
                                 </div>
+
 
                                 <!-- Botón para cargar evidencias justo después del enunciado -->
                                 <!-- <div

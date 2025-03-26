@@ -109,8 +109,8 @@ export class DynamicFormComponent implements OnInit, OnChanges {
           });
           const maxSecciones = this.todasSecciones.length;
           // Inicializamos el estado expandido de las preguntas
-          this.expandAllState = false;
-          this.vertHorAllState = false;
+          this.expandAllState = true;
+          this.vertHorAllState = true;
           this.panelIndex = Array(maxSecciones).fill(0);
       } else {
         console.error('Error al obtener el formulario:', response.Message);
@@ -489,14 +489,14 @@ export class DynamicFormComponent implements OnInit, OnChanges {
   }
 
   // Método para alternar la expansión de todas las preguntas de un ámbito
-  toggleAll(index: number) {
+  /*toggleAll(index: number) {
     this.expandAllState = !this.expandAllState;
   }
 
   // Método para alternar entre radio horizontal o vertical
   toggleLayout(index: number) {
     this.vertHorAllState = !this.vertHorAllState;
-  }
+  }*/
 
   cambioPanel(index: number, sentido: boolean) {
     if (sentido) {
