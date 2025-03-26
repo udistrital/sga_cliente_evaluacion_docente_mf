@@ -146,7 +146,7 @@
         "proyecto1": "Nombre del proyecto curricular 1",
         "proyecto2": "Nombre del proyecto curricular 2",
         "descripcion_proceso": "Descripción del proceso y orientación al usuario",
-        "descripcion": "Descripción",
+        "descripcion": "Hace referencia a la acción de evaluar de parte del estudiante sobre el docente.",
         "error_fecha_inicio": "Por favor, ingrese la fecha de inicio.",
         "error_fecha_fin": "Por favor, ingrese la fecha de fin.",
         "error_proyecto": "Por favor, seleccione un proyecto.",
@@ -156,7 +156,7 @@
     },
 
     "autoevaluacion_i": {
-        "titulo": "Autoevaluación I",
+        "titulo": "Autoevaluación 1 (Estudiante)",
         "fechas": "Fechas",
         "inicio": "Inicio",
         "fin": "Fin",
@@ -167,7 +167,7 @@
         "proyecto1": "Nombre del proyecto curricular 1",
         "proyecto2": "Nombre del proyecto curricular 2",
         "descripcion_proceso": "Descripción del proceso y orientación al usuario",
-        "descripcion": "Descripción",
+        "descripcion": "Hace referencia a la acción de evaluar de parte del estudiante sobre si mismo.",
         "error_fecha_inicio": "Por favor, ingrese la fecha de inicio.",
         "error_fecha_fin": "Por favor, ingrese la fecha de fin.",
         "error_proyecto": "Por favor, seleccione un proyecto.",
@@ -177,7 +177,7 @@
     },
 
     "coevaluacion_i": {
-        "titulo": "Coevaluación I",
+        "titulo": "Coevaluación 1 (Docente)",
         "formato": "Código SIGUD por asignar",
         "actor": "Cuerpo docente y estudiantado",
         "cronograma": "Semanas 10 a 11 del calendario académico",
@@ -195,13 +195,14 @@
         "grupo": "Grupo",
         "error_grupo": "Por favor, seleccione un grupo.",
         "descripcion_proceso": "Descripción del proceso",
+        "descripcion": "Hace referencia a la acción de evaluar de parte del docente junto con los estudiantes sobre si mismo.",
         "error_descripcion": "Por favor, ingrese la descripción del proceso.",
         "guardar": "Guardar",
         "mensaje_confirmacion": "Usted va a proceder con la coevalución de: - Espacio académico: {{nombre_asignatura}}. - Grupo de estudiantes {{grupo}}"
       },
 
     "autoevaluacion_ii": {
-        "titulo": "Autoevaluación II 1",
+        "titulo": "Autoevaluación 1 (Docente)",
         "fechas": "Fechas",
         "inicio": "Inicio",
         "fin": "Fin",
@@ -217,7 +218,7 @@
         "espacio2": "Lista de espacios académicos asociados al docente y al proyecto curricular",
         "espacioN": "Lista de n espacios académicos asociados al docente y al proyecto curricular",
         "descripcion_proceso": "Descripción del proceso y orientación al usuario",
-        "descripcion": "Descripción",
+        "descripcion": "Hace referencia a la acción de evaluar de parte del Docente sobre si mismo, en el primer momento.",
         "error_fecha_inicio": "Por favor, ingrese la fecha de inicio.",
         "error_fecha_fin": "Por favor, ingrese la fecha de fin.",
         "error_proyecto": "Por favor, seleccione un proyecto.",
@@ -227,15 +228,17 @@
     },
 
     "autoevaluacion_ii_dos": {
-        "titulo": "Autoevaluación II 2"
+        "titulo": "Autoevaluación 2 (Docente)",
+        "descripcion": "Hace referencia a la acción de evaluar de parte del Docente sobre si mismo, en el segundo momento."
     },
 
     "autoevaluacion_ii_tres": {
-        "titulo": "Autoevaluación II 3"
+        "titulo": "Autoevaluación 3 (Docente)",
+        "descripcion": "Hace referencia a la acción de evaluar de parte del Docente sobre si mismo, en el tercer momento."
     },
 
     "coevaluacion_ii": {
-        "titulo": "Coevaluación II",
+        "titulo": "Coevaluación 2 (Consejo)",
         "fechas": "Fechas",
         "inicio": "Inicio",
         "fin": "Fin",
@@ -248,6 +251,7 @@
         "docente": "Docente",
         "error_docente": "Por favor, ingrese el nombre del docente.",
         "descripcion_proceso": "Descripción del proceso",
+        "descripcion": "Hace referencia a la acción de evaluar de parte del consejo sobre los docentes.",
         "error_descripcion": "Por favor, ingrese la descripción del proceso.",
         "validacion_coordinador": "El usuario no puede ser el mismo docente evaluado",
         "mensaje_confirmacion": "Usted va a proceder con la Coevaluacion II para el docente {{nombre_docente}}"

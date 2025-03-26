@@ -37,6 +37,12 @@ mat-radio-button {
     margin-bottom: 10px; /* Añade espacio entre los botones de opción */
 }
 
+mat-error {
+    color: red !important;
+    font-weight: bold;
+    font-size: 14px;
+}
+
 .radio-vertical {
     display: block;
     margin-bottom: 8px;
