@@ -3,7 +3,7 @@ import { UserService } from "src/app/services/user.service";
 import { MatSelectChange } from "@angular/material/select";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import * as moment from "moment";
-import { DateService } from 'src/app/services/date.service';
+//import { DateService } from 'src/app/services/date.service';
 import { ProyectoAcademicoService } from '../../services/proyecto_academico.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { checkContent } from "src/app/utils/verify-response";
@@ -71,6 +71,15 @@ export class EvaluacionesComponent implements OnInit {
   nombreEspacio!: string;
   mostrarEvaluacion: boolean = false;
   procesosEvaluacion: any[] = [];
+  nombresGeneralesProcesos: string[]  = [
+    'Heteroevaluación',
+    'Autoevaluación I',
+    'Autoevaluación II 1',
+    'Autoevaluación II 2',
+    'Autoevaluación II 3',
+    'Coevaluación I',
+    'Coevaluación II'
+  ];
 
   auxEspaciosHetero: any[] = [];
   fechas: any = null; // Campo para guardar las fechas de inicio y fin para todos los tipos de evaluacion
@@ -86,7 +95,7 @@ export class EvaluacionesComponent implements OnInit {
     private _snackBar: MatSnackBar,
     private espaciosAcademicosService: EspaciosAcademicosService,
     private popUpManager: PopUpManager,
-    private dateService: DateService,
+    //private dateService: DateService,
     private evaluacionDocenteMidService: SgaEvaluacionDocenteMidService,
     private evaluacionDocenteService: EvaluacionDocenteService,
     private tercerosService: TercerosCrudService,
@@ -109,19 +118,6 @@ export class EvaluacionesComponent implements OnInit {
 
   ngOnInit(): void {
     this.initializeForms();
-    this.consultaIniciaParametrosForm();
-
-    // Obtener roles del usuario
-    this.userService.getUserRoles().then((roles) => {
-      this.userRoles = roles;
-    }).catch(error => console.error('Error al obtener los roles de usuario:', error));
-
-    this.dateService.getDateHeader().subscribe(
-      (date: string) => {
-        this.dateHeader = date;
-      },
-      (error: any) => console.error('Error al obtener el encabezado de fecha:', error)
-    );
 
     this.userService.getPersonaId()
       .then(
@@ -132,6 +128,51 @@ export class EvaluacionesComponent implements OnInit {
         this.evaluador = 1;
         console.error('Error:', error.message);
       });
+
+    this.userService.getUserRoles().then((roles) => {
+      this.userRoles = roles;
+      console.log("Roles obtenidos:", this.userRoles);
+      this.consultaIniciaParametrosForm().then(() => {
+        console.log("Parámetros cargados correctamente");
+        this.encuentraForm();
+      });
+    }).catch(error => console.error('Error al obtener los roles de usuario:', error));
+
+    /*this.dateService.getDateHeader().subscribe(
+      (date: string) => {
+        this.dateHeader = date;
+      },
+      (error: any) => console.error('Error al obtener el encabezado de fecha:', error)
+    );*/
+
+  }
+
+  encuentraForm(): void {
+    console.log("this.procesosEvaluacion : ", this.procesosEvaluacion );
+    if (this.userRoles.includes(this.ROLES.DOCENTE)) {
+        console.log('El usuario es DOCENTE');
+
+    } else if (this.userRoles.includes(this.ROLES.ESTUDIANTE)) {
+      const procesoAutoevaluacion = this.procesosEvaluacion.find(p => p.Nombre === this.nombresGeneralesProcesos[1]);
+
+      if (procesoAutoevaluacion) {
+        const fakeEvent: MatSelectChange = { value: procesoAutoevaluacion.Id } as MatSelectChange;
+        this.onSelectProceso(fakeEvent);
+      } else {
+        console.warn("El estudiante no tiene acceso a 'Autoevaluación I'.");
+      }
+    } else if (this.userRoles.includes(this.ROLES.CONSEJO_CURRICULAR)) {
+      console.log('El usuario es CONSEJO_CURRICULAR');
+
+    } else if (this.userRoles.includes(this.ROLES.DECANO) || this.userRoles.includes(this.ROLES.COORDINADOR)){
+      console.log('El usuario es DECANO o COORDINADOR');
+
+    } else if (this.userRoles.includes(this.ROLES.ADMIN_SGA)) {
+      console.log('El usuario es ADMIN');
+
+    } else {
+        this.popUpManager.showErrorAlert(`El usuario tiene un rol no parametrizado: ${this.userRoles}`);
+    }
   }
 
   // Inicializar formularios
@@ -208,24 +249,29 @@ export class EvaluacionesComponent implements OnInit {
     });
   }
 
-  consultaIniciaParametrosForm(): void {
-    this.parametrosService.get('parametro?query=tipo_parametro_id:' + environment.TIPO_PARAMETRO_ID.PROCESO_EVALUACION_ID).subscribe(
-      (responseParametro: any) => {
-        if (responseParametro && responseParametro.Data && responseParametro.Data.length) {
-          this.procesosEvaluacion = responseParametro.Data
-          .filter((item: any) => this.validarRol(item.Nombre)) 
-          .map((item: any) => ({
-            Id: item.Id,
-            Nombre: item.Nombre
-          })); 
-        } else {
-          this.popUpManager.showErrorAlert(`No se encontraron parámetros.`);
+  consultaIniciaParametrosForm(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.parametrosService.get('parametro?query=tipo_parametro_id:' + environment.TIPO_PARAMETRO_ID.PROCESO_EVALUACION_ID).subscribe(
+        (responseParametro: any) => {
+          if (responseParametro && responseParametro.Data && responseParametro.Data.length) {
+            this.procesosEvaluacion = responseParametro.Data
+            .filter((item: any) => this.validarRol(item.Nombre)) 
+            .map((item: any) => ({
+              Id: item.Id,
+              Nombre: item.Nombre
+            })); 
+            resolve();
+          } else {
+            this.popUpManager.showErrorAlert(`No se encontraron parámetros.`);
+            reject("No se encontraron parámetros.");
+          }
+        },
+        (error) => {
+          this.popUpManager.showErrorAlert(`Error al obtener los parámetros.`);
+          reject(error);
         }
-      },
-      (error) => {
-        this.popUpManager.showErrorAlert(`Error al obtener los parámetros.`);
-      }
-    );
+      );
+    });
   }
 
   validarRol(nombreProceso: string): boolean {
@@ -243,8 +289,22 @@ export class EvaluacionesComponent implements OnInit {
   }
 
   // Método que maneja la selección del menú desplegable
-  onSelectChange(event: MatSelectChange) {
+  /*onSelectChange(event: MatSelectChange) {
     const procesoSeleccionado = this.procesosEvaluacion.find(proceso => proceso.Id === event.value);
+    console.log("procesoSeleccionado: ", procesoSeleccionado);
+    if (procesoSeleccionado) {
+      this.selectedEvaluation = procesoSeleccionado.Nombre;
+      this.selectedEvaluationId = procesoSeleccionado.Id;
+    } else {
+      console.log("No selecciono procesoSeleccionado.")
+    }
+    this.mostrarEvaluacion = false;
+    this.getFechas(this.selectedEvaluationId);
+  }*/
+
+  onSelectProceso(event: MatSelectChange) {
+    const procesoSeleccionado = this.procesosEvaluacion.find(proceso => proceso.Id === event.value);
+    console.log("procesoSeleccionado: ", procesoSeleccionado);
     if (procesoSeleccionado) {
       this.selectedEvaluation = procesoSeleccionado.Nombre;
       this.selectedEvaluationId = procesoSeleccionado.Id;
@@ -272,6 +332,7 @@ export class EvaluacionesComponent implements OnInit {
       if (!documento) return;
   
       const response:any = await this.consultarCargaAcademica(documento);
+      console.log("response: ", response);
       this.evaluador = response.cod_estudiante;
       this.proyecto = response.proyectos[0].id;
       this.proyectos.opciones = response.proyectosEspc;
