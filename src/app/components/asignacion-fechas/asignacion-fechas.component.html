@@ -13,10 +13,15 @@
               <div class="procesos-grid">
                 <div class="fila-procesos">
                   <div class="proceso" *ngFor="let proceso of procesos.slice(0, 3)">
-                    <h3>{{ proceso.nombre }}</h3>
+                    <h3><button class="boton-ayuda">?   
+                        <span class="tooltip">
+                          <p>{{ proceso.descripcion }}</p>
+                        </span>
+                      </button> {{ proceso.nombre }} 
+                    </h3>
                     <div class="fechas">
                       <mat-form-field appearance="fill">
-                        <mat-label>{{ "asignacion_fechas.seleccionar_fecha_inicio" | translate }}</mat-label>
+                        <mat-label>{{ "asignacion_fechas.seleccionar_fecha_inicio" | translate }} </mat-label>
                         <input matInput [matDatepicker]="pickerInicio" [(ngModel)]="proceso.fechaInicio"
                         (dateChange)="validarFechas(proceso)" readonly>
                         <mat-datepicker-toggle matSuffix [for]="pickerInicio"></mat-datepicker-toggle>
@@ -39,7 +44,12 @@
                 </div>
                 <div class="fila-procesos">
                   <div class="proceso" *ngFor="let proceso of procesos.slice(3,7)">
-                    <h3>{{ proceso.nombre }}</h3>
+                    <h3><button class="boton-ayuda">?   
+                        <span class="tooltip">
+                          <p>{{ proceso.descripcion }}</p>
+                        </span>
+                      </button> {{ proceso.nombre }} 
+                    </h3>
                     <div class="fechas">
                       <mat-form-field appearance="fill">
                         <mat-label>{{ "asignacion_fechas.seleccionar_fecha_inicio" | translate }}</mat-label>
