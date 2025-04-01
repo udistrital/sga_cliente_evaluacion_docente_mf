@@ -152,7 +152,7 @@
         "error_proyecto": "Por favor, seleccione un proyecto.",
         "error_docente": "Por favor, seleccione un docente.",
         "error_descripcion": "Por favor, ingrese una descripción.",
-        "mensaje_confirmacion": "Usted va a proceder con la autoevalución del/la docente {{nombre_docente}} de la asignatura {{nombre_asignatura}}"
+        "mensaje_confirmacion": "Usted va a proceder con la evalución del/la docente {{nombre_docente}} de la asignatura {{nombre_asignatura}}"
     },
 
     "autoevaluacion_i": {
@@ -198,7 +198,7 @@
         "descripcion": "Hace referencia a la acción de evaluar de parte del docente junto con los estudiantes sobre si mismo.",
         "error_descripcion": "Por favor, ingrese la descripción del proceso.",
         "guardar": "Guardar",
-        "mensaje_confirmacion": "Usted va a proceder con la coevalución de: - Espacio académico: {{nombre_asignatura}}. - Grupo de estudiantes {{grupo}}"
+        "mensaje_confirmacion": "Usted va a proceder con la coevalución del espacio académico: {{nombre_asignatura}}."
       },
 
     "autoevaluacion_ii": {
@@ -229,12 +229,14 @@
 
     "autoevaluacion_ii_dos": {
         "titulo": "Autoevaluación 2 (Docente)",
-        "descripcion": "Hace referencia a la acción de evaluar de parte del Docente sobre si mismo, en el segundo momento."
+        "descripcion": "Hace referencia a la acción de evaluar de parte del Docente sobre si mismo, en el segundo momento.",
+        "mensaje_confirmacion": "Usted va a proceder con la Autoevaluación para el proyecto curricular {{nombre_proyecto}}"
     },
 
     "autoevaluacion_ii_tres": {
         "titulo": "Autoevaluación 3 (Docente)",
-        "descripcion": "Hace referencia a la acción de evaluar de parte del Docente sobre si mismo, en el tercer momento."
+        "descripcion": "Hace referencia a la acción de evaluar de parte del Docente sobre si mismo, en el tercer momento.",
+        "mensaje_confirmacion": "Usted va a proceder con la Autoevaluación para el proyecto curricular {{nombre_proyecto}}"
     },
 
     "coevaluacion_ii": {
