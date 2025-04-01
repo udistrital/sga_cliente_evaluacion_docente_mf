@@ -71,6 +71,15 @@ export class EvaluacionesComponent implements OnInit {
   nombreEspacio!: string;
   mostrarEvaluacion: boolean = false;
   procesosEvaluacion: any[] = [];
+  conversionNombreProceso: { [key: string]: string } = {
+    "Heteroevaluación": "heteroevaluacion",
+    "Autoevaluación I": "autoevaluacion_i",
+    "Coevaluación I": "coevaluacion_i",
+    "Autoevaluación II 1": "autoevaluacion_ii",
+    "Autoevaluación II 2": "autoevaluacion_ii_dos",
+    "Autoevaluación II 3": "autoevaluacion_ii_tres",
+    "Coevaluación 2 (Consejo)": "coevaluacion_ii"
+  };
 
   auxEspaciosHetero: any[] = [];
   fechas: any = null; // Campo para guardar las fechas de inicio y fin para todos los tipos de evaluacion
@@ -213,11 +222,11 @@ export class EvaluacionesComponent implements OnInit {
       (responseParametro: any) => {
         if (responseParametro && responseParametro.Data && responseParametro.Data.length) {
           this.procesosEvaluacion = responseParametro.Data
-          .filter((item: any) => this.validarRol(item.Nombre)) 
-          .map((item: any) => ({
-            Id: item.Id,
-            Nombre: item.Nombre
-          })); 
+            .filter((item: any) => this.validarRol(item.Nombre))
+            .map((item: any) => ({
+              Id: item.Id,
+              Nombre: item.Nombre
+            }));
         } else {
           this.popUpManager.showErrorAlert(`No se encontraron parámetros.`);
         }
@@ -254,7 +263,7 @@ export class EvaluacionesComponent implements OnInit {
     this.mostrarEvaluacion = false;
     this.getFechas(this.selectedEvaluationId);
   }
-  
+
 
   async consultarDatos() {
     if (this.hasRole([ROLES.ESTUDIANTE])) {
@@ -265,20 +274,20 @@ export class EvaluacionesComponent implements OnInit {
       await this.consultarDatosCoordinadorODecano();
     }
   }
-  
+
   private async consultarDatosEstudiante() {
     try {
       const documento = await this.userService.getUserDocument();
       if (!documento) return;
-  
-      const response:any = await this.consultarCargaAcademica(documento);
+
+      const response: any = await this.consultarCargaAcademica(documento);
       this.evaluador = response.cod_estudiante;
       this.proyecto = response.proyectos[0].id;
       this.proyectos.opciones = response.proyectosEspc;
       const espacios = this.mapearEspacios(response.proyectosEspc);
       this.espacios.opciones = espacios;
       this.auxEspaciosHetero = espacios;
-  
+
       switch (this.selectedEvaluation) {
         case "Heteroevaluación":
           this.configurarFormularioHeteroevaluacion(response);
@@ -292,16 +301,16 @@ export class EvaluacionesComponent implements OnInit {
       console.error("Error al consultar datos del estudiante:", error);
     }
   }
-  
+
   private async consultarDatosDocente() {
     try {
       const documento = await this.userService.getUserDocument();
-      const response:any = await this.consultarEspaciosAcademicos(documento);
+      const response: any = await this.consultarEspaciosAcademicos(documento);
       localStorage.setItem('evaluacion_docente', JSON.stringify(response));
       this.evaluador = response.identificacion;
       this.evaluado = response.identificacion;
       this.proyectos.opciones = response.proyectos;
-  
+      console.log("this.selectedEvaluation ", this.selectedEvaluation);
       switch (this.selectedEvaluation) {
         case "Autoevaluación II 1":
           this.configurarFormularioAutoevaluacionII(this.autoevaluacionIIForm, response);
@@ -321,15 +330,16 @@ export class EvaluacionesComponent implements OnInit {
       console.error("Error al consultar datos del docente:", error);
     }
   }
-  
+
   private async consultarDatosCoordinadorODecano() {
+    console.log("this.selectedEvaluation ", this.selectedEvaluation);
     if (this.selectedEvaluation !== "Coevaluación II") return;
     this.configurarFechas(this.coevaluacionIIForm);
-  
+
     try {
       const documento = await this.userService.getUserDocument();
       this.evaluador = Number(documento);
-  
+
       if (this.hasRole([ROLES.COORDINADOR])) {
         const carreras = await this.consultarProyectos(documento);
         this.proyectos.opciones = carreras;
@@ -337,32 +347,33 @@ export class EvaluacionesComponent implements OnInit {
         const personaId = documento;
         const fecha = '2024-06-06';
         const url = `jefe_dependencia?query=FechaFin__gte:${fecha},FechaInicio__lte:${fecha},TerceroId:${personaId}`;
-        const responseFacultad:any = await firstValueFrom(this.coreService.get(url));
-  
+        const responseFacultad: any = await firstValueFrom(this.coreService.get(url));
+
         if (responseFacultad?.[0]?.DependenciaId) {
           const url2 = `proyecto_curricular/get_all_proyectos_by_facultad_id/${responseFacultad[0].DependenciaId}`;
           const responseProyectos = await firstValueFrom(this.oikosService.get(url2));
-  
+
           this.proyectos.opciones = responseProyectos.Body[0].Opciones.map(({ Id, Nombre }: any) => ({
             id: Id,
             nombre: Id + "-" + Nombre
           }));
         }
+        //this.configurarFormularioCoevaluacionII(this.coevaluacionIIForm);
       }
     } catch (error) {
       this.evaluador = 1;
       console.error("Error al consultar datos del coordinador o decano:", error);
     }
   }
-  
+
   private mapearEspacios(proyectosEspc: any[]): any[] {
     const espaciosMap = new Map<string, any>();
-  
+
     proyectosEspc.forEach((proyecto: any) => {
       const proyectoId = proyecto.id;
       const proyectoNombre = proyecto.nombre;
       const docentesProyecto = proyecto.docentes || [];
-  
+
       proyecto.asignaturas?.forEach((asignatura: any) => {
         const key = `${proyectoId}-${asignatura.id}`;
         const docente = docentesProyecto.find((d: any) => d.id === asignatura.docente);
@@ -384,17 +395,17 @@ export class EvaluacionesComponent implements OnInit {
         }
       });
     });
-  
+
     return Array.from(espaciosMap.values());
   }
-  
+
   private configurarFechas(formulario: FormGroup) {
     formulario.patchValue({
       inicioFecha: this.convertirFechaSinZonaHoraria(this.fechas[this.selectedEvaluationId].fechaInicio),
       finFecha: this.convertirFechaSinZonaHoraria(this.fechas[this.selectedEvaluationId].fechaFin),
     });
   }
-  
+
   private configurarFormularioHeteroevaluacion(response: any) {
     this.heteroForm.patchValue({
       estudianteNombre: response.nombre,
@@ -403,7 +414,7 @@ export class EvaluacionesComponent implements OnInit {
       finFecha: this.convertirFechaSinZonaHoraria(this.fechas[this.selectedEvaluationId].fechaFin),
     });
   }
-  
+
   private configurarFormularioAutoevaluacionI(response: any) {
     this.autoevaluacionIForm.patchValue({
       estudianteNombre: response.nombre,
@@ -412,7 +423,7 @@ export class EvaluacionesComponent implements OnInit {
       finFecha: this.convertirFechaSinZonaHoraria(this.fechas[this.selectedEvaluationId].fechaFin),
     });
   }
-  
+
   private configurarFormularioAutoevaluacionII(formulario: FormGroup, response: any) {
     formulario.patchValue({
       docenteIdentificacion: response.identificacion,
@@ -421,10 +432,17 @@ export class EvaluacionesComponent implements OnInit {
       finFecha: this.convertirFechaSinZonaHoraria(this.fechas[this.selectedEvaluationId].fechaFin),
     });
   }
-  
+
   private configurarFormularioCoevaluacionI(response: any) {
     this.coevaluacionIForm.patchValue({
       docenteNombre: response.nombre,
+      inicioFecha: this.convertirFechaSinZonaHoraria(this.fechas[this.selectedEvaluationId].fechaInicio),
+      finFecha: this.convertirFechaSinZonaHoraria(this.fechas[this.selectedEvaluationId].fechaFin),
+    });
+  }
+
+  private configurarFormularioCoevaluacionII(formulario: FormGroup) {
+    formulario.patchValue({
       inicioFecha: this.convertirFechaSinZonaHoraria(this.fechas[this.selectedEvaluationId].fechaInicio),
       finFecha: this.convertirFechaSinZonaHoraria(this.fechas[this.selectedEvaluationId].fechaFin),
     });
@@ -792,11 +810,11 @@ export class EvaluacionesComponent implements OnInit {
         .subscribe(
           (response: any) => {
             if (response.Data != null) {
-              this.fechas = this.transformarFechas(response.Data );
+              this.fechas = this.transformarFechas(response.Data);
               const fechaInicio = new Date(this.fechas[idEvaluacion].fechaInicio);
               const fechaFin = new Date(this.fechas[idEvaluacion].fechaFin);
               this.validarFechas(fechaInicio, fechaFin);
-            } 
+            }
           },
           (error) => {
             console.log(error);
@@ -977,7 +995,7 @@ export class EvaluacionesComponent implements OnInit {
 
     // Limpiar grupos
     this.grupos = [];
-    
+
     // Asignar valores
     this.espacio = espacioSeleccionado.id;
     this.proyectoEspacio = espacioSeleccionado.proyectoId;
@@ -985,7 +1003,7 @@ export class EvaluacionesComponent implements OnInit {
     this.grupo = { id_grupo: espacioSeleccionado.id_grupo, grupo: espacioSeleccionado.grupos };
     // this.evaluado = espacioSeleccionado.docente;
     this.openSnackBar(`Espacio seleccionado: ${espacioSeleccionado.nombre}`);
-    this.mostrarEvaluacion = false;    
+    this.mostrarEvaluacion = false;
   }
   // ---------------------- FIN AUTOEVALUACION I ----------------------
 
@@ -1200,7 +1218,7 @@ export class EvaluacionesComponent implements OnInit {
     });
   }
 
-  continuar(form: FormGroup): void {
+  /*continuar(form: FormGroup): void {
     if (form.valid) {
       Swal.fire({
         title: this.translate.instant("GLOBAL.confirmacion"),
@@ -1228,7 +1246,38 @@ export class EvaluacionesComponent implements OnInit {
         text: this.translate.instant("GLOBAL.formulario_incompleto_descripcion"),
       });
     }
+  }*/
+
+  continuar(form: FormGroup): void {
+    if (form.valid) {
+      const keyBase = this.conversionNombreProceso[this.selectedEvaluation];
+      console.log("this.selectedEvaluation: ", this.selectedEvaluation);
+      console.log("keyBase: ", keyBase);
+      const mensajeKey = `${keyBase}.mensaje_confirmacion`;
+
+      this.translate.get(mensajeKey, {
+        nombre_proyecto: this.nombreProyecto,
+        nombre_docente: this.nombreDocente,
+        nombre_asignatura: this.nombreEspacio,
+        grupo: this.grupos,
+      }).subscribe((mensaje) => {
+        this.popUpManager.showConfirmAlert(mensaje).then((result) => {
+          if (result.isConfirmed) {
+            this.mostrarEvaluacion = true;
+          }
+        });
+      });
+
+    } else {
+      form.markAllAsTouched();
+      this.markInvalidFields(form);
+
+      this.translate.get("GLOBAL.formulario_incompleto_descripcion").subscribe((mensajeError) => {
+        this.popUpManager.showErrorAlert(mensajeError);
+      });
+    }
   }
+
 
   markInvalidFields(form: FormGroup) {
     Object.keys(form.controls).forEach(field => {
