@@ -239,8 +239,8 @@ export class EvaluacionesComponent implements OnInit {
 
   validarRol(nombreProceso: string): boolean {
     const rolesEvaluacion: { [key: string]: string[] } = {
-      'Heteroevaluación': Object.values(this.ROLES_HETEROEVALUACION),
-      'Autoevaluación I': Object.values(this.ROLES_AUTOEVALUACION_UNO),
+      // 'Heteroevaluación': Object.values(this.ROLES_HETEROEVALUACION),
+      // 'Autoevaluación I': Object.values(this.ROLES_AUTOEVALUACION_UNO),
       'Autoevaluación II 1': Object.values(this.ROLES_AUTOEVALUACION_DOS),
       'Autoevaluación II 2': Object.values(this.ROLES_AUTOEVALUACION_DOS),
       'Autoevaluación II 3': Object.values(this.ROLES_AUTOEVALUACION_DOS),
@@ -266,9 +266,10 @@ export class EvaluacionesComponent implements OnInit {
 
 
   async consultarDatos() {
-    if (this.hasRole([ROLES.ESTUDIANTE])) {
-      await this.consultarDatosEstudiante();
-    } else if (this.hasRole([ROLES.DOCENTE])) {
+    // if (this.hasRole([ROLES.ESTUDIANTE])) {
+    //   await this.consultarDatosEstudiante();
+    // } else    
+    if (this.hasRole([ROLES.DOCENTE])) {
       await this.consultarDatosDocente();
     } else if (this.hasRole([ROLES.COORDINADOR, ROLES.DECANO])) {
       await this.consultarDatosCoordinadorODecano();
