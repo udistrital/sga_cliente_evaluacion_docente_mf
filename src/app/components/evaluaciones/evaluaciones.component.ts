@@ -80,6 +80,9 @@ export class EvaluacionesComponent implements OnInit {
     "Autoevaluación II 3": "autoevaluacion_ii_tres",
     "Coevaluación 2 (Consejo)": "coevaluacion_ii"
   };
+  procesosParametroEstudiante: any[] = ["6998","6999"];
+  procesosParametroDocente: any[] = ["6997","6996","6995","6994"];
+  procesosParametroConcejo: any[] = ["6993"];
 
   auxEspaciosHetero: any[] = [];
   fechas: any = null; // Campo para guardar las fechas de inicio y fin para todos los tipos de evaluacion
@@ -266,11 +269,12 @@ export class EvaluacionesComponent implements OnInit {
 
 
   async consultarDatos() {
-    if (this.hasRole([ROLES.ESTUDIANTE])) {
+    const selectedId = String(this.selectedEvaluationId);
+    if (this.procesosParametroEstudiante.includes(selectedId)) {
       await this.consultarDatosEstudiante();
-    } else if (this.hasRole([ROLES.DOCENTE])) {
+    } else if (this.procesosParametroDocente.includes(selectedId)) {
       await this.consultarDatosDocente();
-    } else if (this.hasRole([ROLES.COORDINADOR, ROLES.DECANO])) {
+    } else if (this.procesosParametroConcejo.includes(selectedId)) {
       await this.consultarDatosCoordinadorODecano();
     }
   }
