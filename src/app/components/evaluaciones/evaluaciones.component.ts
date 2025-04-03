@@ -805,8 +805,13 @@ export class EvaluacionesComponent implements OnInit {
     // Si ya se realizo una primera consulta 
     // (aplica cuando se va a seleccionar otro tipo de evaluacion despues de haber seleccionado uno anteriormente)
     if (this.fechas) {
+      console.log("getfechas");
+      console.log("this.fechas[idEvaluacion].fechaInicio: ", this.fechas[idEvaluacion].fechaInicio);
+      console.log("this.fechas[idEvaluacion].fechaFin: ", this.fechas[idEvaluacion].fechaFin);
       const fechaInicio = new Date(this.fechas[idEvaluacion].fechaInicio);
       const fechaFin = new Date(this.fechas[idEvaluacion].fechaFin);
+      console.log("fechaInicio: ", fechaInicio);
+      console.log("fechaFin: ", fechaFin);
       this.validarFechas(fechaInicio, fechaFin);
     } else { // Al seleccionar por primera vez un tipo de evaluacion
       this.evaluacionDocenteService
@@ -831,7 +836,10 @@ export class EvaluacionesComponent implements OnInit {
   // o mostrar mensaje de error si la fecha actual no está en el rango
   validarFechas(fechaInicio: Date, fechaFin: Date) {
     const fechaActual = new Date();
+    console.log("validarFechas");
+    console.log("fechaActual: ", fechaActual);
     if (fechaActual >= fechaInicio && fechaActual <= fechaFin) {
+      console.log("ingresa a fecha validada");
       this.formularioHabilitado = true;
       this.consultarDatos();
     } else {
