@@ -314,7 +314,6 @@ export class EvaluacionesComponent implements OnInit {
       this.evaluador = response.identificacion;
       this.evaluado = response.identificacion;
       this.proyectos.opciones = response.proyectos;
-      console.log("this.selectedEvaluation ", this.selectedEvaluation);
       switch (this.selectedEvaluation) {
         case "Autoevaluación II 1":
           this.configurarFormularioAutoevaluacionII(this.autoevaluacionIIForm, response);
@@ -336,7 +335,6 @@ export class EvaluacionesComponent implements OnInit {
   }
 
   private async consultarDatosCoordinadorODecano() {
-    console.log("this.selectedEvaluation ", this.selectedEvaluation);
     if (this.selectedEvaluation !== "Coevaluación II") return;
     this.configurarFechas(this.coevaluacionIIForm);
 
@@ -523,7 +521,6 @@ export class EvaluacionesComponent implements OnInit {
     var storedConsultaEstudiante = localStorage.getItem('data_evaluacion_estudiante');
     if (storedConsultaEstudiante !== null) {
       const dataParsed = JSON.parse(storedConsultaEstudiante);
-      console.log('consulta grande que guardo en storage: ', dataParsed);
       return {
         cod_estudiante: dataParsed.Data.estudiante.espacios[0].cod_estudiante, //Valor necesario para el evaluador
         identificacion: dataParsed.Data.estudiante.espacios[0].doc_estudiante,
@@ -561,9 +558,6 @@ export class EvaluacionesComponent implements OnInit {
 
   transformarDatosEstudiante(lista: any[]): any[] {
     const proyectosMap = new Map<number, any>();
-
-    console.log(lista)
-
 
     lista.forEach((elemento) => {
 
@@ -605,9 +599,6 @@ export class EvaluacionesComponent implements OnInit {
 
   transformarDatosEstudianteEsp(lista: any[]): any[] {
     const proyectosMap = new Map<number, any>();
-
-    console.log(lista)
-
 
     lista.forEach((elemento) => {
 
@@ -692,7 +683,6 @@ export class EvaluacionesComponent implements OnInit {
     var storedConsultaEspaciosAcademicos = localStorage.getItem('data_consulta_espacios_academicos');
     if (storedConsultaEspaciosAcademicos !== null) {
       const dataParsed = JSON.parse(storedConsultaEspaciosAcademicos);
-      console.log('CONSULTA grande que consulta en storage: ', dataParsed);
       return {
         identificacion: dataParsed.Data.docente.carga[0].doc_docente,
         nombre: dataParsed.Data.docente.carga[0].docente,
@@ -708,7 +698,6 @@ export class EvaluacionesComponent implements OnInit {
             (response: any) => {
               if (response.Data != null) {
                 localStorage.setItem('data_consulta_espacios_academicos', JSON.stringify(response));
-                console.log('guardo en storage data_consulta_espacios_academicos: ', JSON.stringify(response));
                 resolve({
                   identificacion: response.Data.docente.carga[0].doc_docente,
                   nombre: response.Data.docente.carga[0].docente,
@@ -802,46 +791,33 @@ export class EvaluacionesComponent implements OnInit {
 
   // Petición para obtener fechas de inicio y fin de los procesos de evaluación
   getFechas(idEvaluacion: string) {
-    // Si ya se realizo una primera consulta 
-    // (aplica cuando se va a seleccionar otro tipo de evaluacion despues de haber seleccionado uno anteriormente)
-    if (this.fechas) {
-      console.log("getfechas");
-      console.log("this.fechas[idEvaluacion].fechaInicio: ", this.fechas[idEvaluacion].fechaInicio);
-      console.log("this.fechas[idEvaluacion].fechaFin: ", this.fechas[idEvaluacion].fechaFin);
-      const fechaInicio = new Date(this.fechas[idEvaluacion].fechaInicio);
-      const fechaFin = new Date(this.fechas[idEvaluacion].fechaFin);
-      console.log("fechaInicio: ", fechaInicio);
-      console.log("fechaFin: ", fechaFin);
-      this.validarFechas(fechaInicio, fechaFin);
-    } else { // Al seleccionar por primera vez un tipo de evaluacion
-      this.evaluacionDocenteService
-        .get(`proceso_parametro?query=Activo:true&limit=0`)
-        .subscribe(
-          (response: any) => {
-            if (response.Data != null) {
-              this.fechas = this.transformarFechas(response.Data);
-              const fechaInicio = new Date(this.fechas[idEvaluacion].fechaInicio);
-              const fechaFin = new Date(this.fechas[idEvaluacion].fechaFin);
-              this.validarFechas(fechaInicio, fechaFin);
-            }
-          },
-          (error) => {
-            console.log(error);
+    this.evaluacionDocenteService
+      .get(`proceso_parametro?query=ProcesoId:${idEvaluacion}`)
+      .subscribe(
+        (response: any) => {
+          if (response.Data != null) {
+            this.fechas = this.transformarFechas(response.Data);
+            const fechaInicio = new Date(this.convertirFechaSinZonaHoraria(this.fechas[idEvaluacion].fechaInicio));
+            const fechaFin = new Date(this.convertirFechaSinZonaHoraria(this.fechas[idEvaluacion].fechaFin));
+            this.validarFechas(fechaInicio, fechaFin);
           }
-        );
-    }
+        },
+        (error) => {
+          this.popUpManager.showErrorToast('Error al obtener las fechas del proceso seleccionado.');
+        }
+      );
   }
 
   // Validr las fechas, habilitar formulario y consultar datos iniciales
   // o mostrar mensaje de error si la fecha actual no está en el rango
   validarFechas(fechaInicio: Date, fechaFin: Date) {
     const fechaActual = new Date();
+    fechaActual.setHours(0, 0, 0, 0);
     console.log("validarFechas");
     console.log("fechaActual: ", fechaActual);
     console.log("fechaInicio: ", fechaInicio);
     console.log("fechaFin: ", fechaFin);
     if (fechaActual >= fechaInicio && fechaActual <= fechaFin) {
-      console.log("ingresa a fecha validada");
       this.formularioHabilitado = true;
       this.consultarDatos();
     } else {
@@ -915,7 +891,6 @@ export class EvaluacionesComponent implements OnInit {
         this.nombreProyecto = proyectoSeleccionado.nombre;
       });
     } else if (proyectoSeleccionado) {
-      console.log("entra ptyecto seleccionado")
       this.proyectoEspacio = proyectoSeleccionado.id;
       this.proyecto = proyectoSeleccionado.id;
       this.nombreProyecto = proyectoSeleccionado.nombre;
@@ -944,7 +919,6 @@ export class EvaluacionesComponent implements OnInit {
   // --------------------- INICIO HETEROEVALUACION ---------------------
   onProyectoHetero(event: MatSelectChange): void {
     const proyectoSeleccionado = event.value;
-    console.log("onProyectoHetero", proyectoSeleccionado);
 
     // Limpiar grupos y espacios
     this.grupos = [];
@@ -961,7 +935,6 @@ export class EvaluacionesComponent implements OnInit {
 
   onDocenteHetero(event: MatSelectChange): void {
     const docenteSeleccionado = event.value;
-    console.log("onDocenteHetero", docenteSeleccionado);
     this.evaluado = docenteSeleccionado.id;
     this.nombreDocente = docenteSeleccionado.nombre;
     this.mostrarEvaluacion = false;
@@ -988,7 +961,6 @@ export class EvaluacionesComponent implements OnInit {
   // ---------------------- INICIO AUTOEVALUACION I ----------------------
   onProyectoAutI(event: MatSelectChange): void {
     const proyectoSeleccionado = event.value;
-    console.log("onProyectoAutI", proyectoSeleccionado);
 
     // Limpiar grupos y espacios
     this.grupos = [];
@@ -1005,7 +977,6 @@ export class EvaluacionesComponent implements OnInit {
 
   onEspacioAutI(event: MatSelectChange): void {
     const espacioSeleccionado = event.value;
-    console.log("onEspacioAutI", espacioSeleccionado);
 
     // Limpiar grupos
     this.grupos = [];
@@ -1089,7 +1060,6 @@ export class EvaluacionesComponent implements OnInit {
               let espaciosUnicos
               espaciosUnicos = this.filtrarEspaciosPorProyecto(response.Data, this.proyecto);
               this.espacios.opciones = espaciosUnicos;
-              console.log(espaciosUnicos);
             }
           },
           error: (err) => {
@@ -1188,8 +1158,6 @@ export class EvaluacionesComponent implements OnInit {
           (res: any) => {
             if (res != null) {
               if (res["coordinadorCollection"] != null && res["coordinadorCollection"].coordinador != null) {
-                console.log(res["coordinadorCollection"].coordinador);
-
                 const proyectos = res["coordinadorCollection"].coordinador.map(({ codigo_condor, nombre_proyecto_condor }: any) => ({
                   id: codigo_condor,
                   nombre: codigo_condor + "-" + nombre_proyecto_condor
@@ -1265,8 +1233,6 @@ export class EvaluacionesComponent implements OnInit {
   continuar(form: FormGroup): void {
     if (form.valid) {
       const keyBase = this.conversionNombreProceso[this.selectedEvaluation];
-      console.log("this.selectedEvaluation: ", this.selectedEvaluation);
-      console.log("keyBase: ", keyBase);
       const mensajeKey = `${keyBase}.mensaje_confirmacion`;
 
       this.translate.get(mensajeKey, {
@@ -1364,8 +1330,6 @@ export class EvaluacionesComponent implements OnInit {
 
   onProyectoCoevI(event: MatSelectChange): void {
     const proyectoSeleccionado = event.value;
-    console.log("onProyectoCoevI", proyectoSeleccionado);
-    // this.proyecto = proyectoSeleccionado.id;
     this.proyectoEspacio = proyectoSeleccionado.id;
     this.proyecto = proyectoSeleccionado.id;
     this.nombreProyecto = proyectoSeleccionado.nombre;
@@ -1416,7 +1380,6 @@ export class EvaluacionesComponent implements OnInit {
         .subscribe({
           next: (resCoordinador: any) => {
             if (resCoordinador != null) {
-              console.log(resCoordinador.Data.carreraSniesCollection.carreraSnies[0]);
               const docentes = [{
                 id: resCoordinador.Data.carreraSniesCollection.carreraSnies[0].numero_documento_coordinador,
                 nombre: resCoordinador.Data.carreraSniesCollection.carreraSnies[0].nombre_coordinador
@@ -1458,9 +1421,6 @@ export class EvaluacionesComponent implements OnInit {
   }
 
   onDocenteCoevII(event: MatSelectChange): void {
-    console.log("Selecciona docente")
-    console.log(this.proyecto);
-
     const docenteSeleccionado = event.value;
     this.userService.getUserDocument().then((documento) => {
       if (documento == docenteSeleccionado.id) {
@@ -1472,7 +1432,6 @@ export class EvaluacionesComponent implements OnInit {
       }
       else {
         this.evaluado = docenteSeleccionado.id;
-        console.log("docenteSeleccionado", docenteSeleccionado);
         let parametros = {
           parametros: {
             identificacion: docenteSeleccionado.id
@@ -1486,7 +1445,6 @@ export class EvaluacionesComponent implements OnInit {
                 let espaciosUnicos
                 espaciosUnicos = this.filtrarEspaciosPorProyecto(response.Data, this.proyecto);
                 this.espacios.opciones = espaciosUnicos;
-                console.log(espaciosUnicos);
               }
             },
             error: (err) => {
@@ -1540,7 +1498,6 @@ export class EvaluacionesComponent implements OnInit {
           (res: any) => {
             if (res != null) {
               if (res["coordinadorCollection"] != null && res["coordinadorCollection"].coordinador != null) {
-                console.log(res["coordinadorCollection"].coordinador);
                 const proyectos = res["coordinadorCollection"].coordinador.map(({ codigo_condor, nombre_proyecto_condor }: any) => ({
                   id: codigo_condor,
                   nombre: codigo_condor + "-" + nombre_proyecto_condor
