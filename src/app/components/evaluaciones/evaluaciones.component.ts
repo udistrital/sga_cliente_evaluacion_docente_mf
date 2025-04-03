@@ -838,6 +838,8 @@ export class EvaluacionesComponent implements OnInit {
     const fechaActual = new Date();
     console.log("validarFechas");
     console.log("fechaActual: ", fechaActual);
+    console.log("fechaInicio: ", fechaInicio);
+    console.log("fechaFin: ", fechaFin);
     if (fechaActual >= fechaInicio && fechaActual <= fechaFin) {
       console.log("ingresa a fecha validada");
       this.formularioHabilitado = true;
