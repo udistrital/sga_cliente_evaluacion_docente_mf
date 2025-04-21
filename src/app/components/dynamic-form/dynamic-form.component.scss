@@ -16,25 +16,27 @@
 .enunciado {
     margin-top: 20px;
     font-style: italic;
-  color: #2a5d83; /* Puedes cambiar este color para que coincida con tu diseño */
+    color: #2a5d83;
+    /* Puedes cambiar este color para que coincida con tu diseño */
 }
 
-mat-radio-group {  
+mat-radio-group {
     &.vertical {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
     }
-  
+
     &.horizontal {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
     }
-  }
+}
 
 mat-radio-button {
-    margin-bottom: 10px; /* Añade espacio entre los botones de opción */
+    margin-bottom: 10px;
+    /* Añade espacio entre los botones de opción */
 }
 
 mat-error {
@@ -54,7 +56,8 @@ mat-error {
 }
 
 .custom-expansion-panel::ng-deep .mat-expansion-panel-header.mat-expanded {
-    border-bottom: 2px solid #2196F3; /* Azul estilo Material */
+    border-bottom: 2px solid #2196F3;
+    /* Azul estilo Material */
 }
 
 .mat-expansion-panel-header mat-icon {
@@ -65,24 +68,29 @@ mat-error {
 .form-horizontal {
     display: flex;
     flex-direction: column;
+
     .form-grid2 {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 16px;
     }
+
     .form-col1 {
         margin-bottom: 16px;
     }
 }
 
-.evaluation-table, .instruction-table {
+.evaluation-table,
+.instruction-table {
     width: 100%;
     border-collapse: collapse;
     border: 1px solid #007bff;
 }
 
-.evaluation-table th, .evaluation-table td,
-.instruction-table th, .instruction-table td {
+.evaluation-table th,
+.evaluation-table td,
+.instruction-table th,
+.instruction-table td {
     border: 1px solid #007bff;
     padding: 8px;
     text-align: left;
@@ -123,19 +131,20 @@ button {
     margin-bottom: 16px;
 }
 
-    th, td {
-        border: 1px solid #ddd;
-        padding: 8px;
-    }
+th,
+td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
 
-    th {
-        background-color: #f2f2f2;
-        text-align: center;
-    }
+th {
+    background-color: #f2f2f2;
+    text-align: center;
+}
 
-    .left-align {
-        text-align: left;
-    }
+.left-align {
+    text-align: left;
+}
 
 .custom-expansion-panel::ng-deep .mat-expansion-panel-header {
     border-bottom: 2px solid transparent;
@@ -143,9 +152,69 @@ button {
 }
 
 .custom-expansion-panel::ng-deep .mat-expansion-panel-header.mat-expanded {
-    border-bottom: 2px solid #2196F3; /* Azul estilo Material */
+    border-bottom: 2px solid #2196F3;
+    /* Azul estilo Material */
 }
 
 .mat-expansion-panel-header mat-icon {
     margin-right: 8px;
+}
+
+
+.step-label-with-icon {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+
+    span {
+        display: flex;
+        align-items: center;
+        line-height: 1.5;
+    }
+
+    button.mat-icon-button {
+        padding: 0;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        height: auto;
+        width: auto;
+
+        mat-icon {
+            font-size: 20px;
+            line-height: 1;
+            vertical-align: middle;
+        }
+    }
+}
+
+.step-label-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.step-title {
+    font-size: 16px;
+    line-height: 24px;
+    display: flex;
+    align-items: center;
+}
+
+.step-icon-btn {
+    height: 24px !important;
+    width: 24px !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+}
+
+.step-icon {
+    font-size: 20px;
+    vertical-align: middle;
+    line-height: 1;
 }

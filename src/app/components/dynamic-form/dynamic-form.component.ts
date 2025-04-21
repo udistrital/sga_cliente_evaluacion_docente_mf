@@ -39,6 +39,8 @@ export class DynamicFormComponent implements OnInit, OnChanges {
   panelIndex: number[] = [];
   periodoActual!: number;
 
+  tipoFormularioActual!: number;
+
   uploadedFileUid: string | null = null;
   documentId: string | null = null;
 
@@ -92,6 +94,7 @@ export class DynamicFormComponent implements OnInit, OnChanges {
 
   // Método para inicializar el formulario seleccionado
   selectForm(tipo_formulario: string) {
+    this.tipoFormularioActual = Number(tipo_formulario);
     let url;
     this.grupos && this.grupos.length !== undefined ? url = `formulario_por_tipo?id_tipo_formulario=${tipo_formulario}&id_periodo=1&id_evaluador=${this.evaluador}&id_espacio=${this.espacio}` : url = `formulario_por_tipo?id_tipo_formulario=${tipo_formulario}&id_periodo=1&id_evaluador=${this.evaluador}&id_espacio=${this.espacio}&id_grupo=${this.grupo.id}`
     this.evaluacionDocenteMidService.get(url)
@@ -529,4 +532,26 @@ export class DynamicFormComponent implements OnInit, OnChanges {
     link.download = 'documento.pdf';
     link.click();
   }
+
+  descargarReporteCSV(seccion: any) {
+    const nombreArchivo = `reporte_${seccion.nombre.replace(/\s+/g, '_')}.csv`;
+    let contenido = 'Pregunta,Respuesta\n';
+  
+    seccion.items.forEach((pregunta: any) => {
+      const controlName = 'pregunta_' + this.generateControlName(seccion.id, pregunta.id);
+      const respuesta = this.stepperForm.get(controlName)?.value ?? '';
+      contenido += `"${pregunta.nombre}","${respuesta}"\n`;
+    });
+  
+    const blob = new Blob([contenido], { type: 'text/csv;charset=utf-8;' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = nombreArchivo;
+    a.click();
+    window.URL.revokeObjectURL(url);
+  }
+  
+
+
 }
