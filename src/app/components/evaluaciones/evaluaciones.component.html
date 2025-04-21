@@ -1012,7 +1012,7 @@
                                 </mat-form-field>
                             </div>
 
-                            <div class="form-col1">
+                            <!-- <div class="form-col1">
                                 <mat-form-field style="width: 100%" floatLabel="always">
                                     <mat-label>{{ 'coevaluacion_ii.espacio' | translate }}</mat-label>
                                     <mat-select formControlName="espacioAcademico"
@@ -1028,7 +1028,7 @@
                                         {{ 'coevaluacion_ii.error_espacio' | translate }}
                                     </mat-error>
                                 </mat-form-field>
-                            </div>
+                            </div> -->
 
                             <div class="form-col1">
                                 <mat-form-field style="width: 100%" appearance="outline">
@@ -1079,7 +1079,7 @@
 
                         <ngx-dynamic-form *ngIf="mostrarEvaluacion" [formtype]="selectedEvaluationId"
                             [evaluador]="evaluador" [evaluado]="evaluado" [proyectoEspacio]="proyectoEspacio"
-                            [proyectoEvaluador]="proyecto" [espacio]="espacio" [grupos]="grupos"
+                            [proyectoEvaluador]="proyecto" [espacios]="espacios_academicos"
                             (evaluacionCompletada)="ocultarEvaluacion()"></ngx-dynamic-form>
                     </mat-card-content>
                 </mat-card>
