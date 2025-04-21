@@ -165,7 +165,7 @@ export class EvaluacionesComponent implements OnInit {
       finFecha: ["", Validators.required],
       proyectoCurricular: ["", Validators.required],
       docenteNombre: ["", Validators.required],
-      espacioAcademico: ["", Validators.required],
+      // espacioAcademico: ["", Validators.required],
       descripcionProceso: [`Estimado Consejo Curricular: Por favor coevalúe con plan de mejoramiento su desempeño docente utilizando el formato dispuesto para ello. Los ítems PROMEDIO con única respuesta son obligatorios en cada dimensión.`, Validators.required],
     });
 
@@ -1442,17 +1442,19 @@ export class EvaluacionesComponent implements OnInit {
           .subscribe({
             next: (response) => {
               if (response.Data != null) {
-                let espaciosUnicos
-                espaciosUnicos = this.filtrarEspaciosPorProyecto(response.Data, this.proyecto);
-                this.espacios.opciones = espaciosUnicos;
+                this.espacios_academicos = this.filtrarEspaciosPorProyecto(response.Data, this.proyecto);
               }
             },
             error: (err) => {
-              console.error('Error al cargar proyectos:', err);
+              Swal.fire({
+                icon: "error",
+                title: this.translate.instant("GLOBAL.atencion"),
+                text: this.translate.instant("coevaluacion_ii.validacion_espacios"),
+              })
             }
           }
           );
-        this.espacios.opciones = this.espacios_academicos.filter((espacio) => espacio.docente === docenteSeleccionado.id);
+        // console.log(this.espacios_academicos)
         // this.consultarDocenteTercero(docenteSeleccionado).then(
         //   (res) => {
         //     if (res != null) {
