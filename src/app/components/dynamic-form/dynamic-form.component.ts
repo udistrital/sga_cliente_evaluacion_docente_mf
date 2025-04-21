@@ -52,6 +52,7 @@ export class DynamicFormComponent implements OnInit, OnChanges {
   @Input() proyectoEvaluador!: number;
   @Input() espacio!: string;
   @Input() grupos!: any[];
+  @Input() espacios!: any[];
   @Input() grupo!: any;
 
   @Output() evaluacionCompletada = new EventEmitter<void>();
@@ -93,7 +94,7 @@ export class DynamicFormComponent implements OnInit, OnChanges {
   // Método para inicializar el formulario seleccionado
   selectForm(tipo_formulario: string) {
     let url;
-    this.grupos && this.grupos.length !== undefined ? url = `formulario_por_tipo?id_tipo_formulario=${tipo_formulario}&id_periodo=1&id_evaluador=${this.evaluador}&id_espacio=${this.espacio}` : url = `formulario_por_tipo?id_tipo_formulario=${tipo_formulario}&id_periodo=1&id_evaluador=${this.evaluador}&id_espacio=${this.espacio}&id_grupo=${this.grupo.id}`
+    this.grupos && this.grupos.length !== undefined ? url = `formulario_por_tipo?id_tipo_formulario=${tipo_formulario}&id_periodo=1&id_evaluador=${this.evaluador}&id_espacio=0` : url = `formulario_por_tipo?id_tipo_formulario=${tipo_formulario}&id_periodo=1&id_evaluador=${this.evaluador}&id_espacio=0&id_grupo=0`
     this.evaluacionDocenteMidService.get(url)
       .subscribe(response => {
         if (response.Success === true && response.Status === 200) {
@@ -285,29 +286,56 @@ export class DynamicFormComponent implements OnInit, OnChanges {
 
   // Método para manejar el evento de submit
   submit() {
-    let gruposJson
-    this.grupos && this.grupos.length !== undefined ? gruposJson = JSON.stringify(this.grupos) : gruposJson = JSON.stringify(this.grupo)
     if (this.stepperForm.valid) {
       this.generateResponseData().then(respuestas => {
         const requests: any[] = [];
-        const espacios = this.espacio.split(',');
-        espacios.forEach((esp) => {
-          const jsonData = {
-            id_periodo: this.periodoActual,
-            id_evaluador: String(this.evaluador),
-            id_evaluado: this.evaluado != null ? String(this.evaluado) : String(this.evaluador),
-            proyecto_curricular_espacio: String(this.proyectoEspacio),
-            proyecto_curricular_evaluador: String(this.proyectoEvaluador),
-            grupos: gruposJson,
-            espacio_academico: esp,
-            plantilla_id: 456,
-            proceso_id: Number(this.formtype),
-            respuestas,
-          };
-          const request = this.evaluacionDocenteMidService.post('respuesta_formulario', jsonData);
-          requests.push(request);
-        });
-
+  
+        if (this.espacios && this.espacios.length > 0) {
+          this.espacios.forEach((esp) => {
+            const gruposJson = JSON.stringify(esp.grupos);
+            const jsonData = {
+              id_periodo: this.periodoActual,
+              id_evaluador: String(this.evaluador),
+              id_evaluado: this.evaluado != null ? String(this.evaluado) : String(this.evaluador),
+              proyecto_curricular_espacio: String(this.proyectoEspacio),
+              proyecto_curricular_evaluador: String(this.proyectoEvaluador),
+              grupos: gruposJson,
+              espacio_academico: esp.id,
+              plantilla_id: 456,
+              proceso_id: Number(this.formtype),
+              respuestas,
+            };
+            const request = this.evaluacionDocenteMidService.post('respuesta_formulario', jsonData);
+            requests.push(request);
+          });
+        } else {
+          let gruposJson;
+          if (this.grupos && this.grupos.length !== undefined) {
+            gruposJson = JSON.stringify(this.grupos);
+          } else if (this.grupo) {
+            gruposJson = JSON.stringify([this.grupo]);
+          } else {
+            gruposJson = '[]';
+          }
+  
+          const espaciosArray = this.espacio ? this.espacio.split(',') : [];
+          espaciosArray.forEach(esp => {
+            const jsonData = {
+              id_periodo: this.periodoActual,
+              id_evaluador: String(this.evaluador),
+              id_evaluado: this.evaluado != null ? String(this.evaluado) : String(this.evaluador),
+              proyecto_curricular_espacio: String(this.proyectoEspacio),
+              proyecto_curricular_evaluador: String(this.proyectoEvaluador),
+              grupos: gruposJson,
+              espacio_academico: esp,
+              plantilla_id: 456,
+              proceso_id: Number(this.formtype),
+              respuestas,
+            };
+            const request = this.evaluacionDocenteMidService.post('respuesta_formulario', jsonData);
+            requests.push(request);
+          });
+        }
         this.saveForm(requests);
       }).catch(error => {
         console.error('Error al generar las respuestas:', error);
