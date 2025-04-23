@@ -4,28 +4,8 @@
         <mat-vertical-stepper [linear]="true" [formGroup]="stepperForm" #mainStepper>
             <!-- Secciones -->
             <mat-step *ngFor="let seccion of todasSecciones; let i = index">
-                <ng-template matStepLabel>
-                    <div class="step-label-wrapper">
-                        <span class="step-title">{{ seccion.nombre }}</span>
-                        <ng-container *ngIf="tipoFormularioActual === 6993">
-                            <button mat-icon-button class="step-icon-btn" (click)="descargarReporteCSV(seccion)"
-                                matTooltip="Descargar reporte CSV">
-                                <mat-icon class="step-icon">visibility</mat-icon>
-                            </button>
-                        </ng-container>
-                    </div>
-                </ng-template>
-                <!-- Botón para colapsar/expandir todas las preguntas con ícono de ojo -->
-                <!--<div style="width: 100%; display: flex; justify-content: flex-end; padding-bottom: 1rem;">
-                    <button mat-button color="primary" (click)="toggleAll(i)">
-                        <mat-icon>visibility</mat-icon> {{ expandAllState ? 'Colapsar todo' : 'Expandir todo' }}
-                    </button>
-                    <button mat-button color="primary" (click)="toggleLayout(i)">
-                        <mat-icon>grid_view</mat-icon> {{ vertHorAllState ? 'Vertical' : 'Horizontal' }}
-                    </button>
-                </div>-->
+                <ng-template matStepLabel >{{ seccion.nombre }}</ng-template>
 
-                <!-- Preguntas dentro de los ámbitos usando mat-accordion -->
                 <mat-accordion [multi]="expandAllState">
                     <mat-expansion-panel *ngFor="let pregunta of seccion.items; let j = index"
                         [expanded]="expandAllState || j === panelIndex[i]" (opened)="panelIndex[i] = j"

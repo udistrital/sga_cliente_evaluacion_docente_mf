@@ -11,7 +11,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { forkJoin } from "rxjs";
 import { TIPOINPUT } from "src/app/models/const_eva";
 import { GestorDocumentalService } from "src/app/services/gestor-documental.service";
-import { ParametrosService } from "src/app/services/parametros.service";
+//import { ParametrosService } from "src/app/services/parametros.service";
 import { SgaEvaluacionDocenteMidService } from "src/app/services/sga_evaluacion_docente_mid.service";
 import Swal from "sweetalert2";
 
@@ -39,8 +39,6 @@ export class DynamicFormComponent implements OnInit, OnChanges {
   panelIndex: number[] = [];
   periodoActual!: number;
 
-  tipoFormularioActual!: number;
-
   uploadedFileUid: string | null = null;
   documentId: string | null = null;
 
@@ -64,19 +62,17 @@ export class DynamicFormComponent implements OnInit, OnChanges {
     private gestorService: GestorDocumentalService,
     private gestorDocumentalService: GestorDocumentalService,
     private translateService: TranslateService,
-    private parametrosService: ParametrosService
-
+    //private parametrosService: ParametrosService
   ) {
     this.stepperForm = this.fb.group({});
   }
 
   ngOnInit() {
     //consulta el periodo actual
-    let anioActual = new Date().getFullYear().toString();
+    /*let anioActual = new Date().getFullYear().toString();
     this.parametrosService.get('periodo?query=year:' + anioActual + ',activo:true,codigo_abreviacion:PA').subscribe(
       (responsePeriodo: any) => {
         if (responsePeriodo && responsePeriodo.Data && responsePeriodo.Data.length) {
-          console.log('Periodo actual:', responsePeriodo.Data[0].Id);
           this.periodoActual = responsePeriodo.Data[0].Id;
         } else {
           console.error('Error al obtener el periodo actual:', responsePeriodo.Message);
@@ -85,7 +81,15 @@ export class DynamicFormComponent implements OnInit, OnChanges {
       (error) => {
         console.error('Error al obtener el periodo actual:', error);
       }
-    );
+    );*/
+
+    const periodo = localStorage.getItem('periodo_actual');
+
+    if (periodo && periodo !== '0') {
+      this.periodoActual = Number(periodo);
+    } else {
+      console.warn('⚠️ No hay periodo actual válido en localStorage');
+    }
   }
 
   ngOnChanges() {
@@ -94,7 +98,6 @@ export class DynamicFormComponent implements OnInit, OnChanges {
 
   // Método para inicializar el formulario seleccionado
   selectForm(tipo_formulario: string) {
-    this.tipoFormularioActual = Number(tipo_formulario);
     let url;
     this.grupos && this.grupos.length !== undefined ? url = `formulario_por_tipo?id_tipo_formulario=${tipo_formulario}&id_periodo=1&id_evaluador=${this.evaluador}&id_espacio=${this.espacio}` : url = `formulario_por_tipo?id_tipo_formulario=${tipo_formulario}&id_periodo=1&id_evaluador=${this.evaluador}&id_espacio=${this.espacio}&id_grupo=${this.grupo.id}`
     this.evaluacionDocenteMidService.get(url)
@@ -461,25 +464,6 @@ export class DynamicFormComponent implements OnInit, OnChanges {
     return [];
   }
 
-  /* onNext(innerStepper: MatStepper, ambitoIndex: number, preguntaIndex: number) {
-    const control = this.getFormControl(
-      ambitoIndex,
-      "pregunta_" +
-      this.generateControlName(
-        this.todasSecciones[ambitoIndex].preguntas[preguntaIndex].text
-      )
-    );
-
-    if (control.valid) {
-      // Si es la última pregunta del ámbito actual, avanza al siguiente ámbito
-      if (preguntaIndex < this.todasSecciones[ambitoIndex].preguntas.length - 1) {
-        innerStepper.next(); // Avanzar a la siguiente pregunta
-      } else {
-        this.mainStepper.next(); // Si es la última pregunta, avanzar al siguiente ámbito
-      }
-    }
-  } */
-
   getNumericalInputLabel(ambitoIndex: number, inputIndex: number): number {
     const inputStart = ambitoIndex === 0 ? 1 : ambitoIndex === 1 ? 6 : 11;
     return inputStart + inputIndex;
@@ -532,26 +516,5 @@ export class DynamicFormComponent implements OnInit, OnChanges {
     link.download = 'documento.pdf';
     link.click();
   }
-
-  descargarReporteCSV(seccion: any) {
-    const nombreArchivo = `reporte_${seccion.nombre.replace(/\s+/g, '_')}.csv`;
-    let contenido = 'Pregunta,Respuesta\n';
-  
-    seccion.items.forEach((pregunta: any) => {
-      const controlName = 'pregunta_' + this.generateControlName(seccion.id, pregunta.id);
-      const respuesta = this.stepperForm.get(controlName)?.value ?? '';
-      contenido += `"${pregunta.nombre}","${respuesta}"\n`;
-    });
-  
-    const blob = new Blob([contenido], { type: 'text/csv;charset=utf-8;' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = nombreArchivo;
-    a.click();
-    window.URL.revokeObjectURL(url);
-  }
-  
-
 
 }

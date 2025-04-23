@@ -69,7 +69,9 @@ export class EvaluacionesComponent implements OnInit {
   nombreProyecto!: string;
   espacio!: string;
   nombreEspacio!: string;
+  periodoActual!: number;
   mostrarEvaluacion: boolean = false;
+  mostrarReporCoevaII: boolean = false;
   procesosEvaluacion: any[] = [];
   conversionNombreProceso: { [key: string]: string } = {
     "Heteroevaluación": "heteroevaluacion",
@@ -104,7 +106,7 @@ export class EvaluacionesComponent implements OnInit {
     private tercerosService: TercerosCrudService,
     private academicaService: AcademicaService,
     private parametrosService: ParametrosService,
-    private translate: TranslateService,
+    public translate: TranslateService,
     private coreService: CoreService,
     private oikosService: OikosService,
     private cumplidosDveService: CumplidosDveService,
@@ -120,6 +122,7 @@ export class EvaluacionesComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.obtenerPeriodoActual();
     this.initializeForms();
     this.consultaIniciaParametrosForm();
 
@@ -144,6 +147,27 @@ export class EvaluacionesComponent implements OnInit {
         this.evaluador = 1;
         console.error('Error:', error.message);
       });
+  }
+
+  obtenerPeriodoActual(): void {
+    let anioActual = new Date().getFullYear().toString();
+    this.parametrosService.get('periodo?query=year:' + anioActual + ',activo:true,codigo_abreviacion:PA').subscribe(
+      (responsePeriodo: any) => {
+        if (responsePeriodo && responsePeriodo.Data && responsePeriodo.Data.length) {
+          this.periodoActual = responsePeriodo.Data[0].Id;
+          localStorage.setItem('periodo_actual', JSON.stringify(this.periodoActual));
+        } else {
+          this.periodoActual = 0;
+          localStorage.setItem('periodo_actual', JSON.stringify(this.periodoActual));
+          console.error('Error al obtener el periodo actual:', responsePeriodo.Message);
+        }
+      },
+      (error) => {
+        this.periodoActual = 0;
+        localStorage.setItem('periodo_actual', JSON.stringify(this.periodoActual));
+        console.error('Error al obtener el periodo actual:', error);
+      }
+    );
   }
 
   // Inicializar formularios
@@ -1235,6 +1259,8 @@ export class EvaluacionesComponent implements OnInit {
       const keyBase = this.conversionNombreProceso[this.selectedEvaluation];
       const mensajeKey = `${keyBase}.mensaje_confirmacion`;
 
+      //console.log("this.selectedEvaluation this.selectedEvaluation: ", this.selectedEvaluation);
+
       this.translate.get(mensajeKey, {
         nombre_proyecto: this.nombreProyecto,
         nombre_docente: this.nombreDocente,
@@ -1244,6 +1270,7 @@ export class EvaluacionesComponent implements OnInit {
         this.popUpManager.showConfirmAlert(mensaje).then((result) => {
           if (result.isConfirmed) {
             this.mostrarEvaluacion = true;
+            this.mostrarReporCoevaII = true;
           }
         });
       });
@@ -1422,6 +1449,17 @@ export class EvaluacionesComponent implements OnInit {
 
   onDocenteCoevII(event: MatSelectChange): void {
     const docenteSeleccionado = event.value;
+
+    const datosCombinados = {
+      ...docenteSeleccionado,
+      evaluacionId: this.selectedEvaluationId
+    };
+  
+    localStorage.setItem('datos_docente_coevII', JSON.stringify(datosCombinados));
+  
+    //console.log("🌟 Datos combinados guardados en localStorage:", datosCombinados);
+
+    //console.log("Id this.selectedEvaluationId: ", this.selectedEvaluationId);
     this.userService.getUserDocument().then((documento) => {
       if (documento == docenteSeleccionado.id) {
         Swal.fire({
@@ -1516,6 +1554,192 @@ export class EvaluacionesComponent implements OnInit {
   }
   /* -------------------------------------------------------------------------- */
   /*                      Fin formulario de Coevaluación II                     */
+  /* -------------------------------------------------------------------------- */
+
+  /* -------------------------------------------------------------------------- */
+  /*            Inicio reportes para el formulario de Coevaluación II           */
+  /* -------------------------------------------------------------------------- */
+
+  crearReporteCSV(nombreEvaluacion: string): Promise<any> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let evaluadoId = "";
+        let nombreEvaluado = "";
+        let periodoId = "";
+        let procesoId = "";
+
+        var storedDatosDocenteCoevII = localStorage.getItem('datos_docente_coevII');
+        var storedPeriodoActual = localStorage.getItem('periodo_actual');
+        if (storedDatosDocenteCoevII !== null && storedPeriodoActual !== null) {
+          const dataParsedDocenteCoevII = JSON.parse(storedDatosDocenteCoevII);
+          const dataParsedPeriodoActual = JSON.parse(storedPeriodoActual);
+
+          evaluadoId = dataParsedDocenteCoevII.id;
+          nombreEvaluado = dataParsedDocenteCoevII.nombre;
+          periodoId = dataParsedPeriodoActual;
+          procesoId = dataParsedDocenteCoevII.evaluacionId;
+          /*evaluadoId = "80033827";
+          nombreEvaluado = dataParsedDocenteCoevII.nombre;
+          periodoId = "61";
+          procesoId = "6994";*/
+        } else {
+          this.popUpManager.showErrorAlert("Los datos necesarios del docente no se lograron obtener del local storage.");
+          throw new Error("Datos del local storage no disponibles.");
+        }
+
+        const nombreHeteroevaluacion = this.translate.instant('reportes.nombre_reporte_heteroevaluacion');
+        const nombreAutoevaluacion = this.translate.instant('reportes.nombre_reporte_autoevaluacion_ii_tres');
+        const nombreCoevaluacion = this.translate.instant('reportes.nombre_reporte_coevaluacion_i');
+
+        switch (nombreEvaluacion) {
+          case nombreHeteroevaluacion:
+            //console.log('Es el reporte de heteroevaluación');
+
+            const url = `reporte_heteroevaluacion_consejo?evaluado_id=${evaluadoId}&periodo_id=${periodoId}&proceso_id=${procesoId}`;
+            const response = await this.evaluacionDocenteMidService.get(url).toPromise();
+
+            if (response && response.Success && response.Data && response.Data.RespuestasEvaluacion) {
+              const respuestas = response.Data.RespuestasEvaluacion;
+              let contenido = 'CEDULA,ID ESPACIO ACADEMICO,ESPACIO ACADEMICO,AMBITO 1,AMBITO 2,AMBITO 3,PROMEDIO FINAL\n';
+              respuestas.forEach((respuesta: any) => {
+                contenido += `${evaluadoId},${respuesta.EspacioAcademicoId},"${respuesta.NombreEspacio}",${respuesta.Ambito1},${respuesta.Ambito2},${respuesta.Ambito3},${respuesta.PromedioFinal}\n`;
+              });
+
+              try {
+                const { success, message } = await this.descargarCSV(contenido, `reporte_heteroevaluacion_${evaluadoId}.csv`);
+  
+                if (success) {
+                  this.popUpManager.showSuccessAlert(message);
+                  resolve({
+                    Success: true,
+                    Message: message
+                  });
+                } else {
+                  this.popUpManager.showErrorAlert(message);
+                  reject(new Error('No se pudo descargar el archivo CSV.'));
+                }
+              } catch (error: any) {
+                this.popUpManager.showErrorAlert(`Error al intentar descargar el CSV: ${error.message}`);
+                reject(new Error(`Error al intentar descargar el CSV: ${error.message}`));
+              }
+              
+            } else {
+              this.translate.get("GLOBAL.operacion_sin_datos").subscribe((titulo) => {
+                this.popUpManager.showAlert(titulo,`No se encontraron datos para generar el reporte, del profesor/a con cédula ${evaluadoId}`);
+              });
+              resolve(response); 
+            }
+
+            break;
+          case nombreAutoevaluacion:
+            //console.log('Es el reporte de autoevaluación');
+
+            const urlAutoevaluacion = `reporte_autoevaluacion_ii_tres_consejo?evaluador_id=${evaluadoId}&periodo_id=${periodoId}&proceso_id=${procesoId}&nombre_evaluador=${nombreEvaluado}`;
+            const responseAutoevaluacion = await this.evaluacionDocenteMidService.get(urlAutoevaluacion).toPromise();
+
+            if (responseAutoevaluacion && responseAutoevaluacion.Success && responseAutoevaluacion.Data && responseAutoevaluacion.Data.RespuestasEvaluacion) {
+              const respuestas = responseAutoevaluacion.Data.RespuestasEvaluacion;
+              let contenido = 'CEDULA,Nombre,ID ESPACIO ACADEMICO,ESPACIO ACADEMICO,PROMEDIO,RESPUESTA 1,RESPUESTA 2,RESPUESTA 3,ENLACE\n';
+              respuestas.forEach((respuesta: any) => {
+                contenido += `${respuesta.Documento},"${responseAutoevaluacion.Data.NombreEvaluador}",${respuesta.EspacioAcademicoId},"${respuesta.NombreEspacio}",${respuesta.Promedio},"${respuesta.RespuestaPregunta1}","${respuesta.RespuestaPregunta2}","${respuesta.RespuestaPregunta3}","${respuesta.Enlace}"\n`;
+              });
+
+              try {
+                const { success, message } = await this.descargarCSV(contenido, `reporte_autoevaluacion_ii_3_${evaluadoId}.csv`);
+  
+                if (success) {
+                  this.popUpManager.showSuccessAlert(message);
+                  resolve({
+                    Success: true,
+                    Message: message
+                  });
+                } else {
+                  this.popUpManager.showErrorAlert(message);
+                  reject(new Error('No se pudo descargar el archivo CSV.'));
+                }
+              } catch (error: any) {
+                this.popUpManager.showErrorAlert(`Error al intentar descargar el CSV: ${error.message}`);
+                reject(new Error(`Error al intentar descargar el CSV: ${error.message}`));
+              }
+
+            } else {
+              this.translate.get("GLOBAL.operacion_sin_datos").subscribe((titulo) => {
+                this.popUpManager.showAlert(titulo,`No se encontraron datos para generar el reporte, del profesor/a con cédula ${evaluadoId}`);
+              });
+              resolve(response); 
+            }
+
+            break;
+          case nombreCoevaluacion:
+            //console.log('Es el reporte de coevaluación');
+
+            const urlCoevaluacion = `reporte_coevaluacion_i_consejo?evaluador_id=${evaluadoId}&periodo_id=${periodoId}&proceso_id=${procesoId}`;
+            const responseCoevaluacion = await this.evaluacionDocenteMidService.get(urlCoevaluacion).toPromise();
+
+            if (responseCoevaluacion && responseCoevaluacion.Success && responseCoevaluacion.Data && responseCoevaluacion.Data.RespuestasEvaluacion) {
+
+              const respuestas = responseCoevaluacion.Data.RespuestasEvaluacion;
+              let contenido = 'ID ESPACIO ACADEMICO,ESPACIO ACADEMICO,ID GRUPO,GRUPO,RESPUESTA 1,RESPUESTA 2,RESPUESTA 3,ENLACE\n';
+              respuestas.forEach((respuesta: any) => {
+                contenido += `${respuesta.EspacioAcademicoId},"${respuesta.NombreEspacio}",${respuesta.IdGrupo},"${respuesta.Grupo}","${respuesta.RespuestaPregunta1}","${respuesta.RespuestaPregunta2}","${respuesta.RespuestaPregunta3}","${respuesta.Enlace}"\n`;
+              });
+
+              try {
+                const { success, message } = await this.descargarCSV(contenido, `reporte_coevaluacion_i_${evaluadoId}.csv`);
+  
+                if (success) {
+                  this.popUpManager.showSuccessAlert(message);
+                  resolve({
+                    Success: true,
+                    Message: message
+                  });
+                } else {
+                  this.popUpManager.showErrorAlert(message);
+                  reject(new Error('No se pudo descargar el archivo CSV.'));
+                }
+              } catch (error: any) {
+                this.popUpManager.showErrorAlert(`Error al intentar descargar el CSV: ${error.message}`);
+                reject(new Error(`Error al intentar descargar el CSV: ${error.message}`));
+              }
+
+            } else {
+              this.translate.get("GLOBAL.operacion_sin_datos").subscribe((titulo) => {
+                this.popUpManager.showAlert(titulo,`No se encontraron datos para generar el reporte, del profesor/a con cédula ${evaluadoId}`);
+              });
+              resolve(response); 
+            }
+
+            break;
+          default:
+            console.log('No se reconoce el reporte.');
+        }
+      } catch (error) {
+
+        reject(error);
+      }
+    });
+  }
+
+  descargarCSV(contenido: string, nombreArchivo: string): Promise<{ success: boolean, message: string }> {
+    return new Promise((resolve, reject) => {
+      try {
+        const blob = new Blob([contenido], { type: 'text/csv;charset=utf-8;' });
+        const urlBlob = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = urlBlob;
+        a.download = nombreArchivo;
+        a.click();
+        window.URL.revokeObjectURL(urlBlob);
+        resolve({ success: true, message: `El reporte con nombre ${nombreArchivo} se ha descargado correctamente.` });
+      } catch (error: any) {
+        console.error('Error al generar o descargar el archivo CSV:', error);
+        resolve({ success: false, message: error.message }); 
+      }
+    });
+  }
+
+  /* -------------------------------------------------------------------------- */
+  /*              Fin reportes para el formulario de Coevaluación II            */
   /* -------------------------------------------------------------------------- */
 
 }

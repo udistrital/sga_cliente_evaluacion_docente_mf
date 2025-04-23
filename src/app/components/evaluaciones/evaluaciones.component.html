@@ -1070,8 +1070,40 @@
                                     </tbody>
                                 </table>
                             </div> 
-
                         </form>
+                        
+                        <div *ngIf="mostrarEvaluacion && mostrarReporCoevaII">
+                            <div class="form-grid3">
+                                <div class="form-col1">
+                                    <mat-form-field style="width: 100%" floatLabel="always" appearance="outline">
+                                      <mat-label>{{ 'reportes.titulo_cuadro' | translate }}</mat-label>
+                                      <input matInput [value]="'reportes.nombre_reporte_heteroevaluacion' | translate" readonly>
+                                      <button mat-icon-button matSuffix [matTooltip]="'reportes.tooltip_descargar_csv' | translate" (click)="crearReporteCSV(translate.instant('reportes.nombre_reporte_heteroevaluacion'))">
+                                        <mat-icon>visibility</mat-icon>
+                                      </button>
+                                    </mat-form-field>
+                                </div>
+                                <div class="form-col1">
+                                    <mat-form-field style="width: 100%" floatLabel="always" appearance="outline">
+                                      <mat-label>{{ 'reportes.titulo_cuadro' | translate }}</mat-label>
+                                      <input matInput [value]="'reportes.nombre_reporte_coevaluacion_i' | translate" readonly>
+                                      <button mat-icon-button matSuffix [matTooltip]="'reportes.tooltip_descargar_csv' | translate" (click)="crearReporteCSV(translate.instant('reportes.nombre_reporte_coevaluacion_i'))">
+                                        <mat-icon>visibility</mat-icon>
+                                      </button>
+                                    </mat-form-field>
+                                </div>
+                                <div class="form-col1">
+                                    <mat-form-field style="width: 100%" floatLabel="always" appearance="outline">
+                                      <mat-label>{{ 'reportes.titulo_cuadro' | translate }}</mat-label>
+                                      <input matInput [value]="'reportes.nombre_reporte_autoevaluacion_ii_tres' | translate" readonly>
+                                      <button mat-icon-button matSuffix [matTooltip]="'reportes.tooltip_descargar_csv' | translate" (click)="crearReporteCSV(translate.instant('reportes.nombre_reporte_autoevaluacion_ii_tres'))">
+                                        <mat-icon>visibility</mat-icon>
+                                      </button>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                        </div>
+                        
                         <div *ngIf="!mostrarEvaluacion" style="width: 100%; display: flex; justify-content: center">
                             <button mat-raised-button color="primary" (click)="continuar(coevaluacionIIForm)">{{
                                 'GLOBAL.continuar' | translate }}</button>
