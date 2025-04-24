@@ -1597,7 +1597,7 @@ export class EvaluacionesComponent implements OnInit {
           case nombreHeteroevaluacion:
             //console.log('Es el reporte de heteroevaluación');
 
-            const url = `reporte_heteroevaluacion_consejo?evaluado_id=${evaluadoId}&periodo_id=${periodoId}&proceso_id=${procesoId}`;
+            const url = `reporte_heteroevaluacion_consejo?evaluado_id=${evaluadoId}&periodo_id=${periodoId}&proceso_id=6999`;
             const response = await this.evaluacionDocenteMidService.get(url).toPromise();
 
             if (response && response.Success && response.Data && response.Data.RespuestasEvaluacion) {
@@ -1636,7 +1636,7 @@ export class EvaluacionesComponent implements OnInit {
           case nombreAutoevaluacion:
             //console.log('Es el reporte de autoevaluación');
 
-            const urlAutoevaluacion = `reporte_autoevaluacion_ii_tres_consejo?evaluador_id=${evaluadoId}&periodo_id=${periodoId}&proceso_id=${procesoId}&nombre_evaluador=${nombreEvaluado}`;
+            const urlAutoevaluacion = `reporte_autoevaluacion_ii_tres_consejo?evaluador_id=${evaluadoId}&periodo_id=${periodoId}&proceso_id=6995&nombre_evaluador=${nombreEvaluado}`;
             const responseAutoevaluacion = await this.evaluacionDocenteMidService.get(urlAutoevaluacion).toPromise();
 
             if (responseAutoevaluacion && responseAutoevaluacion.Success && responseAutoevaluacion.Data && responseAutoevaluacion.Data.RespuestasEvaluacion) {
@@ -1675,7 +1675,7 @@ export class EvaluacionesComponent implements OnInit {
           case nombreCoevaluacion:
             //console.log('Es el reporte de coevaluación');
 
-            const urlCoevaluacion = `reporte_coevaluacion_i_consejo?evaluador_id=${evaluadoId}&periodo_id=${periodoId}&proceso_id=${procesoId}`;
+            const urlCoevaluacion = `reporte_coevaluacion_i_consejo?evaluador_id=${evaluadoId}&periodo_id=${periodoId}&proceso_id=6994`;
             const responseCoevaluacion = await this.evaluacionDocenteMidService.get(urlCoevaluacion).toPromise();
 
             if (responseCoevaluacion && responseCoevaluacion.Success && responseCoevaluacion.Data && responseCoevaluacion.Data.RespuestasEvaluacion) {
