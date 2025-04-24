@@ -3,20 +3,9 @@
     <mat-card-content>
         <mat-vertical-stepper [linear]="true" [formGroup]="stepperForm" #mainStepper>
             <!-- Secciones -->
-    <mat-step *ngFor="let seccion of todasSecciones; let i = index">
-        <ng-template matStepLabel >{{ seccion.nombre }}</ng-template>
+            <mat-step *ngFor="let seccion of todasSecciones; let i = index">
+                <ng-template matStepLabel >{{ seccion.nombre }}</ng-template>
 
-                <!-- Botón para colapsar/expandir todas las preguntas con ícono de ojo -->
-                <!--<div style="width: 100%; display: flex; justify-content: flex-end; padding-bottom: 1rem;">
-                    <button mat-button color="primary" (click)="toggleAll(i)">
-                        <mat-icon>visibility</mat-icon> {{ expandAllState ? 'Colapsar todo' : 'Expandir todo' }}
-                    </button>
-                    <button mat-button color="primary" (click)="toggleLayout(i)">
-                        <mat-icon>grid_view</mat-icon> {{ vertHorAllState ? 'Vertical' : 'Horizontal' }}
-                    </button>
-                </div>-->
-
-                <!-- Preguntas dentro de los ámbitos usando mat-accordion -->
                 <mat-accordion [multi]="expandAllState">
                     <mat-expansion-panel *ngFor="let pregunta of seccion.items; let j = index"
                         [expanded]="expandAllState || j === panelIndex[i]" (opened)="panelIndex[i] = j"
@@ -28,9 +17,9 @@
                             </mat-panel-title>
                             <mat-panel-description *ngIf="hasDocumentForDownload(pregunta)">
                                 <button mat-icon-button (click)="downloadDocument()">
-                                  <mat-icon>cloud_download</mat-icon>
+                                    <mat-icon>cloud_download</mat-icon>
                                 </button>
-                              </mat-panel-description>
+                            </mat-panel-description>
                         </mat-expansion-panel-header>
 
                         <div *ngIf="pregunta.campos !== null">
@@ -38,14 +27,16 @@
                             <div *ngFor="let campo of pregunta.campos">
                                 <!-- Opción de única respuesta (radio buttons) -->
                                 <div *ngIf="campo.tipo_campo === TIPOINPUT.Radio">
-                                    <mat-radio-group [formControlName]="'pregunta_' + generateControlName(seccion.id, pregunta.id)"
+                                    <mat-radio-group
+                                        [formControlName]="'pregunta_' + generateControlName(seccion.id, pregunta.id)"
                                         [ngClass]="{ 'vertical': !vertHorAllState, 'horizontal': vertHorAllState }">
                                         <mat-radio-button *ngFor="let option of campo.escala" [value]="option.valor">
                                             {{ option.nombre }}
                                         </mat-radio-button>
                                     </mat-radio-group>
-                                     <!-- Mensaje de error si el campo es obligatorio y está vacío -->
-                                    <mat-error *ngIf="stepperForm.get('pregunta_' + generateControlName(seccion.id, pregunta.id))?.invalid 
+                                    <!-- Mensaje de error si el campo es obligatorio y está vacío -->
+                                    <mat-error
+                                        *ngIf="stepperForm.get('pregunta_' + generateControlName(seccion.id, pregunta.id))?.invalid 
                                         && stepperForm.get('pregunta_' + generateControlName(seccion.id, pregunta.id))?.touched">
                                         Debes seleccionar una opción.
                                     </mat-error>
@@ -55,8 +46,10 @@
                                 <div *ngIf="campo.tipo_campo === TIPOINPUT.Textarea">
                                     <mat-form-field style="width: 100%;" appearance="fill">
                                         <!-- <mat-label>{{ pregunta.nombre }}</mat-label> -->
-                                        <textarea matInput [formControlName]="'pregunta_' + generateControlName(seccion.id, pregunta.id)"></textarea>
-                                        <mat-error *ngIf="stepperForm.get('pregunta_' + generateControlName(seccion.id, pregunta.id))?.invalid 
+                                        <textarea matInput
+                                            [formControlName]="'pregunta_' + generateControlName(seccion.id, pregunta.id)"></textarea>
+                                        <mat-error
+                                            *ngIf="stepperForm.get('pregunta_' + generateControlName(seccion.id, pregunta.id))?.invalid 
                                             && stepperForm.get('pregunta_' + generateControlName(seccion.id, pregunta.id))?.touched">
                                             Este campo no puede estar vacío.
                                         </mat-error>
@@ -77,7 +70,8 @@
                                         (change)="handleFileInputChange($event, seccion.id, pregunta.id)">
 
                                     <!-- Mensaje de error si el archivo no es válido -->
-                                    <mat-error *ngIf="stepperForm.get('pregunta_' + generateControlName(seccion.id, pregunta.id))?.invalid 
+                                    <mat-error
+                                        *ngIf="stepperForm.get('pregunta_' + generateControlName(seccion.id, pregunta.id))?.invalid 
                                                     && stepperForm.get('pregunta_' + generateControlName(seccion.id, pregunta.id))?.touched">
                                         Debes subir un archivo válido (.pdf).
                                     </mat-error>
@@ -118,8 +112,10 @@
 
                 <!-- Botones Anterior y Siguiente para avanzar entre ámbitos -->
                 <div>
-                    <button mat-button matStepperPrevious [disabled]="i === 0">{{ "GLOBAL.anterior" | translate }}</button>
-                    <button mat-button matStepperNext [disabled]="i === (todasSecciones.length - 1)">{{ "GLOBAL.siguiente" | translate }}</button>
+                    <button mat-button matStepperPrevious [disabled]="i === 0">{{ "GLOBAL.anterior" | translate
+                        }}</button>
+                    <button mat-button matStepperNext [disabled]="i === (todasSecciones.length - 1)">{{
+                        "GLOBAL.siguiente" | translate }}</button>
                 </div>
             </mat-step>
         </mat-vertical-stepper>
