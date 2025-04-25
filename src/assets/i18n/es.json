@@ -46,7 +46,8 @@
         "selecionar_docente": "Seleccione un docente",
         "selecionar_espacio": "Seleccione un espacio",
         "selecionar_grupo": "Seleccione un grupo",
-        "operacion_exitosa": "Operación exitosa"
+        "operacion_exitosa": "Operación exitosa",
+        "operacion_sin_datos": "Operación ejecutada correctamente"
     },
 
     "asignacion_fechas": {
@@ -280,5 +281,14 @@
         "periodo_academico": "Seleccione el periodo académico",
         "seleccionar_facultad": "Seleccione la facultad",
         "seleccionar_proyecto_curricular": "Seleccione el proyecto curricular"
+    },
+
+    "reportes":{
+        "titulo_cuadro": "Reportes",
+        "nombre_reporte_heteroevaluacion": "Heteroevaluación",
+        "nombre_reporte_coevaluacion_i": "Coevaluación I",
+        "nombre_reporte_autoevaluacion_ii_tres": "Autoevaluación II 3",
+        "tooltip_descargar_csv": "Descargar reporte CSV"
     }
+
 }
