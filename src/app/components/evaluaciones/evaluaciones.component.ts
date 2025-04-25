@@ -371,7 +371,8 @@ export class EvaluacionesComponent implements OnInit {
         this.proyectos.opciones = carreras;
       } else if (this.hasRole([ROLES.DECANO])) {
         const personaId = documento;
-        const fecha = '2024-06-06';
+        // const fecha = '2024-06-06';
+        const fecha = new Date().toISOString().split('T')[0];
         const url = `jefe_dependencia?query=FechaFin__gte:${fecha},FechaInicio__lte:${fecha},TerceroId:${personaId}`;
         const responseFacultad: any = await firstValueFrom(this.coreService.get(url));
 
