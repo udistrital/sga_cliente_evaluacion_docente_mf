@@ -371,19 +371,24 @@ export class EvaluacionesComponent implements OnInit {
         this.proyectos.opciones = carreras;
       } else if (this.hasRole([ROLES.DECANO])) {
         const personaId = documento;
-        // const fecha = '2024-06-06';
-        const fecha = new Date().toISOString().split('T')[0];
-        const url = `jefe_dependencia?query=FechaFin__gte:${fecha},FechaInicio__lte:${fecha},TerceroId:${personaId}`;
-        const responseFacultad: any = await firstValueFrom(this.coreService.get(url));
-
-        if (responseFacultad?.[0]?.DependenciaId) {
-          const url2 = `proyecto_curricular/get_all_proyectos_by_facultad_id/${responseFacultad[0].DependenciaId}`;
-          const responseProyectos = await firstValueFrom(this.oikosService.get(url2));
-
-          this.proyectos.opciones = responseProyectos.Body[0].Opciones.map(({ Id, Nombre }: any) => ({
-            id: Id,
-            nombre: Id + "-" + Nombre
-          }));
+        // consultamos decano con la cedula
+        const url = `decano/${personaId}`;
+        const responseFacultad: any = await firstValueFrom(this.academicaService.get(url));
+        if (responseFacultad) {
+          let id_gedep = responseFacultad.facultad.decano[0].codigo_facultad;
+          // se homologa dependencia "facultad"
+          const url2 = `/facultad_oikos_gedep/${id_gedep}`;
+          const responseHomologacion: any = await firstValueFrom(this.homologacionDependenciasService.get(url2));
+          if (responseHomologacion) {
+            let id_oikos = responseHomologacion.homologacion.id_oikos;
+            // se obtienen proyectos curriculares desde oikos
+            const url3 = `proyecto_curricular/get_all_proyectos_by_facultad_id/${id_oikos}`;
+            const responseProyectos = await firstValueFrom(this.oikosService.get(url3));
+            this.proyectos.opciones = responseProyectos.Body[0].Opciones.map(({ Id, Nombre }: any) => ({
+              id: Id,
+              nombre: Id + "-" + Nombre
+            }));
+          }
         }
         //this.configurarFormularioCoevaluacionII(this.coevaluacionIIForm);
       }
@@ -1402,34 +1407,34 @@ export class EvaluacionesComponent implements OnInit {
   onProyectoCoevII(event: MatSelectChange): void {
     const proyectoSeleccionado = event.value;
     if ((this.hasRole([ROLES.DECANO]))) {
-      // consulta coordinador del proyecto seleccionado
-      let url = `informacion_academica/informacion_coordinador/${proyectoSeleccionado.id}`
-      this.cumplidosDveService.get(url)
+      // couslta del coordinador del proyecto seleccionado
+      // 1. se obtiene informacion del proyecto
+      let url = `/proyecto_curricular_oikos/${proyectoSeleccionado.id}`
+      this.homologacionDependenciasService.get(url)
         .subscribe({
-          next: (resCoordinador: any) => {
-            if (resCoordinador != null) {
-              const docentes = [{
-                id: resCoordinador.Data.carreraSniesCollection.carreraSnies[0].numero_documento_coordinador,
-                nombre: resCoordinador.Data.carreraSniesCollection.carreraSnies[0].nombre_coordinador
-              }]
-              this.docentes.opciones = docentes;
-              this.nombreProyecto = proyectoSeleccionado.nombre;
-              // se homologa proyecto seleccionado
-              let url2 = `proyecto_curricular_oikos/${proyectoSeleccionado.id}`
-              this.homologacionDependenciasService.get(url2)
+          next: (resProyecto: any) => {
+            if (resProyecto != null) {
+              this.proyectoEspacio = resProyecto.homologacion.codigo_proyecto;
+              this.proyecto = resProyecto.homologacion.codigo_proyecto;
+              let id_snies = resProyecto.homologacion.id_snies;
+              let url2 = `carrera_snies/${id_snies}`
+              // 2. se obtiene el coordinador del proyecto 
+              this.academicaService.get(url2)
                 .subscribe({
-                  next: (resHomologacion: any) => {
-                    if (resHomologacion != null) {
-                      this.proyectoEspacio = resHomologacion.homologacion.codigo_proyecto;
-                      this.proyecto = resHomologacion.homologacion.codigo_proyecto;
+                  next: (resCoordinador: any) => {
+                    if (resCoordinador != null) {
+                      const docentes = [{
+                        id: resCoordinador.carreraSniesCollection.carreraSnies[0].numero_documento_coordinador,
+                        nombre: resCoordinador.carreraSniesCollection.carreraSnies[0].nombre_coordinador
+                      }]
+                      this.docentes.opciones = docentes;
+                      this.nombreProyecto = proyectoSeleccionado.nombre;
                     }
                   },
                   error: (err) => {
-                    console.error('Error al cargar proyectos:', err);
+                    console.error('Error al obtener coordinador:', err);
                   }
-                }
-                );
-
+                })
             }
           },
           error: (err) => {
