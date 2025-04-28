@@ -377,7 +377,7 @@ export class EvaluacionesComponent implements OnInit {
         if (responseFacultad) {
           let id_gedep = responseFacultad.facultad.decano[0].codigo_facultad;
           // se homologa dependencia "facultad"
-          const url2 = `/facultad_oikos_gedep/${id_gedep}`;
+          const url2 = `facultad_oikos_gedep/${id_gedep}`;
           const responseHomologacion: any = await firstValueFrom(this.homologacionDependenciasService.get(url2));
           if (responseHomologacion) {
             let id_oikos = responseHomologacion.homologacion.id_oikos;

@@ -9,6 +9,7 @@ export const environment = {
     EVENTOS_CRUD: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/sesiones_crud/v2/',
     PARAMETROS_CRUD: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/parametros/v1/',
     EVALUACION_DOCENTE_CRUD:'https://autenticacion.portaloas.udistrital.edu.co/apioas/evaluacion_docente_crud/v1/',
+    OIKOS_SERVICE: 'https://autenticacion.portaloas.udistrital.edu.co/apioas/oikos_crud_api/v2/',
 
     CRUD_CORE: "https://autenticacion.portaloas.udistrital.edu.co/apioas/core_amazon_crud/v1/",
     CUMPLIDOS_DVE_MID: "https://autenticacion.portaloas.udistrital.edu.co/apioas/cumplidos_dve_mid/v1/",
