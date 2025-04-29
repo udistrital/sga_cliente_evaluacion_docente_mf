@@ -64,3 +64,11 @@ export const ROLES_COEVALUACION_DOS = Object.freeze({
     COORDINADOR: 'COORDINADOR',
     DECANO: 'DECANO'
 })
+
+export const PROCESOS_CATEGORIAS = Object.freeze({
+    ESTUDIANTE: ['Heteroevaluación', 'Autoevaluación I'],
+    DOCENTE: ['Autoevaluación II 1', 'Autoevaluación II 2', 'Autoevaluación II 3', 'Coevaluación I'],
+    CONCEJO: ['Coevaluación II']
+} as const);
+
+export type CategoriaProceso = keyof typeof PROCESOS_CATEGORIAS;

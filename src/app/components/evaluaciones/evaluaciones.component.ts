@@ -25,6 +25,7 @@ import { OikosService } from "src/app/services/oikos.service";
 import { CumplidosDveService } from "src/app/services/cumplidos_dve.service";
 import { HomologacionDependenciasService } from "src/app/services/homologacion_dependencias.service";
 import { firstValueFrom } from 'rxjs';
+import { ProcesosService } from "src/app/services/procesos.service";
 
 
 @Component({
@@ -82,9 +83,7 @@ export class EvaluacionesComponent implements OnInit {
     "Autoevaluación II 3": "autoevaluacion_ii_tres",
     "Coevaluación 2 (Consejo)": "coevaluacion_ii"
   };
-  procesosParametroEstudiante: any[] = ["6998","6999"];
-  procesosParametroDocente: any[] = ["6997","6996","6995","6994"];
-  procesosParametroConcejo: any[] = ["6993"];
+  procesosParametro: any = [];
 
   auxEspaciosHetero: any[] = [];
   fechas: any = null; // Campo para guardar las fechas de inicio y fin para todos los tipos de evaluacion
@@ -110,7 +109,8 @@ export class EvaluacionesComponent implements OnInit {
     private coreService: CoreService,
     private oikosService: OikosService,
     private cumplidosDveService: CumplidosDveService,
-    private homologacionDependenciasService: HomologacionDependenciasService
+    private homologacionDependenciasService: HomologacionDependenciasService,
+    private procesosService: ProcesosService,
   ) {
     this.heteroForm = this.fb.group({});
     this.coevaluacionIIForm = this.fb.group({});
@@ -121,7 +121,8 @@ export class EvaluacionesComponent implements OnInit {
     this.autoevaluacionIForm = this.fb.group({});
   }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
+    this.procesosParametro = await this.procesosService.getProcesosParametro();
     this.obtenerPeriodoActual();
     this.initializeForms();
     this.consultaIniciaParametrosForm();
@@ -294,11 +295,11 @@ export class EvaluacionesComponent implements OnInit {
 
   async consultarDatos() {
     const selectedId = String(this.selectedEvaluationId);
-    if (this.procesosParametroEstudiante.includes(selectedId)) {
+    if (this.procesosParametro.ESTUDIANTE.includes(selectedId)) {
       await this.consultarDatosEstudiante();
-    } else if (this.procesosParametroDocente.includes(selectedId)) {
+    } else if (this.procesosParametro.DOCENTE.includes(selectedId)) {
       await this.consultarDatosDocente();
-    } else if (this.procesosParametroConcejo.includes(selectedId)) {
+    } else if (this.procesosParametro.CONCEJO.includes(selectedId)) {
       await this.consultarDatosCoordinadorODecano();
     }
   }
