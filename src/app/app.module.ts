@@ -46,9 +46,15 @@ import { AcademicaService } from './services/academica.service';
 import { CoreService } from './services/core.service';
 import { CumplidosDveService } from './services/cumplidos_dve.service';
 import { HomologacionDependenciasService } from './services/homologacion_dependencias.service';
+import { ProcesosService } from './services/procesos.service';
+import { APP_INITIALIZER } from '@angular/core';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, environment.apiUrl + 'assets/i18n/', '.json');
+}
+
+export function initProcesos(service: ProcesosService) {
+  return () => service.cargarProcesos();
 }
 
 export const CUSTOM_DATE_FORMATS = {
@@ -120,6 +126,13 @@ export const CUSTOM_DATE_FORMATS = {
     CoreService,
     CumplidosDveService,
     HomologacionDependenciasService,
+    ProcesosService,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initProcesos,
+      deps: [ProcesosService],
+      multi: true
+    },
     { provide: HTTP_INTERCEPTORS, useClass: SpinnerUtilInterceptor, multi: true },
     { provide: MAT_DATE_LOCALE, useValue: 'es-CO' }, 
     { provide: MAT_DATE_FORMATS, useValue: CUSTOM_DATE_FORMATS },
