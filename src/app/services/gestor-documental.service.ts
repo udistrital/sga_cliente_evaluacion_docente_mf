@@ -242,7 +242,8 @@ export class GestorDocumentalService {
     getByUUID(uuid: string) {
         const documentsSubject = new Subject<string>();
         const documents$ = documentsSubject.asObservable();
-        let documento = null;
+        //let documento = null;
+        let documento: string | null = null;
         this.requestManager.setPath('GESTOR_DOCUMENTAL_MID_SERVICE');
         this.requestManager.get('/document/' + uuid)
             .subscribe(async (f: any) => {

@@ -1,6 +1,7 @@
-/*import { Component, Input, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, Input, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { environment } from '../../../environments/environment';
-import { spagoBIService } from '../../utils/spagoBIAPI/spagoBIService';
+//import { spagoBIService } from '../../utils/spagoBIAPI/spagoBIService';
+import { spagoBIService } from '../..//@core/utils/spagoBIAPI/spagoBIService';
 import { ActivatedRoute } from '@angular/router';
 
 //declare const spagoBIService: any;
@@ -17,7 +18,7 @@ export class ReporteKnowageComponent implements OnInit {
   spinner: string = 'Cargando reporte.';
 
   @ViewChild('spagoBIDocumentArea', { static: true }) spagoBIDocumentArea!: ElementRef;
-  @Input() reportLabel: string = '';
+  reportLabel: string = 'RteEvaDocParTotal';
 
   constructor(
     private route: ActivatedRoute,
@@ -29,7 +30,6 @@ export class ReporteKnowageComponent implements OnInit {
     this.route.data.subscribe(data => {
       if (true) {
         //this.reportLabel = data['reportLabel'];
-        this.reportLabel = 'RteEvaDocParTotal';
         const reportLabel = this.reportLabel + environment.SPAGOBI.TIPO_REPORTE;
         console.log("this.reportLabel :", reportLabel);
         this.reportConfig = {
@@ -71,15 +71,78 @@ export class ReporteKnowageComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.getReport();
+    console.log('Iniciando carga de scripts Knowage');
+    (window as any).SPAGOBI = environment.SPAGOBI;
+
+    this.loadSDKScript().then(() => {
+      this.getReport();
+    }).catch(err => {
+      console.error('Error cargando SDK:', err);
+    });
+      //this.getReport();
+    }
+
+  loadSDKScript(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const sdkUrl = 'http://localhost:4200/assets/spagoBIAPI/spagoBISDK/sbisdk-all-production.js';
+      const serviceUrl = 'http://localhost:4200/assets/spagoBIAPI/spagoBIService.js';
+  
+      const loadScript = (src: string): Promise<void> => {
+        return new Promise((res, rej) => {
+          const script = document.createElement('script');
+          script.src = src;
+          script.type = 'text/javascript';
+          script.onload = () => {
+            console.log(`Script cargado: ${src}`);
+            res();
+          };
+          script.onerror = () => {
+            console.error(`Error cargando: ${src}`);
+            rej(new Error(`No se pudo cargar ${src}`));
+          };
+          document.body.appendChild(script);
+        });
+      };
+  
+      // Cargar primero el SDK, luego el servicio
+      loadScript(sdkUrl)
+        .then(() => loadScript(serviceUrl))
+        .then(() => {
+          if ((window as any).Sbi) {
+            console.log('Sbi cargado correctamente');
+            resolve();
+          } else {
+            reject('Sbi no está definido después de cargar scripts');
+          }
+        })
+        .catch(reject);
+    });
   }
+  
+  
+  
 
   getReport() {
     spagoBIService.getReport(this, this.callbackFunction);
   }
-}*/
 
-import { Component, OnInit } from '@angular/core';
+  loadScript() {
+    const script = document.createElement('script');
+    script.src = 'assets/spagoBIService.js';
+    script.type = 'text/javascript';
+    script.async = false;
+    document.body.appendChild(script);
+
+    const scriptDos = document.createElement('script');
+    scriptDos.src = 'assets/sbisdk-all-production.js';
+    scriptDos.type = 'text/javascript';
+    scriptDos.async = false;
+    document.body.appendChild(scriptDos);
+
+  }
+}
+
+/*import { Component, OnInit } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { HttpClient } from '@angular/common/http';
 //import { Sbi } from 'knowagesdk';
@@ -108,7 +171,7 @@ export class ReporteKnowageComponent implements OnInit {
       }
     });
     console.log("finaliza el ngOnInit");
-  }*/
+  }/
   constructor(private http: HttpClient, private sanitizer: DomSanitizer) { }
 
   ngOnInit(): void {
@@ -123,7 +186,7 @@ export class ReporteKnowageComponent implements OnInit {
       error: (err: any) => {
         console.error('Error al obtener el reporte:', err);
       }
-    });*/
+    });/
 
     this.http.get('http://localhost:8567/v1/reporte_knowage?label=' + label, { responseType: 'text' }).subscribe({
       next: (html) => {
@@ -135,7 +198,7 @@ export class ReporteKnowageComponent implements OnInit {
   
     console.log("finaliza el ngOnInit");
   }
-} 
+} */
 /*export class ReporteKnowageComponent implements OnInit {
   url: SafeResourceUrl | null = null;
 
