@@ -34,7 +34,9 @@
               "src/assets/styles/sga-theme-angular-material.scss",
               "src/styles.scss"
             ],
-            "scripts": [],
+            "scripts": [
+  "src/app/utils/spagoBIAPI/spagoBISDK/sbisdk-all-production.js"
+],
             "customWebpackConfig": {
               "path": "extra-webpack.config.js",
               "libraryName": "sga_cliente_evaluacion_docente_mf",
@@ -124,7 +126,8 @@
             "styles": [
               "src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [
+  "src/app/utils/spagoBIAPI/spagoBISDK/sbisdk-all-production.js"]
           }
         }
       }

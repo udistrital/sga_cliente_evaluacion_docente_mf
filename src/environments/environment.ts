@@ -28,5 +28,15 @@ export const environment = {
 
     TIPO_PARAMETRO_ID: {
         PROCESO_EVALUACION_ID: 152,
-    }
+    },
+
+    SPAGOBI: {
+        PROTOCOL: 'https',
+        HOST: 'inteligenciainstitucional.portaloas.udistrital.edu.co',
+        PORT: '443',
+        CONTEXTPATH: 'knowage',
+        USER: 'jerodrigueza@udistrital.edu.co',
+        PASSWORD: 'jerodrigueza',
+        TIPO_REPORTE: '',
+    },
 };
