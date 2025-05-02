@@ -57,6 +57,8 @@ export class ResultadosComponent {
 
   colorScheme: Color = { domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA'], name: '', selectable: true, group: ScaleType.Ordinal };
 
+  reporteSeleccionado = 'RteEvaDocParTotal';
+
   constructor(private dateService: DateService, private userService: UserService,) {}
 
   ngOnInit(): void {

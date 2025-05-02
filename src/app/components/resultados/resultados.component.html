@@ -1,3 +1,14 @@
+<select [(ngModel)]="reporteSeleccionado">
+  <option value="RteEvaDocParTotal">RteEvaDocParTotal</option>
+</select>
+
+<app-reporte-knowage
+  [documentLabel]="reporteSeleccionado"
+  [parameters]="{ Anio: 2018, Semestre: 1, Facultad: 'FACULTAD DE INGENIERIA'}">
+</app-reporte-knowage>
+
+
+
 <div class="container" *ngIf="hasRole([ROLES.ESTUDIANTE, ROLES.ADMIN_SGA, ROLES.ADMIN_DOCENCIA]); else noPermission">
   <mat-card class="card">
     <div class="select-container">

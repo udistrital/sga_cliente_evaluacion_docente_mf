@@ -1,0 +1,24 @@
+<p>reporte-knowage works!</p>
+<!--<div class="iframe-container">
+    <iframe [src]="iframeUrl" width="100%" height="800" frameborder="0">
+    </iframe>
+</div>-->
+
+<mat-card>
+    <mat-card-title *ngIf="reportLabel">
+        reportLabel 
+    </mat-card-title>
+
+
+    <div *ngIf="spinner" class="spinner-container">
+        {{ spinner }}
+    </div>
+
+
+    <div #spagoBIDocumentArea class="reporte-container" >
+
+    </div>
+</mat-card>
+<!-- <meta http-equiv="Content-Security-Policy" content="frame-src 'self' https://localhost:* https://*.portaloas.udistrital.edu.co;"> -->
+
+<!-- <iframe *ngIf="url" [src]="url" width="100%" height="800px" frameborder="0"></iframe> -->
