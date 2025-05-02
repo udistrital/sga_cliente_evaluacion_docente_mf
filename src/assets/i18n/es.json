@@ -289,6 +289,13 @@
         "nombre_reporte_coevaluacion_i": "Coevaluación I",
         "nombre_reporte_autoevaluacion_ii_tres": "Autoevaluación II 3",
         "tooltip_descargar_csv": "Descargar reporte CSV"
-    }
+    },
 
+    "reportes_knowage":{
+        "sin_permisos_titulo": "Acceso denegado",
+        "sin_permisos_mensaje": "No tienes los permisos necesarios para visualizar esta información. Por favor, contacta al administrador del sistema para obtener más detalles o para solicitar acceso.",
+        "titulo_cuadro": "Reportes",
+        "alerta": "A continuación, deberá seleccionar el nombre del reporte que desea visualizar.",
+        "select_reporte": "Seleccionar reporte"
+    }
 }
