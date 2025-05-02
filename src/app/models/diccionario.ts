@@ -72,3 +72,11 @@ export const PROCESOS_CATEGORIAS = Object.freeze({
 } as const);
 
 export type CategoriaProceso = keyof typeof PROCESOS_CATEGORIAS;
+
+
+export const ROLES_REPORTES_KNOWAGE = Object.freeze({
+    ADMIN_SGA: 'ADMIN_SGA',
+    COORDINADOR: 'COORDINADOR',
+    DECANO: 'DECANO',
+    CONSEJO_CURRICULAR: 'CONSEJO_CURRICULAR'
+})

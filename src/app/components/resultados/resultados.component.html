@@ -1,15 +1,38 @@
+<!-- 
 <select [(ngModel)]="reporteSeleccionado">
   <option value="RteEvaDocParTotal">RteEvaDocParTotal</option>
-</select>
+</select> 
+-->
 
-<app-reporte-knowage
-  [documentLabel]="reporteSeleccionado"
-  [parameters]="{ Anio: 2018, Semestre: 1, Facultad: 'FACULTAD DE INGENIERIA'}">
-</app-reporte-knowage>
+<mat-card *ngIf="hasPermisos; else noPermission">
+  <mat-card-header>
+    <mat-card-title>{{ "reportes_knowage.titulo_cuadro" | translate }}</mat-card-title>
+  </mat-card-header><br>
+  <mat-card-content>
+    <div class="row mt-4">
+      <div class="col-12">
+        <div class="alert info">
+          <mat-icon class="icon">info</mat-icon>
+          <span>{{ 'reportes_knowage.alerta' | translate }}</span>
+        </div>
+      </div>
+    </div>
+    <mat-form-field style="width: 35%" appearance="outline">
+      <mat-label>{{ "reportes_knowage.select_reporte" | translate }}</mat-label>
+      <mat-icon class="mat-icon-outlined" color="primary" matPrefix>fact_check</mat-icon>
+      <mat-select id="tipo-reporte" (selectionChange)="onSelectChange($event)" (selectionChange)="onSelectChange($event)" >
+        <mat-option [value]="null">-- {{ 'GLOBAL.seleccionar' | translate }} --</mat-option>
+        <mat-option *ngFor="let reporteListado of reportesListado" [value]="reporteListado.nombreLabel">{{ reporteListado.nombre }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </mat-card-content>
+</mat-card><br>
 
+<app-reporte-knowage *ngIf="mostrarReporte" [reportLabel]="selectedReportLabel" [reportNombre]="selectedReportNombre"></app-reporte-knowage>
 
+<!-- Lo de abajo es lo que hay del modulo de graficas -->
 
-<div class="container" *ngIf="hasRole([ROLES.ESTUDIANTE, ROLES.ADMIN_SGA, ROLES.ADMIN_DOCENCIA]); else noPermission">
+<!--<div class="container" *ngIf="hasRole([ROLES.ESTUDIANTE, ROLES.ADMIN_SGA, ROLES.ADMIN_DOCENCIA]); else noPermission">
   <mat-card class="card">
     <div class="select-container">
       <mat-form-field appearance="fill" class="select-field">
@@ -75,17 +98,14 @@
   <mat-card class="card">
     <h2>Cualitativo</h2>
   </mat-card>
-</div>
-
-
-
+</div>-->
 
 <!-- Modal para mostrar cuando el usuario no tiene permisos -->
 <ng-template #noPermission>
-  <div class="modal-overlay" *ngIf="!hasRole([ROLES.ADMIN_SGA, ROLES.ESTUDIANTE, ROLES.CONSEJO_CURRICULAR, ROLES.ADMIN_DOCENCIA])">
+  <div class="modal-overlay">
     <div class="modal-content">
-      <h2>{{ "definicion_formularios.sin_permisos_titulo" | translate }}</h2>
-      <p>{{ "definicion_formularios.sin_permisos_mensaje" | translate }}</p>
+      <h2>{{ "reportes_knowage.sin_permisos_titulo" | translate }}</h2>
+      <p>{{ "reportes_knowage.sin_permisos_mensaje" | translate }}</p>
       <!-- Icono grande de carita triste -->
       <div class="sad-face-icon">
         <mat-icon class="sad-icon">sentiment_dissatisfied</mat-icon>

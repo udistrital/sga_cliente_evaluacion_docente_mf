@@ -11,6 +11,7 @@ import { spagoBIService } from '../../utils/spagobi-adapter';
 export class ReporteKnowageComponent implements OnInit {
 
   @Input() reportLabel: string = '';
+  @Input() reportNombre: string = '';
   @ViewChild('spagoBIDocumentArea', { static: true }) spagoBIDocumentArea!: ElementRef;
 
   reportConfig: any;
@@ -20,13 +21,17 @@ export class ReporteKnowageComponent implements OnInit {
   constructor(private route: ActivatedRoute) {}
 
   ngOnInit() {
-    this.initReportConfig();
-    this.loadReport();
+    if (this.reportLabel && this.reportNombre) {
+      this.initReportConfig();
+      this.loadReport();
+    } else {
+      this.spinner = '⚠️ No se ha recibido el nombre, ni el nombre lable del reporte';
+    }
   }
 
   initReportConfig() {
     const tipo = environment.SPAGOBI.TIPO_REPORTE || '';
-    const label = 'RteAspirantesProd';
+    const label = this.reportLabel;
     this.reportConfig = {
       documentLabel: label + tipo,
       executionRole: '/spagobi/user',
