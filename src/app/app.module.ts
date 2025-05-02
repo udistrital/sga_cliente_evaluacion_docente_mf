@@ -28,6 +28,7 @@ import { ParametrosService } from './services/parametros.service';
 import { AnyService } from './services/any.service';
 import { MetricasComponent } from './components/metricas/metricas.component';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { ReporteKnowageComponent } from './components/reporte-knowage/reporte-knowage.component'
 import { ResultadosComponent } from './components/resultados/resultados.component';
 import { NuxeoComponent } from './components/nuxeo/nuxeo.component';
 import { GestorDocumentalService } from './services/gestor-documental.service';
@@ -81,8 +82,8 @@ export const CUSTOM_DATE_FORMATS = {
     MetricasComponent,
     NuxeoComponent,
     ResultadosComponent,
+    ReporteKnowageComponent,
     MetricasComponent,
-    ResultadosComponent,
     DynamicFormComponent,
     DialogoConfirmacion
   ],
