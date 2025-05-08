@@ -5,33 +5,32 @@ const path = require('path');
 dotenv.config();
 
 try {
-  let envFileName;
+  const envFiles = [
+    'environment.ts',
+    'environment.development.ts',
+    'environment.production.ts',
+  ];
 
-  switch (process.env['NOMBRE_ARCH_ENVIRONMENT']) {
-    case 'environment.development.ts':
-      envFileName = 'environment.development.ts';
-      break;
-    case 'environment.production.ts':
-      envFileName = 'environment.production.ts';
-      break;
-    case 'environment.ts':
-      envFileName = 'environment.ts';
-      break;
-    default:
-      envFileName = 'environment.ts';
-      break;
-  }
+  envFiles.forEach((fileName) => {
+    try {
+      const targetPath = path.resolve(__dirname, `./src/environments/${fileName}`);
 
-  const targetPath = path.resolve(__dirname, `./src/environments/${envFileName}`);
+      if (!fs.existsSync(targetPath)) {
+        throw new Error(`El archivo no existe: ${targetPath}`);
+      }
 
-  let fileContent = fs.readFileSync(targetPath, { encoding: 'utf8' });
+      let fileContent = fs.readFileSync(targetPath, { encoding: 'utf8' });
 
-  fileContent = fileContent.replace(/USER:\s*'[^']*'/, `USER: '${process.env['USER_KNOWAGE']}'`);
-  fileContent = fileContent.replace(/PASSWORD:\s*'[^']*'/, `PASSWORD: '${process.env['PASSWORD_KNOWAGE']}'`);
+      fileContent = fileContent.replace(/USER:\s*'[^']*'/, `USER: '${process.env['USER_KNOWAGE']}'`);
+      fileContent = fileContent.replace(/PASSWORD:\s*'[^']*'/, `PASSWORD: '${process.env['PASSWORD_KNOWAGE']}'`);
 
-  fs.writeFileSync(targetPath, fileContent, { encoding: 'utf8' });
+      fs.writeFileSync(targetPath, fileContent, { encoding: 'utf8' });
 
-  console.log(`✅ USER y PASSWORD de KNOWAGE actualizados en ${envFileName}`);
+      console.log(`✅ USER y PASSWORD de KNOWAGE actualizados en ${fileName}`);
+    } catch (error) {
+      console.error(`❌ Error al actualizar ${fileName}: ${error.message}`);
+    }
+  });
 } catch (error) {
   console.error(`❌ Error al actualizar USER y PASSWORD de KNOWAGE: ${error.message}`);
 }
