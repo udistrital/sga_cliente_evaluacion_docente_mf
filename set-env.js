@@ -26,7 +26,7 @@ try {
 
       fs.writeFileSync(targetPath, fileContent, { encoding: 'utf8' });
 
-      console.log(`✅ USER y PASSWORD de KNOWAGE actualizados en ${fileName}`);
+      console.log(`✅ USER = ${process.env['USER_KNOWAGE']} y PASSWORD = ${process.env['PASSWORD_KNOWAGE']} de KNOWAGE actualizados en ${fileName}`);
     } catch (error) {
       console.error(`❌ Error al actualizar ${fileName}: ${error.message}`);
     }
