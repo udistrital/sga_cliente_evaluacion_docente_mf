@@ -35,8 +35,8 @@ export const environment = {
         HOST: 'inteligenciainstitucional.portaloas.udistrital.edu.co',
         PORT: '443',
         CONTEXTPATH: 'knowage',
-        USER: 'desarrollooas',
-        PASSWORD: 'desarrollooas',
+        USER: 'xxx',
+        PASSWORD: 'xxx',
         TIPO_REPORTE: '',
     }
 };
