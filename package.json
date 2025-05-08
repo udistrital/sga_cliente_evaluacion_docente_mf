@@ -10,8 +10,8 @@
     "prepare": "husky",
     "build:single-spa:sga-cliente-evaluacion-docente-mf": "ng build sga-cliente-evaluacion-docente-mf --configuration production",
     "serve:single-spa:sga-cliente-evaluacion-docente-mf": "ng s --project sga-cliente-evaluacion-docente-mf --disable-host-check --port 4218 --live-reload false",
-    "build:prod": "ng build --progress --configuration=production",
-    "build:test": "ng build --progress --configuration=development"
+    "build:prod": "node set-env.js && ng build --progress --configuration=production",
+    "build:test": "node set-env.js && ng build --progress --configuration=development"
   },
   "private": true,
   "dependencies": {
