@@ -95,7 +95,7 @@ steps:
 
 - name: nodejs_release
   image: node:lts-bullseye
-    environment:
+  environment:
     USER_KNOWAGE:
       from_secret: USER_KNOWAGE
     PASSWORD_KNOWAGE:
@@ -113,7 +113,7 @@ steps:
 
 - name: nodejs_master
   image: node:lts-bullseye
-    environment:
+  environment:
     USER_KNOWAGE:
       from_secret: USER_KNOWAGE
     PASSWORD_KNOWAGE:
