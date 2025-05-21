@@ -48,6 +48,7 @@ import { CoreService } from './services/core.service';
 import { CumplidosDveService } from './services/cumplidos_dve.service';
 import { HomologacionDependenciasService } from './services/homologacion_dependencias.service';
 import { ProcesosService } from './services/procesos.service';
+import { EnvioEmailService } from './services/envio_email.service';
 import { APP_INITIALIZER } from '@angular/core';
 
 export function createTranslateLoader(http: HttpClient) {
@@ -125,6 +126,7 @@ export const CUSTOM_DATE_FORMATS = {
     EvaluacionDocenteService,
     AcademicaService,
     CoreService,
+    EnvioEmailService,
     CumplidosDveService,
     HomologacionDependenciasService,
     ProcesosService,

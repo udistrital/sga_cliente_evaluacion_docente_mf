@@ -26,7 +26,8 @@ import { CumplidosDveService } from "src/app/services/cumplidos_dve.service";
 import { HomologacionDependenciasService } from "src/app/services/homologacion_dependencias.service";
 import { firstValueFrom } from 'rxjs';
 import { ProcesosService } from "src/app/services/procesos.service";
-
+import { EnvioEmailService } from "src/app/services/envio_email.service";
+import { EnvioEmailPayload } from "src/app/models/envio-email.model";
 
 @Component({
   selector: "app-evaluaciones",
@@ -111,6 +112,7 @@ export class EvaluacionesComponent implements OnInit {
     private cumplidosDveService: CumplidosDveService,
     private homologacionDependenciasService: HomologacionDependenciasService,
     private procesosService: ProcesosService,
+    private envioEmailService: EnvioEmailService,
   ) {
     this.heteroForm = this.fb.group({});
     this.coevaluacionIIForm = this.fb.group({});
@@ -148,6 +150,8 @@ export class EvaluacionesComponent implements OnInit {
         this.evaluador = 1;
         console.error('Error:', error.message);
       });
+
+    //const resultadoEnvioCorreo = this.enviarCorreo();
   }
 
   obtenerPeriodoActual(): void {
@@ -1587,10 +1591,6 @@ export class EvaluacionesComponent implements OnInit {
           nombreEvaluado = dataParsedDocenteCoevII.nombre;
           periodoId = dataParsedPeriodoActual;
           procesoId = dataParsedDocenteCoevII.evaluacionId;
-          /*evaluadoId = "80033827";
-          nombreEvaluado = dataParsedDocenteCoevII.nombre;
-          periodoId = "61";
-          procesoId = "6994";*/
         } else {
           this.popUpManager.showErrorAlert("Los datos necesarios del docente no se lograron obtener del local storage.");
           throw new Error("Datos del local storage no disponibles.");
@@ -1749,6 +1749,155 @@ export class EvaluacionesComponent implements OnInit {
 
   /* -------------------------------------------------------------------------- */
   /*              Fin reportes para el formulario de Coevaluación II            */
+  /* -------------------------------------------------------------------------- */
+
+  /* -------------------------------------------------------------------------- */
+  /*                          Inicio de envio de email                          */
+  /* -------------------------------------------------------------------------- */
+  
+  async enviarCorreo(): Promise<boolean> {
+    //const base64Pdf = await this.generarPDF();
+
+    const emailPayload: EnvioEmailPayload = {
+      Source: "condor@udistrital.edu.co",
+      Template: "PLANTILLA_EVALUACION_DOCENTE",
+      Destinations: [
+        {
+          Destination: {
+            ToAddresses: ["jerodrigueza@udistrital.edu.co"]
+          },
+          ReplacementTemplateData: {
+            nombre_usuario: "BARON CAMACHO LUZ AMPARO",
+            documento_usuario: "12.345.678",
+            nombre_evaluacion: "Heteroevaluación",
+            numero_periodo: "61",
+            fecha_eva_realizada: "07 de mayo de 2025",
+            hora_eva_realizada: "09:40 AM"
+          },
+          Attachments: [
+            {
+              ContentType: "application/pdf",
+              FileName: "prueba.pdf",
+              Base64File: ""
+            }
+          ]
+        }
+      ],
+      DefaultTemplateData: {
+        nombre_usuario: "BARON CAMACHO LUZ AMPARO",
+        documento_usuario: "12.345.678",
+        nombre_evaluacion: "Heteroevaluación",
+        numero_periodo: "61",
+        fecha_eva_realizada: "07 de mayo de 2025",
+        hora_eva_realizada: "09:40 AM"
+      }
+    };
+
+
+    try {
+      const response = await firstValueFrom(
+        this.envioEmailService.postEnvioEmailTemplate('email/enviar_templated_email', emailPayload)
+      );
+  
+      if (response?.Success && response?.Status === "200") {
+        console.log('Correo enviado correctamente. ID:', response.Data?.Result?.MessageId);
+        return true;
+      } else {
+        console.warn('El servidor respondió pero no fue exitoso:', response);
+        return false;
+      }
+    } catch (error) {
+      console.error('Error al enviar el email:', error);
+      return false;
+    }
+  }
+
+  //async generarPDF(): Promise<string> {
+    /*const pdfDoc = await PDFDocument.create();
+    const page = pdfDoc.addPage([612, 792]); // Tamaño carta
+    const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman);
+
+    const { width, height } = page.getSize();
+    const fontSize = 16;
+    page.drawText('Este es un PDF de prueba generado en Angular.', {
+      x: 50,
+      y: height - 100,
+      size: fontSize,
+      font: timesRomanFont,
+      color: rgb(0, 0, 0),
+    });
+
+    const pdfBytes = await pdfDoc.save();
+    const base64Pdf = btoa(String.fromCharCode(...pdfBytes)); // convertir a base64
+    return base64Pdf;*/
+  //}
+
+  /*async generarPDF(): Promise<string> {
+    // 🧾 Variables dinámicas
+    const nombre = "BARON CAMACHO LUZ";
+    const documento = "12.345.789";
+    const evaluacion = "Heteroevaluación";
+    const periodo = "61";
+    const fecha = "07 de mayo de 2025";
+    const hora = "09:40:00 AM";
+  
+    // 🧱 Crear contenedor HTML dinámico
+    const container = document.createElement('div');
+    container.style.position = 'absolute';
+    container.style.left = '-9999px'; // fuera de la pantalla
+  
+    // HTML con interpolación de variables
+    container.innerHTML = `
+      <div style="text-align: center; font-weight: bold; font-size: 20px;">SISTEMA DE EVALUACIÓN DOCENTE</div>
+      <p>El presente documento certifica que:</p>
+      <p style="font-weight: bold;">${nombre}</p>
+      <p>
+        Identificado (a) con documento No <b>${documento}</b>, presentó la evaluación de <b>${evaluacion}</b>
+        del periodo <b>${periodo}</b>, el ${fecha} a las ${hora}.
+      </p>
+      <p>
+        Expedido en Bogotá D.C. a las ${hora} del ${fecha}. Cualquier inquietud o inconsistencia en la información
+        por favor comunicarse con la oficina de evaluación docente.
+      </p>
+    `;
+  
+    // 📌 Agregar al DOM temporalmente
+    document.body.appendChild(container);
+  
+    const opt = {
+      margin: 0.5,
+      filename: 'certificado.pdf',
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+    };
+  
+    // 🧾 Generar PDF
+    const worker = html2pdf().set(opt).from(container).toPdf();
+    const pdfBlob = await worker.output('blob');
+  
+    // 🧹 Eliminar contenedor del DOM
+    document.body.removeChild(container);
+  
+    // 📦 Convertir a base64
+    const base64 = await this.blobToBase64(pdfBlob);
+    return base64;
+  }
+  
+  blobToBase64(blob: Blob): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const result = reader.result as string;
+        resolve(result.split(',')[1]); // eliminar encabezado data:
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  }*/
+
+  /* -------------------------------------------------------------------------- */
+  /*                            Fin de envio de email                           */
   /* -------------------------------------------------------------------------- */
 
 }

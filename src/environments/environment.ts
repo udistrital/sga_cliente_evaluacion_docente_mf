@@ -26,6 +26,8 @@ export const environment = {
     CUMPLIDOS_DVE_MID: "https://autenticacion.portaloas.udistrital.edu.co/apioas/cumplidos_dve_mid/v1/",
     HOMOLOGACION_DEPENDENCIAS: "https://autenticacion.portaloas.udistrital.edu.co/apioas/dependencias_api/v1/",
 
+    NOTIFICACION_MID: "https://autenticacion.portaloas.udistrital.edu.co/apioas/notificacion_mid/v1/",
+
     TIPO_PARAMETRO_ID: {
         PROCESO_EVALUACION_ID: 152,
     },
