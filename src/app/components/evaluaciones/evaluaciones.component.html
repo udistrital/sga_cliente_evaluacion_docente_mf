@@ -87,7 +87,7 @@
                             </div>
 
                             <div class="form-grid2">
-                                <div class="form-col1">                                
+                                <div class="form-col1">
                                     <mat-form-field style="width: 100%" appearance="outline">
                                         <mat-label>{{ 'autoevaluacion_i.espacio_academico' | translate }}</mat-label>
                                         <mat-select formControlName="espacioAcademico"
@@ -141,31 +141,37 @@
                                     <tbody>
                                         <tr>
                                             <td class="narrow-column" rowspan="5">ESCALA CUALITATIVA DEL SEUD</td>
-                                            <td class="wide-column">INSUFICIENTE = No sucede y no se demuestra el criterio</td>
-                                            <td class="narrow-column" rowspan="5">MEDICIÓN CUANTITATIVA EN EL APLICATIVO DEL SEUD</td>
+                                            <td class="wide-column">INSUFICIENTE = No sucede y no se demuestra el
+                                                criterio</td>
+                                            <td class="narrow-column" rowspan="5">MEDICIÓN CUANTITATIVA EN EL APLICATIVO
+                                                DEL SEUD</td>
                                             <td class="wide-column">INSUFICIENTE = 1</td>
                                         </tr>
                                         <tr>
-                                            <td class="wide-column">NECESITA MEJORAR = Sucede parcialmente pero no demuestra el criterio</td>
+                                            <td class="wide-column">NECESITA MEJORAR = Sucede parcialmente pero no
+                                                demuestra el criterio</td>
                                             <td class="wide-column">NECESITA MEJORAR = 2</td>
                                         </tr>
                                         <tr>
-                                            <td class="wide-column">BUENO = Sucede con frecuencia y se demuestra el criterio en un nivel básico</td>
+                                            <td class="wide-column">BUENO = Sucede con frecuencia y se demuestra el
+                                                criterio en un nivel básico</td>
                                             <td class="wide-column">BUENO = 3</td>
                                         </tr>
                                         <tr>
-                                            <td class="wide-column">SOBRESALIENTE = Sucede la mayor parte del tiempo y se demuestra el criterio de forma adecuada</td>
+                                            <td class="wide-column">SOBRESALIENTE = Sucede la mayor parte del tiempo y
+                                                se demuestra el criterio de forma adecuada</td>
                                             <td class="wide-column">SOBRESALIENTE = 4</td>
                                         </tr>
                                         <tr>
-                                            <td class="wide-column">EXCELENTE = Sucede siempre y se demuestra el criterio completamente</td>
+                                            <td class="wide-column">EXCELENTE = Sucede siempre y se demuestra el
+                                                criterio completamente</td>
                                             <td class="wide-column">EXCELENTE = 5</td>
                                         </tr>
                                     </tbody>
                                 </table>
-                            </div> 
-                                                       
-                            </form>
+                            </div>
+
+                        </form>
                         <div *ngIf="!mostrarEvaluacion" style="width: 100%; display: flex; justify-content: center">
                             <button mat-raised-button color="primary" (click)="continuar(heteroForm)">{{
                                 'GLOBAL.continuar'
@@ -416,29 +422,35 @@
                                     <tbody>
                                         <tr>
                                             <td class="narrow-column" rowspan="5">ESCALA CUALITATIVA DEL SEUD</td>
-                                            <td class="wide-column">INSUFICIENTE = No sucede y no se demuestra el criterio</td>
-                                            <td class="narrow-column" rowspan="5">MEDICIÓN CUANTITATIVA EN EL APLICATIVO DEL SEUD</td>
+                                            <td class="wide-column">INSUFICIENTE = No sucede y no se demuestra el
+                                                criterio</td>
+                                            <td class="narrow-column" rowspan="5">MEDICIÓN CUANTITATIVA EN EL APLICATIVO
+                                                DEL SEUD</td>
                                             <td class="wide-column">INSUFICIENTE = 1</td>
                                         </tr>
                                         <tr>
-                                            <td class="wide-column">NECESITA MEJORAR = Sucede parcialmente pero no demuestra el criterio</td>
+                                            <td class="wide-column">NECESITA MEJORAR = Sucede parcialmente pero no
+                                                demuestra el criterio</td>
                                             <td class="wide-column">NECESITA MEJORAR = 2</td>
                                         </tr>
                                         <tr>
-                                            <td class="wide-column">BUENO = Sucede con frecuencia y se demuestra el criterio en un nivel básico</td>
+                                            <td class="wide-column">BUENO = Sucede con frecuencia y se demuestra el
+                                                criterio en un nivel básico</td>
                                             <td class="wide-column">BUENO = 3</td>
                                         </tr>
                                         <tr>
-                                            <td class="wide-column">SOBRESALIENTE = Sucede la mayor parte del tiempo y se demuestra el criterio de forma adecuada</td>
+                                            <td class="wide-column">SOBRESALIENTE = Sucede la mayor parte del tiempo y
+                                                se demuestra el criterio de forma adecuada</td>
                                             <td class="wide-column">SOBRESALIENTE = 4</td>
                                         </tr>
                                         <tr>
-                                            <td class="wide-column">EXCELENTE = Sucede siempre y se demuestra el criterio completamente</td>
+                                            <td class="wide-column">EXCELENTE = Sucede siempre y se demuestra el
+                                                criterio completamente</td>
                                             <td class="wide-column">EXCELENTE = 5</td>
                                         </tr>
                                     </tbody>
                                 </table>
-                            </div> 
+                            </div>
 
                         </form>
                         <div *ngIf="!mostrarEvaluacion" style="width: 100%; display: flex; justify-content: center">
@@ -447,8 +459,8 @@
                         </div>
 
                         <ngx-dynamic-form *ngIf="mostrarEvaluacion" [formtype]="selectedEvaluationId"
-                            [evaluador]="evaluador" [evaluado]="evaluado" [proyectoEspacio]="proyectoEspacio" [proyectoEvaluador]="proyecto"
-                            [espacio]="espacio" [grupos]="grupos"
+                            [evaluador]="evaluador" [evaluado]="evaluado" [proyectoEspacio]="proyectoEspacio"
+                            [proyectoEvaluador]="proyecto" [espacio]="espacio" [grupos]="grupos"
                             (evaluacionCompletada)="ocultarEvaluacion()"></ngx-dynamic-form>
                     </mat-card-content>
                 </mat-card>
@@ -575,29 +587,35 @@
                                     <tbody>
                                         <tr>
                                             <td class="narrow-column" rowspan="5">ESCALA CUALITATIVA DEL SEUD</td>
-                                            <td class="wide-column">INSUFICIENTE = No sucede y no se demuestra el criterio</td>
-                                            <td class="narrow-column" rowspan="5">MEDICIÓN CUANTITATIVA EN EL APLICATIVO DEL SEUD</td>
+                                            <td class="wide-column">INSUFICIENTE = No sucede y no se demuestra el
+                                                criterio</td>
+                                            <td class="narrow-column" rowspan="5">MEDICIÓN CUANTITATIVA EN EL APLICATIVO
+                                                DEL SEUD</td>
                                             <td class="wide-column">INSUFICIENTE = 1</td>
                                         </tr>
                                         <tr>
-                                            <td class="wide-column">NECESITA MEJORAR = Sucede parcialmente pero no demuestra el criterio</td>
+                                            <td class="wide-column">NECESITA MEJORAR = Sucede parcialmente pero no
+                                                demuestra el criterio</td>
                                             <td class="wide-column">NECESITA MEJORAR = 2</td>
                                         </tr>
                                         <tr>
-                                            <td class="wide-column">BUENO = Sucede con frecuencia y se demuestra el criterio en un nivel básico</td>
+                                            <td class="wide-column">BUENO = Sucede con frecuencia y se demuestra el
+                                                criterio en un nivel básico</td>
                                             <td class="wide-column">BUENO = 3</td>
                                         </tr>
                                         <tr>
-                                            <td class="wide-column">SOBRESALIENTE = Sucede la mayor parte del tiempo y se demuestra el criterio de forma adecuada</td>
+                                            <td class="wide-column">SOBRESALIENTE = Sucede la mayor parte del tiempo y
+                                                se demuestra el criterio de forma adecuada</td>
                                             <td class="wide-column">SOBRESALIENTE = 4</td>
                                         </tr>
                                         <tr>
-                                            <td class="wide-column">EXCELENTE = Sucede siempre y se demuestra el criterio completamente</td>
+                                            <td class="wide-column">EXCELENTE = Sucede siempre y se demuestra el
+                                                criterio completamente</td>
                                             <td class="wide-column">EXCELENTE = 5</td>
                                         </tr>
                                     </tbody>
                                 </table>
-                            </div> 
+                            </div>
 
                         </form>
                         <div *ngIf="!mostrarEvaluacion" style="width: 100%; display: flex; justify-content: center">
@@ -606,8 +624,8 @@
                         </div>
 
                         <ngx-dynamic-form *ngIf="mostrarEvaluacion" [formtype]="selectedEvaluationId"
-                            [evaluador]="evaluador" [evaluado]="evaluado" [proyectoEspacio]="proyectoEspacio" [proyectoEvaluador]="proyecto"
-                            [espacio]="espacio" [grupos]="grupos"
+                            [evaluador]="evaluador" [evaluado]="evaluado" [proyectoEspacio]="proyectoEspacio"
+                            [proyectoEvaluador]="proyecto" [espacio]="espacio" [grupos]="grupos"
                             (evaluacionCompletada)="ocultarEvaluacion()"></ngx-dynamic-form>
                     </mat-card-content>
                 </mat-card>
@@ -734,29 +752,35 @@
                                     <tbody>
                                         <tr>
                                             <td class="narrow-column" rowspan="5">ESCALA CUALITATIVA DEL SEUD</td>
-                                            <td class="wide-column">INSUFICIENTE = No sucede y no se demuestra el criterio</td>
-                                            <td class="narrow-column" rowspan="5">MEDICIÓN CUANTITATIVA EN EL APLICATIVO DEL SEUD</td>
+                                            <td class="wide-column">INSUFICIENTE = No sucede y no se demuestra el
+                                                criterio</td>
+                                            <td class="narrow-column" rowspan="5">MEDICIÓN CUANTITATIVA EN EL APLICATIVO
+                                                DEL SEUD</td>
                                             <td class="wide-column">INSUFICIENTE = 1</td>
                                         </tr>
                                         <tr>
-                                            <td class="wide-column">NECESITA MEJORAR = Sucede parcialmente pero no demuestra el criterio</td>
+                                            <td class="wide-column">NECESITA MEJORAR = Sucede parcialmente pero no
+                                                demuestra el criterio</td>
                                             <td class="wide-column">NECESITA MEJORAR = 2</td>
                                         </tr>
                                         <tr>
-                                            <td class="wide-column">BUENO = Sucede con frecuencia y se demuestra el criterio en un nivel básico</td>
+                                            <td class="wide-column">BUENO = Sucede con frecuencia y se demuestra el
+                                                criterio en un nivel básico</td>
                                             <td class="wide-column">BUENO = 3</td>
                                         </tr>
                                         <tr>
-                                            <td class="wide-column">SOBRESALIENTE = Sucede la mayor parte del tiempo y se demuestra el criterio de forma adecuada</td>
+                                            <td class="wide-column">SOBRESALIENTE = Sucede la mayor parte del tiempo y
+                                                se demuestra el criterio de forma adecuada</td>
                                             <td class="wide-column">SOBRESALIENTE = 4</td>
                                         </tr>
                                         <tr>
-                                            <td class="wide-column">EXCELENTE = Sucede siempre y se demuestra el criterio completamente</td>
+                                            <td class="wide-column">EXCELENTE = Sucede siempre y se demuestra el
+                                                criterio completamente</td>
                                             <td class="wide-column">EXCELENTE = 5</td>
                                         </tr>
                                     </tbody>
                                 </table>
-                            </div> 
+                            </div>
 
                         </form>
                         <div *ngIf="!mostrarEvaluacion" style="width: 100%; display: flex; justify-content: center">
@@ -765,8 +789,8 @@
                         </div>
 
                         <ngx-dynamic-form *ngIf="mostrarEvaluacion" [formtype]="selectedEvaluationId"
-                            [evaluador]="evaluador" [evaluado]="evaluado" [proyectoEspacio]="proyectoEspacio" [proyectoEvaluador]="proyecto"
-                            [espacio]="espacio" [grupos]="grupos"
+                            [evaluador]="evaluador" [evaluado]="evaluado" [proyectoEspacio]="proyectoEspacio"
+                            [proyectoEvaluador]="proyecto" [espacio]="espacio" [grupos]="grupos"
                             (evaluacionCompletada)="ocultarEvaluacion()"></ngx-dynamic-form>
                     </mat-card-content>
                 </mat-card>
@@ -897,29 +921,35 @@
                                     <tbody>
                                         <tr>
                                             <td class="narrow-column" rowspan="5">ESCALA CUALITATIVA DEL SEUD</td>
-                                            <td class="wide-column">INSUFICIENTE = No sucede y no se demuestra el criterio</td>
-                                            <td class="narrow-column" rowspan="5">MEDICIÓN CUANTITATIVA EN EL APLICATIVO DEL SEUD</td>
+                                            <td class="wide-column">INSUFICIENTE = No sucede y no se demuestra el
+                                                criterio</td>
+                                            <td class="narrow-column" rowspan="5">MEDICIÓN CUANTITATIVA EN EL APLICATIVO
+                                                DEL SEUD</td>
                                             <td class="wide-column">INSUFICIENTE = 1</td>
                                         </tr>
                                         <tr>
-                                            <td class="wide-column">NECESITA MEJORAR = Sucede parcialmente pero no demuestra el criterio</td>
+                                            <td class="wide-column">NECESITA MEJORAR = Sucede parcialmente pero no
+                                                demuestra el criterio</td>
                                             <td class="wide-column">NECESITA MEJORAR = 2</td>
                                         </tr>
                                         <tr>
-                                            <td class="wide-column">BUENO = Sucede con frecuencia y se demuestra el criterio en un nivel básico</td>
+                                            <td class="wide-column">BUENO = Sucede con frecuencia y se demuestra el
+                                                criterio en un nivel básico</td>
                                             <td class="wide-column">BUENO = 3</td>
                                         </tr>
                                         <tr>
-                                            <td class="wide-column">SOBRESALIENTE = Sucede la mayor parte del tiempo y se demuestra el criterio de forma adecuada</td>
+                                            <td class="wide-column">SOBRESALIENTE = Sucede la mayor parte del tiempo y
+                                                se demuestra el criterio de forma adecuada</td>
                                             <td class="wide-column">SOBRESALIENTE = 4</td>
                                         </tr>
                                         <tr>
-                                            <td class="wide-column">EXCELENTE = Sucede siempre y se demuestra el criterio completamente</td>
+                                            <td class="wide-column">EXCELENTE = Sucede siempre y se demuestra el
+                                                criterio completamente</td>
                                             <td class="wide-column">EXCELENTE = 5</td>
                                         </tr>
                                     </tbody>
                                 </table>
-                            </div> 
+                            </div>
 
                         </form>
                         <div *ngIf="!mostrarEvaluacion" style="width: 100%; display: flex; justify-content: center">
@@ -928,8 +958,8 @@
                         </div>
 
                         <ngx-dynamic-form *ngIf="mostrarEvaluacion" [formtype]="selectedEvaluationId"
-                            [evaluador]="evaluador" [evaluado]="evaluado" [proyectoEspacio]="proyectoEspacio" [proyectoEvaluador]="proyecto"
-                            [espacio]="espacio" [grupo]="grupo"
+                            [evaluador]="evaluador" [evaluado]="evaluado" [proyectoEspacio]="proyectoEspacio"
+                            [proyectoEvaluador]="proyecto" [espacio]="espacio" [grupo]="grupo"
                             (evaluacionCompletada)="ocultarEvaluacion()"></ngx-dynamic-form>
                     </mat-card-content>
                 </mat-card>
@@ -1047,63 +1077,93 @@
                                     <tbody>
                                         <tr>
                                             <td class="narrow-column" rowspan="5">ESCALA CUALITATIVA DEL SEUD</td>
-                                            <td class="wide-column">INSUFICIENTE = No sucede y no se demuestra el criterio</td>
-                                            <td class="narrow-column" rowspan="5">MEDICIÓN CUANTITATIVA EN EL APLICATIVO DEL SEUD</td>
+                                            <td class="wide-column">INSUFICIENTE = No sucede y no se demuestra el
+                                                criterio</td>
+                                            <td class="narrow-column" rowspan="5">MEDICIÓN CUANTITATIVA EN EL APLICATIVO
+                                                DEL SEUD</td>
                                             <td class="wide-column">INSUFICIENTE = 1</td>
                                         </tr>
                                         <tr>
-                                            <td class="wide-column">NECESITA MEJORAR = Sucede parcialmente pero no demuestra el criterio</td>
+                                            <td class="wide-column">NECESITA MEJORAR = Sucede parcialmente pero no
+                                                demuestra el criterio</td>
                                             <td class="wide-column">NECESITA MEJORAR = 2</td>
                                         </tr>
                                         <tr>
-                                            <td class="wide-column">BUENO = Sucede con frecuencia y se demuestra el criterio en un nivel básico</td>
+                                            <td class="wide-column">BUENO = Sucede con frecuencia y se demuestra el
+                                                criterio en un nivel básico</td>
                                             <td class="wide-column">BUENO = 3</td>
                                         </tr>
                                         <tr>
-                                            <td class="wide-column">SOBRESALIENTE = Sucede la mayor parte del tiempo y se demuestra el criterio de forma adecuada</td>
+                                            <td class="wide-column">SOBRESALIENTE = Sucede la mayor parte del tiempo y
+                                                se demuestra el criterio de forma adecuada</td>
                                             <td class="wide-column">SOBRESALIENTE = 4</td>
                                         </tr>
                                         <tr>
-                                            <td class="wide-column">EXCELENTE = Sucede siempre y se demuestra el criterio completamente</td>
+                                            <td class="wide-column">EXCELENTE = Sucede siempre y se demuestra el
+                                                criterio completamente</td>
                                             <td class="wide-column">EXCELENTE = 5</td>
                                         </tr>
                                     </tbody>
                                 </table>
-                            </div> 
+                            </div>
                         </form>
-                        
+
                         <div *ngIf="mostrarEvaluacion && mostrarReporCoevaII">
                             <div class="form-grid3">
                                 <div class="form-col1">
                                     <mat-form-field style="width: 100%" floatLabel="always" appearance="outline">
-                                      <mat-label>{{ 'reportes.titulo_cuadro' | translate }}</mat-label>
-                                      <input matInput [value]="'reportes.nombre_reporte_heteroevaluacion' | translate" readonly>
-                                      <button mat-icon-button matSuffix [matTooltip]="'reportes.tooltip_descargar_csv' | translate" (click)="crearReporteCSV(translate.instant('reportes.nombre_reporte_heteroevaluacion'))">
-                                        <mat-icon>visibility</mat-icon>
-                                      </button>
+                                        <mat-label>{{ 'reportes.titulo_cuadro' | translate }}</mat-label>
+                                        <input matInput [value]="'reportes.nombre_reporte_heteroevaluacion' | translate"
+                                            readonly>
+                                        <button mat-icon-button matSuffix
+                                            [matTooltip]="'reportes.tooltip_descargar_csv' | translate"
+                                            (click)="crearReporteCSV(translate.instant('reportes.nombre_reporte_heteroevaluacion'))">
+                                            <mat-icon>visibility</mat-icon>
+                                        </button>
                                     </mat-form-field>
                                 </div>
                                 <div class="form-col1">
                                     <mat-form-field style="width: 100%" floatLabel="always" appearance="outline">
-                                      <mat-label>{{ 'reportes.titulo_cuadro' | translate }}</mat-label>
-                                      <input matInput [value]="'reportes.nombre_reporte_coevaluacion_i' | translate" readonly>
-                                      <button mat-icon-button matSuffix [matTooltip]="'reportes.tooltip_descargar_csv' | translate" (click)="crearReporteCSV(translate.instant('reportes.nombre_reporte_coevaluacion_i'))">
-                                        <mat-icon>visibility</mat-icon>
-                                      </button>
+                                        <mat-label>{{ 'reportes.titulo_cuadro' | translate }}</mat-label>
+                                        <input matInput [value]="'reportes.nombre_reporte_coevaluacion_i' | translate"
+                                            readonly>
+                                        <button mat-icon-button matSuffix
+                                            [matTooltip]="'reportes.tooltip_descargar_csv' | translate"
+                                            (click)="crearReporteCSV(translate.instant('reportes.nombre_reporte_coevaluacion_i'))">
+                                            <mat-icon>visibility</mat-icon>
+                                        </button>
                                     </mat-form-field>
                                 </div>
                                 <div class="form-col1">
                                     <mat-form-field style="width: 100%" floatLabel="always" appearance="outline">
-                                      <mat-label>{{ 'reportes.titulo_cuadro' | translate }}</mat-label>
-                                      <input matInput [value]="'reportes.nombre_reporte_autoevaluacion_ii_tres' | translate" readonly>
-                                      <button mat-icon-button matSuffix [matTooltip]="'reportes.tooltip_descargar_csv' | translate" (click)="crearReporteCSV(translate.instant('reportes.nombre_reporte_autoevaluacion_ii_tres'))">
-                                        <mat-icon>visibility</mat-icon>
-                                      </button>
+                                        <mat-label>{{ 'reportes.titulo_cuadro' | translate }}</mat-label>
+                                        <input matInput
+                                            [value]="'reportes.nombre_reporte_autoevaluacion_ii_tres' | translate"
+                                            readonly>
+                                        <button mat-icon-button matSuffix
+                                            [matTooltip]="'reportes.tooltip_descargar_csv' | translate"
+                                            (click)="crearReporteCSV(translate.instant('reportes.nombre_reporte_autoevaluacion_ii_tres'))">
+                                            <mat-icon>visibility</mat-icon>
+                                        </button>
                                     </mat-form-field>
                                 </div>
                             </div>
+
+                            <div *ngIf="mostrarEvaluacion && mostrarReporCoevaII && showPdfComponent"
+                                class="form-grid1">
+                                <div class="form-col1">
+                                    <mat-card appearance="outlined">
+                                        <mat-card-header>
+                                            <mat-card-subtitle>{{ 'reportes.titulo_cuadro' | translate
+                                                }}</mat-card-subtitle>
+                                        </mat-card-header>
+                                        <app-pdf-viewer [base64Document]="base64Document"></app-pdf-viewer>
+                                    </mat-card>
+                                </div>
+                            </div>
                         </div>
-                        
+
+
                         <div *ngIf="!mostrarEvaluacion" style="width: 100%; display: flex; justify-content: center">
                             <button mat-raised-button color="primary" (click)="continuar(coevaluacionIIForm)">{{
                                 'GLOBAL.continuar' | translate }}</button>
