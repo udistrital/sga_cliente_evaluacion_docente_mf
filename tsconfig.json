@@ -19,10 +19,15 @@
     "target": "ES2022",
     "module": "ES2022",
     "useDefineForClassFields": false,
+    "skipLibCheck": true,
     "lib": [
       "ES2022",
-      "dom"
-    ]
+      "dom",
+      "es2015.iterable"
+    ],
+    "paths": {
+      "@shared/*": ["src/app/shared/*"]
+    }
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
