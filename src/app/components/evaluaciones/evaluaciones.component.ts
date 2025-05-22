@@ -123,7 +123,7 @@ export class EvaluacionesComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
-    this.procesosParametro = await this.procesosService.getProcesosParametro();
+    this.procesosParametro = this.procesosService.getProcesosParametro();
     this.obtenerPeriodoActual();
     this.initializeForms();
     this.consultaIniciaParametrosForm();
@@ -550,7 +550,7 @@ export class EvaluacionesComponent implements OnInit {
         identificacion: documento
       }
     }
-    var storedConsultaEstudiante = localStorage.getItem('data_evaluacion_estudiante');
+    let storedConsultaEstudiante = localStorage.getItem('data_evaluacion_estudiante');
     if (storedConsultaEstudiante !== null) {
       const dataParsed = JSON.parse(storedConsultaEstudiante);
       return {
@@ -712,7 +712,7 @@ export class EvaluacionesComponent implements OnInit {
         identificacion: documento
       }
     }
-    var storedConsultaEspaciosAcademicos = localStorage.getItem('data_consulta_espacios_academicos');
+    let storedConsultaEspaciosAcademicos = localStorage.getItem('data_consulta_espacios_academicos');
     if (storedConsultaEspaciosAcademicos !== null) {
       const dataParsed = JSON.parse(storedConsultaEspaciosAcademicos);
       return {
@@ -1025,9 +1025,9 @@ export class EvaluacionesComponent implements OnInit {
     const espacioSeleccionado = event.value;
 
     if (Array.isArray(espacioSeleccionado)) {
-      var idsEspacios: string = "";
-      var nombresEspacios: string = "";
-      var grupos: any[] = [];
+      let idsEspacios: string = "";
+      let nombresEspacios: string = "";
+      let grupos: any[] = [];
       espacioSeleccionado.forEach((esp) => {
         idsEspacios += esp.id + ",";
         nombresEspacios += esp.nombre + ",";
@@ -1509,8 +1509,8 @@ export class EvaluacionesComponent implements OnInit {
     const espacioSeleccionado = event.value;
 
     if (Array.isArray(espacioSeleccionado)) {
-      var idsEspacios: string = "";
-      var nombresEspacios: string = "";
+      let idsEspacios: string = "";
+      let nombresEspacios: string = "";
       espacioSeleccionado.forEach((esp) => {
         idsEspacios += esp.id + ",";
         nombresEspacios += esp.nombre + ",";
@@ -1562,8 +1562,8 @@ export class EvaluacionesComponent implements OnInit {
 
   consultarDocumentos() {
     this.base64Document = '';
-    var storedDatosDocenteCoevII = localStorage.getItem('datos_docente_coevII');
-    var storedPeriodoActual = localStorage.getItem('periodo_actual');
+    let storedDatosDocenteCoevII = localStorage.getItem('datos_docente_coevII');
+    let storedPeriodoActual = localStorage.getItem('periodo_actual');
     if (storedDatosDocenteCoevII !== null && storedPeriodoActual !== null) {
       let evaluadoId = "";
       let periodoId = "";
@@ -1602,8 +1602,8 @@ export class EvaluacionesComponent implements OnInit {
         let periodoId = "";
         let procesoId = "";
 
-        var storedDatosDocenteCoevII = localStorage.getItem('datos_docente_coevII');
-        var storedPeriodoActual = localStorage.getItem('periodo_actual');
+        let storedDatosDocenteCoevII = localStorage.getItem('datos_docente_coevII');
+        let storedPeriodoActual = localStorage.getItem('periodo_actual');
         if (storedDatosDocenteCoevII !== null && storedPeriodoActual !== null) {
           const dataParsedDocenteCoevII = JSON.parse(storedDatosDocenteCoevII);
           const dataParsedPeriodoActual = JSON.parse(storedPeriodoActual);

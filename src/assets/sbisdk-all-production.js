@@ -5,7 +5,7 @@
  * If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. **/
  
  
-var Sbi = this.Sbi || {};
+let Sbi = this.Sbi || {};
 Sbi.sdk = {version: '2.2'};
 
 
@@ -21,7 +21,7 @@ Sbi.sdk.apply = function(o, c, defaults){
         Sbi.sdk.apply(o, defaults);
     }
     if(o && c && typeof c == 'object'){
-        for(var p in c){
+        for(let p in c){
             o[p] = c[p];
         }
     }
@@ -42,7 +42,7 @@ Sbi.sdk.apply = function(o, c, defaults){
  * @method namespace
  */
 Sbi.sdk.namespace =  function() {
-    var a=arguments, o=null, i, j, d, rt;
+    let a=arguments, o=null, i, j, d, rt;
     for (i=0; i<a.length; ++i) {
         d=a[i].split(".");
         rt = d[0];
@@ -69,17 +69,17 @@ Sbi.sdk.urlEncode = function(o){
     if(!o){
         return "";
     }
-    var buf = [];
-    for(var key in o){
-        var ov = o[key], k = encodeURIComponent(key);
-        var type = typeof ov;
+    let buf = [];
+    for(let key in o){
+        let ov = o[key], k = encodeURIComponent(key);
+        let type = typeof ov;
         if(type == 'undefined'){
             buf.push(k, "=&");
         }else if(type != "function" && type != "object"){
             buf.push(k, "=", encodeURIComponent(ov), "&");
         }else if(ov instanceof Array){
             if (ov.length) {
-                for(var i = 0, len = ov.length; i < len; i++) {
+                for(let i = 0, len = ov.length; i < len; i++) {
                     buf.push(k, "=", encodeURIComponent(ov[i] === undefined ? '' : ov[i]), "&");
                 }
             } else {
@@ -101,10 +101,10 @@ Sbi.sdk.urlDecode = function(string, overwrite){
     if(!string || !string.length){
         return {};
     }
-    var obj = {};
-    var pairs = string.split('&');
-    var pair, name, value;
-    for(var i = 0, len = pairs.length; i < len; i++){
+    let obj = {};
+    let pairs = string.split('&');
+    let pair, name, value;
+    for(let i = 0, len = pairs.length; i < len; i++){
         pair = pairs[i].split('=');
         name = decodeURIComponent(pair[0]);
         value = decodeURIComponent(pair[1]);
@@ -137,15 +137,15 @@ Sbi.sdk.apply(Function.prototype, {
      * @return {Function} The new function
      */
     createDelegate : function(obj, args, appendArgs){
-        var method = this;
+        let method = this;
         return function() {
-            var callArgs = args || arguments;
+            let callArgs = args || arguments;
             if(appendArgs === true){
                 callArgs = Array.prototype.slice.call(arguments, 0);
                 callArgs = callArgs.concat(args);
             }else if(typeof appendArgs == "number"){
                 callArgs = Array.prototype.slice.call(arguments, 0); // copy arguments first
-                var applyArgs = [appendArgs, 0].concat(args); // create method call params
+                let applyArgs = [appendArgs, 0].concat(args); // create method call params
                 Array.prototype.splice.apply(callArgs, applyArgs); // splice them in
             }
             return method.apply(obj || window, callArgs);
@@ -163,7 +163,7 @@ Sbi.sdk.apply(Function.prototype, {
     * @return {Number} The timeout id that can be used with clearTimeout
     */
    defer : function(millis, obj, args, appendArgs){
-       var fn = this.createDelegate(obj, args, appendArgs);
+       let fn = this.createDelegate(obj, args, appendArgs);
        if(millis){
            return setTimeout(fn, millis);
        }
@@ -184,9 +184,9 @@ Sbi.sdk.apply(Sbi.sdk.ajax, {
         
 		request : function(method, uri, cb, data, options) {
             if(options){
-                var hs = options.headers;
+                let hs = options.headers;
                 if(hs){
-                    for(var h in hs){
+                    for(let h in hs){
                         if(hs.hasOwnProperty(h)){
                             this.initHeader(h, hs[h], false);
                         }
@@ -211,8 +211,8 @@ Sbi.sdk.apply(Sbi.sdk.ajax, {
                 form = (document.getElementById(form) || document.forms[form]);
             }
 
-            var el, name, val, disabled, data = '', hasSubmit = false;
-            for (var i = 0; i < form.elements.length; i++) {
+            let el, name, val, disabled, data = '', hasSubmit = false;
+            for (let i = 0; i < form.elements.length; i++) {
                 el = form.elements[i];
                 disabled = form.elements[i].disabled;
                 name = form.elements[i].name;
@@ -223,7 +223,7 @@ Sbi.sdk.apply(Sbi.sdk.ajax, {
                             {
                         case 'select-one':
                         case 'select-multiple':
-                            for (var j = 0; j < el.options.length; j++) {
+                            for (let j = 0; j < el.options.length; j++) {
                                 if (el.options[j].selected) {
                                     if (Ext.isIE) {
                                         data += encodeURIComponent(name) + '=' + encodeURIComponent(el.options[j].attributes['value'].specified ? el.options[j].value : el.options[j].text) + '&';
@@ -313,7 +313,7 @@ Sbi.sdk.apply(Sbi.sdk.ajax, {
 
         createXhrObject:function(transactionId)
         {
-            var obj,http;
+            let obj,http;
             try
             {
 
@@ -323,7 +323,7 @@ Sbi.sdk.apply(Sbi.sdk.ajax, {
             }
             catch(e)
             {
-                for (var i = 0; i < this.activeX.length; ++i) {
+                for (let i = 0; i < this.activeX.length; ++i) {
                     try
                     {
 
@@ -341,8 +341,8 @@ Sbi.sdk.apply(Sbi.sdk.ajax, {
 
         getConnectionObject:function()
         {
-            var o;
-            var tId = this.transactionId;
+            let o;
+            let tId = this.transactionId;
 
             try
             {
@@ -358,7 +358,7 @@ Sbi.sdk.apply(Sbi.sdk.ajax, {
 
         asyncRequest:function(method, uri, callback, postData)
         {
-            var o = this.getConnectionObject();
+            let o = this.getConnectionObject();
 
             if (!o) {
                 return null;
@@ -389,7 +389,7 @@ Sbi.sdk.apply(Sbi.sdk.ajax, {
 
         handleReadyState:function(o, callback)
         {
-            var oConn = this;
+            let oConn = this;
 
             if (callback && callback.timeout) {
                 this.timeout[o.tId] = window.setTimeout(function() {
@@ -422,7 +422,7 @@ Sbi.sdk.apply(Sbi.sdk.ajax, {
                 return;
             }
 
-            var httpStatus, responseObject;
+            let httpStatus, responseObject;
 
             try
             {
@@ -490,15 +490,15 @@ Sbi.sdk.apply(Sbi.sdk.ajax, {
 
         createResponseObject:function(o, callbackArg)
         {
-            var obj = {};
-            var headerObj = {};
+            let obj = {};
+            let headerObj = {};
 
             try
             {
-                var headerStr = o.conn.getAllResponseHeaders();
-                var header = headerStr.split('\n');
-                for (var i = 0; i < header.length; i++) {
-                    var delimitPos = header[i].indexOf(':');
+                let headerStr = o.conn.getAllResponseHeaders();
+                let header = headerStr.split('\n');
+                for (let i = 0; i < header.length; i++) {
+                    let delimitPos = header[i].indexOf(':');
                     if (delimitPos != -1) {
                         headerObj[header[i].substring(0, delimitPos)] = header[i].substring(delimitPos + 2);
                     }
@@ -515,7 +515,7 @@ Sbi.sdk.apply(Sbi.sdk.ajax, {
             obj.responseText = o.conn.responseText;
             obj.responseXML = o.conn.responseXML;
 
-            if (typeof callbackArg !== undefined) {
+            if (callbackArg !== undefined) {
                 obj.argument = callbackArg;
             }
 
@@ -524,12 +524,12 @@ Sbi.sdk.apply(Sbi.sdk.ajax, {
 
         createExceptionObject:function(tId, callbackArg, isAbort)
         {
-            var COMM_CODE = 0;
-            var COMM_ERROR = 'communication failure';
-            var ABORT_CODE = -1;
-            var ABORT_ERROR = 'transaction aborted';
+            let COMM_CODE = 0;
+            let COMM_ERROR = 'communication failure';
+            let ABORT_CODE = -1;
+            let ABORT_ERROR = 'transaction aborted';
 
-            var obj = {};
+            let obj = {};
 
             obj.tId = tId;
             if (isAbort) {
@@ -550,7 +550,7 @@ Sbi.sdk.apply(Sbi.sdk.ajax, {
 
         initHeader:function(label, value, isDefault)
         {
-            var headerObj = (isDefault) ? this.defaultHeaders : this.headers;
+            let headerObj = (isDefault) ? this.defaultHeaders : this.headers;
 
             if (headerObj[label] === undefined) {
                 headerObj[label] = value;
@@ -573,7 +573,7 @@ Sbi.sdk.apply(Sbi.sdk.ajax, {
         setHeader:function(o)
         {
             if (this.hasDefaultHeaders) {
-                for (var prop in this.defaultHeaders) {
+                for (let prop in this.defaultHeaders) {
                     if (this.defaultHeaders.hasOwnProperty(prop)) {
                         o.conn.setRequestHeader(prop, this.defaultHeaders[prop]);
                     }
@@ -581,7 +581,7 @@ Sbi.sdk.apply(Sbi.sdk.ajax, {
             }
 
             if (this.hasHeaders) {
-                for (var prop in this.headers) {
+                for (let prop in this.headers) {
                     if (this.headers.hasOwnProperty(prop)) {
                         o.conn.setRequestHeader(prop, this.headers[prop]);
                     }
@@ -672,9 +672,9 @@ Sbi.sdk.apply(Sbi.sdk.jsonp, {
         	uri += (uri.indexOf("?") != -1 ? "&" : "?") + "_dc=" + (new Date().getTime());
         }
         
-        var transId = ++this.trans_id;
+        let transId = ++this.trans_id;
         
-        var trans = {
+        let trans = {
             id : transId,
             cb : "stcCallback"+transId,
             scriptId : "stcScript"+transId,
@@ -684,7 +684,7 @@ Sbi.sdk.apply(Sbi.sdk.jsonp, {
             scope : scope
         };
         
-        var conn = this;
+        let conn = this;
 
         window[trans.cb] = function(o){
             conn.handleResponse(o, trans);
@@ -698,7 +698,7 @@ Sbi.sdk.apply(Sbi.sdk.jsonp, {
 
         trans.timeoutId = this.handleFailure.defer(this.timeout, this, [trans]);
 
-        var script = document.createElement("script");
+        let script = document.createElement("script");
         script.setAttribute("src", uri);
         script.setAttribute("type", "text/javascript");
         script.setAttribute("id", trans.scriptId);
@@ -745,7 +745,7 @@ Sbi.sdk.apply(Sbi.sdk.jsonp, {
     handleResponse : function(o, trans){
         this.trans = false;
         this.destroyTrans(trans, true);
-        var result = o;
+        let result = o;
         trans.callback.call(trans.scope||window, result, trans.arg, true);
         
     },
@@ -806,7 +806,7 @@ Sbi.sdk.apply(Sbi.sdk.services, {
     }
     
     , getServiceUrl: function(serviceName, p) {
-        var urlStr = null;
+        let urlStr = null;
         
         if(this.services === null) {
             this.initServices();
@@ -817,7 +817,7 @@ Sbi.sdk.apply(Sbi.sdk.services, {
         } else {
             urlStr = '';
             urlStr = this.baseUrl.protocol + '://' + this.baseUrl.host + ":" + this.baseUrl.port + '/' + this.baseUrl.contextPath + '/' + this.baseUrl.controllerPath;
-            var params;
+            let params;
             if(this.services[serviceName].type === 'PAGE'){
             	params = {PAGE: this.services[serviceName].name};
             } else {
@@ -825,7 +825,7 @@ Sbi.sdk.apply(Sbi.sdk.services, {
             }
             
             Sbi.sdk.apply(params, p || {}, this.services[serviceName].baseParams || {});
-            var paramsStr = Sbi.sdk.urlEncode(params);
+            let paramsStr = Sbi.sdk.urlEncode(params);
             urlStr += '?' + paramsStr;
         }
         
@@ -861,19 +861,19 @@ Sbi.sdk.apply(Sbi.sdk.api, {
 	*/
 	
 	, authenticate:  function (config) {	    
-		var serviceUrl = Sbi.sdk.services.getServiceUrl('authenticate', config.params);
+		let serviceUrl = Sbi.sdk.services.getServiceUrl('authenticate', config.params);
 		Sbi.sdk.jsonp.asyncRequest(serviceUrl, config.callback.fn, config.callback.scope, config.callback.args);
     }
 
 	, getDocumentUrl: function( config ) {
-		var documentUrl = null;
+		let documentUrl = null;
 		
 		if(config.documentId === undefined && config.documentLabel === undefined) {
 			Swal.fire("",'ERRORE: at least one beetween documentId and documentLabel attributes must be specifyed','error');
 			return null;
 		}
 		
-		var params = Sbi.sdk.apply({}, config.parameters || {});
+		let params = Sbi.sdk.apply({}, config.parameters || {});
 		
 		if(config.documentId !== undefined) params.OBJECT_ID = config.documentId;
 		if(config.documentLabel !== undefined) params.OBJECT_LABEL = config.documentLabel;
@@ -895,8 +895,8 @@ Sbi.sdk.apply(Sbi.sdk.api, {
 
 	, getDocumentHtml: function( config ) {
 		
-		var documentHtml;
-		var serviceUrl = this.getDocumentUrl( config );
+		let documentHtml;
+		let serviceUrl = this.getDocumentUrl( config );
 		
 		config.iframe = config.iframe || {};
 		
@@ -918,11 +918,11 @@ Sbi.sdk.apply(Sbi.sdk.api, {
 	}
 	
 	, injectDocument: function( config ) {
-		var targetEl = config.target || document.body;
+		let targetEl = config.target || document.body;
 		
 		
 		if(typeof targetEl === 'string') {
-			var elId = targetEl;
+			let elId = targetEl;
 			targetEl = document.getElementById(targetEl);
 			
 			if(targetEl === null) {
