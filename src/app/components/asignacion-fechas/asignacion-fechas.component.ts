@@ -6,6 +6,7 @@ import { ProcesoParametroService } from "src/app/services/proceso-parametro.serv
 import { ProcesoParametro } from "src/app/models/proceso-parametro";
 import { PopUpManager } from "src/app/managers/popUpManager";
 import { TranslateService } from '@ngx-translate/core';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: "app-asignacion-fechas",
@@ -27,7 +28,7 @@ export class AsignacionFechasComponent implements OnInit {
     private translate: TranslateService,
   ) { }
 
-  ngOnInit(): void {
+  /*ngOnInit(): void {
     this.userService.getUserRoles().then(roles => {
       this.userRoles = roles;
       this.tienePermiso = this.hasRole(Object.values(this.ROLES_ASIGNACION_FECHAS));
@@ -77,7 +78,60 @@ export class AsignacionFechasComponent implements OnInit {
         this.popUpManager.showErrorAlert(`Acceso denegado: el usuario no tiene permisos para ver esta información.`);
       }
     }).catch(error => this.popUpManager.showErrorAlert(`Error al obtener los roles de usuario.`));
+  }*/
+
+  async ngOnInit(): Promise<void> {
+    try {
+      const roles = await this.userService.getUserRoles();
+      this.userRoles = roles;
+      this.tienePermiso = this.hasRole(Object.values(this.ROLES_ASIGNACION_FECHAS));
+
+      if (!this.tienePermiso) {
+        this.popUpManager.showErrorAlert(`Acceso denegado: el usuario no tiene permisos para ver esta información.`);
+        return;
+      }
+
+      const procesosResp = await firstValueFrom(
+        this.procesoParametroService.get('proceso_parametro?sortby=id&order=asc')
+      );
+
+      if (!procesosResp?.Data?.length) {
+        this.popUpManager.showErrorAlert(`Error al obtener los procesos.`);
+        return;
+      }
+
+      const parametrosResp = await firstValueFrom(
+        this.parametrosService.get('parametro?query=tipo_parametro_id:152')
+      );
+
+      if (!parametrosResp?.Data?.length) {
+        this.popUpManager.showErrorAlert(`No se encontraron parámetros o la estructura de datos no es la esperada.`);
+        return;
+      }
+
+      this.procesos = procesosResp.Data
+        .map((item: any) => {
+          const procesoEncontrado = parametrosResp.Data.find((param: any) => param.Id === item.ProcesoId);
+          if (!procesoEncontrado) return null;
+
+          return {
+            id: String(item.Id),
+            nombre: this.homologarNombre(procesoEncontrado.Nombre),
+            descripcion: this.buscarDescripcion(procesoEncontrado.Nombre),
+            fechaInicio: item.FechaInicio ? this.convertirFechaSinZonaHoraria(item.FechaInicio) : "",
+            fechaFin: item.FechaFin ? this.convertirFechaSinZonaHoraria(item.FechaFin) : "",
+            idProceso: String(item.ProcesoId),
+            porcentajeProceso: String(item.PorcentajeProceso),
+            fechaCreacion: item.FechaCreacion ? this.convertirFechaSinZonaHoraria(item.FechaCreacion) : "",
+            fechaModificacion: item.FechaModificacion ? this.convertirFechaSinZonaHoraria(item.FechaModificacion) : "",
+          };
+        })
+        .filter(Boolean); 
+    } catch (error: any) {
+      this.popUpManager.showErrorAlert(`Error al cargar los datos: ${error?.message || error}`);
+    }
   }
+
 
   hasRole(requiredRoles: string[]): boolean {
     return requiredRoles.some(role => this.userRoles.includes(role));

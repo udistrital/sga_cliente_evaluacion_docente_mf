@@ -49,6 +49,8 @@ import { CumplidosDveService } from './services/cumplidos_dve.service';
 import { HomologacionDependenciasService } from './services/homologacion_dependencias.service';
 import { ProcesosService } from './services/procesos.service';
 import { APP_INITIALIZER } from '@angular/core';
+import { PdfViewerModule } from 'ng2-pdf-viewer';
+import { PdfViewerComponent } from '@shared/components/pdf-viewer/pdf-viewer.component';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, environment.apiUrl + 'assets/i18n/', '.json');
@@ -85,9 +87,11 @@ export const CUSTOM_DATE_FORMATS = {
     ReporteKnowageComponent,
     MetricasComponent,
     DynamicFormComponent,
-    DialogoConfirmacion
+    DialogoConfirmacion,
+    PdfViewerComponent,
   ],
   imports: [
+    PdfViewerModule,
     BrowserModule,
     AppRoutingModule,
     NgxChartsModule,
@@ -143,3 +147,4 @@ export const CUSTOM_DATE_FORMATS = {
   bootstrap: [AppComponent]
 })
 export class AppModule { }
+
