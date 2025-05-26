@@ -244,7 +244,7 @@ export class DynamicFormComponent implements OnInit, OnChanges {
     }
   }
 
-  saveForm(requests: any) {
+  /*saveForm(requests: any) {
     forkJoin(requests).subscribe((responses: any) => {
       let allSuccess = true;
 
@@ -288,7 +288,81 @@ export class DynamicFormComponent implements OnInit, OnChanges {
           });
         }
       });
+  }*/
+
+  saveForm(requests: any) {
+    forkJoin(requests).subscribe(
+      (responses: any) => {
+        let allSuccess = true;
+
+        responses.forEach((response: any) => {
+          if (response.Status !== 200 || response.Success !== true) {
+            allSuccess = false;
+          }
+        });
+
+        if (allSuccess) {
+          // 🔄 Mostrar Swal de carga
+          Swal.fire({
+            title: 'Enviando notificación...',
+            allowOutsideClick: false,
+            didOpen: () => {
+              Swal.showLoading();
+            }
+          });
+
+          const datosUsuario = localStorage.getItem('datos_usuario');
+          this.evaluacionDocenteMidService.post('enviar_notificacion', datosUsuario).subscribe(
+            (resp: any) => {
+              Swal.close(); // Cierra el loading
+              Swal.fire({
+                icon: 'success',
+                title: 'Formulario guardado',
+                text: 'El formulario ha sido guardado y la notificación enviada correctamente.',
+              }).then(() => {
+                this.evaluacionCompletada.emit();
+              });
+            },
+            (error: any) => {
+              Swal.close(); // Cierra el loading
+              Swal.fire({
+                icon: 'warning',
+                title: 'Formulario guardado',
+                text: 'El formulario fue guardado, pero ocurrió un error al enviar la notificación.',
+              }).then(() => {
+                this.evaluacionCompletada.emit();
+              });
+            }
+          );
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Ocurrió un error al guardar el formulario.',
+          });
+        }
+      },
+      error => {
+        console.error(error);
+        if (error.Message == null) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Ocurrió un error al guardar el formulario.',
+          });
+        } else {
+          Swal.fire({
+            icon: 'warning',
+            title: this.translateService.instant('GLOBAL.atencion'),
+            text: error.Message,
+          }).then(() => {
+            this.evaluacionCompletada.emit();
+          });
+        }
+      }
+    );
   }
+
 
   // Método para manejar el evento de submit
   submit() {
