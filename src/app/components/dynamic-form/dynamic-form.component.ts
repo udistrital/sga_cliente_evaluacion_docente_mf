@@ -11,9 +11,9 @@ import { TranslateService } from "@ngx-translate/core";
 import { forkJoin } from "rxjs";
 import { TIPOINPUT } from "src/app/models/const_eva";
 import { GestorDocumentalService } from "src/app/services/gestor-documental.service";
-//import { ParametrosService } from "src/app/services/parametros.service";
 import { SgaEvaluacionDocenteMidService } from "src/app/services/sga_evaluacion_docente_mid.service";
 import Swal from "sweetalert2";
+import { firstValueFrom } from 'rxjs';
 
 // Definir las interfaces
 
@@ -63,27 +63,11 @@ export class DynamicFormComponent implements OnInit, OnChanges {
     private gestorService: GestorDocumentalService,
     private gestorDocumentalService: GestorDocumentalService,
     private translateService: TranslateService,
-    //private parametrosService: ParametrosService
   ) {
     this.stepperForm = this.fb.group({});
   }
 
   ngOnInit() {
-    //consulta el periodo actual
-    /*let anioActual = new Date().getFullYear().toString();
-    this.parametrosService.get('periodo?query=year:' + anioActual + ',activo:true,codigo_abreviacion:PA').subscribe(
-      (responsePeriodo: any) => {
-        if (responsePeriodo && responsePeriodo.Data && responsePeriodo.Data.length) {
-          this.periodoActual = responsePeriodo.Data[0].Id;
-        } else {
-          console.error('Error al obtener el periodo actual:', responsePeriodo.Message);
-        }
-      },
-      (error) => {
-        console.error('Error al obtener el periodo actual:', error);
-      }
-    );*/
-
     const periodo = localStorage.getItem('periodo_actual');
 
     if (periodo && periodo !== '0') {
@@ -291,57 +275,73 @@ export class DynamicFormComponent implements OnInit, OnChanges {
   }*/
 
   saveForm(requests: any) {
-    forkJoin(requests).subscribe(
-      (responses: any) => {
-        let allSuccess = true;
+    forkJoin(requests).subscribe(async (responses: any) => {
+      let allSuccess = true;
 
-        responses.forEach((response: any) => {
-          if (response.Status !== 200 || response.Success !== true) {
-            allSuccess = false;
+      responses.forEach((response: any) => {
+        if (response.Status !== 200 || response.Success !== true) {
+          allSuccess = false;
+        }
+      });
+
+      if (allSuccess) {
+        Swal.fire({
+          title: 'Enviando notificación...',
+          allowOutsideClick: false,
+          didOpen: () => {
+            Swal.showLoading();
           }
         });
 
-        if (allSuccess) {
-          // 🔄 Mostrar Swal de carga
-          Swal.fire({
-            title: 'Enviando notificación...',
-            allowOutsideClick: false,
-            didOpen: () => {
-              Swal.showLoading();
-            }
-          });
+        const datosUsuarioStr = localStorage.getItem('datos_usuario');
+        const datosUsuario = datosUsuarioStr ? JSON.parse(datosUsuarioStr) : null;
 
-          const datosUsuario = localStorage.getItem('datos_usuario');
-          this.evaluacionDocenteMidService.post('enviar_notificacion', datosUsuario).subscribe(
-            (resp: any) => {
-              Swal.close(); // Cierra el loading
-              Swal.fire({
-                icon: 'success',
-                title: 'Formulario guardado',
-                text: 'El formulario ha sido guardado y la notificación enviada correctamente.',
-              }).then(() => {
-                this.evaluacionCompletada.emit();
-              });
-            },
-            (error: any) => {
-              Swal.close(); // Cierra el loading
-              Swal.fire({
-                icon: 'warning',
-                title: 'Formulario guardado',
-                text: 'El formulario fue guardado, pero ocurrió un error al enviar la notificación.',
-              }).then(() => {
-                this.evaluacionCompletada.emit();
-              });
-            }
+        try {
+          const notificacionResp = await firstValueFrom(
+            this.evaluacionDocenteMidService.post('enviar_notificacion', datosUsuario)
           );
-        } else {
+
+          Swal.close();
+
+          if (notificacionResp?.Success === true && notificacionResp?.Status === 200) {
+            const mensaje = this.generarMensajeConfirmacion(datosUsuario);
+
+            Swal.fire({
+              icon: 'success',
+              title: 'Formulario guardado',
+              text: mensaje,
+            }).then(() => {
+              this.evaluacionCompletada.emit();
+            });
+          } else {
+            Swal.fire({
+              icon: 'warning',
+              title: 'Formulario guardado',
+              text: notificacionResp?.Message || 'Hubo un error al enviar la notificación.',
+            }).then(() => {
+              this.evaluacionCompletada.emit();
+            });
+          }
+
+        } catch (notiError) {
+          Swal.close();
           Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'Ocurrió un error al guardar el formulario.',
+            icon: 'warning',
+            title: 'Formulario guardado',
+            text: 'El formulario fue guardado, pero ocurrió un error al enviar la notificación.',
+          }).then(() => {
+            this.evaluacionCompletada.emit();
           });
         }
-      },
+
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Ocurrió un error al guardar el formulario.',
+        });
+      }
+    },
       error => {
         console.error(error);
         if (error.Message == null) {
@@ -359,10 +359,29 @@ export class DynamicFormComponent implements OnInit, OnChanges {
             this.evaluacionCompletada.emit();
           });
         }
-      }
-    );
+      });
   }
 
+  private generarMensajeConfirmacion(datosUsuario: any): string {
+    const nombreEvaluacion = datosUsuario?.nombreEvaluacion;
+    const fecha = datosUsuario?.fecha;
+  
+    switch (nombreEvaluacion) {
+      case "Coevaluación II":
+        return `${datosUsuario.datosEvaluacion.nombreConsejoCurricular} presentó correctamente la ${nombreEvaluacion}, evaluando a ${datosUsuario.datosEvaluacion.docente} el ${fecha}`;
+      case "Autoevaluación I":
+      case "Heteroevaluación":
+        return `${datosUsuario.datosEvaluacion.estudiante} presentó correctamente la ${nombreEvaluacion} de ${datosUsuario.datosEvaluacion.espacioAcademico} el ${fecha}`;
+      case "Autoevaluación II 1":
+      case "Autoevaluación II 2":
+      case "Autoevaluación II 3":
+        return `${datosUsuario.datosEvaluacion.docente} presentó correctamente la ${nombreEvaluacion} de ${datosUsuario.datosEvaluacion.espacioAcademico} el ${fecha}`;
+      case "Coevaluación I":
+        return `${datosUsuario.datosEvaluacion.docente} presentó correctamente la ${nombreEvaluacion} de ${datosUsuario.datosEvaluacion.espacioAcademico} el ${fecha} del grupo ${datosUsuario.datosEvaluacion.grupo}`;
+      default:
+        return 'La notificación fue enviada correctamente.';
+    }
+  }
 
   // Método para manejar el evento de submit
   submit() {
