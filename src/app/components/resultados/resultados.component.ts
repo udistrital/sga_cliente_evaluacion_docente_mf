@@ -21,8 +21,12 @@ export class ResultadosComponent {
   mostrarReporte: boolean = false;
 
   reportesListado: any[] = [
-    { nombreLabel: 'RteAspirantesProd', nombre: 'Reporte de aspirantes' },
-    { nombreLabel: 'reporte_2', nombre: 'Reporte de Calificaciones' },
+    { nombreLabel: 'rte_parcial_estudiantes_2025', nombre: 'Reporte parcial de estudiantes' },
+    { nombreLabel: 'RteEvaDocLisSinEva2025', nombre: 'Reporte de docentes faltantes' },
+    { nombreLabel: 'RteEvalDocEstPro2025', nombre: 'Reporte parcial de estudiantes por proyecto' },
+    { nombreLabel: 'RteEvalDocEstFac2025', nombre: 'Reporte parcial de estudiantes por facultad' },
+    { nombreLabel: 'RteEvaParEstUni2025', nombre: 'Reporte parcial de estudiantes en la universidad' },
+    { nombreLabel: 'RteEvaDocLisEstSinEva2025', nombre: 'Reporte de estudiantes faltantes' },
   ];
 
   periodos = ['Periodo 1', 'Periodo 2', 'Periodo 3'];

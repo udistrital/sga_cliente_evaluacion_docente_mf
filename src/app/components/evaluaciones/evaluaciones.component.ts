@@ -90,6 +90,13 @@ export class EvaluacionesComponent implements OnInit {
   formularioHabilitado: boolean = false; // Campo para habilitado e inhanilitar formulario (rango de fechas)
   base64Document!: string;
 
+  //selectedEvaluation: string = ""
+  //periodoActual!: number;
+  userEmail!: string;
+  userDocument!: string;
+  fechaFormateada!: string;
+  horaFormateada!: string;
+
   @Input() formtype: string = '';
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
@@ -147,6 +154,28 @@ export class EvaluacionesComponent implements OnInit {
         }
       ).catch(error => {
         this.evaluador = 1;
+        console.error('Error:', error.message);
+      });
+
+    this.userService.getUserEmail()
+      .then(
+        (userEmail) => {
+          this.userEmail = userEmail;
+          console.log("userEmail :", userEmail);
+        }
+      ).catch(error => {
+        this.userDocument = "Error obteniendo";
+        console.error('Error:', error.message);
+      });
+
+    this.userService.getUserDocument()
+      .then(
+        (userDocument) => {
+          this.userDocument = userDocument;
+          console.log("userDocument :", userDocument);
+        }
+      ).catch(error => {
+        this.userDocument = "Error obteniendo";
         console.error('Error:', error.message);
       });
   }
@@ -844,6 +873,10 @@ export class EvaluacionesComponent implements OnInit {
   // o mostrar mensaje de error si la fecha actual no está en el rango
   validarFechas(fechaInicio: Date, fechaFin: Date) {
     const fechaActual = new Date();
+
+    this.fechaFormateada = this.formatearFecha(fechaActual);
+    this.horaFormateada = this.formatearHora(fechaActual);
+
     fechaActual.setHours(0, 0, 0, 0);
     if (fechaActual >= fechaInicio && fechaActual <= fechaFin) {
       this.formularioHabilitado = true;
@@ -856,6 +889,25 @@ export class EvaluacionesComponent implements OnInit {
         text: this.translate.instant("asignacion_fechas.fuera_rango"),
       });
     }
+  }
+
+  formatearFecha(fecha: Date): string {
+    const dia = fecha.getDate();
+    const mes = (fecha.getMonth() + 1).toString().padStart(2, '0'); 
+    const anio = fecha.getFullYear();
+
+    return `${dia} del mes ${mes} de ${anio}`;
+  }
+
+  formatearHora(fecha: Date): string {
+    let horas = fecha.getHours();
+    const minutos = fecha.getMinutes().toString().padStart(2, '0');
+    const ampm = horas >= 12 ? 'pm' : 'am';
+
+    horas = horas % 12;
+    horas = horas ? horas : 12; 
+
+    return `${horas}:${minutos} ${ampm}`;
   }
 
   convertirFechaSinZonaHoraria(fechaString: string): Date {
@@ -1273,6 +1325,67 @@ export class EvaluacionesComponent implements OnInit {
       }).subscribe((mensaje) => {
         this.popUpManager.showConfirmAlert(mensaje).then((result) => {
           if (result.isConfirmed) {
+              const datosGenerales = {
+                nombreEvaluacion: this.selectedEvaluation,
+                periodo: this.periodoActual,
+                correo: this.userEmail,
+                documento: this.userDocument,
+                fecha: this.fechaFormateada,
+                hora: this.horaFormateada
+              };
+
+              let datosEvaluacion: any = {};
+
+              switch (this.selectedEvaluation) {
+                case 'Coevaluación II':
+                  let nombreConsejoCurricular = localStorage.getItem('nombre_consejo');
+                  datosEvaluacion = {
+                    proyectoCurricular: this.coevaluacionIIForm.get('proyectoCurricular')?.value?.nombre,
+                    docente: this.coevaluacionIIForm.get('docenteNombre')?.value?.nombre,
+                    nombreConsejoCurricular: nombreConsejoCurricular,
+                  };
+                  break;
+
+                case 'Coevaluación I':
+                  datosEvaluacion = {
+                    docente: form.get('docenteNombre')?.value,
+                    espacioAcademico: form.get('espacioAcademico')?.value?.nombre,
+                    grupo: this.coevaluacionIForm.get('grupoSeleccionado')?.value?.nombre || ''
+                  };
+                  break;
+
+                case 'Autoevaluación II 1':
+                case 'Autoevaluación II 2':
+                case 'Autoevaluación II 3':
+                  datosEvaluacion = {
+                    docente: form.get('docenteNombre')?.value,
+                    espacioAcademico: form.get('espacioAcademico')?.value?.nombre,
+                    grupo: ''
+                  };
+                  break;
+
+                case 'Autoevaluación I':
+                case 'Heteroevaluación':
+                  datosEvaluacion = {
+                    estudiante: form.get('estudianteNombre')?.value,
+                    espacioAcademico: form.get('espacioAcademico')?.value?.nombre || ''
+                  };
+                  break;
+
+                default:
+                  console.warn('Evaluación no reconocida:', this.selectedEvaluation);
+                  break;
+              }
+
+              const datosCompletos = {
+                ...datosGenerales,
+                datosEvaluacion
+              };
+
+              console.log("datosCompletos: ", datosCompletos);
+
+              localStorage.setItem('datos_usuario', JSON.stringify(datosCompletos));
+
             if (this.selectedEvaluation === "Coevaluación II") {
               this.mostrarReporCoevaII = true;
               this.consultarDocumentos();
