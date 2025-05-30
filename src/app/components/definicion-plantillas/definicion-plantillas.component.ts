@@ -53,9 +53,9 @@ export class DefinicionPlantillasComponent implements OnInit {
   campoRelacionado: any = null;
 
   constructor(
-    private httpClient: HttpClient,
-    private evaluacionDocenteService: EvaluacionDocenteService,
-    private cdr: ChangeDetectorRef
+    private readonly httpClient: HttpClient,
+    private readonly evaluacionDocenteService: EvaluacionDocenteService,
+    private readonly cdr: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
@@ -74,7 +74,8 @@ export class DefinicionPlantillasComponent implements OnInit {
   obtenerFormularios() {
     this.evaluacionDocenteService.get('plantilla?limit=0').subscribe(
       (response: any) => {
-        if (response && response.Data && response.Data.length > 0) {
+        //if (response && response.Data && response.Data.length > 0) {
+        if (response?.Data?.length > 0) {
           // Asignar solo el primer formulario al array
           this.formularios = [response.Data[0]];
           this.cdr.detectChanges();
@@ -95,7 +96,8 @@ export class DefinicionPlantillasComponent implements OnInit {
     this.evaluacionDocenteService.get(`plantilla?query=EstructuraId:${this.formularioSeleccionado}&sortby=FechaModificacion&order=desc&limit=100`)
       .subscribe(
         (response: any) => {
-          if (response && response.Data) {
+          //if (response && response.Data) {
+          if (response?.Data) {
             this.secciones = response.Data.map((sec: any) => ({
               SeccionId: sec.SeccionId.Id,
               SeccionNombre: sec.SeccionId.Nombre,
@@ -118,7 +120,8 @@ export class DefinicionPlantillasComponent implements OnInit {
     this.evaluacionDocenteService.get(`plantilla?query=SeccionId.Id:${this.seccionSeleccionadaPrevia},EstructuraId:${this.formularioSeleccionado}&sortby=FechaModificacion&order=desc&limit=100`)
       .subscribe(
         (response: any) => {
-          if (response && response.Data) {
+          //if (response && response.Data) {
+          if (response?.Data) {
             this.tipoCampos = response.Data.map((campo: any) => ({
               TipoCampoId: campo.ItemId.Id,
               Nombre: campo.ItemId.Nombre,
@@ -152,7 +155,7 @@ export class DefinicionPlantillasComponent implements OnInit {
 
     this.evaluacionDocenteService.get(`plantilla?query=SeccionId.Id:${seccionId},EstructuraId:${estructuraId}&sortby=FechaModificacion&order=desc&limit=100`).subscribe(
       (response: any) => {
-        if (response && response.Data) {
+        if (response?.Data) {
           this.tipoCampos = response.Data.map((campo: any) => ({
             TipoCampoId: campo.ItemId.Id,
             label: campo.ItemId.Nombre
@@ -363,7 +366,7 @@ export class DefinicionPlantillasComponent implements OnInit {
           nombre: componente.nombre,
           orden: indexItem + 1,
           campo_id: componente.campo_id,
-          item_relacion_id: componente.item_relacion_id || null,
+          item_relacion_id: componente.item_relacion_id ?? null,
           porcentaje: componente.ponderacion || null,
         })),
       })),

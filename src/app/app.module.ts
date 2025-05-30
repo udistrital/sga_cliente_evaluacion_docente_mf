@@ -1,7 +1,5 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
-import { NativeDateAdapter, DateAdapter, MAT_DATE_LOCALE as MAT_LOCALE } from '@angular/material/core';
-import { MatNativeDateModule } from '@angular/material/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA, APP_INITIALIZER } from '@angular/core';
+import { MAT_DATE_FORMATS, MAT_DATE_LOCALE, NativeDateAdapter, DateAdapter, MAT_DATE_LOCALE as MAT_LOCALE, MatNativeDateModule } from '@angular/material/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -48,7 +46,7 @@ import { CoreService } from './services/core.service';
 import { CumplidosDveService } from './services/cumplidos_dve.service';
 import { HomologacionDependenciasService } from './services/homologacion_dependencias.service';
 import { ProcesosService } from './services/procesos.service';
-import { APP_INITIALIZER } from '@angular/core';
+
 import { PdfViewerModule } from 'ng2-pdf-viewer';
 import { PdfViewerComponent } from '@shared/components/pdf-viewer/pdf-viewer.component';
 

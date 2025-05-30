@@ -59,11 +59,11 @@ export class DefinirEscalasComponent implements OnInit {
   formularioEscala!: FormGroup;
 
   constructor(
-    private fb: FormBuilder,
-    private evaluacionDocenteService: EvaluacionDocenteService,
-    private parametrosService: ParametrosService,
+    private readonly fb: FormBuilder,
+    private readonly evaluacionDocenteService: EvaluacionDocenteService,
+    private readonly parametrosService: ParametrosService,
     public dialog: MatDialog,
-    private cdr: ChangeDetectorRef
+    private readonly cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
