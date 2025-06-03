@@ -16,7 +16,9 @@ const httpOptions = {
 })
 export class AnyService {
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private readonly http: HttpClient
+  ) {}
 
   get(path: string, endpoint: string) {
     return this.http.get(`${path}${endpoint}`, httpOptions).pipe(

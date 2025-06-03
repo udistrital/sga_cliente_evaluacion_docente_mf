@@ -6,7 +6,9 @@ import { RequestManager } from "../managers/requestManager";
 })
 export class TercerosCrudService {
 
-    constructor(private requestManager: RequestManager) {
+    constructor(
+        private readonly requestManager: RequestManager
+    ) {
         this.requestManager.setPath("TERCEROS_CRUD");
     }
 

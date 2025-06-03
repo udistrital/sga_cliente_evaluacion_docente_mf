@@ -79,8 +79,8 @@ export class ResultadosComponent {
   //reporteSeleccionado = 'RteEvaDocParTotal';
 
   constructor(
-    private dateService: DateService, 
-    private userService: UserService,
+    private readonly dateService: DateService, 
+    private readonly userService: UserService,
     public translate: TranslateService,
   ) {}
 

@@ -15,7 +15,9 @@ export class ProcesosService {
         CONCEJO: []
     };
 
-    constructor(private parametrosService: ParametrosService) { }
+    constructor(
+        private readonly parametrosService: ParametrosService
+    ) { }
 
     async cargarProcesos(): Promise<void> {
         try {
@@ -23,13 +25,10 @@ export class ProcesosService {
                 this.parametrosService.get('parametro?query=tipo_parametro_id:' + environment.TIPO_PARAMETRO_ID.PROCESO_EVALUACION_ID)
             );
 
-            if (response && response.Data && response.Data.length) {
+            if (response?.Data?.length) {
                 response.Data.forEach((parametro: any) => {
                     const nombre = parametro.Nombre;
                     const id = String(parametro.Id);
-
-                    console.log('Nombre:', nombre);
-                    console.log('ID:', id);
 
                     for (const categoria in PROCESOS_CATEGORIAS) {
                         const key = categoria as CategoriaProceso;

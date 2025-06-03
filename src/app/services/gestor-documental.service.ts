@@ -9,7 +9,7 @@ import { HttpEventType } from "@angular/common/http";
 export class GestorDocumentalService {
     private documentsList: any[] = [];
 
-    private mimeTypes: { [tipoMIME: string]: string } = {
+    private readonly mimeTypes: { [tipoMIME: string]: string } = {
         "image/jpeg": ".jpg",
         "image/png": ".png",
         "image/gif": ".gif",
@@ -32,7 +32,7 @@ export class GestorDocumentalService {
     };
 
     // ? list from: https://www.garykessler.net/library/file_sigs.html
-    private fileSignatures: { [tipoMIME: string]: string[] } = {
+    private readonly fileSignatures: { [tipoMIME: string]: string[] } = {
         "image/jpeg": ["FFD8", "FFD8FF", "464946", "696600"],
         "image/png": ["89504E47"],
         "image/gif": ["47494638"],
@@ -51,9 +51,9 @@ export class GestorDocumentalService {
     };
 
     constructor(
-        private requestManager: RequestManager,
-        private sanitization: DomSanitizer,
-        private documentService: DocumentoService,
+        private readonly requestManager: RequestManager,
+        private readonly sanitization: DomSanitizer,
+        private readonly documentService: DocumentoService,
     ) { }
 
     readVerifyMimeType(file: File): Promise<boolean> {
@@ -84,7 +84,7 @@ export class GestorDocumentalService {
                     const file = new File([blob], "File name", { type: minetype })
                     const url = URL.createObjectURL(file);
                     resolve(url);
-                }).catch(err => reject(err));
+                }).catch(error => reject(new Error(`Error al obtener espacios académicos: ${error?.message || error}`)));
         });
     }
 
@@ -101,7 +101,7 @@ export class GestorDocumentalService {
                 }
                 resolve(encoded);
             };
-            reader.onerror = error => reject(error);
+            reader.onerror = error => reject(new Error(`Error al obtener espacios académicos: ${ error }`));
         });
     }
 

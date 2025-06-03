@@ -20,13 +20,11 @@ import { ParametrosService } from "src/app/services/parametros.service";
 import { environment } from '../../../environments/environment';
 import { ROLES, ROLES_HETEROEVALUACION, ROLES_AUTOEVALUACION_UNO, ROLES_AUTOEVALUACION_DOS, ROLES_COEVALUACION_UNO, ROLES_COEVALUACION_DOS } from "src/app/models/diccionario";
 import { EvaluacionDocenteService } from "src/app/services/evaluacion-docente-crud.service";
-import { CoreService } from "src/app/services/core.service";
 import { OikosService } from "src/app/services/oikos.service";
-import { CumplidosDveService } from "src/app/services/cumplidos_dve.service";
 import { HomologacionDependenciasService } from "src/app/services/homologacion_dependencias.service";
 import { firstValueFrom } from 'rxjs';
 import { ProcesosService } from "src/app/services/procesos.service";
-import { PdfViewerComponent } from "@shared/components/pdf-viewer/pdf-viewer.component";
+
 @Component({
   selector: "app-evaluaciones",
   templateUrl: "./evaluaciones.component.html",
@@ -101,24 +99,22 @@ export class EvaluacionesComponent implements OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   constructor(
-    private fb: FormBuilder,
-    private userService: UserService,
-    private proyectoAcademicoService: ProyectoAcademicoService,
-    private _snackBar: MatSnackBar,
-    private espaciosAcademicosService: EspaciosAcademicosService,
-    private popUpManager: PopUpManager,
-    private dateService: DateService,
-    private evaluacionDocenteMidService: SgaEvaluacionDocenteMidService,
-    private evaluacionDocenteService: EvaluacionDocenteService,
-    private tercerosService: TercerosCrudService,
-    private academicaService: AcademicaService,
-    private parametrosService: ParametrosService,
+    private readonly fb: FormBuilder,
+    private readonly userService: UserService,
+    private readonly proyectoAcademicoService: ProyectoAcademicoService,
+    private readonly _snackBar: MatSnackBar,
+    private readonly espaciosAcademicosService: EspaciosAcademicosService,
+    private readonly popUpManager: PopUpManager,
+    private readonly dateService: DateService,
+    private readonly evaluacionDocenteMidService: SgaEvaluacionDocenteMidService,
+    private readonly evaluacionDocenteService: EvaluacionDocenteService,
+    private readonly tercerosService: TercerosCrudService,
+    private readonly academicaService: AcademicaService,
+    private readonly parametrosService: ParametrosService,
     public translate: TranslateService,
-    private coreService: CoreService,
-    private oikosService: OikosService,
-    private cumplidosDveService: CumplidosDveService,
-    private homologacionDependenciasService: HomologacionDependenciasService,
-    private procesosService: ProcesosService,
+    private readonly oikosService: OikosService,
+    private readonly homologacionDependenciasService: HomologacionDependenciasService,
+    private readonly procesosService: ProcesosService,
   ) {
     this.heteroForm = this.fb.group({});
     this.coevaluacionIIForm = this.fb.group({});
@@ -184,7 +180,7 @@ export class EvaluacionesComponent implements OnInit {
     let anioActual = new Date().getFullYear().toString();
     this.parametrosService.get('periodo?query=year:' + anioActual + ',activo:true,codigo_abreviacion:PA').subscribe(
       (responsePeriodo: any) => {
-        if (responsePeriodo && responsePeriodo.Data && responsePeriodo.Data.length) {
+        if (responsePeriodo?.Data?.length) {
           this.periodoActual = responsePeriodo.Data[0].Id;
           localStorage.setItem('periodo_actual', JSON.stringify(this.periodoActual));
         } else {
@@ -278,7 +274,7 @@ export class EvaluacionesComponent implements OnInit {
   consultaIniciaParametrosForm(): void {
     this.parametrosService.get('parametro?query=tipo_parametro_id:' + environment.TIPO_PARAMETRO_ID.PROCESO_EVALUACION_ID).subscribe(
       (responseParametro: any) => {
-        if (responseParametro && responseParametro.Data && responseParametro.Data.length) {
+        if (responseParametro?.Data?.length) {
           this.procesosEvaluacion = responseParametro.Data
             .filter((item: any) => this.validarRol(item.Nombre))
             .map((item: any) => ({
@@ -421,7 +417,6 @@ export class EvaluacionesComponent implements OnInit {
             }));
           }
         }
-        //this.configurarFormularioCoevaluacionII(this.coevaluacionIIForm);
       }
     } catch (error) {
       this.evaluador = 1;
@@ -504,21 +499,14 @@ export class EvaluacionesComponent implements OnInit {
     });
   }
 
-  private configurarFormularioCoevaluacionII(formulario: FormGroup) {
-    formulario.patchValue({
-      inicioFecha: this.convertirFechaSinZonaHoraria(this.fechas[this.selectedEvaluationId].fechaInicio),
-      finFecha: this.convertirFechaSinZonaHoraria(this.fechas[this.selectedEvaluationId].fechaFin),
-    });
-  }
-
   // Método para cargar espacios académicos
   async loadEspaciosAcademicos() {
     try {
-      const response = await this.cargarEspaciosAcademicos();
+      await this.cargarEspaciosAcademicos();
       this.dataSource = new MatTableDataSource<any>(this.espacios_academicos);
       this.dataSource.paginator = this.paginator;
     } catch (error) {
-      this.popUpManager.showErrorToast('Error al cargar los espacios académicos: ' + error);
+      this.popUpManager.showErrorToast(`${error}` || 'Error desconocido al cargar los espacios académicos.');
     }
   }
 
@@ -532,46 +520,11 @@ export class EvaluacionesComponent implements OnInit {
             resolve(true);
           },
           (error) => {
-            reject(error);
+            reject(new Error(`Error al obtener espacios académicos: ${error?.message || error}`));
           }
         );
     });
   }
-
-  // -- POSIBLE CAMBIO PARA QUE GUARDE EN LOCALSTORAGE LA CONSULTA, FALTA PROBAR -- //
-  /*async cargarEspaciosAcademicos() {
-    var storedConsulEspaciosAcade = localStorage.getItem('data_espacios_academicos');
-    if (storedConsulEspaciosAcade !== null) {
-      const dataParsed = JSON.parse(storedConsulEspaciosAcade);
-      console.log('consulta grande que guardo en storage: ', dataParsed);
-      return {
-        identificacion: dataParsed.Data.estudiante.espacios[0].doc_estudiante,
-        nombre: dataParsed.Data.estudiante.espacios[0].nom_estudiante,
-        proyectos: this.transformarDatosEstudiante(dataParsed.Data.estudiante.espacios)
-      };
-    } else {
-      return new Promise((resolve, reject) => {
-        this.espaciosAcademicosService
-          .get('espacio-academico?query=espacio_academico_padre,activo:true&limit=0')
-          .subscribe(
-            (response: any) => {
-              if (response.Data != null) {
-                console.log('Guardo en storage: ', JSON.stringify(response));
-                localStorage.setItem('data_espacios_academicos', JSON.stringify(response));
-                resolve(this.espacios_academicos = response['Data']);
-              } else {
-                console.log('LLEGO AL ELSE: ');
-                this.espacios_academicos = response['Data'];
-                resolve(true);
-              }
-            },
-            (error) => {
-              reject(error);
-            }
-          );
-      });
-    }
-  }*/
 
   async consultarCargaAcademica(documento: string) {
     let parametros = {
@@ -610,7 +563,7 @@ export class EvaluacionesComponent implements OnInit {
               }
             },
             (error) => {
-              reject(error);
+              reject(new Error(`Error al consultar la carga academica: ${error?.message || error}`));
             }
           );
       });
@@ -770,7 +723,7 @@ export class EvaluacionesComponent implements OnInit {
               }
             },
             (error) => {
-              reject(error);
+              reject(new Error(`Error al consultar los espacios académicos: ${error?.message || error}`));
             }
           );
       });
@@ -930,6 +883,7 @@ export class EvaluacionesComponent implements OnInit {
           inicioFecha: moment(formValues.inicioFecha, "DD/MM/YYYY").format("YYYY-MM-DD"),
           finFecha: moment(formValues.finFecha, "DD/MM/YYYY").format("YYYY-MM-DD"),
         };
+        console.log('Valores formateados:', formattedValues);
       } else {
         console.error("El formulario no es válido. Por favor, completa todos los campos requeridos.");
       }
@@ -1120,48 +1074,41 @@ export class EvaluacionesComponent implements OnInit {
   }
 
   onDocenteSelection(event: MatSelectChange): void {
-    if (this.selectedEvaluation === "Heteroevaluación") {
+    const docenteSeleccionado = event.value;
 
-
+    let parametros = {
+      parametros: {
+        identificacion: docenteSeleccionado.id
+      }
     }
-    else {
-      const docenteSeleccionado = event.value;
-
-      let parametros = {
-        parametros: {
-          identificacion: docenteSeleccionado.id
+    this.evaluacionDocenteMidService
+      .post('espacios_academicos', parametros)
+      .subscribe({
+        next: (response) => {
+          if (response.Data != null) {
+            let espaciosUnicos
+            espaciosUnicos = this.filtrarEspaciosPorProyecto(response.Data, this.proyecto);
+            this.espacios.opciones = espaciosUnicos;
+          }
+        },
+        error: (err) => {
+          console.error('Error al cargar proyectos:', err);
         }
       }
-      this.evaluacionDocenteMidService
-        .post('espacios_academicos', parametros)
-        .subscribe({
-          next: (response) => {
-            if (response.Data != null) {
-              let espaciosUnicos
-              espaciosUnicos = this.filtrarEspaciosPorProyecto(response.Data, this.proyecto);
-              this.espacios.opciones = espaciosUnicos;
-            }
-          },
-          error: (err) => {
-            console.error('Error al cargar proyectos:', err);
-          }
+      );
+
+    this.espacios.opciones = this.espacios_academicos.filter((espacio) => espacio.docente === docenteSeleccionado.id);
+
+    this.consultarTercero(docenteSeleccionado).then(
+      (res) => {
+        if (res != null) {
+          this.evaluado = res.Id;
+          this.nombreDocente = res.NombreCompleto;
+
+          this.mostrarEvaluacion = false;
         }
-        );
-
-      this.espacios.opciones = this.espacios_academicos.filter((espacio) => espacio.docente === docenteSeleccionado.id);
-
-      this.consultarTercero(docenteSeleccionado).then(
-        (res) => {
-          if (res != null) {
-            this.evaluado = res.Id;
-            this.nombreDocente = res.NombreCompleto;
-
-            this.mostrarEvaluacion = false;
-          }
-        }
-      )
-    }
-
+      }
+    )
   }
 
   async consultarTercero(docente: any): Promise<any> {
@@ -1169,14 +1116,14 @@ export class EvaluacionesComponent implements OnInit {
       this.tercerosService.get('datos_identificacion?query=Numero:' + docente.id + '&fields=TerceroId')
         .subscribe(
           (res: any) => {
-            if (res != null && res[0] != null) {
+            if (res?.[0] != null) {
               resolve(res[0]["TerceroId"]);
             } else {
               resolve(this.crearTercero(docente));
             }
           },
           (error: any) => {
-            reject(error);
+            reject(new Error(`Error al consultar tercero: ${error?.message || error}`));
           }
         )
     }
@@ -1201,7 +1148,7 @@ export class EvaluacionesComponent implements OnInit {
             }
           },
           (error: any) => {
-            reject(error);
+            reject(new Error(`Error al crear tercero: ${error?.message || error}`));
           }
         );
     });
@@ -1225,7 +1172,7 @@ export class EvaluacionesComponent implements OnInit {
             }
           },
           (error: any) => {
-            reject(error);
+            reject(new Error(`Error al asociar identificacion tercero: ${error?.message || error}`));
           }
         );
     });
@@ -1237,19 +1184,19 @@ export class EvaluacionesComponent implements OnInit {
         .subscribe(
           (res: any) => {
             if (res != null) {
-              if (res["coordinadorCollection"] != null && res["coordinadorCollection"].coordinador != null) {
+              if (res["coordinadorCollection"]?.coordinador != null) {
                 const proyectos = res["coordinadorCollection"].coordinador.map(({ codigo_condor, nombre_proyecto_condor }: any) => ({
                   id: codigo_condor,
                   nombre: codigo_condor + "-" + nombre_proyecto_condor
                 }));
                 resolve(proyectos);
               } else {
-                reject([]);
+                resolve([]);
               }
             }
           },
           (error: any) => {
-            reject(error);
+            reject(new Error(`Error al consultar proyectos: ${error?.message || error}`));
           }
         )
     });
@@ -1262,53 +1209,23 @@ export class EvaluacionesComponent implements OnInit {
         .subscribe(
           (res: any) => {
             if (res != null) {
-              if (res["docentesCollection"] != null && res["docentesCollection"].docentes != null) {
+              if (res["docentesCollection"]?.docentes != null) {
                 const docentes = res["docentesCollection"].docentes.map(({ identificacion, nombres, apellidos }: any) => ({
                   id: identificacion,
                   nombre: nombres + " " + apellidos
                 }));
                 resolve(docentes);
               } else {
-                reject([]);
+                resolve([]);
               }
             }
           },
           (error: any) => {
-            reject(error);
+            reject(new Error(`Error al consultar docentes por proyecto: ${error?.message || error}`));
           }
         )
     });
   }
-
-  /*continuar(form: FormGroup): void {
-    if (form.valid) {
-      Swal.fire({
-        title: this.translate.instant("GLOBAL.confirmacion"),
-        text: this.translate.instant(this.selectedEvaluation + ".mensaje_confirmacion", {
-          nombre_proyecto: this.nombreProyecto,
-          nombre_docente: this.nombreDocente,
-          nombre_asignatura: this.nombreEspacio,
-          grupo: this.grupos,
-        }),
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: this.translate.instant("GLOBAL.aceptar"),
-        cancelButtonText: this.translate.instant("GLOBAL.cancelar"),
-      }).then((result) => {
-        if (result.isConfirmed) {
-          this.mostrarEvaluacion = true;
-        }
-      });
-    } else {
-      form.markAllAsTouched();
-      this.markInvalidFields(form);
-      Swal.fire({
-        icon: "error",
-        title: this.translate.instant("GLOBAL.formulario_incompleto_titulo"),
-        text: this.translate.instant("GLOBAL.formulario_incompleto_descripcion"),
-      });
-    }
-  }*/
 
   continuar(form: FormGroup): void {
     if (form.valid) {
@@ -1338,11 +1255,10 @@ export class EvaluacionesComponent implements OnInit {
 
               switch (this.selectedEvaluation) {
                 case 'Coevaluación II':
-                  let nombreConsejoCurricular = localStorage.getItem('nombre_consejo');
                   datosEvaluacion = {
                     proyectoCurricular: this.coevaluacionIIForm.get('proyectoCurricular')?.value?.nombre,
                     docente: this.coevaluacionIIForm.get('docenteNombre')?.value?.nombre,
-                    nombreConsejoCurricular: nombreConsejoCurricular,
+                    nombreConsejoCurricular: localStorage.getItem('nombre_consejo'),
                   };
                   break;
 
@@ -1648,19 +1564,19 @@ export class EvaluacionesComponent implements OnInit {
         .subscribe(
           (res: any) => {
             if (res != null) {
-              if (res["coordinadorCollection"] != null && res["coordinadorCollection"].coordinador != null) {
+              if (res["coordinadorCollection"]?.coordinador != null) {
                 const proyectos = res["coordinadorCollection"].coordinador.map(({ codigo_condor, nombre_proyecto_condor }: any) => ({
                   id: codigo_condor,
                   nombre: codigo_condor + "-" + nombre_proyecto_condor
                 }));
                 resolve(proyectos);
               } else {
-                reject([]);
+                resolve([]);
               }
             }
           },
           (error: any) => {
-            reject(error);
+            reject(new Error(`Error al consultar proyectos por facultad: ${error?.message || error}`));
           }
         )
     });
@@ -1708,12 +1624,21 @@ export class EvaluacionesComponent implements OnInit {
   }
 
   crearReporteCSV(nombreEvaluacion: string): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this._crearReporteCSV(nombreEvaluacion)
+        .then(resolve)
+        .catch(reject);
+    });
+  }
+  
+
+  private async _crearReporteCSV(nombreEvaluacion: string): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
         let evaluadoId = "";
         let nombreEvaluado = "";
         let periodoId = "";
-        let procesoId = "";
+        //let procesoId = "";
 
         let storedDatosDocenteCoevII = localStorage.getItem('datos_docente_coevII');
         let storedPeriodoActual = localStorage.getItem('periodo_actual');
@@ -1724,11 +1649,7 @@ export class EvaluacionesComponent implements OnInit {
           evaluadoId = dataParsedDocenteCoevII.id;
           nombreEvaluado = dataParsedDocenteCoevII.nombre;
           periodoId = dataParsedPeriodoActual;
-          procesoId = dataParsedDocenteCoevII.evaluacionId;
-          /*evaluadoId = "80033827";
-          nombreEvaluado = dataParsedDocenteCoevII.nombre;
-          periodoId = "61";
-          procesoId = "6994";*/
+          //procesoId = dataParsedDocenteCoevII.evaluacionId;
         } else {
           this.popUpManager.showErrorAlert("Los datos necesarios del docente no se lograron obtener del local storage.");
           throw new Error("Datos del local storage no disponibles.");
@@ -1739,11 +1660,11 @@ export class EvaluacionesComponent implements OnInit {
         const nombreCoevaluacion = this.translate.instant('reportes.nombre_reporte_coevaluacion_i');
 
         switch (nombreEvaluacion) {
-          case nombreHeteroevaluacion:
+          case nombreHeteroevaluacion:{
             const url = `reporte_heteroevaluacion_consejo?evaluado_id=${evaluadoId}&periodo_id=${periodoId}&proceso_id=6999`;
             const response = await this.evaluacionDocenteMidService.get(url).toPromise();
 
-            if (response && response.Success && response.Data && response.Data.RespuestasEvaluacion) {
+            if (response?.Success && response?.Data?.RespuestasEvaluacion) {
               const respuestas = response.Data.RespuestasEvaluacion;
               let contenido = 'CEDULA,ID ESPACIO ACADEMICO,ESPACIO ACADEMICO,AMBITO 1,AMBITO 2,AMBITO 3,PROMEDIO FINAL\n';
               respuestas.forEach((respuesta: any) => {
@@ -1776,11 +1697,12 @@ export class EvaluacionesComponent implements OnInit {
             }
 
             break;
-          case nombreAutoevaluacion:
+          }  
+          case nombreAutoevaluacion: {
             const urlAutoevaluacion = `reporte_autoevaluacion_ii_tres_consejo?evaluador_id=${evaluadoId}&periodo_id=${periodoId}&proceso_id=6995&nombre_evaluador=${nombreEvaluado}`;
             const responseAutoevaluacion = await this.evaluacionDocenteMidService.get(urlAutoevaluacion).toPromise();
 
-            if (responseAutoevaluacion && responseAutoevaluacion.Success && responseAutoevaluacion.Data && responseAutoevaluacion.Data.RespuestasEvaluacion) {
+            if (responseAutoevaluacion?.Success && responseAutoevaluacion?.Data?.RespuestasEvaluacion) {
               const respuestas = responseAutoevaluacion.Data.RespuestasEvaluacion;
               let contenido = 'CEDULA,Nombre,ID ESPACIO ACADEMICO,ESPACIO ACADEMICO,PROMEDIO,RESPUESTA 1,RESPUESTA 2,RESPUESTA 3,ENLACE\n';
               respuestas.forEach((respuesta: any) => {
@@ -1809,17 +1731,16 @@ export class EvaluacionesComponent implements OnInit {
               this.translate.get("GLOBAL.operacion_sin_datos").subscribe((titulo) => {
                 this.popUpManager.showAlert(titulo, `No se encontraron datos para generar el reporte, del profesor/a con cédula ${evaluadoId}`);
               });
-              resolve(response);
+              resolve(responseAutoevaluacion);
             }
 
             break;
-          case nombreCoevaluacion:
-
+          }  
+          case nombreCoevaluacion: {
             const urlCoevaluacion = `reporte_coevaluacion_i_consejo?evaluador_id=${evaluadoId}&periodo_id=${periodoId}&proceso_id=6994`;
             const responseCoevaluacion = await this.evaluacionDocenteMidService.get(urlCoevaluacion).toPromise();
 
-            if (responseCoevaluacion && responseCoevaluacion.Success && responseCoevaluacion.Data && responseCoevaluacion.Data.RespuestasEvaluacion) {
-
+            if (responseCoevaluacion?.Success && responseCoevaluacion?.Data?.RespuestasEvaluacion) {
               const respuestas = responseCoevaluacion.Data.RespuestasEvaluacion;
               let contenido = 'ID ESPACIO ACADEMICO,ESPACIO ACADEMICO,ID GRUPO,GRUPO,RESPUESTA 1,RESPUESTA 2,RESPUESTA 3,ENLACE\n';
               respuestas.forEach((respuesta: any) => {
@@ -1848,16 +1769,16 @@ export class EvaluacionesComponent implements OnInit {
               this.translate.get("GLOBAL.operacion_sin_datos").subscribe((titulo) => {
                 this.popUpManager.showAlert(titulo, `No se encontraron datos para generar el reporte, del profesor/a con cédula ${evaluadoId}`);
               });
-              resolve(response);
+              resolve(responseCoevaluacion);
             }
 
             break;
+          }
           default:
             console.log('No se reconoce el reporte.');
         }
-      } catch (error) {
-
-        reject(error);
+      } catch (error: any) {
+        reject(new Error(`Error al crear el reporte csv: ${error?.message || error}`));
       }
     });
   }
