@@ -18,7 +18,7 @@ export class ReporteKnowageComponent implements OnInit {
   spinner: string = 'Cargando reporte...';
   retry: boolean = true;
 
-  constructor(private route: ActivatedRoute) {}
+  constructor(private readonly route: ActivatedRoute) {}
 
   ngOnInit() {
     if (this.reportLabel && this.reportNombre) {
@@ -55,7 +55,7 @@ export class ReporteKnowageComponent implements OnInit {
     }
   }
 
-  callbackFunction = (result: any, args: any, success: boolean) => {
+  /*callbackFunction = (result: any, args: any, success: boolean) => {
     if (success) {
       this.spinner = '';
       try {
@@ -73,5 +73,35 @@ export class ReporteKnowageComponent implements OnInit {
       this.spinner = '';
       this.spagoBIDocumentArea.nativeElement.innerHTML = `<h5>Error obteniendo reporte desde Knowage</h5>`;
     }
+  };*/
+
+  callbackFunction = (result: any, args: any, success: boolean) => {
+    this.spinner = '';
+    if (success) {
+      this.handleReportSuccess();
+    } else {
+      this.handleReportFailure();
+    }
   };
+  
+  private handleReportSuccess() {
+    try {
+      const html = spagoBIService.getDocumentHtml(this.reportConfig);
+      this.spagoBIDocumentArea.nativeElement.innerHTML = html;
+    } catch (e) {
+      console.error('Error generando HTML del reporte:', e);
+      this.spagoBIDocumentArea.nativeElement.innerHTML = `<h5>Error generando el reporte</h5>`;
+    }
+  }
+  
+  private handleReportFailure() {
+    if (this.retry) {
+      this.retry = false;
+      this.spinner = 'Reintentando...';
+      this.loadReport();
+    } else {
+      this.spagoBIDocumentArea.nativeElement.innerHTML = `<h5>Error obteniendo reporte desde Knowage</h5>`;
+    }
+  }
+  
 }

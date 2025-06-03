@@ -19,7 +19,10 @@ export class RequestManager {
   private path: string = "";
   public httpOptions: any;
   public httpOptionsOnlyAuth: any;
-  constructor(private http: HttpClient, private errManager: HttpErrorManager) {
+  constructor(
+    private readonly http: HttpClient, 
+    private readonly errManager: HttpErrorManager
+  ) {
     const acces_token = window.localStorage.getItem('access_token');
     if (acces_token !== null) {
       this.httpOptions = {

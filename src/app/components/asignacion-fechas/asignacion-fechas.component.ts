@@ -21,11 +21,11 @@ export class AsignacionFechasComponent implements OnInit {
   guardarHabilitado!: boolean;
 
   constructor(
-    private userService: UserService,
-    private parametrosService: ParametrosService,
-    private procesoParametroService: ProcesoParametroService,
-    private popUpManager: PopUpManager,
-    private translate: TranslateService,
+    private readonly userService: UserService,
+    private readonly parametrosService: ParametrosService,
+    private readonly procesoParametroService: ProcesoParametroService,
+    private readonly popUpManager: PopUpManager,
+    private readonly translate: TranslateService,
   ) { }
 
   /*ngOnInit(): void {

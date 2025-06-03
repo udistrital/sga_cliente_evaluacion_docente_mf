@@ -35,8 +35,8 @@ export class UserService {
                 } else {
                     reject(new Error("No Codigo found"));
                 }
-            } catch (error) {
-                reject(error);
+            } catch (error: any) {
+                reject(new Error(`Error al obtener el codigo del estudiante: ${error?.message || error}`));
             }
         });
     }
@@ -69,8 +69,8 @@ export class UserService {
                 const roleUserService = typeof userService.role !== 'undefined' ? userService.role as string[] : [];
                 const roles = _uniq(roleUser.concat(roleUserService)).filter((data: string) => !data.includes('/'));
                 resolve(roles);
-            } catch (error) {
-                reject(error);
+            } catch (error: any) {
+                reject(new Error(`Error al obtener los roles del usuario: ${error?.message || error}`));
             }
         });
     }
@@ -86,8 +86,8 @@ export class UserService {
                 } else {
                     reject(new Error("No email found"));
                 }
-            } catch (error) {
-                reject(error);
+            } catch (error: any) {
+                reject(new Error(`Error al obtener el email del usuario: ${error?.message || error}`));
             }
         });
     }
@@ -104,8 +104,8 @@ export class UserService {
                 } else {
                     reject(new Error("No document found"));
                 }
-            } catch (error) {
-                reject(error);
+            } catch (error: any) {
+                reject(new Error(`Error al obtener el documento del usuario: ${error?.message || error}`));
             }
         });
     }

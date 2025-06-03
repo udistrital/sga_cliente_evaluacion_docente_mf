@@ -12,7 +12,7 @@ export class AppComponent implements OnInit {
   whatLang$ = fromEvent(window, 'lang');
   
   constructor(
-    private translate: TranslateService,
+    private readonly translate: TranslateService,
   ) {}
 
   ngOnInit() {
@@ -20,11 +20,11 @@ export class AppComponent implements OnInit {
   }
 
   validateLang() {
-    let lang = getCookie('lang') || 'es';
+    let lang = getCookie('lang') ?? 'es';
     this.whatLang$.subscribe((x:any) => {
       lang = x['detail']['answer'];
       this.translate.setDefaultLang(lang);
     })
-    this.translate.setDefaultLang(getCookie('lang') || 'es');
+    this.translate.setDefaultLang(lang);
   }
 }

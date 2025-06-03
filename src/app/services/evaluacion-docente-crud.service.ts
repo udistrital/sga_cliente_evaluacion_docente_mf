@@ -10,7 +10,9 @@ export class EvaluacionDocenteService {
         { id: 4672, label: 'Descargar Archivos' },
     ];
 
-    constructor(private requestManager: RequestManager) {
+    constructor(
+        private readonly requestManager: RequestManager
+    ) {
         this.requestManager.setPath('EVALUACION_DOCENTE_CRUD');
     }
 
