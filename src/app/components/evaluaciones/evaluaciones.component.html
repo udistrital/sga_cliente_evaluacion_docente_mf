@@ -174,11 +174,12 @@
                                 'GLOBAL.continuar'
                                 | translate }}</button>
                         </div>
+
                         <ngx-dynamic-form *ngIf="mostrarEvaluacion" [formtype]="selectedEvaluationId"
-                            [evaluador]="evaluador" [evaluado]="evaluado" [proyectoEspacio]="proyectoEspacio"
-                            [proyectoEvaluador]="proyecto" [espacio]="espacio" [grupo]="grupo"
+                            [evaluador]="evaluadorDynamic" [evaluado]="evaluadoDynamic" [proyectoEspacio]="proyectoEspacioDynamic"
+                            [proyectoEvaluador]="proyectoDynamic" [espacio]="espacioDynamic" [grupos]="gruposDynamic" [periodoActualD]="periodoActualDynamic"
                             (evaluacionCompletada)="ocultarEvaluacion()">
-                        </ngx-dynamic-form>
+                        </ngx-dynamic-form> 
 
                     </mat-card-content>
                 </mat-card>
@@ -287,12 +288,11 @@
                                 'GLOBAL.continuar' | translate }}</button>
                         </div>
 
-
                         <ngx-dynamic-form *ngIf="mostrarEvaluacion" [formtype]="selectedEvaluationId"
-                            [evaluador]="evaluador" [evaluado]="evaluado" [proyectoEspacio]="proyectoEspacio"
-                            [proyectoEvaluador]="proyecto" [espacio]="espacio" [grupo]="grupo"
+                            [evaluador]="evaluadorDynamic" [evaluado]="evaluadoDynamic" [proyectoEspacio]="proyectoEspacioDynamic"
+                            [proyectoEvaluador]="proyectoDynamic" [espacio]="espacioDynamic" [grupos]="gruposDynamic" [periodoActualD]="periodoActualDynamic"
                             (evaluacionCompletada)="ocultarEvaluacion()">
-                        </ngx-dynamic-form>
+                        </ngx-dynamic-form> 
 
                     </mat-card-content>
                 </mat-card>
@@ -454,9 +454,11 @@
                         </div>
 
                         <ngx-dynamic-form *ngIf="mostrarEvaluacion" [formtype]="selectedEvaluationId"
-                            [evaluador]="evaluador" [evaluado]="evaluado" [proyectoEspacio]="proyectoEspacio"
-                            [proyectoEvaluador]="proyecto" [espacio]="espacio" [grupos]="grupos"
-                            (evaluacionCompletada)="ocultarEvaluacion()"></ngx-dynamic-form>
+                            [evaluador]="evaluadorDynamic" [evaluado]="evaluadoDynamic" [proyectoEspacio]="proyectoEspacioDynamic"
+                            [proyectoEvaluador]="proyectoDynamic" [espacio]="espacioDynamic" [grupos]="gruposDynamic" [periodoActualD]="periodoActualDynamic"
+                            (evaluacionCompletada)="ocultarEvaluacion()">
+                        </ngx-dynamic-form> 
+
                     </mat-card-content>
                 </mat-card>
             </ng-container>
@@ -617,9 +619,11 @@
                         </div>
 
                         <ngx-dynamic-form *ngIf="mostrarEvaluacion" [formtype]="selectedEvaluationId"
-                            [evaluador]="evaluador" [evaluado]="evaluado" [proyectoEspacio]="proyectoEspacio"
-                            [proyectoEvaluador]="proyecto" [espacio]="espacio" [grupos]="grupos"
-                            (evaluacionCompletada)="ocultarEvaluacion()"></ngx-dynamic-form>
+                            [evaluador]="evaluadorDynamic" [evaluado]="evaluadoDynamic" [proyectoEspacio]="proyectoEspacioDynamic"
+                            [proyectoEvaluador]="proyectoDynamic" [espacio]="espacioDynamic" [grupos]="gruposDynamic" [periodoActualD]="periodoActualDynamic"
+                            (evaluacionCompletada)="ocultarEvaluacion()">
+                        </ngx-dynamic-form>
+
                     </mat-card-content>
                 </mat-card>
             </ng-container>
@@ -780,9 +784,14 @@
                         </div>
 
                         <ngx-dynamic-form *ngIf="mostrarEvaluacion" [formtype]="selectedEvaluationId"
+                            [evaluador]="evaluadorDynamic" [evaluado]="evaluadoDynamic" [proyectoEspacio]="proyectoEspacioDynamic"
+                            [proyectoEvaluador]="proyectoDynamic" [espacio]="espacioDynamic" [grupos]="gruposDynamic" [periodoActualD]="periodoActualDynamic"
+                            (evaluacionCompletada)="ocultarEvaluacion()"></ngx-dynamic-form> 
+
+                        <!--<ngx-dynamic-form *ngIf="mostrarEvaluacion" [formtype]="selectedEvaluationId"
                             [evaluador]="evaluador" [evaluado]="evaluado" [proyectoEspacio]="proyectoEspacio"
                             [proyectoEvaluador]="proyecto" [espacio]="espacio" [grupos]="grupos"
-                            (evaluacionCompletada)="ocultarEvaluacion()"></ngx-dynamic-form>
+                            (evaluacionCompletada)="ocultarEvaluacion()"></ngx-dynamic-form>-->
                     </mat-card-content>
                 </mat-card>
             </ng-container>
@@ -1140,8 +1149,9 @@
 
                         <ngx-dynamic-form *ngIf="mostrarEvaluacion" [formtype]="selectedEvaluationId"
                             [evaluador]="evaluador" [evaluado]="evaluado" [proyectoEspacio]="proyectoEspacio"
-                            [proyectoEvaluador]="proyecto" [espacios]="espacios_academicos"
+                            [proyectoEvaluador]="proyecto" [espacios]="espacios_academicos" [periodoActualD]="periodoActualDynamic"
                             (evaluacionCompletada)="ocultarEvaluacion()"></ngx-dynamic-form>
+
                     </mat-card-content>
                 </mat-card>
             </ng-container>

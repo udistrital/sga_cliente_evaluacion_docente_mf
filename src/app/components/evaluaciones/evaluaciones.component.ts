@@ -95,6 +95,14 @@ export class EvaluacionesComponent implements OnInit {
   fechaFormateada!: string;
   horaFormateada!: string;
 
+  evaluadorDynamic!: number;
+  evaluadoDynamic!: number;
+  proyectoEspacioDynamic!: number;
+  proyectoDynamic!: number;
+  espacioDynamic!: string;
+  gruposDynamic!: any[];
+  periodoActualDynamic!: number;
+
   @Input() formtype: string = '';
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
@@ -157,7 +165,6 @@ export class EvaluacionesComponent implements OnInit {
       .then(
         (userEmail) => {
           this.userEmail = userEmail;
-          console.log("userEmail :", userEmail);
         }
       ).catch(error => {
         this.userDocument = "Error obteniendo";
@@ -168,7 +175,6 @@ export class EvaluacionesComponent implements OnInit {
       .then(
         (userDocument) => {
           this.userDocument = userDocument;
-          console.log("userDocument :", userDocument);
         }
       ).catch(error => {
         this.userDocument = "Error obteniendo";
@@ -1229,10 +1235,9 @@ export class EvaluacionesComponent implements OnInit {
 
   continuar(form: FormGroup): void {
     if (form.valid) {
+
       const keyBase = this.conversionNombreProceso[this.selectedEvaluation];
       const mensajeKey = `${keyBase}.mensaje_confirmacion`;
-
-      console.log("this.selectedEvaluation this.selectedEvaluation: ", this.selectedEvaluation);
 
       this.translate.get(mensajeKey, {
         nombre_proyecto: this.nombreProyecto,
@@ -1260,6 +1265,7 @@ export class EvaluacionesComponent implements OnInit {
                     docente: this.coevaluacionIIForm.get('docenteNombre')?.value?.nombre,
                     nombreConsejoCurricular: localStorage.getItem('nombre_consejo'),
                   };
+                  this.asignarDatosDynamicForm(form.get('docenteIdentificacion')?.value, form.get('proyectoCurricular')?.value?.nombre, form.get('espacioAcademico')?.value?.nombre, this.grupos);
                   break;
 
                 case 'Coevaluación I':
@@ -1268,6 +1274,7 @@ export class EvaluacionesComponent implements OnInit {
                     espacioAcademico: form.get('espacioAcademico')?.value?.nombre,
                     grupo: this.coevaluacionIForm.get('grupoSeleccionado')?.value?.nombre || ''
                   };
+                  this.asignarDatosDynamicForm(form.get('docenteIdentificacion')?.value, form.get('proyectoCurricular')?.value?.nombre, form.get('espacioAcademico')?.value?.nombre, this.grupos);
                   break;
 
                 case 'Autoevaluación II 1':
@@ -1278,6 +1285,7 @@ export class EvaluacionesComponent implements OnInit {
                     espacioAcademico: form.get('espacioAcademico')?.value?.nombre,
                     grupo: ''
                   };
+                  this.asignarDatosDynamicForm(form.get('docenteIdentificacion')?.value, form.get('proyectoCurricular')?.value?.nombre, form.get('espacioAcademico')?.value?.nombre, this.grupos);
                   break;
 
                 case 'Autoevaluación I':
@@ -1286,6 +1294,7 @@ export class EvaluacionesComponent implements OnInit {
                     estudiante: form.get('estudianteNombre')?.value,
                     espacioAcademico: form.get('espacioAcademico')?.value?.nombre || ''
                   };
+                  this.asignarDatosDynamicForm(form.get('docenteIdentificacion')?.value, form.get('proyectoCurricular')?.value?.nombre, form.get('espacioAcademico')?.value?.nombre, this.grupos);
                   break;
 
                 default:
@@ -1298,15 +1307,14 @@ export class EvaluacionesComponent implements OnInit {
                 datosEvaluacion
               };
 
-              console.log("datosCompletos: ", datosCompletos);
-
               localStorage.setItem('datos_usuario', JSON.stringify(datosCompletos));
 
             if (this.selectedEvaluation === "Coevaluación II") {
               this.mostrarReporCoevaII = true;
               this.consultarDocumentos();
             }
-            this.mostrarEvaluacion = true;
+            
+            
           }
         });
       });
@@ -1319,6 +1327,74 @@ export class EvaluacionesComponent implements OnInit {
         this.popUpManager.showErrorAlert(mensajeError);
       });
     }
+  }
+
+  asignarDatosDynamicForm(evaluador: string, proyectoCurricular: string, espacio: string, grupos: any[]): void {     
+    switch (this.selectedEvaluation) {
+      case 'Coevaluación II':
+        this.periodoActualDynamic = Number(this.periodoActual);
+        this.mostrarEvaluacion = true;
+
+        break;
+
+      case 'Coevaluación I':
+      case 'Autoevaluación II 1':
+      case 'Autoevaluación II 2':
+      case 'Autoevaluación II 3':
+        let storedEvaluacionDocente = localStorage.getItem('evaluacion_docente');
+        let proyectosFuente: any[] = [];
+
+        if (storedEvaluacionDocente !== null) {
+          const dataParsed = JSON.parse(storedEvaluacionDocente);
+          proyectosFuente = dataParsed.proyectos;
+
+          const proyectoEncontrado = proyectosFuente.find((proyecto: any) =>
+            proyecto.nombre.toLowerCase().trim() === proyectoCurricular.toLowerCase().trim()
+          );
+
+          if (proyectoEncontrado) {
+            this.proyectoDynamic = proyectoEncontrado.id;
+
+            const asignaturaEncontrada = proyectoEncontrado.asignaturas.find((asignatura: any) =>
+              asignatura.nombre.toLowerCase().trim() === espacio.toLowerCase().trim()
+            );
+
+            if (asignaturaEncontrada) {
+              this.espacioDynamic = asignaturaEncontrada.id;
+              this.gruposDynamic = asignaturaEncontrada.grupos;
+            } else {
+              console.warn("No se encontró la asignatura con nombre:", espacio);
+            }
+          } else {
+            console.warn("No se encontró el proyecto con nombre:", proyectoCurricular);
+          }
+        }
+        this.evaluadorDynamic = Number(evaluador);
+        this.evaluadoDynamic = Number(evaluador);
+        this.proyectoEspacioDynamic = this.proyectoDynamic;
+        this.periodoActualDynamic = Number(this.periodoActual);
+        this.mostrarEvaluacion = true;
+
+        break;
+
+      case 'Autoevaluación I':
+      case 'Heteroevaluación':
+        this.evaluadorDynamic = this.evaluador;
+        this.evaluadoDynamic = this.evaluado;
+        this.proyectoEspacioDynamic = this.proyectoEspacio;
+        this.proyectoDynamic = this.proyecto;
+        this.espacioDynamic = this.espacio;
+        this.gruposDynamic = this.grupo;
+        this.periodoActualDynamic = this.periodoActual;
+        this.mostrarEvaluacion = true;
+
+        break;
+
+      default:
+        console.warn('Evaluación no reconocida:', this.selectedEvaluation);
+        break;
+    }
+    this.mostrarEvaluacion = true;
   }
 
 
