@@ -53,6 +53,7 @@ export class DynamicFormComponent implements OnInit, OnChanges {
   @Input() grupos!: any[];
   @Input() espacios!: any[];
   @Input() grupo!: any;
+  @Input() periodoActualD!: number;
 
   @Output() evaluacionCompletada = new EventEmitter<void>();
 
@@ -84,10 +85,15 @@ export class DynamicFormComponent implements OnInit, OnChanges {
   selectForm(tipo_formulario: string) {
     let url;
     //this.grupos && this.grupos.length !== undefined ? url = `formulario_por_tipo?id_tipo_formulario=${tipo_formulario}&id_periodo=1&id_evaluador=${this.evaluador}&id_espacio=0` : url = `formulario_por_tipo?id_tipo_formulario=${tipo_formulario}&id_periodo=1&id_evaluador=${this.evaluador}&id_espacio=0&id_grupo=0`
-    if (this.grupos?.length !== undefined) {
-      url = `formulario_por_tipo?id_tipo_formulario=${tipo_formulario}&id_periodo=1&id_evaluador=${this.evaluador}&id_espacio=0`;
+    /*if (this.grupos?.length !== undefined) {
+      url = `formulario_por_tipo?id_tipo_formulario=${tipo_formulario}&id_periodo=1&id_evaluador=0&id_espacio=0`;
     } else {
-      url = `formulario_por_tipo?id_tipo_formulario=${tipo_formulario}&id_periodo=1&id_evaluador=${this.evaluador}&id_espacio=0&id_grupo=0`;
+      url = `formulario_por_tipo?id_tipo_formulario=${tipo_formulario}&id_periodo=1&id_evaluador=0&id_espacio=0&id_grupo=0`;
+    }*/
+    if (this.grupos?.length !== undefined) {
+      url = `formulario_por_tipo?id_tipo_formulario=${tipo_formulario}&id_periodo=${this.periodoActualD}&id_evaluador=${this.evaluador}&id_espacio=${this.espacio}`;
+    } else {
+      url = `formulario_por_tipo?id_tipo_formulario=${tipo_formulario}&id_periodo=${this.periodoActualD}&id_evaluador=${this.evaluador}&id_espacio=${this.espacio}&id_grupo=0`;
     }
     this.evaluacionDocenteMidService.get(url)
       .subscribe(response => {
