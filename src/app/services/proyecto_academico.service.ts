@@ -4,7 +4,9 @@ import { RequestManager } from '../managers/requestManager';
 @Injectable()
 export class ProyectoAcademicoService {
 
-    constructor(private requestManager: RequestManager) {
+    constructor(
+        private readonly requestManager: RequestManager
+    ) {
         this.requestManager.setPath('PROYECTO_ACADEMICO_SERVICE');
     }
     get(endpoint: string) {

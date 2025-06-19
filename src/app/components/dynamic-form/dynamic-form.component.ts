@@ -8,12 +8,11 @@ import {
 } from "@angular/forms";
 import { MatStepper } from "@angular/material/stepper";
 import { TranslateService } from "@ngx-translate/core";
-import { forkJoin } from "rxjs";
+import { forkJoin, firstValueFrom } from "rxjs";
 import { TIPOINPUT } from "src/app/models/const_eva";
 import { GestorDocumentalService } from "src/app/services/gestor-documental.service";
 import { SgaEvaluacionDocenteMidService } from "src/app/services/sga_evaluacion_docente_mid.service";
 import Swal from "sweetalert2";
-import { firstValueFrom } from 'rxjs';
 
 // Definir las interfaces
 
@@ -54,15 +53,16 @@ export class DynamicFormComponent implements OnInit, OnChanges {
   @Input() grupos!: any[];
   @Input() espacios!: any[];
   @Input() grupo!: any;
+  @Input() periodoActualD!: number;
 
   @Output() evaluacionCompletada = new EventEmitter<void>();
 
   constructor(
-    private fb: FormBuilder,
-    private evaluacionDocenteMidService: SgaEvaluacionDocenteMidService,
-    private gestorService: GestorDocumentalService,
-    private gestorDocumentalService: GestorDocumentalService,
-    private translateService: TranslateService,
+    private readonly fb: FormBuilder,
+    private readonly evaluacionDocenteMidService: SgaEvaluacionDocenteMidService,
+    private readonly gestorService: GestorDocumentalService,
+    private readonly gestorDocumentalService: GestorDocumentalService,
+    private readonly translateService: TranslateService,
   ) {
     this.stepperForm = this.fb.group({});
   }
@@ -84,7 +84,17 @@ export class DynamicFormComponent implements OnInit, OnChanges {
   // Método para inicializar el formulario seleccionado
   selectForm(tipo_formulario: string) {
     let url;
-    this.grupos && this.grupos.length !== undefined ? url = `formulario_por_tipo?id_tipo_formulario=${tipo_formulario}&id_periodo=1&id_evaluador=${this.evaluador}&id_espacio=0` : url = `formulario_por_tipo?id_tipo_formulario=${tipo_formulario}&id_periodo=1&id_evaluador=${this.evaluador}&id_espacio=0&id_grupo=0`
+    //this.grupos && this.grupos.length !== undefined ? url = `formulario_por_tipo?id_tipo_formulario=${tipo_formulario}&id_periodo=1&id_evaluador=${this.evaluador}&id_espacio=0` : url = `formulario_por_tipo?id_tipo_formulario=${tipo_formulario}&id_periodo=1&id_evaluador=${this.evaluador}&id_espacio=0&id_grupo=0`
+    /*if (this.grupos?.length !== undefined) {
+      url = `formulario_por_tipo?id_tipo_formulario=${tipo_formulario}&id_periodo=1&id_evaluador=0&id_espacio=0`;
+    } else {
+      url = `formulario_por_tipo?id_tipo_formulario=${tipo_formulario}&id_periodo=1&id_evaluador=0&id_espacio=0&id_grupo=0`;
+    }*/
+    if (this.grupos?.length !== undefined) {
+      url = `formulario_por_tipo?id_tipo_formulario=${tipo_formulario}&id_periodo=${this.periodoActualD}&id_evaluador=${this.evaluador}&id_espacio=${this.espacio}`;
+    } else {
+      url = `formulario_por_tipo?id_tipo_formulario=${tipo_formulario}&id_periodo=${this.periodoActualD}&id_evaluador=${this.evaluador}&id_espacio=${this.espacio}&id_grupo=0`;
+    }
     this.evaluacionDocenteMidService.get(url)
       .subscribe(response => {
         if (response.Success === true && response.Status === 200) {
@@ -409,7 +419,8 @@ export class DynamicFormComponent implements OnInit, OnChanges {
           });
         } else {
           let gruposJson;
-          if (this.grupos && this.grupos.length !== undefined) {
+          //if (this.grupos && this.grupos.length !== undefined) {
+          if (this.grupos?.length !== undefined) {
             gruposJson = JSON.stringify(this.grupos);
           } else if (this.grupo) {
             gruposJson = JSON.stringify([this.grupo]);
@@ -490,7 +501,7 @@ export class DynamicFormComponent implements OnInit, OnChanges {
   }
 
   hasDocumentForDownload(pregunta: any) {
-    return pregunta != null && pregunta.campos != null
+    return pregunta?.campos != null 
       ? pregunta.campos.some((campo: any) => campo.tipo_campo == TIPOINPUT.FileDownload)
       : false;
   }
@@ -526,7 +537,7 @@ export class DynamicFormComponent implements OnInit, OnChanges {
           title: "Error",
           text: "Ocurrió un error al cargar el archivo.",
         });
-        reject("Error al cargar archivo");
+        reject(new Error("Error al cargar archivo"));
       },
     });
     });
@@ -586,7 +597,16 @@ export class DynamicFormComponent implements OnInit, OnChanges {
   }
 
   getNumericalInputLabel(ambitoIndex: number, inputIndex: number): number {
-    const inputStart = ambitoIndex === 0 ? 1 : ambitoIndex === 1 ? 6 : 11;
+    let inputStart: number;
+
+    if (ambitoIndex === 0) {
+      inputStart = 1;
+    } else if (ambitoIndex === 1) {
+      inputStart = 6;
+    } else {
+      inputStart = 11;
+    }
+
     return inputStart + inputIndex;
   }
 
@@ -606,12 +626,12 @@ export class DynamicFormComponent implements OnInit, OnChanges {
     this.vertHorAllState = !this.vertHorAllState;
   }*/
 
-  cambioPanel(index: number, sentido: boolean) {
-    if (sentido) {
-      this.panelIndex[index] = this.panelIndex[index] + 1;
-    } else {
-      this.panelIndex[index] = this.panelIndex[index] - 1;
-    }
+  subirPanel(index: number) {
+    this.panelIndex[index] = this.panelIndex[index] + 1;
+  }
+  
+  bajarPanel(index: number) {
+    this.panelIndex[index] = this.panelIndex[index] - 1;
   }
 
   // Método para manejar la descarga 

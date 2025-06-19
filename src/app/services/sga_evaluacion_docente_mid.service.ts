@@ -5,7 +5,9 @@ import { RequestManager } from '../managers/requestManager';
   providedIn: 'root'
 })
 export class SgaEvaluacionDocenteMidService {
-  constructor(private requestManager: RequestManager) {
+  constructor(
+    private readonly requestManager: RequestManager
+  ) {
     this.requestManager.setPath('SGA_EVALUACION_DOCENTE_MID_SERVICE');
   }
 

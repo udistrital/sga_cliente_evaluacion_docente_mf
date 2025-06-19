@@ -8,9 +8,11 @@ import { environment } from '../../environments/environment';
   providedIn: 'root'
 })
 export class DateService {
-  private url = environment.apiUrl;
+  private readonly url = environment.apiUrl;
 
-  constructor(private http: HttpClient) { }
+  constructor(
+    private readonly http: HttpClient
+  ) { }
 
   getDateHeader(): Observable<string> {
     return new Observable(observer => {

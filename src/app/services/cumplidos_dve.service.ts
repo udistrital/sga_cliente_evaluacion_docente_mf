@@ -4,7 +4,9 @@ import { RequestManager } from '../managers/requestManager';
 @Injectable()
 export class CumplidosDveService {
 
-    constructor(private requestManager: RequestManager) {
+    constructor(
+        private readonly requestManager: RequestManager
+    ) {
         this.requestManager.setPath('CUMPLIDOS_DVE_MID');
     }
     get(endpoint: string) {

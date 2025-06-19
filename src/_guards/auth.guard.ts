@@ -9,8 +9,8 @@ import { PopUpManager } from 'src/app/managers/popUpManager';
 export class AuthGuard implements CanActivate {
 
   constructor(
-    private popUpManager: PopUpManager,
-    private translate: TranslateService,
+    private readonly popUpManager: PopUpManager,
+    private readonly translate: TranslateService,
   ) {}
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
