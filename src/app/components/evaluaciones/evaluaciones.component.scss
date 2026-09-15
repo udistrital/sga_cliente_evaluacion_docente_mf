@@ -1,0 +1,62 @@
+.evaluation-table {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 3px;
+    margin-bottom: 20px;
+
+    table {
+        width: 100%;
+        max-width: 800px;
+        border-collapse: collapse;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+        font-size: 12.5px;
+
+        td {
+            border: 1px solid #ddd;
+            padding: 4px;
+            text-align: left;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .narrow-column {
+            width: 20%;
+            min-width: 150px;
+            font-weight: bold;
+            text-align: center;
+            background-color: #f0f0f0;
+            vertical-align: middle;
+        }
+
+        .wide-column {
+            width: 80%;
+            min-width: 380px;
+        }
+    }
+
+    @media (max-width: 600px) {
+        table {
+            width: 100%;
+            font-size: 12px;
+        }
+
+        td {
+            padding: 6px;
+        }
+
+        .narrow-column {
+            width: 25%;
+            min-width: 100px;
+        }
+
+        .wide-column {
+            width: 50%;
+            min-width: 150px;
+        }
+    }
+}

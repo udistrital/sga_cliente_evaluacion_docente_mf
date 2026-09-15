@@ -3,20 +3,9 @@
     <mat-card-content>
         <mat-vertical-stepper [linear]="true" [formGroup]="stepperForm" #mainStepper>
             <!-- Secciones -->
-    <mat-step *ngFor="let seccion of todasSecciones; let i = index">
-        <ng-template matStepLabel >{{ seccion.nombre }}</ng-template>
+            <mat-step *ngFor="let seccion of todasSecciones; let i = index">
+                <ng-template matStepLabel >{{ seccion.nombre }}</ng-template>
 
-                <!-- Botón para colapsar/expandir todas las preguntas con ícono de ojo -->
-                <div style="width: 100%; display: flex; justify-content: flex-end; padding-bottom: 1rem;">
-                    <button mat-button color="primary" (click)="toggleAll(i)">
-                        <mat-icon>visibility</mat-icon> {{ expandAllState ? 'Colapsar todo' : 'Expandir todo' }}
-                    </button>
-                    <button mat-button color="primary" (click)="toggleLayout(i)">
-                        <mat-icon>grid_view</mat-icon> {{ vertHorAllState ? 'Vertical' : 'Horizontal' }}
-                    </button>
-                </div>
-
-                <!-- Preguntas dentro de los ámbitos usando mat-accordion -->
                 <mat-accordion [multi]="expandAllState">
                     <mat-expansion-panel *ngFor="let pregunta of seccion.items; let j = index"
                         [expanded]="expandAllState || j === panelIndex[i]" (opened)="panelIndex[i] = j"
@@ -28,9 +17,9 @@
                             </mat-panel-title>
                             <mat-panel-description *ngIf="hasDocumentForDownload(pregunta)">
                                 <button mat-icon-button (click)="downloadDocument()">
-                                  <mat-icon>cloud_download</mat-icon>
+                                    <mat-icon>cloud_download</mat-icon>
                                 </button>
-                              </mat-panel-description>
+                            </mat-panel-description>
                         </mat-expansion-panel-header>
 
                         <div *ngIf="pregunta.campos !== null">
@@ -38,66 +27,71 @@
                             <div *ngFor="let campo of pregunta.campos">
                                 <!-- Opción de única respuesta (radio buttons) -->
                                 <div *ngIf="campo.tipo_campo === TIPOINPUT.Radio">
-                                    <mat-radio-group [formControlName]="'pregunta_' + generateControlName(seccion.id, pregunta.id)"
+                                    <mat-radio-group
+                                        [formControlName]="'pregunta_' + generateControlName(seccion.id, pregunta.id)"
                                         [ngClass]="{ 'vertical': !vertHorAllState, 'horizontal': vertHorAllState }">
                                         <mat-radio-button *ngFor="let option of campo.escala" [value]="option.valor">
                                             {{ option.nombre }}
                                         </mat-radio-button>
                                     </mat-radio-group>
+                                    <!-- Mensaje de error si el campo es obligatorio y está vacío -->
+                                    <mat-error
+                                        *ngIf="stepperForm.get('pregunta_' + generateControlName(seccion.id, pregunta.id))?.invalid 
+                                        && stepperForm.get('pregunta_' + generateControlName(seccion.id, pregunta.id))?.touched">
+                                        Debes seleccionar una opción.
+                                    </mat-error>
                                 </div>
 
                                 <!-- Opción de respuesta abierta (input/textarea) -->
                                 <div *ngIf="campo.tipo_campo === TIPOINPUT.Textarea">
                                     <mat-form-field style="width: 100%;" appearance="fill">
-                                        <!-- <mat-label>{{ pregunta.nombre }}</mat-label> -->
-                                        <textarea matInput [formControlName]="'pregunta_' + generateControlName(seccion.id, pregunta.id)"></textarea>
+                                        <textarea matInput
+                                            [formControlName]="'pregunta_' + generateControlName(seccion.id, pregunta.id)"></textarea>
+                                        <mat-error
+                                            *ngIf="stepperForm.get('pregunta_' + generateControlName(seccion.id, pregunta.id))?.invalid 
+                                            && stepperForm.get('pregunta_' + generateControlName(seccion.id, pregunta.id))?.touched">
+                                            Este campo no puede estar vacío.
+                                        </mat-error>
                                     </mat-form-field>
                                 </div>
 
                                 <!-- Input para la carga de archivos -->
                                 <div *ngIf="campo.tipo_campo === TIPOINPUT.File">
-                                    <!-- <mat-form-field appearance="fill"> -->
-                                        <mat-label>Cargar archivo</mat-label>
-                                        <input type="file" accept=".jpg, .jpeg, .png, .pdf" (change)="handleFileInputChange($event, seccion.id, pregunta.id)">
-                                    <!-- </mat-form-field> -->
+                                    <mat-label>Cargar archivo</mat-label>
+                                    <input type="file" accept=".pdf"
+                                        [formControlName]="'pregunta_' + generateControlName(seccion.id, pregunta.id)"
+                                        (change)="handleFileInputChange($event, seccion.id, pregunta.id)">
+
+                                    <!-- Mensaje de error si el archivo no es válido -->
+                                    <mat-error
+                                        *ngIf="stepperForm.get('pregunta_' + generateControlName(seccion.id, pregunta.id))?.invalid 
+                                                    && stepperForm.get('pregunta_' + generateControlName(seccion.id, pregunta.id))?.touched">
+                                        Debes subir un archivo válido (.pdf).
+                                    </mat-error>
                                 </div>
 
-                                <!-- Botón para cargar evidencias justo después del enunciado -->
-                                <!-- <div
-                                    *ngIf="pregunta.text === 'El cuerpo docente debe cargar el acta de co-evalaucion curricularen enste boton: '">
-                                    <input type="file" (change)="handleFileInputChange($event)" />
-                                    <button mat-raised-button color="primary" (click)="cargarEvidencias()">
-                                        <mat-icon>upload</mat-icon> {{ coevaluacionI.botonCargarEvidencias }}
-                                    </button>
-                                </div> -->
-
-                                <!-- Botón para cargar evidencias en Autoevaluación II debajo del enunciado específico -->
-                                <!-- <div *ngIf="pregunta.text === 'El cuerpo docente debe cargar las evidencias correspondientes:'">
-                                    <input type="file" (change)="handleFileInputChange($event)" />
-                                    <button mat-raised-button color="primary" (click)="cargarEvidencias()">
-                                        <mat-icon>upload</mat-icon> Cargar Evidencias
-                                    </button>
-                                </div> -->
                             </div>
                         </div>
 
                         <mat-action-row *ngIf="!expandAllState">
-                            <button mat-button (click)="cambioPanel(i, false)" [disabled]="j === 0">
+                            <button mat-button (click)="bajarPanel(i)" [disabled]="j === 0">
                                 Atrás
                             </button>
-                            <button mat-button (click)="cambioPanel(i, true)"
-                                [disabled]="j === seccion.items.length - 1">
+                            <button mat-button (click)="subirPanel(i)" [disabled]="j === seccion.items.length - 1">
                                 Adelante
                             </button>
                         </mat-action-row>
+                          
 
                     </mat-expansion-panel>
                 </mat-accordion>
 
                 <!-- Botones Anterior y Siguiente para avanzar entre ámbitos -->
                 <div>
-                    <button mat-button matStepperPrevious [disabled]="i === 0">Anterior</button>
-                    <button mat-button matStepperNext [disabled]="i === (todasSecciones.length - 1)">Siguiente</button>
+                    <button mat-button matStepperPrevious [disabled]="i === 0">{{ "GLOBAL.anterior" | translate
+                        }}</button>
+                    <button mat-button matStepperNext [disabled]="i === (todasSecciones.length - 1)">{{
+                        "GLOBAL.siguiente" | translate }}</button>
                 </div>
             </mat-step>
         </mat-vertical-stepper>
@@ -107,5 +101,5 @@
 
 <!-- Botón final para enviar -->
 <div style="width: 100%; display: flex; justify-content: center">
-    <button mat-raised-button color="primary" (click)="submit()">Guardar</button>
+    <button mat-raised-button color="primary" (click)="submit()">{{ "GLOBAL.GUARDAR" | translate }}</button>
 </div>

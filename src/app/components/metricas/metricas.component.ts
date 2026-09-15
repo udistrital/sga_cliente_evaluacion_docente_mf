@@ -74,11 +74,11 @@ export class MetricasComponent implements OnInit {
   translate: any;
 
   constructor(
-    private _formBuilder: FormBuilder,
-    private parametrosService: ParametrosService,
-    private _snackBar: MatSnackBar,
-    private oikosService: OikosService,
-    private proyectoAcademicoService: ProyectoAcademicoService) {
+    private readonly _formBuilder: FormBuilder,
+    private readonly parametrosService: ParametrosService,
+    private readonly _snackBar: MatSnackBar,
+    private readonly oikosService: OikosService,
+    private readonly proyectoAcademicoService: ProyectoAcademicoService) {
     // Datos de ejemplo para una evaluación docente
     this.single = [
       { name: 'Satisfacción general', value: 85 },
@@ -179,15 +179,15 @@ export class MetricasComponent implements OnInit {
   }
 
   onSelect(data: any): void {
-    console.log('Item clicked', JSON.parse(JSON.stringify(data)));
+    //console.log('Item clicked', JSON.parse(JSON.stringify(data)));
   }
 
   onActivate(data: any): void {
-    console.log('Activate', JSON.parse(JSON.stringify(data)));
+    //console.log('Activate', JSON.parse(JSON.stringify(data)));
   }
 
   onDeactivate(data: any): void {
-    console.log('Deactivate', JSON.parse(JSON.stringify(data)));
+    //console.log('Deactivate', JSON.parse(JSON.stringify(data)));
   }
 
   onTipoReporteChange() {
@@ -205,14 +205,14 @@ export class MetricasComponent implements OnInit {
         .get("periodo?query=CodigoAbreviacion:PA&sortby=Id&order=desc&limit=0")
         .subscribe({
           next: (resp: { Data: Periodo[]; }) => {
-            if (resp && resp.Data) {
+            if (resp?.Data) {
               resolve(resp.Data as Periodo[]);
             } else {
               reject(new Error("No se encontraron periodos"));
             }
           },
-          error: (err: any) => {
-            reject(err);
+          error: (error: any) => {
+            reject(new Error(`Error al cargar periodos: ${error?.message || error}`));
           },
         });
     });

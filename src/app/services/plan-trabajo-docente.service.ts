@@ -4,7 +4,9 @@ import { RequestManager } from '../managers/requestManager';
 @Injectable()
 export class SgaPlanTrabajoDocenteMidService {
 
-    constructor(private requestManager: RequestManager) {
+    constructor(
+        private readonly requestManager: RequestManager
+    ) {
         this.requestManager.setPath('SGA_PLAN_TRABAJO_DOCENTE_MID_SERVICE');
     }
     get(endpoint: string) {

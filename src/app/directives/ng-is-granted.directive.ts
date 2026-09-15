@@ -6,13 +6,13 @@ import { intersection as _intersection } from 'lodash';
 
 @Directive({ selector: '[ngIsGranted]' })
 export class NgIsGrantedDirective implements OnDestroy {
-    private destroy$ = new Subject<void>();
+    private readonly destroy$ = new Subject<void>();
     private hasView = false;
 
     constructor(
-        private templateRef: TemplateRef<any>,
-        private viewContainer: ViewContainerRef,
-        private userService: UserService,
+        private readonly templateRef: TemplateRef<any>,
+        private readonly viewContainer: ViewContainerRef,
+        private readonly userService: UserService,
     ) { }
 
     isGrantedRole(role: string[]): Observable<boolean> {
@@ -36,15 +36,28 @@ export class NgIsGrantedDirective implements OnDestroy {
             .pipe(
                 takeUntil(this.destroy$),
             )
-            .subscribe((can: boolean) => {
-                if (can && !this.hasView) {
+            .subscribe((can: boolean) => 
+                this.handlePermissionChange(can)
+                /*{if (can && !this.hasView) {
                     this.viewContainer.createEmbeddedView(this.templateRef);
                     this.hasView = true;
                 } else if (!can && this.hasView) {
                     this.viewContainer.clear();
                     this.hasView = false;
-                }
-            });
+                }}*/
+            );
+    }
+
+    private handlePermissionChange(can: boolean) {
+        if (can && !this.hasView) {
+          this.viewContainer.createEmbeddedView(this.templateRef);
+          this.hasView = true;
+        }
+      
+        if (!can && this.hasView) {
+          this.viewContainer.clear();
+          this.hasView = false;
+        }
     }
 
     ngOnDestroy(): void {

@@ -53,7 +53,10 @@ export class NuxeoComponent {
 
   displayedColumns: string[] = ['label', 'options'];
 
-  constructor(private gestorService: GestorDocumentalService, private fb: FormBuilder) {
+  constructor(
+    private readonly gestorService: GestorDocumentalService, 
+    private readonly fb: FormBuilder
+  ) {
     this.loadFormQuestions('form1'); // Cargar el formulario inicial
     this.form2 = this.fb.group({}); // Inicializa el formulario 2
   }

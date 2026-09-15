@@ -18,15 +18,24 @@ import { HttpErrorManager } from './errorManager';
 export class RequestManager {
   private path: string = "";
   public httpOptions: any;
-  constructor(private http: HttpClient, private errManager: HttpErrorManager) {
+  public httpOptionsOnlyAuth: any;
+  constructor(
+    private readonly http: HttpClient, 
+    private readonly errManager: HttpErrorManager
+  ) {
     const acces_token = window.localStorage.getItem('access_token');
     if (acces_token !== null) {
       this.httpOptions = {
         headers: new HttpHeaders({
-          'Content-Type': 'application/json',
+          // 'Content-Type': 'application/json',
           'Authorization': `Bearer ${acces_token}`,
         }),
-      }
+      };
+      this.httpOptionsOnlyAuth = {
+        headers: new HttpHeaders({
+          'Authorization': `Bearer ${acces_token}`,
+        }),
+      };
     }
   }
 
@@ -63,6 +72,21 @@ export class RequestManager {
 
   getp(endpoint: string) {
     return this.http.get<any>(`${this.path}${endpoint}`, {...this.httpOptions, reportProgress: true, observe: 'events' }).pipe(
+      catchError(this.errManager.handleError.bind(this)),
+    );
+  }
+
+  getOnlyAuth(endpoint: string) {
+    return this.http.get<any>(`${this.path}${endpoint}`, this.httpOptionsOnlyAuth).pipe(
+      map(
+        (res) => {
+          if (res instanceof HttpResponse) {
+            return res.body;
+          } else {
+            return res;
+          }
+        },
+      ),
       catchError(this.errManager.handleError.bind(this)),
     );
   }

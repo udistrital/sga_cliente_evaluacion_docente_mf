@@ -6,7 +6,9 @@ import { RequestManager } from '../managers/requestManager';
 })
 export class PlanesEstudioService {
 
-  constructor(private requestManager: RequestManager) {
+  constructor(
+    private readonly requestManager: RequestManager
+  ) {
     this.requestManager.setPath('PLANES_ESTUDIO_SERVICE');
   }
 

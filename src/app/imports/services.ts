@@ -5,6 +5,7 @@ import { OikosService } from "../services/oikos.service";
 import { ParametrosService } from "../services/parametros.service";
 import { PlanTrabajoDocenteService } from "../services/plan-trabajo-docente.service";
 import { ProyectoAcademicoService } from "../services/proyecto-academico.service";
+import { ProcesoParametroService } from "../services/proceso_parametro.service";
 import { SgaEspaciosAcademicosMidService } from "../services/sga-espacios-academicos-mid.service";
 import { SgaPlanTrabajoDocenteMidService } from "../services/sga-plan-trabajo-docente-mid.service";
 import { TercerosService } from "../services/terceros.service";
@@ -19,5 +20,6 @@ export const SERVICES_HTTP = [
     SgaEspaciosAcademicosMidService,
     GestorDocumentalService,
     DocumentoService,
+    ProcesoParametroService,
     ProyectoAcademicoService
 ];

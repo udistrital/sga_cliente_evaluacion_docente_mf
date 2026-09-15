@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, ViewChild } from "@angular/core";
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild } from "@angular/core";
 import {
   AbstractControl,
   FormBuilder,
@@ -7,7 +7,8 @@ import {
   Validators,
 } from "@angular/forms";
 import { MatStepper } from "@angular/material/stepper";
-import { DomSanitizer } from "@angular/platform-browser";
+import { TranslateService } from "@ngx-translate/core";
+import { forkJoin, firstValueFrom } from "rxjs";
 import { TIPOINPUT } from "src/app/models/const_eva";
 import { GestorDocumentalService } from "src/app/services/gestor-documental.service";
 import { SgaEvaluacionDocenteMidService } from "src/app/services/sga_evaluacion_docente_mid.service";
@@ -35,48 +36,68 @@ export class DynamicFormComponent implements OnInit, OnChanges {
   expandAllState: boolean = false;
   vertHorAllState: boolean = false;
   panelIndex: number[] = [];
+  periodoActual!: number;
 
   uploadedFileUid: string | null = null;
-  documentId: string | null = null;  
+  documentId: string | null = null;
 
   @ViewChild("mainStepper") mainStepper!: MatStepper;
   @Input() inputData: any; // Define el @Input
 
   @Input() formtype!: string;
-  @Input() tercero!: string;
-  @Input() terceroEvaluado!: string;
-  @Input() proyecto!: string;
-  @Input() espacio: string = "1";
+  @Input() evaluador!: number;
+  @Input() evaluado!: number;
+  @Input() proyectoEspacio!: number;
+  @Input() proyectoEvaluador!: number;
+  @Input() espacio!: string;
+  @Input() grupos!: any[];
+  @Input() espacios!: any[];
+  @Input() grupo!: any;
+  @Input() periodoActualD!: number;
+
+  @Output() evaluacionCompletada = new EventEmitter<void>();
 
   constructor(
-    private fb: FormBuilder,
-    private sanitizer: DomSanitizer,
-    private evaluacionDocenteMidService: SgaEvaluacionDocenteMidService,
-    private gestorService: GestorDocumentalService,
-    private gestorDocumentalService: GestorDocumentalService,
+    private readonly fb: FormBuilder,
+    private readonly evaluacionDocenteMidService: SgaEvaluacionDocenteMidService,
+    private readonly gestorService: GestorDocumentalService,
+    private readonly gestorDocumentalService: GestorDocumentalService,
+    private readonly translateService: TranslateService,
+  ) {
+    this.stepperForm = this.fb.group({});
+  }
 
-  ) { this.stepperForm = this.fb.group({});
-}
+  ngOnInit() {
+    const periodo = localStorage.getItem('periodo_actual');
 
-ngOnInit() {
-  console.log("check if take the changes...")
-  // Inicializar el formulario principal
-  //this.stepperForm = this.fb.group({});
-  this.documentId = '5f479892-a735-43c7-9981-b812dbb6b927';
-  // Seleccionar el formulario por defecto para la vista inicial
-  //this.selectForm("heteroevaluacion"); // Se puede cambiar según las necesidades
-}
+    if (periodo && periodo !== '0') {
+      this.periodoActual = Number(periodo);
+    } else {
+      console.warn('⚠️ No hay periodo actual válido en localStorage');
+    }
+  }
 
-ngOnChanges() {
-  this.selectForm(this.formtype);
-}
+  ngOnChanges() {
+    this.selectForm(this.formtype);
+  }
 
-// Método para inicializar el formulario seleccionado
-selectForm(tipo_formulario: string) {
-  this.evaluacionDocenteMidService.get(`formulario_por_tipo?id_tipo_formulario=${tipo_formulario}&id_periodo=1&id_tercero=${this.tercero}&id_espacio=${this.espacio}`)
-    .subscribe(response => {
-      console.log(response);
-      if (response.Success === true && response.Status === 200) {
+  // Método para inicializar el formulario seleccionado
+  selectForm(tipo_formulario: string) {
+    let url;
+    //this.grupos && this.grupos.length !== undefined ? url = `formulario_por_tipo?id_tipo_formulario=${tipo_formulario}&id_periodo=1&id_evaluador=${this.evaluador}&id_espacio=0` : url = `formulario_por_tipo?id_tipo_formulario=${tipo_formulario}&id_periodo=1&id_evaluador=${this.evaluador}&id_espacio=0&id_grupo=0`
+    /*if (this.grupos?.length !== undefined) {
+      url = `formulario_por_tipo?id_tipo_formulario=${tipo_formulario}&id_periodo=1&id_evaluador=0&id_espacio=0`;
+    } else {
+      url = `formulario_por_tipo?id_tipo_formulario=${tipo_formulario}&id_periodo=1&id_evaluador=0&id_espacio=0&id_grupo=0`;
+    }*/
+    if (this.grupos?.length !== undefined) {
+      url = `formulario_por_tipo?id_tipo_formulario=${tipo_formulario}&id_periodo=${this.periodoActualD}&id_evaluador=${this.evaluador}&id_espacio=${this.espacio}`;
+    } else {
+      url = `formulario_por_tipo?id_tipo_formulario=${tipo_formulario}&id_periodo=${this.periodoActualD}&id_evaluador=${this.evaluador}&id_espacio=${this.espacio}&id_grupo=0`;
+    }
+    this.evaluacionDocenteMidService.get(url)
+      .subscribe(response => {
+        if (response.Success === true && response.Status === 200) {
           this.todasSecciones = response.Data.seccion;
           this.todasSecciones.forEach((seccion, i) => {
             seccion.items.forEach((pregunta: any, j: number) => {
@@ -89,14 +110,29 @@ selectForm(tipo_formulario: string) {
           });
           const maxSecciones = this.todasSecciones.length;
           // Inicializamos el estado expandido de las preguntas
-          this.expandAllState = false;
-          this.vertHorAllState = false;
+          this.expandAllState = true;
+          this.vertHorAllState = true;
           this.panelIndex = Array(maxSecciones).fill(0);
       } else {
-        console.log('Error al obtener el formulario:', response.Message);
+        console.error('Error al obtener el formulario:', response.Message);
       }
     }, error => {
       console.error('Error validando la existencia de la evaluación:', error);
+      if (error.Message == null) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Ocurrió un error al consultar el formulario.',
+        });
+      } else {
+        Swal.fire({
+          icon: 'warning',
+          title: this.translateService.instant('GLOBAL.atencion'),
+          text: error.Message,
+        }).then(() => {
+          this.evaluacionCompletada.emit();
+        });
+      }
     });
 }
 
@@ -162,7 +198,6 @@ selectForm(tipo_formulario: string) {
     if (ambitoControl) {
       // Evitar obtener controles para preguntas de tipo 'download'
       if (controlName.includes("descarga_archivo_aqu")) {
-        console.log(`Control no necesario para descarga: ${controlName}`);
         return new FormControl(); // Retornamos un control vacío para evitar el error
       }
 
@@ -170,7 +205,7 @@ selectForm(tipo_formulario: string) {
       if (control) {
         return control;
       } else {
-        console.warn(`Control not found for ${controlName}`);
+        console.error(`Control not found for ${controlName}`);
         return new FormControl(); // Evitar errores retornando un control vacío
       }
     }
@@ -203,53 +238,237 @@ selectForm(tipo_formulario: string) {
     }
   }
 
-  saveForm(jsonData: any) {
-    this.evaluacionDocenteMidService.post('respuesta_formulario', jsonData)
-    .subscribe(response =>
-       {
-        if(response.Status == 200 &&response.Success == true){
-          Swal.fire({
-            icon: 'success',
-            title: 'Formulario guardado',
-            text: 'El formulario ha sido guardado correctamente.',
-          });
+  /*saveForm(requests: any) {
+    forkJoin(requests).subscribe((responses: any) => {
+      let allSuccess = true;
+
+      responses.forEach((response: any) => {
+        if (response.Status !== 200 || response.Success !== true) {
+          allSuccess = false;
         }
-       },
-       error => {
+      });
+
+      if (allSuccess) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Formulario guardado',
+          text: 'El formulario ha sido guardado correctamente.',
+        }).then(() => {
+          this.evaluacionCompletada.emit();
+        });
+      } else {
         Swal.fire({
           icon: 'error',
           title: 'Error',
           text: 'Ocurrió un error al guardar el formulario.',
         });
-       });
+      }
+    },
+      error => {
+        console.error(error);
+        if (error.Message == null) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Ocurrió un error al guardar el formulario.',
+          });
+        } else {
+          Swal.fire({
+            icon: 'warning',
+            title: this.translateService.instant('GLOBAL.atencion'),
+            text: error.Message,
+          }).then(() => {
+            this.evaluacionCompletada.emit();
+          });
+        }
+      });
+  }*/
+
+  saveForm(requests: any) {
+    forkJoin(requests).subscribe(async (responses: any) => {
+      let allSuccess = true;
+
+      responses.forEach((response: any) => {
+        if (response.Status !== 200 || response.Success !== true) {
+          allSuccess = false;
+        }
+      });
+
+      if (allSuccess) {
+        Swal.fire({
+          title: 'Enviando notificación...',
+          allowOutsideClick: false,
+          didOpen: () => {
+            Swal.showLoading();
+          }
+        });
+
+        const datosUsuarioStr = localStorage.getItem('datos_usuario');
+        const datosUsuario = datosUsuarioStr ? JSON.parse(datosUsuarioStr) : null;
+
+        try {
+          const notificacionResp = await firstValueFrom(
+            this.evaluacionDocenteMidService.post('enviar_notificacion', datosUsuario)
+          );
+
+          Swal.close();
+
+          if (notificacionResp?.Success === true && notificacionResp?.Status === 200) {
+            const mensaje = this.generarMensajeConfirmacion(datosUsuario);
+
+            Swal.fire({
+              icon: 'success',
+              title: 'Formulario guardado',
+              text: mensaje,
+            }).then(() => {
+              this.evaluacionCompletada.emit();
+            });
+          } else {
+            Swal.fire({
+              icon: 'warning',
+              title: 'Formulario guardado',
+              text: notificacionResp?.Message || 'Hubo un error al enviar la notificación.',
+            }).then(() => {
+              this.evaluacionCompletada.emit();
+            });
+          }
+
+        } catch (notiError) {
+          Swal.close();
+          Swal.fire({
+            icon: 'warning',
+            title: 'Formulario guardado',
+            text: 'El formulario fue guardado, pero ocurrió un error al enviar la notificación.',
+          }).then(() => {
+            this.evaluacionCompletada.emit();
+          });
+        }
+
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Ocurrió un error al guardar el formulario.',
+        });
+      }
+    },
+      error => {
+        console.error(error);
+        if (error.Message == null) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Ocurrió un error al guardar el formulario.',
+          });
+        } else {
+          Swal.fire({
+            icon: 'warning',
+            title: this.translateService.instant('GLOBAL.atencion'),
+            text: error.Message,
+          }).then(() => {
+            this.evaluacionCompletada.emit();
+          });
+        }
+      });
+  }
+
+  private generarMensajeConfirmacion(datosUsuario: any): string {
+    const nombreEvaluacion = datosUsuario?.nombreEvaluacion;
+    const fecha = datosUsuario?.fecha;
+  
+    switch (nombreEvaluacion) {
+      case "Coevaluación II":
+        return `${datosUsuario.datosEvaluacion.nombreConsejoCurricular} presentó correctamente la ${nombreEvaluacion}, evaluando a ${datosUsuario.datosEvaluacion.docente} el ${fecha}`;
+      case "Autoevaluación I":
+      case "Heteroevaluación":
+        return `${datosUsuario.datosEvaluacion.estudiante} presentó correctamente la ${nombreEvaluacion} de ${datosUsuario.datosEvaluacion.espacioAcademico} el ${fecha}`;
+      case "Autoevaluación II 1":
+      case "Autoevaluación II 2":
+      case "Autoevaluación II 3":
+        return `${datosUsuario.datosEvaluacion.docente} presentó correctamente la ${nombreEvaluacion} de ${datosUsuario.datosEvaluacion.espacioAcademico} el ${fecha}`;
+      case "Coevaluación I":
+        return `${datosUsuario.datosEvaluacion.docente} presentó correctamente la ${nombreEvaluacion} de ${datosUsuario.datosEvaluacion.espacioAcademico} el ${fecha} del grupo ${datosUsuario.datosEvaluacion.grupo}`;
+      default:
+        return 'La notificación fue enviada correctamente.';
+    }
   }
 
   // Método para manejar el evento de submit
   submit() {
     if (this.stepperForm.valid) {
       this.generateResponseData().then(respuestas => {
-        const jsonData = {
-          id_periodo: 1,
-          id_tercero: this.tercero,
-          id_evaluado: this.terceroEvaluado != null ? this.terceroEvaluado : this.tercero,
-          proyecto_curricular: this.proyecto,
-          espacio_academico: this.espacio,
-          plantilla_id: 456,
-          respuestas,
-        };
-        this.saveForm(jsonData);
-        console.log("Formulario guardado:", jsonData);
+        const requests: any[] = [];
+  
+        if (this.espacios && this.espacios.length > 0) {
+          this.espacios.forEach((esp) => {
+            const gruposJson = JSON.stringify(esp.grupos);
+            const jsonData = {
+              id_periodo: this.periodoActual,
+              id_evaluador: String(this.evaluador),
+              id_evaluado: this.evaluado != null ? String(this.evaluado) : String(this.evaluador),
+              proyecto_curricular_espacio: String(this.proyectoEspacio),
+              proyecto_curricular_evaluador: String(this.proyectoEvaluador),
+              grupos: gruposJson,
+              espacio_academico: esp.id,
+              plantilla_id: 456,
+              proceso_id: Number(this.formtype),
+              respuestas,
+            };
+            const request = this.evaluacionDocenteMidService.post('respuesta_formulario', jsonData);
+            requests.push(request);
+          });
+        } else {
+          let gruposJson;
+          //if (this.grupos && this.grupos.length !== undefined) {
+          if (this.grupos?.length !== undefined) {
+            gruposJson = JSON.stringify(this.grupos);
+          } else if (this.grupo) {
+            gruposJson = JSON.stringify([this.grupo]);
+          } else {
+            gruposJson = '[]';
+          }
+  
+          const espaciosArray = this.espacio ? this.espacio.split(',') : [];
+          espaciosArray.forEach(esp => {
+            const jsonData = {
+              id_periodo: this.periodoActual,
+              id_evaluador: String(this.evaluador),
+              id_evaluado: this.evaluado != null ? String(this.evaluado) : String(this.evaluador),
+              proyecto_curricular_espacio: String(this.proyectoEspacio),
+              proyecto_curricular_evaluador: String(this.proyectoEvaluador),
+              grupos: gruposJson,
+              espacio_academico: esp,
+              plantilla_id: 456,
+              proceso_id: Number(this.formtype),
+              respuestas,
+            };
+            const request = this.evaluacionDocenteMidService.post('respuesta_formulario', jsonData);
+            requests.push(request);
+          });
+        }
+        this.saveForm(requests);
       }).catch(error => {
         console.error('Error al generar las respuestas:', error);
-      });;
+      });
     } else {
-      console.log("Formulario inválido:", this.stepperForm);
+      console.error("Formulario inválido:", this.stepperForm);
+      this.stepperForm.markAllAsTouched();
+      this.markInvalidFields(this.stepperForm);
       Swal.fire({
         icon: "error",
         title: "Formulario incompleto",
         text: "Por favor, complete todas las preguntas.",
       });
     }
+  }
+
+  markInvalidFields(form: FormGroup) {
+    Object.keys(form.controls).forEach(field => {
+      const control = form.get(field);
+      if (control?.invalid) {
+        console.error(`El campo ${field} es inválido.`);
+      }
+    });
   }
 
   async generateResponseData(): Promise<Respuesta[]> {
@@ -261,7 +480,6 @@ selectForm(tipo_formulario: string) {
         const control = this.stepperForm.get(`pregunta_${controlName}`);
 
         if (control?.value instanceof File) {
-          console.log("Archivo cargado:", control.value);
           const resp = await this.loadFile(control.value);
           this.documentId = resp[0].res.Enlace;
           respuestas.push({
@@ -283,7 +501,7 @@ selectForm(tipo_formulario: string) {
   }
 
   hasDocumentForDownload(pregunta: any) {
-    return pregunta != null && pregunta.campos != null
+    return pregunta?.campos != null 
       ? pregunta.campos.some((campo: any) => campo.tipo_campo == TIPOINPUT.FileDownload)
       : false;
   }
@@ -306,7 +524,6 @@ selectForm(tipo_formulario: string) {
     };
     this.gestorService.uploadFiles([objetoFile]).subscribe({
       next: (resp) => {
-        console.log("Archivo cargado:", resp);
         resolve(resp);
         /* Swal.fire({
           icon: "success",
@@ -320,7 +537,7 @@ selectForm(tipo_formulario: string) {
           title: "Error",
           text: "Ocurrió un error al cargar el archivo.",
         });
-        reject("Error al cargar archivo");
+        reject(new Error("Error al cargar archivo"));
       },
     });
     });
@@ -379,56 +596,42 @@ selectForm(tipo_formulario: string) {
     return [];
   }
 
-  /* onNext(innerStepper: MatStepper, ambitoIndex: number, preguntaIndex: number) {
-    const control = this.getFormControl(
-      ambitoIndex,
-      "pregunta_" +
-      this.generateControlName(
-        this.todasSecciones[ambitoIndex].preguntas[preguntaIndex].text
-      )
-    );
-
-    if (control.valid) {
-      // Si es la última pregunta del ámbito actual, avanza al siguiente ámbito
-      if (preguntaIndex < this.todasSecciones[ambitoIndex].preguntas.length - 1) {
-        innerStepper.next(); // Avanzar a la siguiente pregunta
-      } else {
-        this.mainStepper.next(); // Si es la última pregunta, avanzar al siguiente ámbito
-      }
-    }
-  } */
-
   getNumericalInputLabel(ambitoIndex: number, inputIndex: number): number {
-    const inputStart = ambitoIndex === 0 ? 1 : ambitoIndex === 1 ? 6 : 11;
+    let inputStart: number;
+
+    if (ambitoIndex === 0) {
+      inputStart = 1;
+    } else if (ambitoIndex === 1) {
+      inputStart = 6;
+    } else {
+      inputStart = 11;
+    }
+
     return inputStart + inputIndex;
   }
 
   // Función para manejar la descarga de archivos
   onDownload(fileName: string) {
     // lógica para descargar el archivo
-    console.log(`Descargando archivo: ${fileName}`);
     // se puede hacer una petición HTTP para obtener el archivo y descargarlo
   }
 
   // Método para alternar la expansión de todas las preguntas de un ámbito
-  toggleAll(index: number) {
+  /*toggleAll(index: number) {
     this.expandAllState = !this.expandAllState;
   }
 
   // Método para alternar entre radio horizontal o vertical
   toggleLayout(index: number) {
     this.vertHorAllState = !this.vertHorAllState;
-  }
+  }*/
 
-  cambioPanel(index: number, sentido: boolean) {
-    console.log(index, sentido);
-    if (sentido) {
-      this.panelIndex[index] = this.panelIndex[index] + 1;
-      console.log("+",this.panelIndex[index]);
-    } else {
-      this.panelIndex[index] = this.panelIndex[index] - 1;
-      console.log("-",this.panelIndex[index]);
-    }
+  subirPanel(index: number) {
+    this.panelIndex[index] = this.panelIndex[index] + 1;
+  }
+  
+  bajarPanel(index: number) {
+    this.panelIndex[index] = this.panelIndex[index] - 1;
   }
 
   // Método para manejar la descarga 
@@ -454,4 +657,5 @@ selectForm(tipo_formulario: string) {
     link.download = 'documento.pdf';
     link.click();
   }
+
 }

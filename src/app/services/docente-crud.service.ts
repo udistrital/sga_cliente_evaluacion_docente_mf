@@ -4,7 +4,9 @@ import { RequestManager } from "../managers/requestManager";
 @Injectable()
 export class DocenteCrudService {
 
-    constructor(private requestManager: RequestManager) {
+    constructor(
+        private readonly requestManager: RequestManager
+    ) {
         this.requestManager.setPath('EVALUACION_DOCENTE_CRUD');
     }
     get(endpoint: string) {

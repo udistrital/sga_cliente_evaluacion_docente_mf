@@ -14,12 +14,12 @@ import { EspacioAcademicoService } from '../../app/services/espacio-academico.se
 })
 export class Parametros {
   constructor(
-    private espacioAcademicoService: EspacioAcademicoService,
-    private projectService: ProyectoAcademicoService,
-    private parametrosService: ParametrosService,
-    private planesEstudioService: PlanesEstudioService,
-    private popUpManager: PopUpManager,
-    private translate: TranslateService,
+    private readonly espacioAcademicoService: EspacioAcademicoService,
+    private readonly projectService: ProyectoAcademicoService,
+    private readonly parametrosService: ParametrosService,
+    private readonly planesEstudioService: PlanesEstudioService,
+    private readonly popUpManager: PopUpManager,
+    private readonly translate: TranslateService,
   ) { }
 
   niveles(): Observable<any[]> {
